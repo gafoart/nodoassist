@@ -11,7 +11,7 @@ import {
   installAcpSessionManagerTestLifecycle,
   mockCallArg,
   readySessionMeta,
-  type OpenClawConfig,
+  type NodoAssistConfig,
 } from "./manager.test-helpers.js";
 
 describe("AcpSessionManager initializeSession", () => {
@@ -33,7 +33,7 @@ describe("AcpSessionManager initializeSession", () => {
         ...baseCfg.acp,
         maxConcurrentSessions: 1,
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     const manager = new AcpSessionManager();
     await manager.initializeSession({

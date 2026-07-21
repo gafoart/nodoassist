@@ -1,13 +1,13 @@
-# Mattermost OpenClaw channel
+# Mattermost NodoAssist channel
 
-Official OpenClaw channel plugin for Mattermost.
+Official NodoAssist channel plugin for Mattermost.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/mattermost
+nodoassist plugins install @nodoassist/mattermost
 ```
 
 ## Docs
 
-See `docs/channels/mattermost.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/channels/mattermost`.
+See `docs/channels/mattermost.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/channels/mattermost`.

@@ -1,5 +1,5 @@
 /**
- * OpenClaw-owned agent session runtime.
+ * NodoAssist-owned agent session runtime.
  */
 
 export { getAgentDir, VERSION } from "../config.js";

@@ -4,7 +4,7 @@ import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/normalization-core/string-coerce";
 import { retireSessionMcpRuntime } from "../../agents/agent-bundle-mcp-tools.js";
 import { resolveSessionAgentId } from "../../agents/agent-scope.js";
 import { clearBootstrapSnapshotOnSessionRollover } from "../../agents/bootstrap-cache.js";
@@ -44,7 +44,7 @@ import {
   type SessionEntry,
   type SessionScope,
 } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import type { TtsAutoMode } from "../../config/types.tts.js";
 import {
   forgetActiveSessionForShutdown,
@@ -133,7 +133,7 @@ function resolveExplicitSessionEndReason(matchedResetTriggerLower?: string): Rep
 }
 
 function resolveSessionDefaultAccountId(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   channelRaw?: string;
   accountIdRaw?: string;
   persistedLastAccountId?: string;
@@ -204,7 +204,7 @@ export type SessionInitResult = {
 };
 
 export type InitSessionStateParams = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   commandAuthorized: boolean;
   ctx: MsgContext;
   requestedSessionId?: string;
@@ -225,7 +225,7 @@ type InitSessionStateAttemptOutcome =
   | { kind: "lifecycle-mutation"; sessionId: string; sessionKey: string };
 
 function resolveSessionConversationBindingContext(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   ctx: MsgContext,
 ): {
   channel: string;
@@ -251,7 +251,7 @@ function resolveSessionConversationBindingContext(
 }
 
 function resolveBoundConversationSessionKey(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   ctx: MsgContext;
   bindingContext?: {
     channel: string;
@@ -414,7 +414,7 @@ async function initSessionStateAttemptLocked(
     ? sessionCfg.resetTriggers
     : DEFAULT_RESET_TRIGGERS;
   const sessionScope = sessionCfg?.scope ?? "per-sender";
-  const ingressTimingEnabled = process.env.OPENCLAW_DEBUG_INGRESS_TIMING === "1";
+  const ingressTimingEnabled = process.env.NODOASSIST_DEBUG_INGRESS_TIMING === "1";
 
   let sessionEntry: SessionEntry;
 

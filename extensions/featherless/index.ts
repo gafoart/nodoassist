@@ -1,16 +1,16 @@
-// Featherless plugin entrypoint registers its OpenClaw integration.
+// Featherless plugin entrypoint registers its NodoAssist integration.
 import type {
   ProviderResolveDynamicModelContext,
   ProviderRuntimeModel,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { readConfiguredProviderCatalogEntries } from "openclaw/plugin-sdk/provider-catalog-shared";
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
+} from "nodoassist/plugin-sdk/plugin-entry";
+import { readConfiguredProviderCatalogEntries } from "nodoassist/plugin-sdk/provider-catalog-shared";
+import { defineSingleProviderPluginEntry } from "nodoassist/plugin-sdk/provider-entry";
 import {
   buildProviderReplayFamilyHooks,
   cloneFirstTemplateModel,
   normalizeModelCompat,
-} from "openclaw/plugin-sdk/provider-model-shared";
-import { buildProviderToolCompatFamilyHooks } from "openclaw/plugin-sdk/provider-tools";
+} from "nodoassist/plugin-sdk/provider-model-shared";
+import { buildProviderToolCompatFamilyHooks } from "nodoassist/plugin-sdk/provider-tools";
 import { applyFeatherlessConfig, FEATHERLESS_DEFAULT_MODEL_REF } from "./onboard.js";
 import {
   buildFeatherlessProvider,

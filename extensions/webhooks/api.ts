@@ -1,7 +1,7 @@
 // Webhooks API module exposes the plugin public contract.
 export {
   definePluginEntry,
-  type OpenClawPluginApi,
+  type NodoAssistPluginApi,
   type PluginLogger,
   type PluginRuntime,
-} from "openclaw/plugin-sdk/core";
+} from "nodoassist/plugin-sdk/core";

@@ -1,6 +1,6 @@
 // Doctor gateway health tests cover gateway probe failures, auth requirements, and repair messages.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { NodoAssistConfig } from "../config/config.js";
 import {
   GATEWAY_HEALTH_CREDENTIALS_REQUIRED_MESSAGE,
   GATEWAY_HEALTH_CREDENTIALS_REQUIRED_TITLE,
@@ -50,7 +50,7 @@ vi.mock("./health.js", () => ({
 import { checkGatewayHealth, probeGatewayMemoryStatus } from "./doctor-gateway-health.js";
 
 describe("checkGatewayHealth", () => {
-  const cfg = {} as OpenClawConfig;
+  const cfg = {} as NodoAssistConfig;
 
   beforeEach(() => {
     callGateway.mockReset();
@@ -84,7 +84,7 @@ describe("checkGatewayHealth", () => {
       timeoutMs: 6000,
     });
     expect(runtime.error).not.toHaveBeenCalled();
-    expect(note.mock.calls.map(([, title]) => title)).not.toContain("OpenClaw version mismatch");
+    expect(note.mock.calls.map(([, title]) => title)).not.toContain("NodoAssist version mismatch");
   });
 
   it("notes CLI and gateway version mismatch when the gateway reports another runtime version", async () => {
@@ -100,14 +100,14 @@ describe("checkGatewayHealth", () => {
     });
 
     const mismatchNotes = note.mock.calls
-      .filter(([, title]) => title === "OpenClaw version mismatch")
+      .filter(([, title]) => title === "NodoAssist version mismatch")
       .map(([message]) => String(message));
     const mismatchOutput = mismatchNotes.join("\n");
-    expect(mismatchOutput).toContain("the running Gateway is OpenClaw 2026.4.23");
+    expect(mismatchOutput).toContain("the running Gateway is NodoAssist 2026.4.23");
     expect(mismatchOutput).not.toContain("That usually means");
-    expect(mismatchOutput).toContain("Check `openclaw --version`, `which openclaw`");
+    expect(mismatchOutput).toContain("Check `nodoassist --version`, `which nodoassist`");
     expect(mismatchOutput).toContain(
-      "If this mismatch is unexpected, update PATH so `openclaw` points to the version you want",
+      "If this mismatch is unexpected, update PATH so `nodoassist` points to the version you want",
     );
   });
 
@@ -209,7 +209,7 @@ describe("checkGatewayHealth", () => {
 });
 
 describe("probeGatewayMemoryStatus", () => {
-  const cfg = {} as OpenClawConfig;
+  const cfg = {} as NodoAssistConfig;
 
   beforeEach(() => {
     callGateway.mockReset();
@@ -257,7 +257,7 @@ describe("probeGatewayMemoryStatus", () => {
         ok: false,
         checked: false,
         error:
-          "memory embedding readiness not checked; run `openclaw memory status --deep` to probe",
+          "memory embedding readiness not checked; run `nodoassist memory status --deep` to probe",
       },
     });
 

@@ -360,7 +360,7 @@ export async function runCrestodianTui(
         historyLimit: 200,
         backend,
         config: {},
-        title: "openclaw crestodian",
+        title: "nodoassist crestodian",
         ...(initialMessage ? { message: initialMessage } : {}),
       });
     } finally {

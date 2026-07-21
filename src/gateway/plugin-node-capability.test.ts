@@ -45,12 +45,12 @@ describe("plugin node capability helpers", () => {
 
   test("normalizes scoped urls and moves capability into the query string", () => {
     const normalized = normalizePluginNodeCapabilityScopedUrl(
-      "/__openclaw__/cap/token%20value/__openclaw__/canvas/file.txt?download=1",
+      "/__nodoassist__/cap/token%20value/__nodoassist__/canvas/file.txt?download=1",
     );
     expect(normalized).toEqual({
-      pathname: "/__openclaw__/canvas/file.txt",
+      pathname: "/__nodoassist__/canvas/file.txt",
       capability: "token value",
-      rewrittenUrl: "/__openclaw__/canvas/file.txt?download=1&oc_cap=token+value",
+      rewrittenUrl: "/__nodoassist__/canvas/file.txt?download=1&oc_cap=token+value",
       scopedPath: true,
       malformedScopedPath: false,
     });
@@ -66,7 +66,7 @@ describe("plugin node capability helpers", () => {
   });
 
   test("marks malformed scoped urls without authorizing a path capability", () => {
-    const normalized = normalizePluginNodeCapabilityScopedUrl("/__openclaw__/cap/broken");
+    const normalized = normalizePluginNodeCapabilityScopedUrl("/__nodoassist__/cap/broken");
     expect(normalized.scopedPath).toBe(true);
     expect(normalized.malformedScopedPath).toBe(true);
     expect(normalized.capability).toBeUndefined();
@@ -158,8 +158,8 @@ describe("plugin node capability helpers", () => {
     expect(refreshed?.expiresAtMs).toBe(1_100);
     expect(refreshed?.capability).toBeTypeOf("string");
     expect(refreshed?.capability).not.toBe("");
-    expect(refreshed?.scopedUrl).toContain("/__openclaw__/cap/");
-    expect(refreshed?.scopedUrl).not.toContain("old-token/__openclaw__/cap/");
+    expect(refreshed?.scopedUrl).toContain("/__nodoassist__/cap/");
+    expect(refreshed?.scopedUrl).not.toContain("old-token/__nodoassist__/cap/");
     expect(client.pluginSurfaceUrls?.canvas).toBe(refreshed?.scopedUrl);
     expect(client.pluginNodeCapabilities?.canvas).toEqual({
       capability: refreshed?.capability,

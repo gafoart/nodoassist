@@ -3,15 +3,15 @@ import {
   createMessageReceiptFromOutboundResults,
   type MessageReceipt,
   type MessageReceiptPartKind,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-import { requireRuntimeConfig } from "openclaw/plugin-sdk/plugin-config-runtime";
-import { isPrivateNetworkOptInEnabled } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "nodoassist/plugin-sdk/channel-outbound";
+import { resolveMarkdownTableMode } from "nodoassist/plugin-sdk/markdown-table-runtime";
+import { requireRuntimeConfig } from "nodoassist/plugin-sdk/plugin-config-runtime";
+import { isPrivateNetworkOptInEnabled } from "nodoassist/plugin-sdk/ssrf-runtime";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { convertMarkdownTables } from "openclaw/plugin-sdk/text-chunking";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { convertMarkdownTables } from "nodoassist/plugin-sdk/text-chunking";
 import { getMattermostRuntime } from "../runtime.js";
 import { resolveMattermostAccount } from "./accounts.js";
 import {
@@ -32,11 +32,11 @@ import {
   resolveInteractionCallbackUrl,
   setInteractionSecret,
 } from "./interactions.js";
-import { loadOutboundMediaFromUrl, type OpenClawConfig } from "./runtime-api.js";
+import { loadOutboundMediaFromUrl, type NodoAssistConfig } from "./runtime-api.js";
 import { isMattermostId, resolveMattermostOpaqueTarget } from "./target-resolution.js";
 
 type MattermostSendOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   botToken?: string;
   baseUrl?: string;
   accountId?: string;
@@ -349,7 +349,7 @@ async function resolveTargetChannelId(params: ResolveTargetChannelIdParams): Pro
 }
 
 type MattermostSendContext = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId: string;
   token: string;
   baseUrl: string;

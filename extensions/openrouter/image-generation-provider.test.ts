@@ -24,11 +24,11 @@ const {
   })),
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-auth-runtime", () => ({
+vi.mock("nodoassist/plugin-sdk/provider-auth-runtime", () => ({
   resolveApiKeyForProvider: resolveApiKeyForProviderMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-http", () => ({
+vi.mock("nodoassist/plugin-sdk/provider-http", () => ({
   assertOkOrThrowHttpError: assertOkOrThrowHttpErrorMock,
   postJsonRequest: postJsonRequestMock,
   // Pass-through: bounded-reader enforcement is tested via bounded-reader unit tests.
@@ -176,7 +176,7 @@ describe("openrouter image generation provider", () => {
       defaultHeaders: {
         Authorization: "Bearer openrouter-key",
         "HTTP-Referer": "https://openclaw.ai",
-        "X-OpenRouter-Title": "OpenClaw",
+        "X-OpenRouter-Title": "NodoAssist",
       },
       provider: "openrouter",
       capability: "image",
@@ -188,7 +188,7 @@ describe("openrouter image generation provider", () => {
     expect(Object.fromEntries(headers.entries())).toEqual({
       authorization: "Bearer openrouter-key",
       "http-referer": "https://openclaw.ai",
-      "x-openrouter-title": "OpenClaw",
+      "x-openrouter-title": "NodoAssist",
     });
     expect(request).toEqual({
       url: "https://custom.openrouter.test/api/v1/chat/completions",

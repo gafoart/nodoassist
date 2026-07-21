@@ -805,7 +805,7 @@ export function renderCron(props: CronProps) {
                         </div>
                       `}
                 </div>
-                <openclaw-tooltip .content=${t("common.dismiss")}>
+                <nodoassist-tooltip .content=${t("common.dismiss")}>
                   <button
                     type="button"
                     class="btn cron-form-collapse-toggle"
@@ -815,7 +815,7 @@ export function renderCron(props: CronProps) {
                   >
                     <span aria-hidden="true">×</span>
                   </button>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
               </div>
               <div class="cron-form" ?hidden=${formCollapsed}>
                 <div class="cron-required-legend">

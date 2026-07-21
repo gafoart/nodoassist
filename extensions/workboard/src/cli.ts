@@ -1,9 +1,9 @@
 // Workboard plugin module implements cli behavior.
 import type { Command } from "commander";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { addGatewayClientOptions, callGatewayFromCli } from "openclaw/plugin-sdk/gateway-runtime";
-import { getRuntimeConfig } from "openclaw/plugin-sdk/runtime-config-snapshot";
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import { addGatewayClientOptions, callGatewayFromCli } from "nodoassist/plugin-sdk/gateway-runtime";
+import { getRuntimeConfig } from "nodoassist/plugin-sdk/runtime-config-snapshot";
+import { isRecord } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { resolveWorkboardCardByIdOrPrefix } from "./card-lookup.js";
 import type { WorkboardDispatchResult, WorkboardStore } from "./store.js";
 import type { WorkboardCard } from "./types.js";
@@ -107,7 +107,7 @@ function hasExplicitGatewayTarget(options: GatewayOptions): boolean {
 }
 
 function hasConfiguredRemoteGatewayTarget(): boolean {
-  if (process.env.OPENCLAW_GATEWAY_URL?.trim()) {
+  if (process.env.NODOASSIST_GATEWAY_URL?.trim()) {
     return true;
   }
   try {

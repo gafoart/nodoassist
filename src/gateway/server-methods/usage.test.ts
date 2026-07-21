@@ -2,7 +2,7 @@
  * Tests for usage-report gateway methods and aggregation responses.
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { NodoAssistConfig } from "../../config/config.js";
 
 vi.mock("../../infra/session-cost-usage.js", async () => {
   const actual = await vi.importActual<typeof import("../../infra/session-cost-usage.js")>(
@@ -321,7 +321,7 @@ describe("gateway usage helpers", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-02-05T00:00:00.000Z"));
 
-    const config = {} as OpenClawConfig;
+    const config = {} as NodoAssistConfig;
     const a = await testApi.loadCostUsageSummaryCached({
       startMs: 1,
       endMs: 2,
@@ -342,7 +342,7 @@ describe("gateway usage helpers", () => {
   });
 
   it("keeps cost usage cache entries scoped by agentId", async () => {
-    const config = {} as OpenClawConfig;
+    const config = {} as NodoAssistConfig;
 
     await testApi.loadCostUsageSummaryCached({
       startMs: 1,
@@ -373,7 +373,7 @@ describe("gateway usage helpers", () => {
   });
 
   it("keeps cost usage cache entries scoped by daily timezone offset", async () => {
-    const config = {} as OpenClawConfig;
+    const config = {} as NodoAssistConfig;
 
     await testApi.loadCostUsageSummaryCached({
       startMs: 1,
@@ -469,7 +469,7 @@ describe("gateway usage helpers", () => {
     const config = {
       agents: { list: [{ id: "main" }, { id: "opus" }] },
       session: {},
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     const context = { getRuntimeConfig: () => config };
     const params = { startDate: "2026-02-01", endDate: "2026-02-01", mode: "utc" };
 

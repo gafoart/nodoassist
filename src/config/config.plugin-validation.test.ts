@@ -41,7 +41,7 @@ async function writePluginFixture(params: {
     manifest.channels = params.channels;
   }
   await fs.writeFile(
-    path.join(params.dir, "openclaw.plugin.json"),
+    path.join(params.dir, "nodoassist.plugin.json"),
     JSON.stringify(manifest, null, 2),
     "utf-8",
   );
@@ -132,10 +132,10 @@ describe("config plugin validation", () => {
   const suiteEnv = () =>
     ({
       HOME: suiteHome,
-      OPENCLAW_HOME: undefined,
-      OPENCLAW_STATE_DIR: path.join(suiteHome, ".openclaw"),
-      OPENCLAW_BUNDLED_PLUGINS_DIR: undefined,
-      OPENCLAW_VERSION: undefined,
+      NODOASSIST_HOME: undefined,
+      NODOASSIST_STATE_DIR: path.join(suiteHome, ".nodoassist"),
+      NODOASSIST_BUNDLED_PLUGINS_DIR: undefined,
+      NODOASSIST_VERSION: undefined,
       VITEST: "true",
     }) satisfies NodeJS.ProcessEnv;
 
@@ -144,7 +144,7 @@ describe("config plugin validation", () => {
 
   const validateRemovedPluginConfig = (removedId: string) =>
     validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: false,
         entries: { [removedId]: { enabled: true } },
@@ -155,7 +155,7 @@ describe("config plugin validation", () => {
     });
 
   beforeAll(async () => {
-    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-config-plugin-validation-"));
+    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-config-plugin-validation-"));
     await chmodSafeDir(fixtureRoot);
     suiteHome = path.join(fixtureRoot, "home");
     await mkdirSafe(suiteHome);
@@ -226,7 +226,7 @@ describe("config plugin validation", () => {
       process.cwd(),
       "extensions",
       "voice-call",
-      "openclaw.plugin.json",
+      "nodoassist.plugin.json",
     );
     const voiceCallManifest = JSON.parse(await fs.readFile(voiceCallManifestPath, "utf-8")) as {
       configSchema?: Record<string, unknown>;
@@ -248,7 +248,7 @@ describe("config plugin validation", () => {
   it("reports missing plugin refs across entries and allowlist surfaces", () => {
     const missingPath = path.join(suiteHome, "missing-plugin-dir");
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [missingPath] },
@@ -302,7 +302,7 @@ describe("config plugin validation", () => {
 
   it("warns instead of failing for stale plugins.deny entries", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         deny: ["missing-deny"],
       },
@@ -322,7 +322,7 @@ describe("config plugin validation", () => {
     const validateWithMissingCodexPlugin = (raw: Record<string, unknown>) =>
       validateConfigObjectWithPlugins(
         {
-          agents: { list: [{ id: "openclaw" }] },
+          agents: { list: [{ id: "nodoassist" }] },
           ...raw,
         },
         {
@@ -378,7 +378,7 @@ describe("config plugin validation", () => {
         name: "agent wildcard PI runtime policy",
         config: {
           agents: {
-            list: [{ id: "openclaw" }],
+            list: [{ id: "nodoassist" }],
             defaults: {
               models: {
                 "openai/*": { agentRuntime: { id: "pi" } },
@@ -401,7 +401,7 @@ describe("config plugin validation", () => {
       expectNoMissingCodexPluginWarning(res.warnings);
     });
 
-    it("still warns when only one provider model route is pinned to OpenClaw", () => {
+    it("still warns when only one provider model route is pinned to NodoAssist", () => {
       const res = validateWithMissingCodexPlugin({
         models: {
           providers: {
@@ -416,7 +416,7 @@ describe("config plugin validation", () => {
                   cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
                   contextWindow: 128000,
                   maxTokens: 8192,
-                  agentRuntime: { id: "openclaw" },
+                  agentRuntime: { id: "nodoassist" },
                 },
               ],
             },
@@ -510,7 +510,7 @@ describe("config plugin validation", () => {
           },
         },
         agents: {
-          list: [{ id: "openclaw" }],
+          list: [{ id: "nodoassist" }],
           defaults: {
             models: {
               "openai/*": { agentRuntime: { id: "pi" } },
@@ -597,7 +597,7 @@ describe("config plugin validation", () => {
           },
         },
         agents: {
-          list: [{ id: "openclaw" }],
+          list: [{ id: "nodoassist" }],
           defaults: {
             models: {
               "openai/*": { agentRuntime: { id: "default" } },
@@ -614,7 +614,7 @@ describe("config plugin validation", () => {
     it("still warns when only one agent model route is pinned to PI", () => {
       const res = validateWithMissingCodexPlugin({
         agents: {
-          list: [{ id: "openclaw" }],
+          list: [{ id: "nodoassist" }],
           defaults: {
             models: {
               "openai/gpt-5.5": { agentRuntime: { id: "pi" } },
@@ -640,7 +640,7 @@ describe("config plugin validation", () => {
           },
         },
         agents: {
-          list: [{ id: "openclaw" }],
+          list: [{ id: "nodoassist" }],
           defaults: {
             models: {
               "openai/*": { agentRuntime: { id: "default" } },
@@ -713,7 +713,7 @@ describe("config plugin validation", () => {
           },
         },
         agents: {
-          list: [{ id: "openclaw" }],
+          list: [{ id: "nodoassist" }],
           defaults: {
             models: {
               "openai/gpt-5.5": { agentRuntime: { id: "codex" } },
@@ -731,7 +731,7 @@ describe("config plugin validation", () => {
   it("deduplicates catalog install hints for missing configured official external plugins", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           entries: { brave: { enabled: true } },
           allow: ["brave"],
@@ -750,7 +750,7 @@ describe("config plugin validation", () => {
 
     expect(res.ok).toBe(true);
     const message =
-      "plugin not installed: brave — install the official external plugin with: openclaw plugins install @openclaw/brave-plugin";
+      "plugin not installed: brave — install the official external plugin with: nodoassist plugins install @nodoassist/brave-plugin";
     expectPathMessage(res.warnings, "plugins.entries.brave", message);
     expect((res.warnings ?? []).filter((warning) => warning.message === message)).toHaveLength(1);
     expect(
@@ -765,7 +765,7 @@ describe("config plugin validation", () => {
   it("warns instead of failing when an official external memory slot plugin is not installed", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           slots: { memory: "memory-lancedb" },
           entries: { "memory-lancedb": { enabled: true } },
@@ -784,9 +784,9 @@ describe("config plugin validation", () => {
 
     expect(res.ok).toBe(true);
     const slotMessage =
-      "plugin not installed: memory-lancedb — gateway will run without persistent memory until installed; install the official external plugin with: openclaw plugins install @openclaw/memory-lancedb";
+      "plugin not installed: memory-lancedb — gateway will run without persistent memory until installed; install the official external plugin with: nodoassist plugins install @nodoassist/memory-lancedb";
     const entryMessage =
-      "plugin not installed: memory-lancedb — install the official external plugin with: openclaw plugins install @openclaw/memory-lancedb";
+      "plugin not installed: memory-lancedb — install the official external plugin with: nodoassist plugins install @nodoassist/memory-lancedb";
     expectPathMessage(res.warnings, "plugins.slots.memory", slotMessage);
     expectPathMessage(res.warnings, "plugins.entries.memory-lancedb", entryMessage);
   });
@@ -794,7 +794,7 @@ describe("config plugin validation", () => {
   it("keeps no-persistent-memory wording scoped to the selected missing memory slot", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           slots: { memory: "none" },
           entries: { "memory-lancedb": { enabled: true } },
@@ -814,7 +814,7 @@ describe("config plugin validation", () => {
 
     expect(res.ok).toBe(true);
     const message =
-      "plugin not installed: memory-lancedb — install the official external plugin with: openclaw plugins install @openclaw/memory-lancedb";
+      "plugin not installed: memory-lancedb — install the official external plugin with: nodoassist plugins install @nodoassist/memory-lancedb";
     expectPathMessage(res.warnings, "plugins.entries.memory-lancedb", message);
     expect((res.warnings ?? []).filter((warning) => warning.message === message)).toHaveLength(1);
     expect(
@@ -827,7 +827,7 @@ describe("config plugin validation", () => {
   it("deduplicates yuanbao missing-plugin warnings across entries and allow", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           entries: { yuanbao: { enabled: true } },
           allow: ["yuanbao"],
@@ -846,7 +846,7 @@ describe("config plugin validation", () => {
 
     expect(res.ok).toBe(true);
     const message =
-      "plugin not installed: yuanbao — install the official external plugin with: openclaw plugins install openclaw-plugin-yuanbao@2.15.0";
+      "plugin not installed: yuanbao — install the official external plugin with: nodoassist plugins install nodoassist-plugin-yuanbao@2.15.0";
     expectPathMessage(res.warnings, "plugins.entries.yuanbao", message);
     expect((res.warnings ?? []).filter((warning) => warning.message === message)).toHaveLength(1);
   });
@@ -854,7 +854,7 @@ describe("config plugin validation", () => {
   it("keeps official external non-memory plugins fatal in the memory slot", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           slots: { memory: "brave" },
           entries: { brave: { enabled: true } },
@@ -879,14 +879,14 @@ describe("config plugin validation", () => {
     expectPathMessage(
       res.warnings,
       "plugins.entries.brave",
-      "plugin not installed: brave — install the official external plugin with: openclaw plugins install @openclaw/brave-plugin",
+      "plugin not installed: brave — install the official external plugin with: nodoassist plugins install @nodoassist/brave-plugin",
     );
   });
 
   it("keeps blocked official external memory slot plugins fatal", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           slots: { memory: "memory-lancedb" },
           entries: { "memory-lancedb": { enabled: true } },
@@ -936,7 +936,7 @@ describe("config plugin validation", () => {
       await fs.chmod(blockedPluginDir, 0o777);
       try {
         const res = validateInSuite({
-          agents: { list: [{ id: "openclaw" }] },
+          agents: { list: [{ id: "nodoassist" }] },
           plugins: {
             enabled: true,
             load: { paths: [blockedPluginDir] },
@@ -975,7 +975,7 @@ describe("config plugin validation", () => {
   it("maps legacy blocked diagnostics without plugin ids to configured load paths", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           enabled: true,
           load: { paths: [blockedPluginDir] },
@@ -1022,7 +1022,7 @@ describe("config plugin validation", () => {
   it("warns for broken discovered plugins that are not referenced by config", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           allow: ["telegram"],
         },
@@ -1036,7 +1036,12 @@ describe("config plugin validation", () => {
               {
                 level: "error",
                 pluginId: "broken-local",
-                source: path.join(suiteHome, "extensions", "broken-local", "openclaw.plugin.json"),
+                source: path.join(
+                  suiteHome,
+                  "extensions",
+                  "broken-local",
+                  "nodoassist.plugin.json",
+                ),
                 message: "plugin manifest entry does not exist: dist/index.js",
               },
             ],
@@ -1060,7 +1065,7 @@ describe("config plugin validation", () => {
   it("keeps broken discovered plugins fatal when config references them", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           entries: {
             "broken-local": { enabled: true },
@@ -1076,7 +1081,12 @@ describe("config plugin validation", () => {
               {
                 level: "error",
                 pluginId: "broken-local",
-                source: path.join(suiteHome, "extensions", "broken-local", "openclaw.plugin.json"),
+                source: path.join(
+                  suiteHome,
+                  "extensions",
+                  "broken-local",
+                  "nodoassist.plugin.json",
+                ),
                 message: "plugin manifest entry does not exist: dist/index.js",
               },
             ],
@@ -1100,7 +1110,7 @@ describe("config plugin validation", () => {
     const aliasDir = path.join(suiteHome, "alias-dir");
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           enabled: true,
           load: { paths: [aliasDir] },
@@ -1156,7 +1166,7 @@ describe("config plugin validation", () => {
 
   it("warns instead of failing for stale channel config backed by missing plugin refs", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       channels: {
         "missing-chat": { token: "stale" },
       },
@@ -1173,7 +1183,7 @@ describe("config plugin validation", () => {
     expect(res.warnings).toContainEqual({
       path: "channels.missing-chat",
       message:
-        "unknown channel id: missing-chat (stale channel plugin config ignored; run openclaw doctor --fix to remove stale config, or install the plugin)",
+        "unknown channel id: missing-chat (stale channel plugin config ignored; run nodoassist doctor --fix to remove stale config, or install the plugin)",
     });
     expect(res.warnings).toContainEqual({
       path: "plugins.allow",
@@ -1189,7 +1199,7 @@ describe("config plugin validation", () => {
 
   it("keeps unknown channel typos fatal when there is no stale plugin evidence", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       channels: {
         telegarm: { botToken: "typo" },
       },
@@ -1214,7 +1224,7 @@ describe("config plugin validation", () => {
   it("warns when plugins.allow contains a channel id without a plugin manifest (#76872)", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         channels: {
           discord: { token: "xxx" },
         },
@@ -1238,13 +1248,13 @@ describe("config plugin validation", () => {
       {
         path: "plugins.allow",
         message:
-          "plugin not installed: discord — install the official external plugin with: openclaw plugins install @openclaw/discord",
+          "plugin not installed: discord — install the official external plugin with: nodoassist plugins install @nodoassist/discord",
       },
     ]);
   });
 
   it("uses persisted installed-plugin records as stale channel evidence", async () => {
-    const stateDir = path.join(suiteHome, ".openclaw");
+    const stateDir = path.join(suiteHome, ".nodoassist");
     clearLoadInstalledPluginIndexInstallRecordsCache();
     await writePersistedInstalledPluginIndex(
       {
@@ -1269,7 +1279,7 @@ describe("config plugin validation", () => {
     clearLoadInstalledPluginIndexInstallRecordsCache();
     try {
       const res = validateInSuite({
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         channels: {
           "missing-sms": { token: "stale" },
         },
@@ -1282,7 +1292,7 @@ describe("config plugin validation", () => {
       expect(res.warnings).toContainEqual({
         path: "channels.missing-sms",
         message:
-          "unknown channel id: missing-sms (stale channel plugin config ignored; run openclaw doctor --fix to remove stale config, or install the plugin)",
+          "unknown channel id: missing-sms (stale channel plugin config ignored; run nodoassist doctor --fix to remove stale config, or install the plugin)",
       });
     } finally {
       await writePersistedInstalledPluginIndex(
@@ -1305,7 +1315,7 @@ describe("config plugin validation", () => {
 
   it("warns with actionable guidance when a runtime command name is used in plugins.allow", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         allow: ["dreaming"],
         entries: {
@@ -1335,7 +1345,7 @@ describe("config plugin validation", () => {
   it("does not fail validation for the implicit default memory slot when plugins config is explicit", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           entries: { acpx: { enabled: true } },
         },
@@ -1343,7 +1353,7 @@ describe("config plugin validation", () => {
       {
         env: {
           ...suiteEnv(),
-          OPENCLAW_BUNDLED_PLUGINS_DIR: path.join(suiteHome, "missing-bundled-plugins"),
+          NODOASSIST_BUNDLED_PLUGINS_DIR: path.join(suiteHome, "missing-bundled-plugins"),
         },
       },
     );
@@ -1367,7 +1377,7 @@ describe("config plugin validation", () => {
     const res = validateRemovedPluginConfig(removedId);
     expect(res.ok).toBe(true);
     const message =
-      "plugin removed: skill-workshop (stale plugin config ignored; Skill Workshop is built into OpenClaw skills now. Use skills.workshop settings and openclaw skills workshop commands, then remove this plugins config entry)";
+      "plugin removed: skill-workshop (stale plugin config ignored; Skill Workshop is built into NodoAssist skills now. Use skills.workshop settings and nodoassist skills workshop commands, then remove this plugins config entry)";
     expectPathMessage(res.warnings, `plugins.entries.${removedId}`, message);
     expectPathMessage(res.warnings, "plugins.allow", message);
     expectPathMessage(res.warnings, "plugins.deny", message);
@@ -1402,12 +1412,12 @@ describe("config plugin validation", () => {
   });
 
   it("ignores standalone helper scripts in auto-discovered global extensions", async () => {
-    const helperPath = path.join(suiteHome, ".openclaw", "extensions", "my-helper.mjs");
+    const helperPath = path.join(suiteHome, ".nodoassist", "extensions", "my-helper.mjs");
     await mkdirSafe(path.dirname(helperPath));
     await fs.writeFile(helperPath, "export default {};\n", "utf-8");
     try {
       const res = validateInSuite({
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: { enabled: true },
       });
 
@@ -1419,7 +1429,7 @@ describe("config plugin validation", () => {
 
   it("surfaces plugin config diagnostics", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [badPluginDir] },
@@ -1440,7 +1450,7 @@ describe("config plugin validation", () => {
   it("surfaces invalid Codex native plugin marketplaces as config diagnostics", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           entries: {
             codex: {
@@ -1464,7 +1474,7 @@ describe("config plugin validation", () => {
       {
         env: {
           ...suiteEnv(),
-          OPENCLAW_BUNDLED_PLUGINS_DIR: path.join(process.cwd(), "extensions"),
+          NODOASSIST_BUNDLED_PLUGINS_DIR: path.join(process.cwd(), "extensions"),
         },
       },
     );
@@ -1490,7 +1500,7 @@ describe("config plugin validation", () => {
   it("accepts ask destructive policy without dropping adjacent Codex plugin config", () => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           entries: {
             codex: {
@@ -1517,7 +1527,7 @@ describe("config plugin validation", () => {
       {
         env: {
           ...suiteEnv(),
-          OPENCLAW_BUNDLED_PLUGINS_DIR: path.join(process.cwd(), "extensions"),
+          NODOASSIST_BUNDLED_PLUGINS_DIR: path.join(process.cwd(), "extensions"),
         },
       },
     );
@@ -1554,7 +1564,7 @@ describe("config plugin validation", () => {
   ])("rejects old always destructive policy in the $name", ({ codexPlugins, expectedPath }) => {
     const res = validateConfigObjectWithPlugins(
       {
-        agents: { list: [{ id: "openclaw" }] },
+        agents: { list: [{ id: "nodoassist" }] },
         plugins: {
           entries: {
             codex: {
@@ -1567,7 +1577,7 @@ describe("config plugin validation", () => {
       {
         env: {
           ...suiteEnv(),
-          OPENCLAW_BUNDLED_PLUGINS_DIR: path.join(process.cwd(), "extensions"),
+          NODOASSIST_BUNDLED_PLUGINS_DIR: path.join(process.cwd(), "extensions"),
         },
       },
     );
@@ -1580,7 +1590,7 @@ describe("config plugin validation", () => {
 
   it("does not require native config schemas for enabled bundle plugins", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [bundlePluginDir] },
@@ -1593,7 +1603,7 @@ describe("config plugin validation", () => {
 
   it("accepts enabled manifestless Claude bundles without a native schema", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [manifestlessClaudeBundleDir] },
@@ -1606,7 +1616,7 @@ describe("config plugin validation", () => {
 
   it("surfaces allowed enum values for plugin config diagnostics", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [enumPluginDir] },
@@ -1626,7 +1636,7 @@ describe("config plugin validation", () => {
 
   it("accepts voice-call webhookSecurity and streaming guard config fields", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [voiceCallSchemaPluginDir] },
@@ -1657,7 +1667,7 @@ describe("config plugin validation", () => {
 
   it("accepts voice-call OpenAI TTS speed, instructions, and baseUrl config fields", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [voiceCallSchemaPluginDir] },
@@ -1684,7 +1694,7 @@ describe("config plugin validation", () => {
 
   it("accepts voice-call SecretRef credentials declared by the plugin schema", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [voiceCallSchemaPluginDir] },
@@ -1716,7 +1726,7 @@ describe("config plugin validation", () => {
 
   it("rejects out-of-range voice-call OpenAI TTS speed values", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [voiceCallSchemaPluginDir] },
@@ -1749,7 +1759,7 @@ describe("config plugin validation", () => {
 
   it("rejects out-of-range voice-call ElevenLabs voice settings", () => {
     const res = validateInSuite({
-      agents: { list: [{ id: "openclaw" }] },
+      agents: { list: [{ id: "nodoassist" }] },
       plugins: {
         enabled: true,
         load: { paths: [voiceCallSchemaPluginDir] },
@@ -1786,7 +1796,7 @@ describe("config plugin validation", () => {
     const res = validateInSuite({
       agents: {
         defaults: { heartbeat: { target: "last", directPolicy: "block" } },
-        list: [{ id: "openclaw", heartbeat: { directPolicy: "allow" } }],
+        list: [{ id: "nodoassist", heartbeat: { directPolicy: "allow" } }],
       },
       channels: {
         modelByChannel: {
@@ -1802,7 +1812,7 @@ describe("config plugin validation", () => {
 
   it("accepts plugin heartbeat targets", () => {
     const res = validateInSuite({
-      agents: { defaults: { heartbeat: { target: "chat" } }, list: [{ id: "openclaw" }] },
+      agents: { defaults: { heartbeat: { target: "chat" } }, list: [{ id: "nodoassist" }] },
       plugins: { enabled: false, load: { paths: [chatPluginDir] } },
     });
     expect(res.ok).toBe(true);
@@ -1819,7 +1829,7 @@ describe("config plugin validation", () => {
     const res = validateInSuite({
       agents: {
         defaults: { heartbeat: { target: "not-a-channel" } },
-        list: [{ id: "openclaw" }],
+        list: [{ id: "nodoassist" }],
       },
     });
     expect(res.ok).toBe(false);
@@ -1839,7 +1849,7 @@ describe("config plugin validation", () => {
     const res = validateInSuite({
       agents: {
         defaults: { heartbeat: { directPolicy: "maybe" } },
-        list: [{ id: "openclaw" }],
+        list: [{ id: "nodoassist" }],
       },
     });
     expect(res.ok).toBe(false);

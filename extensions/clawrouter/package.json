@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/clawrouter",
+  "name": "@nodoassist/clawrouter",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw ClawRouter plugin",
+  "description": "NodoAssist ClawRouter plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

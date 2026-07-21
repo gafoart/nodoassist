@@ -1,13 +1,13 @@
-# Moonshot OpenClaw provider
+# Moonshot NodoAssist provider
 
-Official OpenClaw provider plugin for Moonshot.
+Official NodoAssist provider plugin for Moonshot.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/moonshot-provider
+nodoassist plugins install @nodoassist/moonshot-provider
 ```
 
 ## Docs
 
-See `docs/providers/moonshot.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/providers/moonshot`.
+See `docs/providers/moonshot.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/providers/moonshot`.

@@ -1,13 +1,13 @@
-# @openclaw/acpx
+# @nodoassist/acpx
 
-Official ACP runtime backend for OpenClaw.
+Official ACP runtime backend for NodoAssist.
 
-ACPx lets OpenClaw run external coding harnesses through the Agent Client Protocol while OpenClaw still owns sessions, channels, delivery, permissions, and Gateway state.
+ACPx lets NodoAssist run external coding harnesses through the Agent Client Protocol while NodoAssist still owns sessions, channels, delivery, permissions, and Gateway state.
 
 ## Install
 
 ```bash
-openclaw plugins install @openclaw/acpx
+nodoassist plugins install @nodoassist/acpx
 ```
 
 Restart the Gateway after installing or updating the plugin.
@@ -16,7 +16,7 @@ Restart the Gateway after installing or updating the plugin.
 
 - ACP-backed agent runtime sessions.
 - Plugin-owned session and transport management.
-- MCP bridge helpers for OpenClaw tools and plugin tools.
+- MCP bridge helpers for NodoAssist tools and plugin tools.
 - Static runtime assets used by the ACP process bridge.
 
 ## Configure
@@ -29,5 +29,5 @@ Use the ACP docs for harness-specific setup, permission modes, and model/runtime
 ## Package
 
 - Plugin id: `acpx`
-- Package: `@openclaw/acpx`
-- Minimum OpenClaw host: `2026.4.25`
+- Package: `@nodoassist/acpx`
+- Minimum NodoAssist host: `2026.4.25`

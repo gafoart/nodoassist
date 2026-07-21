@@ -45,16 +45,16 @@ describe("runDaemonInstall integration", () => {
   beforeAll(async () => {
     envSnapshot = captureEnv([
       "HOME",
-      "OPENCLAW_STATE_DIR",
-      "OPENCLAW_CONFIG_PATH",
-      "OPENCLAW_GATEWAY_TOKEN",
-      "OPENCLAW_GATEWAY_PASSWORD",
+      "NODOASSIST_STATE_DIR",
+      "NODOASSIST_CONFIG_PATH",
+      "NODOASSIST_GATEWAY_TOKEN",
+      "NODOASSIST_GATEWAY_PASSWORD",
     ]);
-    tempHome = await makeTempWorkspace("openclaw-daemon-install-int-");
-    configPath = path.join(tempHome, "openclaw.json");
+    tempHome = await makeTempWorkspace("nodoassist-daemon-install-int-");
+    configPath = path.join(tempHome, "nodoassist.json");
     process.env.HOME = tempHome;
-    process.env.OPENCLAW_STATE_DIR = tempHome;
-    process.env.OPENCLAW_CONFIG_PATH = configPath;
+    process.env.NODOASSIST_STATE_DIR = tempHome;
+    process.env.NODOASSIST_CONFIG_PATH = configPath;
   });
 
   afterAll(async () => {
@@ -67,8 +67,8 @@ describe("runDaemonInstall integration", () => {
     resetRuntimeCapture();
     clearRuntimeConfigSnapshot();
     // Keep these defined-but-empty so dotenv won't repopulate from local .env.
-    process.env.OPENCLAW_GATEWAY_TOKEN = "";
-    process.env.OPENCLAW_GATEWAY_PASSWORD = "";
+    process.env.NODOASSIST_GATEWAY_TOKEN = "";
+    process.env.NODOASSIST_GATEWAY_PASSWORD = "";
     serviceMock.isLoaded.mockResolvedValue(false);
     await fs.writeFile(configPath, JSON.stringify({}, null, 2));
     clearConfigCache();
@@ -108,7 +108,7 @@ describe("runDaemonInstall integration", () => {
     expect(joined).toContain("MISSING_GATEWAY_TOKEN");
   });
 
-  it("refuses service install when config was written by a newer OpenClaw", async () => {
+  it("refuses service install when config was written by a newer NodoAssist", async () => {
     await fs.writeFile(
       configPath,
       JSON.stringify(
@@ -160,6 +160,6 @@ describe("runDaemonInstall integration", () => {
     expect(persistedToken).toEqual(expect.stringMatching(/^[0-9a-f]{48}$/));
 
     const installEnv = serviceMock.install.mock.calls[0]?.[0]?.environment;
-    expect(installEnv?.OPENCLAW_GATEWAY_TOKEN).toBeUndefined();
+    expect(installEnv?.NODOASSIST_GATEWAY_TOKEN).toBeUndefined();
   });
 });

@@ -189,6 +189,6 @@ class WorkboardPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-workboard-page")) {
-  customElements.define("openclaw-workboard-page", WorkboardPage);
+if (!customElements.get("nodoassist-workboard-page")) {
+  customElements.define("nodoassist-workboard-page", WorkboardPage);
 }

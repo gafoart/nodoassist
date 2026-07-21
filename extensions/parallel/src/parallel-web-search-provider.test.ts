@@ -12,8 +12,8 @@ const endpointMockState = vi.hoisted(() => ({
   responses: [] as Response[],
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-web-search", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/provider-web-search")>();
+vi.mock("nodoassist/plugin-sdk/provider-web-search", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("nodoassist/plugin-sdk/provider-web-search")>();
   const runEndpoint = async (
     params: EndpointCall,
     run: (response: Response) => Promise<unknown>,
@@ -158,8 +158,8 @@ describe("parallel web search provider", () => {
 
   it("partitions Parallel cache keys by resolved endpoint", () => {
     const base = {
-      objective: "Find OpenClaw on GitHub",
-      searchQueries: ["openclaw github"],
+      objective: "Find NodoAssist on GitHub",
+      searchQueries: ["nodoassist github"],
       count: 5,
     };
     expect(
@@ -178,8 +178,8 @@ describe("parallel web search provider", () => {
   it("partitions Parallel cache keys by resolved result count", () => {
     const base = {
       endpoint: "https://api.parallel.ai/v1/search",
-      objective: "Find OpenClaw on GitHub",
-      searchQueries: ["openclaw github"],
+      objective: "Find NodoAssist on GitHub",
+      searchQueries: ["nodoassist github"],
     };
     expect(testing.buildParallelCacheKey({ ...base, count: 5 })).not.toBe(
       testing.buildParallelCacheKey({ ...base, count: 10 }),
@@ -194,27 +194,27 @@ describe("parallel web search provider", () => {
     expect(
       testing.buildParallelCacheKey({
         ...base,
-        objective: "Find OpenClaw on GitHub",
-        searchQueries: ["openclaw github"],
+        objective: "Find NodoAssist on GitHub",
+        searchQueries: ["nodoassist github"],
       }),
     ).not.toBe(
       testing.buildParallelCacheKey({
         ...base,
-        objective: "Find the OpenClaw release notes",
-        searchQueries: ["openclaw github"],
+        objective: "Find the NodoAssist release notes",
+        searchQueries: ["nodoassist github"],
       }),
     );
     expect(
       testing.buildParallelCacheKey({
         ...base,
-        objective: "Find OpenClaw on GitHub",
-        searchQueries: ["openclaw github"],
+        objective: "Find NodoAssist on GitHub",
+        searchQueries: ["nodoassist github"],
       }),
     ).not.toBe(
       testing.buildParallelCacheKey({
         ...base,
-        objective: "Find OpenClaw on GitHub",
-        searchQueries: ["openclaw github", "openclaw repository"],
+        objective: "Find NodoAssist on GitHub",
+        searchQueries: ["nodoassist github", "nodoassist repository"],
       }),
     );
   });
@@ -222,8 +222,8 @@ describe("parallel web search provider", () => {
   it("partitions Parallel cache keys by caller-provided session id", () => {
     const base = {
       endpoint: "https://api.parallel.ai/v1/search",
-      objective: "Find OpenClaw on GitHub",
-      searchQueries: ["openclaw github"],
+      objective: "Find NodoAssist on GitHub",
+      searchQueries: ["nodoassist github"],
       count: 5,
     };
     expect(testing.buildParallelCacheKey({ ...base, sessionId: "session-a" })).not.toBe(
@@ -237,8 +237,8 @@ describe("parallel web search provider", () => {
   it("partitions Parallel cache keys by client_model so per-model results never bleed", () => {
     const base = {
       endpoint: "https://api.parallel.ai/v1/search",
-      objective: "Find OpenClaw on GitHub",
-      searchQueries: ["openclaw github"],
+      objective: "Find NodoAssist on GitHub",
+      searchQueries: ["nodoassist github"],
       count: 5,
     };
     expect(testing.buildParallelCacheKey({ ...base, clientModel: "claude-opus-4-7" })).not.toBe(
@@ -250,7 +250,7 @@ describe("parallel web search provider", () => {
   });
 
   it("normalizes objectives by trimming and capping at 5000 chars", () => {
-    expect(testing.normalizeParallelObjective("  Find OpenClaw  ")).toBe("Find OpenClaw");
+    expect(testing.normalizeParallelObjective("  Find NodoAssist  ")).toBe("Find NodoAssist");
     expect(testing.normalizeParallelObjective(undefined)).toBeUndefined();
     expect(testing.normalizeParallelObjective("")).toBeUndefined();
     expect((testing.normalizeParallelObjective("x".repeat(6000)) ?? "").length).toBe(5000);
@@ -260,16 +260,16 @@ describe("parallel web search provider", () => {
   it("normalizes search_queries: trim, drop blanks, dedupe, cap length, cap count", () => {
     expect(
       testing.normalizeParallelSearchQueries([
-        "openclaw github",
-        "  openclaw github  ",
+        "nodoassist github",
+        "  nodoassist github  ",
         "",
         " ",
         42,
-        "openclaw releases",
+        "nodoassist releases",
       ]),
-    ).toEqual(["openclaw github", "openclaw releases"]);
+    ).toEqual(["nodoassist github", "nodoassist releases"]);
     expect(testing.normalizeParallelSearchQueries(undefined)).toEqual([]);
-    expect(testing.normalizeParallelSearchQueries("openclaw github")).toEqual([]);
+    expect(testing.normalizeParallelSearchQueries("nodoassist github")).toEqual([]);
     expect(testing.normalizeParallelSearchQueries(["x".repeat(250)])).toEqual(["x".repeat(200)]);
     expect(testing.normalizeParallelSearchQueries([`${"x".repeat(199)}🚀tail`])).toEqual([
       "x".repeat(199),
@@ -337,7 +337,7 @@ describe("parallel web search provider", () => {
   });
 
   it("identifies the plugin via a versioned User-Agent header", () => {
-    expect(testing.USER_AGENT).toMatch(/^openclaw-parallel\/\d+\.\d+\.\d+/);
+    expect(testing.USER_AGENT).toMatch(/^nodoassist-parallel\/\d+\.\d+\.\d+/);
   });
 
   it("treats objective as optional and omits it from the request when absent", async () => {
@@ -359,11 +359,11 @@ describe("parallel web search provider", () => {
     if (!tool) {
       throw new Error("Expected tool definition");
     }
-    const result = await tool.execute({ search_queries: ["openclaw"] });
+    const result = await tool.execute({ search_queries: ["nodoassist"] });
     expect(endpointMockState.calls).toHaveLength(1);
     const body = readMockedBody(endpointMockState.calls[0]) as Record<string, unknown>;
     expect(body).not.toHaveProperty("objective");
-    expect(body).toMatchObject({ search_queries: ["openclaw"] });
+    expect(body).toMatchObject({ search_queries: ["nodoassist"] });
     expect(result).not.toHaveProperty("objective");
     expect(result).toMatchObject({ provider: "parallel" });
   });
@@ -377,17 +377,17 @@ describe("parallel web search provider", () => {
     if (!tool) {
       throw new Error("Expected tool definition");
     }
-    expect(await tool.execute({ objective: "Find OpenClaw on GitHub" })).toMatchObject({
+    expect(await tool.execute({ objective: "Find NodoAssist on GitHub" })).toMatchObject({
       error: "invalid_search_queries",
     });
     expect(
-      await tool.execute({ objective: "Find OpenClaw on GitHub", search_queries: [] }),
+      await tool.execute({ objective: "Find NodoAssist on GitHub", search_queries: [] }),
     ).toMatchObject({ error: "invalid_search_queries" });
     expect(endpointMockState.calls).toHaveLength(0);
   });
 
   it("promotes a generic `query` arg into search_queries when search_queries is absent (no synthesized objective)", async () => {
-    // The operator CLI (`openclaw capability web.search`) always sends the
+    // The operator CLI (`nodoassist capability web.search`) always sends the
     // shared lowest-common-denominator shape `{ query, count, limit }` and
     // doesn't know about provider-specific schemas. The runtime promotes
     // `query` into the lone `search_queries` entry so that CLI keeps working
@@ -408,12 +408,12 @@ describe("parallel web search provider", () => {
     if (!tool) {
       throw new Error("Expected tool definition");
     }
-    const result = await tool.execute({ query: "OpenClaw GitHub", count: 3 });
+    const result = await tool.execute({ query: "NodoAssist GitHub", count: 3 });
     expect(endpointMockState.calls).toHaveLength(1);
     const body = readMockedBody(endpointMockState.calls[0]) as Record<string, unknown>;
     expect(body).not.toHaveProperty("objective");
     expect(body).toMatchObject({
-      search_queries: ["OpenClaw GitHub"],
+      search_queries: ["NodoAssist GitHub"],
       advanced_settings: { max_results: 3 },
     });
     expect(result).not.toHaveProperty("objective");
@@ -471,8 +471,8 @@ describe("parallel web search provider", () => {
       throw new Error("Expected tool definition");
     }
     const result = await tool.execute({
-      objective: "Find the OpenClaw repository on GitHub",
-      search_queries: ["openclaw github", "openclaw repository"],
+      objective: "Find the NodoAssist repository on GitHub",
+      search_queries: ["nodoassist github", "nodoassist repository"],
     });
 
     expect(endpointMockState.calls).toHaveLength(1);
@@ -480,13 +480,13 @@ describe("parallel web search provider", () => {
     expect(call.url).toBe("https://api.parallel.ai/v1/search");
     expect(call.timeoutSeconds).toBe(5);
     expect(readMockedBody(call)).toEqual({
-      objective: "Find the OpenClaw repository on GitHub",
-      search_queries: ["openclaw github", "openclaw repository"],
+      objective: "Find the NodoAssist repository on GitHub",
+      search_queries: ["nodoassist github", "nodoassist repository"],
       advanced_settings: { max_results: 3 },
     });
     const headers = (call.init.headers ?? {}) as Record<string, string>;
     expect(headers["x-api-key"]).toBe("par-secret");
-    expect(headers["User-Agent"]).toMatch(/^openclaw-parallel\//);
+    expect(headers["User-Agent"]).toMatch(/^nodoassist-parallel\//);
     expect(result).toMatchObject({
       provider: "parallel",
       searchId: "search_test",
@@ -514,22 +514,22 @@ describe("parallel web search provider", () => {
       throw new Error("Expected tool definition");
     }
     const result = await tool.execute({
-      objective: "Find the OpenClaw repository on GitHub",
-      search_queries: ["openclaw github"],
+      objective: "Find the NodoAssist repository on GitHub",
+      search_queries: ["nodoassist github"],
       session_id: "session-caller-supplied",
       client_model: "claude-opus-4-7",
     });
     const body = readMockedBody(endpointMockState.calls[0]) as Record<string, unknown>;
     expect(body).toMatchObject({
-      objective: "Find the OpenClaw repository on GitHub",
-      search_queries: ["openclaw github"],
+      objective: "Find the NodoAssist repository on GitHub",
+      search_queries: ["nodoassist github"],
       session_id: "session-caller-supplied",
       client_model: "claude-opus-4-7",
     });
     expect(result).toMatchObject({ sessionId: "session-caller-supplied" });
   });
 
-  it("always sends max_results matching the OpenClaw web_search default when no count is provided", async () => {
+  it("always sends max_results matching the NodoAssist web_search default when no count is provided", async () => {
     endpointMockState.responses.push(
       new Response(JSON.stringify({ search_id: "x", session_id: "y", results: [] }), {
         status: 200,
@@ -545,14 +545,14 @@ describe("parallel web search provider", () => {
       throw new Error("Expected tool definition");
     }
     await tool.execute({
-      objective: "Find OpenClaw",
-      search_queries: ["openclaw"],
+      objective: "Find NodoAssist",
+      search_queries: ["nodoassist"],
     });
     expect(endpointMockState.calls).toHaveLength(1);
     const body = readMockedBody(endpointMockState.calls[0]) as {
       advanced_settings?: { max_results?: number };
     };
-    // OpenClaw's web_search default is 5 results; Parallel's own default is 10.
+    // NodoAssist's web_search default is 5 results; Parallel's own default is 10.
     // Sending an explicit max_results keeps result volume consistent across providers.
     expect(body.advanced_settings?.max_results).toBe(5);
   });
@@ -576,7 +576,7 @@ describe("parallel web search provider", () => {
     const error = await tool
       .execute({
         objective: `parallel-error-body-${Date.now()}`,
-        search_queries: ["openclaw"],
+        search_queries: ["nodoassist"],
       })
       .catch((cause: unknown) => cause);
 
@@ -612,7 +612,7 @@ describe("parallel web search provider", () => {
     const error = await tool
       .execute({
         objective: `parallel-success-body-${Date.now()}-${Math.random()}`,
-        search_queries: ["openclaw"],
+        search_queries: ["nodoassist"],
       })
       .catch((cause: unknown) => cause);
 
@@ -648,7 +648,7 @@ describe("parallel web search provider", () => {
     }
     const result = (await tool.execute({
       objective: `parallel-success-ok-${Date.now()}-${Math.random()}`,
-      search_queries: ["openclaw"],
+      search_queries: ["nodoassist"],
     })) as { provider?: string; searchId?: string; count?: number };
     expect(result).toMatchObject({ provider: "parallel", searchId: "ok", count: 1 });
   });
@@ -677,7 +677,7 @@ describe("parallel web search provider", () => {
     }
     const firstResult = (await tool.execute({
       objective,
-      search_queries: ["openclaw github"],
+      search_queries: ["nodoassist github"],
     })) as { sessionId?: string };
     expect(firstResult.sessionId).toBe("session-generated-by-parallel");
 
@@ -687,7 +687,7 @@ describe("parallel web search provider", () => {
     // follow-up calls would group unrelated tasks on Parallel's side.
     const secondResult = (await tool.execute({
       objective,
-      search_queries: ["openclaw github"],
+      search_queries: ["nodoassist github"],
     })) as { sessionId?: string };
     expect(endpointMockState.calls).toHaveLength(1);
     expect(secondResult.sessionId).toBeUndefined();
@@ -716,12 +716,12 @@ describe("parallel web search provider", () => {
     }
     await tool.execute({
       objective,
-      search_queries: ["openclaw github"],
+      search_queries: ["nodoassist github"],
       session_id: sessionId,
     });
     const cached = (await tool.execute({
       objective,
-      search_queries: ["openclaw github"],
+      search_queries: ["nodoassist github"],
       session_id: sessionId,
     })) as { sessionId?: string };
     expect(endpointMockState.calls).toHaveLength(1);

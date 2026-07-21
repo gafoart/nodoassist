@@ -4,23 +4,23 @@
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Duplex } from "node:stream";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
 import type {
   AnyAgentTool,
-  OpenClawPluginApi,
-  OpenClawPluginNodeHostCommand,
-  OpenClawPluginSecurityAuditCollector,
-  OpenClawPluginService,
-  OpenClawPluginToolContext,
-  OpenClawPluginToolFactory,
-} from "openclaw/plugin-sdk/plugin-entry";
+  NodoAssistPluginApi,
+  NodoAssistPluginNodeHostCommand,
+  NodoAssistPluginSecurityAuditCollector,
+  NodoAssistPluginService,
+  NodoAssistPluginToolContext,
+  NodoAssistPluginToolFactory,
+} from "nodoassist/plugin-sdk/plugin-entry";
 import {
   BROWSER_REQUEST_GATEWAY_METHOD,
   BROWSER_REQUEST_GATEWAY_SCOPE,
 } from "./src/browser-gateway-contract.js";
 import { BrowserToolSchema } from "./src/browser-tool.schema.js";
 
-const EAGER_BROWSER_CONTROL_SERVICE_ENV = "OPENCLAW_EAGER_BROWSER_CONTROL_SERVER";
+const EAGER_BROWSER_CONTROL_SERVICE_ENV = "NODOASSIST_EAGER_BROWSER_CONTROL_SERVER";
 
 const loadBrowserRegistrationRuntimeModule = createLazyRuntimeModule(
   () => import("./register.runtime.js"),
@@ -48,7 +48,7 @@ function deriveChatTypeFromSessionKey(
 
 const BROWSER_CLI_DESCRIPTOR = {
   name: "browser",
-  description: "Manage OpenClaw's dedicated browser (Chrome/Chromium)",
+  description: "Manage NodoAssist's dedicated browser (Chrome/Chromium)",
   hasSubcommands: true,
 };
 
@@ -75,8 +75,8 @@ function createLazyBrowserTool(opts?: {
     label: "Browser",
     name: "browser",
     description: [
-      "Control the browser via OpenClaw's browser control server (status/start/stop/profiles/tabs/open/snapshot/screenshot/download/actions).",
-      "Browser choice: omit profile by default for the isolated OpenClaw-managed browser (`openclaw`).",
+      "Control the browser via NodoAssist's browser control server (status/start/stop/profiles/tabs/open/snapshot/screenshot/download/actions).",
+      "Browser choice: omit profile by default for the isolated NodoAssist-managed browser (`nodoassist`).",
       'For the logged-in user browser, use profile="user". A supported Chromium-based browser (v144+) must be running on the selected host or browser node. Use only when existing logins/cookies matter and the user is present.',
       'For profile="user" or other existing-session profiles, omit timeoutMs on act:type, evaluate, hover, scrollIntoView, drag, select, and fill; that driver rejects per-call timeout overrides for those actions.',
       'When a node-hosted browser proxy is available, the tool may auto-route to it. Pin a node with node=<id|name> or target="node".',
@@ -96,7 +96,7 @@ function createLazyBrowserTool(opts?: {
   };
 }
 
-function createBrowserToolOptions(ctx: OpenClawPluginToolContext): {
+function createBrowserToolOptions(ctx: NodoAssistPluginToolContext): {
   sandboxBridgeUrl?: string;
   allowHostControl?: boolean;
   agentSessionKey?: string;
@@ -149,7 +149,7 @@ export const browserPluginReload = {
 };
 
 /** Node-host command descriptors exposed by the Browser plugin. */
-export const browserPluginNodeHostCommands: OpenClawPluginNodeHostCommand[] = [
+export const browserPluginNodeHostCommands: NodoAssistPluginNodeHostCommand[] = [
   {
     command: "browser.proxy",
     cap: "browser",
@@ -161,15 +161,15 @@ export const browserPluginNodeHostCommands: OpenClawPluginNodeHostCommand[] = [
 ];
 
 /** Security audit collectors contributed by the Browser plugin. */
-export const browserSecurityAuditCollectors: OpenClawPluginSecurityAuditCollector[] = [
+export const browserSecurityAuditCollectors: NodoAssistPluginSecurityAuditCollector[] = [
   async (ctx) => {
     const { collectBrowserSecurityAuditFindings } = await loadBrowserRegistrationRuntimeModule();
     return collectBrowserSecurityAuditFindings(ctx);
   },
 ];
 
-function createLazyBrowserPluginService(): OpenClawPluginService {
-  let service: OpenClawPluginService | null = null;
+function createLazyBrowserPluginService(): NodoAssistPluginService {
+  let service: NodoAssistPluginService | null = null;
   const loadService = async () => {
     if (!service) {
       const { createBrowserPluginService } = await loadBrowserRegistrationRuntimeModule();
@@ -198,9 +198,9 @@ function createLazyBrowserPluginService(): OpenClawPluginService {
 }
 
 /** Register Browser tool factories, CLI, gateway methods, services, and audits. */
-export function registerBrowserPlugin(api: OpenClawPluginApi) {
-  api.registerTool(((ctx: OpenClawPluginToolContext) =>
-    createLazyBrowserTool(createBrowserToolOptions(ctx))) as OpenClawPluginToolFactory);
+export function registerBrowserPlugin(api: NodoAssistPluginApi) {
+  api.registerTool(((ctx: NodoAssistPluginToolContext) =>
+    createLazyBrowserTool(createBrowserToolOptions(ctx))) as NodoAssistPluginToolFactory);
   api.registerCli(
     async ({ program }) => {
       const { registerBrowserCli } = await import("./src/cli/browser-cli.js");
@@ -229,7 +229,7 @@ export function registerBrowserPlugin(api: OpenClawPluginApi) {
     match: "exact",
     handler: (_req: IncomingMessage, res: ServerResponse) => {
       res.writeHead(426, { "Content-Type": "text/plain" });
-      res.end("Upgrade Required: connect the OpenClaw Chrome extension over WebSocket.");
+      res.end("Upgrade Required: connect the NodoAssist Chrome extension over WebSocket.");
     },
     handleUpgrade: async (req: IncomingMessage, socket: Duplex, head: Buffer) => {
       const { handleGatewayExtensionUpgrade } =

@@ -4,7 +4,7 @@
  * It can discover gateways, validate remote WebSocket security, and store
  * remote token/password auth as plaintext or secret references.
  */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type { SecretInput } from "../config/types.secrets.js";
 import { isSecureWebSocketUrl } from "../gateway/net.js";
 import { discoverGatewayBeacons, type GatewayBonjourBeacon } from "../infra/bonjour-discovery.js";
@@ -43,7 +43,7 @@ function validateGatewayWebSocketUrl(value: string): string | undefined {
   }
   if (
     !isSecureWebSocketUrl(trimmed, {
-      allowPrivateWs: process.env.OPENCLAW_ALLOW_INSECURE_PRIVATE_WS === "1",
+      allowPrivateWs: process.env.NODOASSIST_ALLOW_INSECURE_PRIVATE_WS === "1",
     })
   ) {
     return t("wizard.remote.insecureRemoteUrl");
@@ -53,10 +53,10 @@ function validateGatewayWebSocketUrl(value: string): string | undefined {
 
 /** Prompts for remote gateway connection and auth settings. */
 export async function promptRemoteGatewayConfig(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   prompter: WizardPrompter,
   options?: { secretInputMode?: SecretInputMode },
-): Promise<OpenClawConfig> {
+): Promise<NodoAssistConfig> {
   let selectedBeacon: GatewayBonjourBeacon | null = null;
   let suggestedUrl = cfg.gateway?.remote?.url ?? DEFAULT_GATEWAY_URL;
   let discoveryTlsFingerprint: string | undefined;
@@ -205,10 +205,10 @@ export async function promptRemoteGatewayConfig(
         provider: "gateway-remote-token",
         config: cfg,
         prompter,
-        preferredEnvVar: "OPENCLAW_GATEWAY_TOKEN",
+        preferredEnvVar: "NODOASSIST_GATEWAY_TOKEN",
         copy: {
           sourceMessage: t("wizard.remote.gatewayTokenStoredMessage"),
-          envVarPlaceholder: "OPENCLAW_GATEWAY_TOKEN",
+          envVarPlaceholder: "NODOASSIST_GATEWAY_TOKEN",
         },
       });
       token = resolved.ref;
@@ -250,10 +250,10 @@ export async function promptRemoteGatewayConfig(
         provider: "gateway-remote-password",
         config: cfg,
         prompter,
-        preferredEnvVar: "OPENCLAW_GATEWAY_PASSWORD",
+        preferredEnvVar: "NODOASSIST_GATEWAY_PASSWORD",
         copy: {
           sourceMessage: t("wizard.remote.gatewayPasswordStoredMessage"),
-          envVarPlaceholder: "OPENCLAW_GATEWAY_PASSWORD",
+          envVarPlaceholder: "NODOASSIST_GATEWAY_PASSWORD",
         },
       });
       password = resolved.ref;

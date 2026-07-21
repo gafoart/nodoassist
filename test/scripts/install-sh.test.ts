@@ -12,7 +12,7 @@ import {
 const SCRIPT_PATH = "scripts/install.sh";
 
 function runInstallShell(script: string, env: NodeJS.ProcessEnv = {}) {
-  const home = mkdtempSync(join(tmpdir(), "openclaw-install-home-"));
+  const home = mkdtempSync(join(tmpdir(), "nodoassist-install-home-"));
   try {
     return spawnSync("bash", ["-c", script], {
       encoding: "utf8",
@@ -22,7 +22,7 @@ function runInstallShell(script: string, env: NodeJS.ProcessEnv = {}) {
         ...env,
         BASH_ENV: "",
         ENV: "",
-        OPENCLAW_INSTALL_SH_NO_RUN: "1",
+        NODOASSIST_INSTALL_SH_NO_RUN: "1",
       },
     });
   } finally {
@@ -34,12 +34,12 @@ describe("install.sh", () => {
   const script = readFileSync(SCRIPT_PATH, "utf8");
 
   it("runs installer snippets without inherited shell startup files", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-shell-env-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-shell-env-"));
     const bashEnvPath = join(tmp, "bash_env");
-    writeFileSync(bashEnvPath, "export OPENCLAW_BASH_ENV_LEAKED=1\n");
+    writeFileSync(bashEnvPath, "export NODOASSIST_BASH_ENV_LEAKED=1\n");
 
     try {
-      const result = runInstallShell('printf "leaked=%s\\n" "${OPENCLAW_BASH_ENV_LEAKED:-0}"', {
+      const result = runInstallShell('printf "leaked=%s\\n" "${NODOASSIST_BASH_ENV_LEAKED:-0}"', {
         BASH_ENV: bashEnvPath,
       });
 
@@ -107,8 +107,8 @@ NODE
       check_git() { return 0; }
       ensure_pnpm() { :; }
       ensure_pnpm_binary_for_scripts() { :; }
-      resolve_git_openclaw_ref() { printf 'main\\n'; }
-      checkout_git_openclaw_ref() { :; }
+      resolve_git_nodoassist_ref() { printf 'main\\n'; }
+      checkout_git_nodoassist_ref() { :; }
       cleanup_legacy_submodules() { :; }
       activate_repo_pnpm_version() { :; }
       git_install_lockfile_flag() { printf '%s\\n' '--frozen-lockfile'; }
@@ -128,8 +128,8 @@ NODE
         return 1
       }
 
-      install_openclaw_from_git "$repo"
-      wrapper="$HOME/.local/bin/openclaw"
+      install_nodoassist_from_git "$repo"
+      wrapper="$HOME/.local/bin/nodoassist"
       grep -F "$tmp/$node_dir/node" "$wrapper"
       cd /
       PATH="/usr/bin:/bin" "$wrapper" --version
@@ -411,7 +411,7 @@ NODE
   });
 
   it("installs Git with apk on Alpine", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-git-apk-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-git-apk-"));
     const bin = join(tmp, "bin");
     const apkLog = join(tmp, "apk-args.txt");
     mkdirSync(bin, { recursive: true });
@@ -455,7 +455,7 @@ NODE
   });
 
   it("does not select apk Git on non-Alpine hosts", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-git-native-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-git-native-"));
     const bin = join(tmp, "bin");
     const apkLog = join(tmp, "apk-args.txt");
     mkdirSync(bin, { recursive: true });
@@ -515,7 +515,7 @@ NODE
   });
 
   it("does not emit --before when raw user npmrc config contains min-release-age", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-npmrc-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-npmrc-"));
     const bin = join(tmp, "bin");
     const home = join(tmp, "home");
     const npmrc = join(tmp, "user.npmrc");
@@ -553,7 +553,7 @@ NODE
           "set -euo pipefail",
           `cd ${JSON.stringify(process.cwd())}`,
           `source ${JSON.stringify(SCRIPT_PATH)}`,
-          `run_npm_global_install openclaw@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install nodoassist@latest ${JSON.stringify(join(tmp, "install.log"))}`,
           'printf "cmd=%s\\n" "$LAST_NPM_INSTALL_CMD"',
         ].join("\n"),
         {
@@ -577,7 +577,7 @@ NODE
   });
 
   it("does not emit --before when default global npmrc config contains min-release-age", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-global-npmrc-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-global-npmrc-"));
     const bin = join(tmp, "bin");
     const home = join(tmp, "home");
     const prefix = join(tmp, "prefix");
@@ -621,7 +621,7 @@ NODE
           "set -euo pipefail",
           `cd ${JSON.stringify(process.cwd())}`,
           `source ${JSON.stringify(SCRIPT_PATH)}`,
-          `run_npm_global_install openclaw@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install nodoassist@latest ${JSON.stringify(join(tmp, "install.log"))}`,
           'printf "cmd=%s\\n" "$LAST_NPM_INSTALL_CMD"',
         ].join("\n"),
         {
@@ -649,7 +649,7 @@ NODE
   });
 
   it("does not emit --before when builtin npmrc config contains min-release-age", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-builtin-npmrc-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-builtin-npmrc-"));
     const bin = join(tmp, "bin");
     const home = join(tmp, "home");
     const npmrc = join(tmp, "npmrc");
@@ -691,7 +691,7 @@ NODE
           "set -euo pipefail",
           `cd ${JSON.stringify(process.cwd())}`,
           `source ${JSON.stringify(SCRIPT_PATH)}`,
-          `run_npm_global_install openclaw@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install nodoassist@latest ${JSON.stringify(join(tmp, "install.log"))}`,
           'printf "cmd=%s\\n" "$LAST_NPM_INSTALL_CMD"',
         ].join("\n"),
         {
@@ -718,12 +718,12 @@ NODE
     }
   });
 
-  it("uses OPENCLAW_HOME for git defaults", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-home-"));
+  it("uses NODOASSIST_HOME for git defaults", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-home-"));
     const osHome = join(tmp, "os-home");
-    const openclawHome = join(tmp, "openclaw-home");
+    const nodoassistHome = join(tmp, "nodoassist-home");
     mkdirSync(osHome, { recursive: true });
-    mkdirSync(openclawHome, { recursive: true });
+    mkdirSync(nodoassistHome, { recursive: true });
 
     let result: ReturnType<typeof runInstallShell> | undefined;
     try {
@@ -735,8 +735,8 @@ NODE
         ].join("\n"),
         {
           HOME: osHome,
-          OPENCLAW_HOME: openclawHome,
-          OPENCLAW_GIT_DIR: undefined,
+          NODOASSIST_HOME: nodoassistHome,
+          NODOASSIST_GIT_DIR: undefined,
           TERM: "dumb",
         },
       );
@@ -746,24 +746,24 @@ NODE
 
     expect(result?.status).toBe(0);
     const output = result?.stdout ?? "";
-    expect(output).toContain(`git=${join(openclawHome, "openclaw")}`);
+    expect(output).toContain(`git=${join(nodoassistHome, "nodoassist")}`);
     const mkdirParentIndex = script.indexOf('mkdir -p "$(dirname "$repo_dir")"');
     const cloneIndex = script.indexOf(
-      'run_quiet_step "Cloning OpenClaw" git clone "$repo_url" "$repo_dir"',
+      'run_quiet_step "Cloning NodoAssist" git clone "$repo_url" "$repo_dir"',
     );
     expect(mkdirParentIndex).toBeGreaterThan(-1);
     expect(cloneIndex).toBeGreaterThan(-1);
     expect(mkdirParentIndex).toBeLessThan(cloneIndex);
   });
 
-  it("does not treat OS HOME config as active when OPENCLAW_HOME is set", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-legacy-config-"));
+  it("does not treat OS HOME config as active when NODOASSIST_HOME is set", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-legacy-config-"));
     const osHome = join(tmp, "os-home");
-    const openclawHome = join(tmp, "openclaw-home");
-    const legacyConfigDir = join(osHome, ".openclaw");
+    const nodoassistHome = join(tmp, "nodoassist-home");
+    const legacyConfigDir = join(osHome, ".nodoassist");
     mkdirSync(legacyConfigDir, { recursive: true });
-    mkdirSync(openclawHome, { recursive: true });
-    writeFileSync(join(legacyConfigDir, "openclaw.json"), "{}\n");
+    mkdirSync(nodoassistHome, { recursive: true });
+    writeFileSync(join(legacyConfigDir, "nodoassist.json"), "{}\n");
 
     let result: ReturnType<typeof runInstallShell> | undefined;
     try {
@@ -771,12 +771,12 @@ NODE
         [
           `cd ${JSON.stringify(process.cwd())}`,
           `source ${JSON.stringify(SCRIPT_PATH)}`,
-          'if has_openclaw_config; then printf "configured=1\\n"; else printf "configured=0\\n"; fi',
+          'if has_nodoassist_config; then printf "configured=1\\n"; else printf "configured=0\\n"; fi',
         ].join("\n"),
         {
           HOME: osHome,
-          OPENCLAW_HOME: openclawHome,
-          OPENCLAW_CONFIG_PATH: undefined,
+          NODOASSIST_HOME: nodoassistHome,
+          NODOASSIST_CONFIG_PATH: undefined,
           TERM: "dumb",
         },
       );
@@ -789,10 +789,10 @@ NODE
     expect(result?.stderr ?? "").toBe("");
   });
 
-  it.each(["openclaw.json", "clawdbot.json"])(
-    "detects %s under OPENCLAW_STATE_DIR",
+  it.each(["nodoassist.json", "clawdbot.json"])(
+    "detects %s under NODOASSIST_STATE_DIR",
     (configName) => {
-      const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-state-config-"));
+      const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-state-config-"));
       const stateDir = join(tmp, "state");
       mkdirSync(stateDir, { recursive: true });
       writeFileSync(join(stateDir, configName), "{}\n");
@@ -803,11 +803,11 @@ NODE
           [
             `cd ${JSON.stringify(process.cwd())}`,
             `source ${JSON.stringify(SCRIPT_PATH)}`,
-            'if has_openclaw_config; then printf "configured=1\\n"; else printf "configured=0\\n"; fi',
+            'if has_nodoassist_config; then printf "configured=1\\n"; else printf "configured=0\\n"; fi',
           ].join("\n"),
           {
-            OPENCLAW_CONFIG_PATH: undefined,
-            OPENCLAW_STATE_DIR: stateDir,
+            NODOASSIST_CONFIG_PATH: undefined,
+            NODOASSIST_STATE_DIR: stateDir,
             TERM: "dumb",
           },
         );
@@ -821,13 +821,13 @@ NODE
     },
   );
 
-  it("does not fall back to home config when OPENCLAW_STATE_DIR is set", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-state-override-"));
+  it("does not fall back to home config when NODOASSIST_STATE_DIR is set", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-state-override-"));
     const home = join(tmp, "home");
     const stateDir = join(tmp, "state");
-    mkdirSync(join(home, ".openclaw"), { recursive: true });
+    mkdirSync(join(home, ".nodoassist"), { recursive: true });
     mkdirSync(stateDir, { recursive: true });
-    writeFileSync(join(home, ".openclaw", "openclaw.json"), "{}\n");
+    writeFileSync(join(home, ".nodoassist", "nodoassist.json"), "{}\n");
 
     let result: ReturnType<typeof runInstallShell> | undefined;
     try {
@@ -835,13 +835,13 @@ NODE
         [
           `cd ${JSON.stringify(process.cwd())}`,
           `source ${JSON.stringify(SCRIPT_PATH)}`,
-          'if has_openclaw_config; then printf "configured=1\\n"; else printf "configured=0\\n"; fi',
+          'if has_nodoassist_config; then printf "configured=1\\n"; else printf "configured=0\\n"; fi',
         ].join("\n"),
         {
           HOME: home,
-          OPENCLAW_CONFIG_PATH: undefined,
-          OPENCLAW_HOME: undefined,
-          OPENCLAW_STATE_DIR: stateDir,
+          NODOASSIST_CONFIG_PATH: undefined,
+          NODOASSIST_HOME: undefined,
+          NODOASSIST_STATE_DIR: stateDir,
           TERM: "dumb",
         },
       );
@@ -856,12 +856,12 @@ NODE
 
   it.each([
     {
-      expected: /No TTY; run .*\/\.local\/bin\/openclaw onboard to finish setup/,
+      expected: /No TTY; run .*\/\.local\/bin\/nodoassist onboard to finish setup/,
       name: "starts setup",
       noOnboard: 0,
     },
     {
-      expected: /Skipping onboard .*run .*\/\.local\/bin\/openclaw onboard later/,
+      expected: /Skipping onboard .*run .*\/\.local\/bin\/nodoassist onboard later/,
       name: "honors --no-onboard",
       noOnboard: 1,
     },
@@ -872,7 +872,7 @@ NODE
       set -euo pipefail
       source "${SCRIPT_PATH}"
       INSTALL_METHOD=git
-      GIT_DIR="$HOME/openclaw"
+      GIT_DIR="$HOME/nodoassist"
       NO_ONBOARD=${noOnboard}
       NO_PROMPT=1
       VERIFY_INSTALL=1
@@ -882,22 +882,22 @@ NODE
       print_installer_banner() { :; }
       print_gum_status() { :; }
       detect_os_or_die() { OS=linux; }
-      detect_openclaw_checkout() { return 1; }
+      detect_nodoassist_checkout() { return 1; }
       show_install_plan() { :; }
-      check_existing_openclaw() { return 0; }
+      check_existing_nodoassist() { return 0; }
       load_nvm_for_node_detection() { :; }
       check_node() { return 0; }
       activate_supported_node_on_path() { :; }
       ensure_default_node_active_shell() { return 0; }
       npm() { return 1; }
-      install_openclaw_from_git() {
+      install_nodoassist_from_git() {
         mkdir -p "$HOME/.local/bin"
-        printf '#!/bin/sh\\nexit 0\\n' > "$HOME/.local/bin/openclaw"
-        chmod +x "$HOME/.local/bin/openclaw"
+        printf '#!/bin/sh\\nexit 0\\n' > "$HOME/.local/bin/nodoassist"
+        chmod +x "$HOME/.local/bin/nodoassist"
         export PATH="$HOME/.local/bin:$PATH"
       }
-      resolve_openclaw_bin() { printf '%s\\n' "$HOME/.local/bin/openclaw"; }
-      warn_duplicate_openclaw_global_installs() { :; }
+      resolve_nodoassist_bin() { printf '%s\\n' "$HOME/.local/bin/nodoassist"; }
+      warn_duplicate_nodoassist_global_installs() { :; }
       npm_global_bin_dir() { :; }
       warn_shell_path_missing_dir() { :; }
       refresh_gateway_service_if_loaded() { printf 'gateway-refresh-called\\n'; }
@@ -905,7 +905,7 @@ NODE
         printf 'doctor-called\\n'
         return 0
       }
-      resolve_openclaw_version() { printf 'test-version\\n'; }
+      resolve_nodoassist_version() { printf 'test-version\\n'; }
       is_gateway_daemon_loaded() {
         printf 'gateway-probe-called\\n'
         return 1
@@ -920,7 +920,7 @@ NODE
       expect(result.stdout).not.toContain("doctor-called");
       expect(result.stdout).not.toContain("gateway-refresh-called");
       expect(result.stdout).not.toContain("gateway-probe-called");
-      expect(result.stdout).toMatch(/Update command:.*\/\.local\/bin\/openclaw update/);
+      expect(result.stdout).toMatch(/Update command:.*\/\.local\/bin\/nodoassist update/);
       expect(result.stdout).toMatch(expected);
     },
   );
@@ -930,7 +930,7 @@ NODE
       set -euo pipefail
       source "${SCRIPT_PATH}"
       INSTALL_METHOD=git
-      GIT_DIR="$HOME/openclaw"
+      GIT_DIR="$HOME/nodoassist"
       NO_ONBOARD=0
       NO_PROMPT=1
       VERIFY_INSTALL=1
@@ -940,26 +940,26 @@ NODE
       print_installer_banner() { :; }
       print_gum_status() { :; }
       detect_os_or_die() { OS=linux; }
-      detect_openclaw_checkout() { return 1; }
+      detect_nodoassist_checkout() { return 1; }
       show_install_plan() { :; }
-      check_existing_openclaw() { return 0; }
+      check_existing_nodoassist() { return 0; }
       load_nvm_for_node_detection() { :; }
       check_node() { return 0; }
       activate_supported_node_on_path() { :; }
       ensure_default_node_active_shell() { return 0; }
       npm() { return 1; }
-      install_openclaw_from_git() {
+      install_nodoassist_from_git() {
         mkdir -p "$HOME/.local/bin"
-        printf '#!/bin/sh\\nexit 1\\n' > "$HOME/.local/bin/openclaw"
-        chmod +x "$HOME/.local/bin/openclaw"
+        printf '#!/bin/sh\\nexit 1\\n' > "$HOME/.local/bin/nodoassist"
+        chmod +x "$HOME/.local/bin/nodoassist"
         export PATH="$HOME/.local/bin:$PATH"
       }
-      resolve_openclaw_bin() { printf '%s\\n' "$HOME/.local/bin/openclaw"; }
-      warn_duplicate_openclaw_global_installs() { :; }
+      resolve_nodoassist_bin() { printf '%s\\n' "$HOME/.local/bin/nodoassist"; }
+      warn_duplicate_nodoassist_global_installs() { :; }
       npm_global_bin_dir() { :; }
       warn_shell_path_missing_dir() { :; }
       refresh_gateway_service_if_loaded() { :; }
-      resolve_openclaw_version() { printf 'test-version\\n'; }
+      resolve_nodoassist_version() { printf 'test-version\\n'; }
       maybe_open_dashboard() { :; }
       show_footer_links() { :; }
 
@@ -967,7 +967,9 @@ NODE
     `);
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toMatch(/No TTY; run .*\/\.local\/bin\/openclaw onboard to finish setup/);
+    expect(result.stdout).toMatch(
+      /No TTY; run .*\/\.local\/bin\/nodoassist onboard to finish setup/,
+    );
   });
 
   it("runs migration doctor for a configured upgrade without a TTY", () => {
@@ -978,30 +980,30 @@ NODE
       NO_ONBOARD=0
       NO_PROMPT=0
       OS=linux
-      mkdir -p "$HOME/.openclaw"
-      printf '{}\\n' > "$HOME/.openclaw/openclaw.json"
+      mkdir -p "$HOME/.nodoassist"
+      printf '{}\\n' > "$HOME/.nodoassist/nodoassist.json"
 
       bootstrap_gum_temp() { :; }
       print_installer_banner() { :; }
       print_gum_status() { :; }
       detect_os_or_die() { OS=linux; }
-      detect_openclaw_checkout() { return 1; }
+      detect_nodoassist_checkout() { return 1; }
       show_install_plan() { :; }
-      check_existing_openclaw() { return 0; }
+      check_existing_nodoassist() { return 0; }
       load_nvm_for_node_detection() { :; }
       check_node() { return 0; }
       activate_supported_node_on_path() { :; }
       ensure_default_node_active_shell() { return 0; }
       check_git() { return 0; }
       fix_npm_permissions() { :; }
-      install_openclaw() {
+      install_nodoassist() {
         mkdir -p "$HOME/.local/bin"
-        printf '#!/bin/sh\\nexit 0\\n' > "$HOME/.local/bin/openclaw"
-        chmod +x "$HOME/.local/bin/openclaw"
+        printf '#!/bin/sh\\nexit 0\\n' > "$HOME/.local/bin/nodoassist"
+        chmod +x "$HOME/.local/bin/nodoassist"
         export PATH="$HOME/.local/bin:$PATH"
       }
-      resolve_openclaw_bin() { printf '%s\\n' "$HOME/.local/bin/openclaw"; }
-      warn_duplicate_openclaw_global_installs() { :; }
+      resolve_nodoassist_bin() { printf '%s\\n' "$HOME/.local/bin/nodoassist"; }
+      warn_duplicate_nodoassist_global_installs() { :; }
       npm_global_bin_dir() { :; }
       warn_shell_path_missing_dir() { :; }
       refresh_gateway_service_if_loaded() { :; }
@@ -1009,7 +1011,7 @@ NODE
         printf 'doctor-called\\n'
         return 0
       }
-      resolve_openclaw_version() { printf 'test-version\\n'; }
+      resolve_nodoassist_version() { printf 'test-version\\n'; }
       is_gateway_daemon_loaded() { return 1; }
       verify_installation() { return 0; }
       maybe_open_dashboard() { printf 'dashboard-called\\n'; }
@@ -1023,26 +1025,26 @@ NODE
     expect(result.stdout).toContain("dashboard-called");
   });
 
-  it("rejects OpenClaw GitHub source targets for npm installs", () => {
+  it("rejects NodoAssist GitHub source targets for npm installs", () => {
     const result = runInstallShell(`
       set -euo pipefail
       source "${SCRIPT_PATH}"
       set +e
-      OPENCLAW_VERSION=main
+      NODOASSIST_VERSION=main
       USE_BETA=0
-      install_openclaw
+      install_nodoassist
       status=$?
       printf 'status=%s\\n' "$status"
     `);
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("status=1");
-    expect(result.stdout).toContain("npm installs do not support OpenClaw GitHub source targets");
+    expect(result.stdout).toContain("npm installs do not support NodoAssist GitHub source targets");
     expect(result.stdout).toContain("--install-method git --version main");
   });
 
   it("does not emit before args when npmrc min-release-age computes a before cutoff", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-npm-freshness-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-npm-freshness-"));
     const bin = join(tmp, "bin");
     const home = join(tmp, "home");
     const argsLog = join(tmp, "npm-args.log");
@@ -1062,7 +1064,7 @@ NODE
           `PATH=${JSON.stringify(`${bin}:/usr/bin:/bin`)}`,
           "NPM_LOGLEVEL=error",
           "NPM_SILENT_FLAG=",
-          `run_npm_global_install openclaw@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install nodoassist@latest ${JSON.stringify(join(tmp, "install.log"))}`,
         ].join("\n"),
       );
       argsOutput = readFileSync(argsLog, "utf8");
@@ -1076,7 +1078,7 @@ NODE
   });
 
   it("ignores project npmrc when choosing global install freshness args", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-global-freshness-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-global-freshness-"));
     const bin = join(tmp, "bin");
     const home = join(tmp, "home");
     const project = join(tmp, "project");
@@ -1100,7 +1102,7 @@ NODE
           `PATH=${JSON.stringify(`${bin}:/usr/bin:/bin`)}`,
           "NPM_LOGLEVEL=error",
           "NPM_SILENT_FLAG=",
-          `run_npm_global_install openclaw@latest ${JSON.stringify(join(tmp, "install.log"))}`,
+          `run_npm_global_install nodoassist@latest ${JSON.stringify(join(tmp, "install.log"))}`,
         ].join("\n"),
       );
       argsOutput = readFileSync(argsLog, "utf8");
@@ -1129,7 +1131,7 @@ NODE
         "parse_args --verify",
         "configure_install_stage_total",
         'ui_stage "Preparing environment"',
-        'ui_stage "Installing OpenClaw"',
+        'ui_stage "Installing NodoAssist"',
         'ui_stage "Finalizing setup"',
         'ui_stage "Verifying installation"',
       ].join("\n"),
@@ -1142,7 +1144,7 @@ NODE
   });
 
   it("bounds installer npm prefix probes during finalization helpers", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-npm-probe-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-npm-probe-"));
     const npm = join(tmp, "npm");
     writeFileSync(
       npm,
@@ -1153,7 +1155,7 @@ NODE
         "  exit 0",
         "fi",
         'if [[ "$1" == "config" && "$2" == "get" && "$3" == "prefix" ]]; then',
-        '  printf "/tmp/openclaw-npm\\n"',
+        '  printf "/tmp/nodoassist-npm\\n"',
         "  exit 0",
         "fi",
         "exit 1",
@@ -1166,13 +1168,13 @@ NODE
       const result = runInstallShell(
         [`source ${JSON.stringify(SCRIPT_PATH)}`, "npm_global_bin_dir"].join("\n"),
         {
-          OPENCLAW_INSTALL_PROBE_TIMEOUT_SECONDS: "0.1",
+          NODOASSIST_INSTALL_PROBE_TIMEOUT_SECONDS: "0.1",
           PATH: `${tmp}:${process.env.PATH ?? ""}`,
         },
       );
 
       expect(result.status).toBe(0);
-      expect(result.stdout.trim()).toBe("/tmp/openclaw-npm/bin");
+      expect(result.stdout.trim()).toBe("/tmp/nodoassist-npm/bin");
       expect(result.stderr).toContain(
         "timed out during installer finalization probe: npm prefix -g",
       );
@@ -1182,8 +1184,8 @@ NODE
   });
 
   it("bounds daemon status probes during finalization helpers", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-probe-"));
-    const claw = join(tmp, "openclaw");
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-probe-"));
+    const claw = join(tmp, "nodoassist");
     writeFileSync(
       claw,
       [
@@ -1207,13 +1209,13 @@ NODE
           '  printf "not-loaded\\n"',
           "fi",
         ].join("\n"),
-        { OPENCLAW_INSTALL_PROBE_TIMEOUT_SECONDS: "0.01" },
+        { NODOASSIST_INSTALL_PROBE_TIMEOUT_SECONDS: "0.01" },
       );
 
       expect(result.status).toBe(0);
       expect(result.stdout.trim()).toBe("not-loaded");
       expect(result.stderr).toContain(
-        "timed out during installer finalization probe: openclaw daemon status --json",
+        "timed out during installer finalization probe: nodoassist daemon status --json",
       );
     } finally {
       rmSync(tmp, { force: true, recursive: true });
@@ -1225,7 +1227,7 @@ NODE
       /# Step 1: Node\.js[\s\S]*?load_nvm_for_node_detection\s+if ! check_node; then/,
     );
 
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-nvm-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-nvm-"));
     const home = join(tmp, "home");
     const systemBin = join(tmp, "system-bin");
     const nvmBin = join(home, ".nvm/versions/node/v22.22.1/bin");
@@ -1303,7 +1305,7 @@ NODE
   });
 
   it("promotes a supported Linux Node binary over stale PATH entries", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-node-promote-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-node-promote-"));
     const staleBin = join(tmp, "usr-local-bin");
     const supportedBin = join(tmp, "usr-bin");
     mkdirSync(staleBin, { recursive: true });
@@ -1361,7 +1363,7 @@ NODE
     };
     expect(pkg.engines?.node).toBe(">=22.19.0 <23 || >=23.11.0");
 
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-node-floor-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-node-floor-"));
     const bin = join(tmp, "bin");
     mkdirSync(bin, { recursive: true });
 
@@ -1411,7 +1413,7 @@ NODE
   });
 
   it("persists a supported Linux Node path before noninteractive shell guards", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-linux-node-path-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-linux-node-path-"));
     const home = join(tmp, "home");
     const oldBin = join(tmp, "old/bin");
     const installedBin = join(tmp, "usr/bin");
@@ -1476,7 +1478,7 @@ NODE
   });
 
   it("warns before redirecting an unwritable npm prefix", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-npm-prefix-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-npm-prefix-"));
     const home = join(tmp, "home");
     const events = join(tmp, "events.log");
     mkdirSync(home, { recursive: true });
@@ -1523,13 +1525,13 @@ NODE
     expect(noSudoWarningIndex).toBeGreaterThan(npmSetIndex);
     expect(result?.stdout).toContain("npm global prefix is not writable");
     expect(result?.stdout).toContain("npm normally writes that setting to ~/.npmrc");
-    expect(result?.stdout).toContain("npm i -g openclaw@latest");
+    expect(result?.stdout).toContain("npm i -g nodoassist@latest");
     expect(result?.stdout).toContain("using this user prefix");
     expect(result?.stdout).not.toContain("has been saved");
   });
 
   it("persists npm prefix PATH before noninteractive shell guards", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-npm-prefix-shell-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-npm-prefix-shell-"));
     const home = join(tmp, "home");
     mkdirSync(home, { recursive: true });
     writeFileSync(
@@ -1579,20 +1581,20 @@ NODE
     expect(result?.stdout).toContain(`path=${home}/.npm-global/bin`);
   });
 
-  it("uses a quoted absolute openclaw path in follow-up commands when npm bin is not on the original PATH", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-command-"));
+  it("uses a quoted absolute nodoassist path in follow-up commands when npm bin is not on the original PATH", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-command-"));
     const npmBin = join(tmp, "npm bin");
     const staleBin = join(tmp, "stale-bin");
     const visibleBin = join(tmp, "visible-bin");
     mkdirSync(npmBin, { recursive: true });
     mkdirSync(staleBin, { recursive: true });
     mkdirSync(visibleBin, { recursive: true });
-    const openclawBin = join(npmBin, "openclaw");
-    const staleOpenclawBin = join(staleBin, "openclaw");
-    writeFileSync(openclawBin, "#!/bin/sh\nexit 0\n");
-    writeFileSync(staleOpenclawBin, "#!/bin/sh\nexit 0\n");
-    chmodSync(openclawBin, 0o755);
-    chmodSync(staleOpenclawBin, 0o755);
+    const nodoassistBin = join(npmBin, "nodoassist");
+    const staleNodoAssistBin = join(staleBin, "nodoassist");
+    writeFileSync(nodoassistBin, "#!/bin/sh\nexit 0\n");
+    writeFileSync(staleNodoAssistBin, "#!/bin/sh\nexit 0\n");
+    chmodSync(nodoassistBin, 0o755);
+    chmodSync(staleNodoAssistBin, 0o755);
 
     let result: ReturnType<typeof runInstallShell> | undefined;
     try {
@@ -1600,24 +1602,24 @@ NODE
         set -euo pipefail
         source "${SCRIPT_PATH}"
         ORIGINAL_PATH=${JSON.stringify(`${visibleBin}:/usr/bin:/bin`)}
-        printf 'missing=%s\\n' "$(openclaw_command_for_user "${openclawBin}")"
+        printf 'missing=%s\\n' "$(nodoassist_command_for_user "${nodoassistBin}")"
         ORIGINAL_PATH=${JSON.stringify(`${npmBin}:${visibleBin}:/usr/bin:/bin`)}
-        printf 'present=%s\\n' "$(openclaw_command_for_user "${openclawBin}")"
+        printf 'present=%s\\n' "$(nodoassist_command_for_user "${nodoassistBin}")"
         ORIGINAL_PATH=${JSON.stringify(`${staleBin}:${npmBin}:/usr/bin:/bin`)}
-        printf 'shadowed=%s\\n' "$(openclaw_command_for_user "${openclawBin}")"
+        printf 'shadowed=%s\\n' "$(nodoassist_command_for_user "${nodoassistBin}")"
       `);
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }
 
     expect(result?.status).toBe(0);
-    expect(result?.stdout).toContain(`missing=${openclawBin.replace(/ /g, "\\ ")}`);
-    expect(result?.stdout).toContain("present=openclaw");
-    expect(result?.stdout).toContain(`shadowed=${openclawBin.replace(/ /g, "\\ ")}`);
+    expect(result?.stdout).toContain(`missing=${nodoassistBin.replace(/ /g, "\\ ")}`);
+    expect(result?.stdout).toContain("present=nodoassist");
+    expect(result?.stdout).toContain(`shadowed=${nodoassistBin.replace(/ /g, "\\ ")}`);
   });
 
   it("prefers the binary owned by the completed install method over stale PATH entries", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-selected-bin-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-selected-bin-"));
     const home = join(tmp, "home");
     const npmBin = join(tmp, "npm-bin");
     const staleBin = join(tmp, "stale-bin");
@@ -1626,9 +1628,9 @@ NODE
     mkdirSync(staleBin, { recursive: true });
     mkdirSync(gitBin, { recursive: true });
     for (const bin of [
-      join(npmBin, "openclaw"),
-      join(staleBin, "openclaw"),
-      join(gitBin, "openclaw"),
+      join(npmBin, "nodoassist"),
+      join(staleBin, "nodoassist"),
+      join(gitBin, "nodoassist"),
     ]) {
       writeFileSync(bin, "#!/bin/sh\nexit 0\n");
       chmodSync(bin, 0o755);
@@ -1641,10 +1643,10 @@ NODE
           set -euo pipefail
           source "${SCRIPT_PATH}"
           INSTALL_METHOD=git
-          printf 'git=%s\\n' "$(resolve_installed_openclaw_bin)"
+          printf 'git=%s\\n' "$(resolve_installed_nodoassist_bin)"
           INSTALL_METHOD=npm
           npm_global_bin_dir() { printf '%s\\n' "${npmBin}"; }
-          printf 'npm=%s\\n' "$(resolve_installed_openclaw_bin)"
+          printf 'npm=%s\\n' "$(resolve_installed_nodoassist_bin)"
         `,
         {
           HOME: home,
@@ -1656,28 +1658,28 @@ NODE
     }
 
     expect(result?.status).toBe(0);
-    expect(result?.stdout).toContain(`git=${join(gitBin, "openclaw")}`);
-    expect(result?.stdout).toContain(`npm=${join(npmBin, "openclaw")}`);
+    expect(result?.stdout).toContain(`git=${join(gitBin, "nodoassist")}`);
+    expect(result?.stdout).toContain(`npm=${join(npmBin, "nodoassist")}`);
   });
 
   it("uses the selected binary in gateway recovery guidance", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-gateway-guidance-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-gateway-guidance-"));
     const currentBin = join(tmp, "current bin");
     const staleBin = join(tmp, "stale-bin");
     mkdirSync(currentBin, { recursive: true });
     mkdirSync(staleBin, { recursive: true });
-    const openclawBin = join(currentBin, "openclaw");
-    writeFileSync(openclawBin, "#!/bin/sh\nexit 0\n");
-    writeFileSync(join(staleBin, "openclaw"), "#!/bin/sh\nexit 0\n");
-    chmodSync(openclawBin, 0o755);
-    chmodSync(join(staleBin, "openclaw"), 0o755);
+    const nodoassistBin = join(currentBin, "nodoassist");
+    writeFileSync(nodoassistBin, "#!/bin/sh\nexit 0\n");
+    writeFileSync(join(staleBin, "nodoassist"), "#!/bin/sh\nexit 0\n");
+    chmodSync(nodoassistBin, 0o755);
+    chmodSync(join(staleBin, "nodoassist"), 0o755);
 
     let result: ReturnType<typeof runInstallShell> | undefined;
     try {
       result = runInstallShell(`
         set -euo pipefail
         source "${SCRIPT_PATH}"
-        OPENCLAW_BIN=${JSON.stringify(openclawBin)}
+        NODOASSIST_BIN=${JSON.stringify(nodoassistBin)}
         ORIGINAL_PATH=${JSON.stringify(`${staleBin}:${currentBin}:/usr/bin:/bin`)}
         VERIFY_INSTALL=1
         is_gateway_daemon_loaded() { return 0; }
@@ -1694,7 +1696,7 @@ NODE
       rmSync(tmp, { recursive: true, force: true });
     }
 
-    const quotedBin = openclawBin.replace(/ /g, "\\ ");
+    const quotedBin = nodoassistBin.replace(/ /g, "\\ ");
     expect(result?.status).toBe(0);
     expect(result?.stdout).toContain(`Run: ${quotedBin} gateway restart`);
     expect(result?.stdout).toContain(`Run: ${quotedBin} gateway status --deep`);
@@ -1719,20 +1721,20 @@ NODE
       set -euo pipefail
       source "${SCRIPT_PATH}"
       npm() {
-        if [[ "$1" == "view" && "$2" == "openclaw" && "$3" == "dist-tags.beta" ]]; then
+        if [[ "$1" == "view" && "$2" == "nodoassist" && "$3" == "dist-tags.beta" ]]; then
           printf '2026.5.12-beta.3\\n'
           return 0
         fi
         return 1
       }
-      OPENCLAW_VERSION=v2026.5.12-beta.3
-      printf 'tag=%s\\n' "$(resolve_git_openclaw_ref)"
-      OPENCLAW_VERSION=2026.5.12-beta.3
-      printf 'semver=%s\\n' "$(resolve_git_openclaw_ref)"
-      OPENCLAW_VERSION=beta
-      printf 'beta=%s\\n' "$(resolve_git_openclaw_ref)"
-      OPENCLAW_VERSION=main
-      printf 'main=%s\\n' "$(resolve_git_openclaw_ref)"
+      NODOASSIST_VERSION=v2026.5.12-beta.3
+      printf 'tag=%s\\n' "$(resolve_git_nodoassist_ref)"
+      NODOASSIST_VERSION=2026.5.12-beta.3
+      printf 'semver=%s\\n' "$(resolve_git_nodoassist_ref)"
+      NODOASSIST_VERSION=beta
+      printf 'beta=%s\\n' "$(resolve_git_nodoassist_ref)"
+      NODOASSIST_VERSION=main
+      printf 'main=%s\\n' "$(resolve_git_nodoassist_ref)"
     `);
 
     expect(result.status).toBe(0);
@@ -1787,7 +1789,7 @@ NODE
   });
 
   it("uses the repo Corepack pnpm when a global pnpm version is already present", () => {
-    const tmp = mkdtempSync(join(tmpdir(), "openclaw-install-pnpm-version-"));
+    const tmp = mkdtempSync(join(tmpdir(), "nodoassist-install-pnpm-version-"));
     const bin = join(tmp, "bin");
     const outer = join(tmp, "outer");
     const repo = join(tmp, "repo");
@@ -1952,7 +1954,7 @@ describe("install.sh macOS Homebrew Node behavior", () => {
   });
 
   it("reruns spinner-wrapped commands when gum reports ioctl failure", () => {
-    const dir = mkdtempSync(join(tmpdir(), "openclaw-install-sh-gum-"));
+    const dir = mkdtempSync(join(tmpdir(), "nodoassist-install-sh-gum-"));
     try {
       const gumPath = join(dir, "gum");
       const commandPath = join(dir, "command");
@@ -1986,47 +1988,47 @@ describe("install.sh macOS Homebrew Node behavior", () => {
   });
 });
 
-describe("install.sh duplicate OpenClaw install detection", () => {
+describe("install.sh duplicate NodoAssist install detection", () => {
   it("warns with concrete package paths and versions for duplicate npm roots", () => {
     const result = runInstallShell(`
       set -euo pipefail
       source "${SCRIPT_PATH}"
       root="$(mktemp -d)"
       trap 'rm -rf "$root"' EXIT
-      mkdir -p "$root/brew/openclaw" "$root/fnm/openclaw"
-      printf '{"version":"2026.3.7"}\\n' > "$root/brew/openclaw/package.json"
-      printf '{"version":"2026.3.1"}\\n' > "$root/fnm/openclaw/package.json"
-      collect_openclaw_npm_root_candidates() { printf '%s\\n' "$root/brew" "$root/fnm"; }
-      OPENCLAW_BIN="$root/fnm/.bin/openclaw"
+      mkdir -p "$root/brew/nodoassist" "$root/fnm/nodoassist"
+      printf '{"version":"2026.3.7"}\\n' > "$root/brew/nodoassist/package.json"
+      printf '{"version":"2026.3.1"}\\n' > "$root/fnm/nodoassist/package.json"
+      collect_nodoassist_npm_root_candidates() { printf '%s\\n' "$root/brew" "$root/fnm"; }
+      NODOASSIST_BIN="$root/fnm/.bin/nodoassist"
       ui_warn() { echo "WARN: $*"; }
-      warn_duplicate_openclaw_global_installs
+      warn_duplicate_nodoassist_global_installs
     `);
 
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain("Multiple OpenClaw global installs detected");
+    expect(result.stdout).toContain("Multiple NodoAssist global installs detected");
     expect(result.stdout).toContain("2026.3.7");
     expect(result.stdout).toContain("2026.3.1");
-    expect(result.stdout).toContain("/brew/openclaw");
-    expect(result.stdout).toContain("/fnm/openclaw");
-    expect(result.stdout).toContain("Active openclaw:");
-    expect(result.stdout).toContain("npm uninstall -g openclaw");
+    expect(result.stdout).toContain("/brew/nodoassist");
+    expect(result.stdout).toContain("/fnm/nodoassist");
+    expect(result.stdout).toContain("Active nodoassist:");
+    expect(result.stdout).toContain("npm uninstall -g nodoassist");
   });
 
-  it("stays quiet when only one OpenClaw npm root exists", () => {
+  it("stays quiet when only one NodoAssist npm root exists", () => {
     const result = runInstallShell(`
       set -euo pipefail
       source "${SCRIPT_PATH}"
       root="$(mktemp -d)"
       trap 'rm -rf "$root"' EXIT
-      mkdir -p "$root/only/openclaw"
-      printf '{"version":"2026.3.7"}\\n' > "$root/only/openclaw/package.json"
-      collect_openclaw_npm_root_candidates() { printf '%s\\n' "$root/only"; }
+      mkdir -p "$root/only/nodoassist"
+      printf '{"version":"2026.3.7"}\\n' > "$root/only/nodoassist/package.json"
+      collect_nodoassist_npm_root_candidates() { printf '%s\\n' "$root/only"; }
       ui_warn() { echo "WARN: $*"; }
-      warn_duplicate_openclaw_global_installs
+      warn_duplicate_nodoassist_global_installs
     `);
 
     expect(result.status).toBe(0);
-    expect(result.stdout).not.toContain("Multiple OpenClaw global installs detected");
+    expect(result.stdout).not.toContain("Multiple NodoAssist global installs detected");
   });
 });
 

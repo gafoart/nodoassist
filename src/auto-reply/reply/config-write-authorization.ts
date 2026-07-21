@@ -5,11 +5,11 @@ import {
   formatConfigWriteDeniedMessage,
 } from "../../channels/plugins/config-writes.js";
 import type { ChannelId } from "../../channels/plugins/types.public.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 
 /** Resolves the denial message for config writes attempted from a channel. */
 export function resolveConfigWriteDeniedText(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   channel?: string | null;
   originChannelId: ChannelId | null;
   originAccountId?: string;

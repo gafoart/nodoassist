@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/openshell-sandbox",
+  "name": "@nodoassist/openshell-sandbox",
   "version": "2026.6.11",
-  "description": "OpenClaw sandbox backend for the NVIDIA OpenShell CLI with mirrored local workspaces and SSH command execution.",
+  "description": "NodoAssist sandbox backend for the NVIDIA OpenShell CLI with mirrored local workspaces and SSH command execution.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -11,14 +11,14 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "npmSpec": "@openclaw/openshell-sandbox",
+      "npmSpec": "@nodoassist/openshell-sandbox",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.5.12-beta.1"
     },
@@ -26,7 +26,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

@@ -13,7 +13,7 @@ let nextTooltipId = 0;
 
 function createTooltipId() {
   nextTooltipId += 1;
-  return `openclaw-tooltip-${nextTooltipId}`;
+  return `nodoassist-tooltip-${nextTooltipId}`;
 }
 
 class TooltipProvider extends LitElement {
@@ -182,7 +182,7 @@ class Tooltip extends LitElement {
   }
 
   private get provider() {
-    return this.closest<TooltipProvider>("openclaw-tooltip-provider");
+    return this.closest<TooltipProvider>("nodoassist-tooltip-provider");
   }
 
   private get delay() {
@@ -302,7 +302,7 @@ class Tooltip extends LitElement {
     this.open = true;
     this.describedBy ??= trigger.getAttribute("aria-describedby");
     this.portal = document.createElement("div");
-    this.portal.className = "openclaw-tooltip";
+    this.portal.className = "nodoassist-tooltip";
     this.portal.id = this.tooltipId;
     this.portal.setAttribute("role", "tooltip");
     this.portal.textContent = this.content;
@@ -444,10 +444,10 @@ class Tooltip extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-tooltip-provider")) {
-  customElements.define("openclaw-tooltip-provider", TooltipProvider);
+if (!customElements.get("nodoassist-tooltip-provider")) {
+  customElements.define("nodoassist-tooltip-provider", TooltipProvider);
 }
 
-if (!customElements.get("openclaw-tooltip")) {
-  customElements.define("openclaw-tooltip", Tooltip);
+if (!customElements.get("nodoassist-tooltip")) {
+  customElements.define("nodoassist-tooltip", Tooltip);
 }

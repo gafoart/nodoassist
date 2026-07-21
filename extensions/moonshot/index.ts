@@ -1,7 +1,7 @@
-// Moonshot plugin entrypoint registers its OpenClaw integration.
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
-import { buildOpenAICompatibleReplayPolicy } from "openclaw/plugin-sdk/provider-model-shared";
-import { MOONSHOT_THINKING_STREAM_HOOKS } from "openclaw/plugin-sdk/provider-stream-family";
+// Moonshot plugin entrypoint registers its NodoAssist integration.
+import { defineSingleProviderPluginEntry } from "nodoassist/plugin-sdk/provider-entry";
+import { buildOpenAICompatibleReplayPolicy } from "nodoassist/plugin-sdk/provider-model-shared";
+import { MOONSHOT_THINKING_STREAM_HOOKS } from "nodoassist/plugin-sdk/provider-stream-family";
 import { applyMoonshotNativeStreamingUsageCompat } from "./api.js";
 import { moonshotMediaUnderstandingProvider } from "./media-understanding-provider.js";
 import {

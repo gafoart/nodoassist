@@ -1,17 +1,17 @@
-/** Persists hosted official external plugin catalog snapshots in OpenClaw state. */
+/** Persists hosted official external plugin catalog snapshots in NodoAssist state. */
 import { existsSync } from "node:fs";
 import {
   executeSqliteQuerySync,
   executeSqliteQueryTakeFirstSync,
   getNodeSqliteKysely,
 } from "../infra/kysely-sync.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as NodoAssistStateKyselyDatabase } from "../state/nodoassist-state-db.generated.js";
 import {
-  openOpenClawStateDatabase,
-  runOpenClawStateWriteTransaction,
-  type OpenClawStateDatabaseOptions,
-} from "../state/openclaw-state-db.js";
-import { resolveOpenClawStateSqlitePath } from "../state/openclaw-state-db.paths.js";
+  openNodoAssistStateDatabase,
+  runNodoAssistStateWriteTransaction,
+  type NodoAssistStateDatabaseOptions,
+} from "../state/nodoassist-state-db.js";
+import { resolveNodoAssistStateSqlitePath } from "../state/nodoassist-state-db.paths.js";
 import type {
   HostedOfficialExternalPluginCatalogMetadata,
   HostedOfficialExternalPluginCatalogSnapshot,
@@ -35,7 +35,7 @@ type HostedCatalogSnapshotRow = {
 };
 
 type HostedCatalogSnapshotDatabase = Pick<
-  OpenClawStateKyselyDatabase,
+  NodoAssistStateKyselyDatabase,
   "official_external_plugin_catalog_snapshots"
 >;
 
@@ -47,13 +47,13 @@ function resolveStoreEnv(
   }
   return {
     ...(options.env ?? process.env),
-    OPENCLAW_STATE_DIR: options.stateDir,
+    NODOASSIST_STATE_DIR: options.stateDir,
   };
 }
 
 function resolveStateDatabaseOptions(
   options: HostedOfficialExternalPluginCatalogSnapshotStoreOptions,
-): OpenClawStateDatabaseOptions {
+): NodoAssistStateDatabaseOptions {
   const env = resolveStoreEnv(options);
   return {
     ...(env ? { env } : {}),
@@ -67,7 +67,7 @@ function resolveStateDatabasePath(
   if (options.stateDatabasePath) {
     return options.stateDatabasePath;
   }
-  return resolveOpenClawStateSqlitePath(resolveStoreEnv(options) ?? process.env);
+  return resolveNodoAssistStateSqlitePath(resolveStoreEnv(options) ?? process.env);
 }
 
 function rowToSnapshot(
@@ -90,7 +90,7 @@ function rowToSnapshot(
   };
 }
 
-/** Creates a snapshot store backed by the shared `state/openclaw.sqlite` database. */
+/** Creates a snapshot store backed by the shared `state/nodoassist.sqlite` database. */
 export function createSqliteHostedOfficialExternalPluginCatalogSnapshotStore(
   options: HostedOfficialExternalPluginCatalogSnapshotStoreOptions = {},
 ): HostedOfficialExternalPluginCatalogSnapshotStore {
@@ -100,7 +100,7 @@ export function createSqliteHostedOfficialExternalPluginCatalogSnapshotStore(
       if (!existsSync(pathname)) {
         return null;
       }
-      const database = openOpenClawStateDatabase(resolveStateDatabaseOptions(options));
+      const database = openNodoAssistStateDatabase(resolveStateDatabaseOptions(options));
       const stateDb = getNodeSqliteKysely<HostedCatalogSnapshotDatabase>(database.db);
       const row = executeSqliteQueryTakeFirstSync(
         database.db,
@@ -113,7 +113,7 @@ export function createSqliteHostedOfficialExternalPluginCatalogSnapshotStore(
     },
     async write(snapshot) {
       const now = Date.now();
-      runOpenClawStateWriteTransaction((database) => {
+      runNodoAssistStateWriteTransaction((database) => {
         const stateDb = getNodeSqliteKysely<HostedCatalogSnapshotDatabase>(database.db);
         executeSqliteQuerySync(
           database.db,

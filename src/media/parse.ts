@@ -8,8 +8,8 @@ import {
   isLegacyIpv4Literal,
   parseCanonicalIpAddress,
   parseLooseIpAddress,
-} from "@openclaw/net-policy/ip";
-import { hasHttpUrlPrefix } from "@openclaw/net-policy/url-protocol";
+} from "@nodoassist/net-policy/ip";
+import { hasHttpUrlPrefix } from "@nodoassist/net-policy/url-protocol";
 import { parseFenceSpans } from "../../packages/markdown-core/src/fences.js";
 import { parseAudioTag } from "./audio-tags.js";
 

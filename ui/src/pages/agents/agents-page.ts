@@ -749,6 +749,6 @@ class AgentsPage extends LitElement implements AgentsState {
   }
 }
 
-if (!customElements.get("openclaw-agents-page")) {
-  customElements.define("openclaw-agents-page", AgentsPage);
+if (!customElements.get("nodoassist-agents-page")) {
+  customElements.define("nodoassist-agents-page", AgentsPage);
 }

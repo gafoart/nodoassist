@@ -1,11 +1,11 @@
 {
   "entries": [
     {
-      "name": "@openclaw/amazon-bedrock-provider",
-      "description": "OpenClaw Amazon Bedrock provider plugin",
+      "name": "@nodoassist/amazon-bedrock-provider",
+      "description": "NodoAssist Amazon Bedrock provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "amazon-bedrock",
           "label": "Amazon Bedrock"
@@ -19,18 +19,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/amazon-bedrock-provider",
+          "npmSpec": "@nodoassist/amazon-bedrock-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.12-beta.1"
         }
       }
     },
     {
-      "name": "@openclaw/amazon-bedrock-mantle-provider",
-      "description": "OpenClaw Amazon Bedrock Mantle provider plugin",
+      "name": "@nodoassist/amazon-bedrock-mantle-provider",
+      "description": "NodoAssist Amazon Bedrock Mantle provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "amazon-bedrock-mantle",
           "label": "Amazon Bedrock Mantle"
@@ -44,18 +44,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/amazon-bedrock-mantle-provider",
+          "npmSpec": "@nodoassist/amazon-bedrock-mantle-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.12-beta.1"
         }
       }
     },
     {
-      "name": "@openclaw/anthropic-vertex-provider",
-      "description": "OpenClaw Anthropic Vertex provider plugin",
+      "name": "@nodoassist/anthropic-vertex-provider",
+      "description": "NodoAssist Anthropic Vertex provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "anthropic-vertex",
           "label": "Anthropic Vertex"
@@ -69,18 +69,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/anthropic-vertex-provider",
+          "npmSpec": "@nodoassist/anthropic-vertex-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.12-beta.1"
         }
       }
     },
     {
-      "name": "@openclaw/arcee-provider",
-      "description": "OpenClaw Arcee provider plugin.",
+      "name": "@nodoassist/arcee-provider",
+      "description": "NodoAssist Arcee provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "arcee",
           "label": "Arcee AI"
@@ -134,19 +134,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/arcee-provider",
-          "npmSpec": "@openclaw/arcee-provider",
+          "clawhubSpec": "clawhub:@nodoassist/arcee-provider",
+          "npmSpec": "@nodoassist/arcee-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/cerebras-provider",
-      "description": "OpenClaw Cerebras provider plugin.",
+      "name": "@nodoassist/cerebras-provider",
+      "description": "NodoAssist Cerebras provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "cerebras",
           "label": "Cerebras"
@@ -191,19 +191,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/cerebras-provider",
-          "npmSpec": "@openclaw/cerebras-provider",
+          "clawhubSpec": "clawhub:@nodoassist/cerebras-provider",
+          "npmSpec": "@nodoassist/cerebras-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/chutes-provider",
-      "description": "OpenClaw Chutes.ai provider plugin.",
+      "name": "@nodoassist/chutes-provider",
+      "description": "NodoAssist Chutes.ai provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "chutes",
           "label": "Chutes"
@@ -262,19 +262,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/chutes-provider",
-          "npmSpec": "@openclaw/chutes-provider",
+          "clawhubSpec": "clawhub:@nodoassist/chutes-provider",
+          "npmSpec": "@nodoassist/chutes-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/cohere-provider",
-      "description": "OpenClaw Cohere provider plugin",
+      "name": "@nodoassist/cohere-provider",
+      "description": "NodoAssist Cohere provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "cohere",
           "label": "Cohere"
@@ -308,19 +308,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/cohere-provider",
-          "npmSpec": "@openclaw/cohere-provider",
+          "clawhubSpec": "clawhub:@nodoassist/cohere-provider",
+          "npmSpec": "@nodoassist/cohere-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/cloudflare-ai-gateway-provider",
-      "description": "OpenClaw Cloudflare AI Gateway provider plugin.",
+      "name": "@nodoassist/cloudflare-ai-gateway-provider",
+      "description": "NodoAssist Cloudflare AI Gateway provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "cloudflare-ai-gateway",
           "label": "Cloudflare AI Gateway"
@@ -358,19 +358,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/cloudflare-ai-gateway-provider",
-          "npmSpec": "@openclaw/cloudflare-ai-gateway-provider",
+          "clawhubSpec": "clawhub:@nodoassist/cloudflare-ai-gateway-provider",
+          "npmSpec": "@nodoassist/cloudflare-ai-gateway-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/codex",
-      "description": "OpenClaw Codex harness and model provider plugin",
+      "name": "@nodoassist/codex",
+      "description": "NodoAssist Codex harness and model provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "codex",
           "label": "Codex"
@@ -400,18 +400,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/codex",
+          "npmSpec": "@nodoassist/codex",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.1-beta.1"
         }
       }
     },
     {
-      "name": "@openclaw/deepinfra-provider",
-      "description": "OpenClaw DeepInfra provider plugin.",
+      "name": "@nodoassist/deepinfra-provider",
+      "description": "NodoAssist DeepInfra provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "deepinfra",
           "label": "DeepInfra"
@@ -474,19 +474,19 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/deepinfra-provider",
-          "npmSpec": "@openclaw/deepinfra-provider",
+          "clawhubSpec": "clawhub:@nodoassist/deepinfra-provider",
+          "npmSpec": "@nodoassist/deepinfra-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/deepseek-provider",
-      "description": "OpenClaw DeepSeek provider plugin.",
+      "name": "@nodoassist/deepseek-provider",
+      "description": "NodoAssist DeepSeek provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "deepseek",
           "label": "DeepSeek"
@@ -531,19 +531,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/deepseek-provider",
-          "npmSpec": "@openclaw/deepseek-provider",
+          "clawhubSpec": "clawhub:@nodoassist/deepseek-provider",
+          "npmSpec": "@nodoassist/deepseek-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/featherless-provider",
-      "description": "OpenClaw Featherless AI provider plugin.",
+      "name": "@nodoassist/featherless-provider",
+      "description": "NodoAssist Featherless AI provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "featherless",
           "label": "Featherless AI"
@@ -581,19 +581,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/featherless-provider",
-          "npmSpec": "@openclaw/featherless-provider",
+          "clawhubSpec": "clawhub:@nodoassist/featherless-provider",
+          "npmSpec": "@nodoassist/featherless-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.11"
         }
       }
     },
     {
-      "name": "@openclaw/gmi-provider",
-      "description": "OpenClaw GMI Cloud provider plugin",
+      "name": "@nodoassist/gmi-provider",
+      "description": "NodoAssist GMI Cloud provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "gmi",
           "label": "GMI Cloud"
@@ -632,19 +632,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/gmi-provider",
-          "npmSpec": "@openclaw/gmi-provider",
+          "clawhubSpec": "clawhub:@nodoassist/gmi-provider",
+          "npmSpec": "@nodoassist/gmi-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/longcat-provider",
-      "description": "OpenClaw LongCat provider plugin",
+      "name": "@nodoassist/longcat-provider",
+      "description": "NodoAssist LongCat provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "longcat",
           "label": "LongCat"
@@ -675,19 +675,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/longcat-provider",
-          "npmSpec": "@openclaw/longcat-provider",
+          "clawhubSpec": "clawhub:@nodoassist/longcat-provider",
+          "npmSpec": "@nodoassist/longcat-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/groq-provider",
-      "description": "OpenClaw Groq media-understanding provider.",
+      "name": "@nodoassist/groq-provider",
+      "description": "NodoAssist Groq media-understanding provider.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "groq",
           "label": "Groq"
@@ -737,19 +737,19 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/groq-provider",
-          "npmSpec": "@openclaw/groq-provider",
+          "clawhubSpec": "clawhub:@nodoassist/groq-provider",
+          "npmSpec": "@nodoassist/groq-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/kilocode-provider",
-      "description": "OpenClaw Kilo Gateway provider plugin.",
+      "name": "@nodoassist/kilocode-provider",
+      "description": "NodoAssist Kilo Gateway provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "kilocode",
           "label": "Kilo Gateway"
@@ -787,19 +787,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/kilocode-provider",
-          "npmSpec": "@openclaw/kilocode-provider",
+          "clawhubSpec": "clawhub:@nodoassist/kilocode-provider",
+          "npmSpec": "@nodoassist/kilocode-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/kimi-provider",
-      "description": "OpenClaw Kimi provider plugin.",
+      "name": "@nodoassist/kimi-provider",
+      "description": "NodoAssist Kimi provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "kimi",
           "label": "Kimi Coding"
@@ -840,19 +840,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/kimi-provider",
-          "npmSpec": "@openclaw/kimi-provider",
+          "clawhubSpec": "clawhub:@nodoassist/kimi-provider",
+          "npmSpec": "@nodoassist/kimi-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/pixverse-provider",
-      "description": "OpenClaw PixVerse video provider plugin",
+      "name": "@nodoassist/pixverse-provider",
+      "description": "NodoAssist PixVerse video provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "pixverse",
           "label": "PixVerse"
@@ -882,18 +882,18 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/pixverse-provider",
+          "npmSpec": "@nodoassist/pixverse-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.26"
         }
       }
     },
     {
-      "name": "@openclaw/qianfan-provider",
-      "description": "OpenClaw Qianfan provider plugin.",
+      "name": "@nodoassist/qianfan-provider",
+      "description": "NodoAssist Qianfan provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "qianfan",
           "label": "Qianfan"
@@ -930,19 +930,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/qianfan-provider",
-          "npmSpec": "@openclaw/qianfan-provider",
+          "clawhubSpec": "clawhub:@nodoassist/qianfan-provider",
+          "npmSpec": "@nodoassist/qianfan-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/qwen-provider",
-      "description": "OpenClaw Qwen Cloud provider plugin.",
+      "name": "@nodoassist/qwen-provider",
+      "description": "NodoAssist Qwen Cloud provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "qwen",
           "label": "Qwen Cloud"
@@ -1106,19 +1106,19 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/qwen-provider",
-          "npmSpec": "@openclaw/qwen-provider",
+          "clawhubSpec": "clawhub:@nodoassist/qwen-provider",
+          "npmSpec": "@nodoassist/qwen-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/fireworks-provider",
-      "description": "OpenClaw Fireworks provider plugin",
+      "name": "@nodoassist/fireworks-provider",
+      "description": "NodoAssist Fireworks provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "fireworks",
           "label": "Fireworks"
@@ -1159,19 +1159,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/fireworks-provider",
-          "npmSpec": "@openclaw/fireworks-provider",
+          "clawhubSpec": "clawhub:@nodoassist/fireworks-provider",
+          "npmSpec": "@nodoassist/fireworks-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.9"
         }
       }
     },
     {
-      "name": "@openclaw/moonshot-provider",
-      "description": "OpenClaw Moonshot provider plugin",
+      "name": "@nodoassist/moonshot-provider",
+      "description": "NodoAssist Moonshot provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "moonshot",
           "label": "Moonshot"
@@ -1267,19 +1267,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/moonshot-provider",
-          "npmSpec": "@openclaw/moonshot-provider",
+          "clawhubSpec": "clawhub:@nodoassist/moonshot-provider",
+          "npmSpec": "@nodoassist/moonshot-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.9"
         }
       }
     },
     {
-      "name": "@openclaw/tencent-provider",
-      "description": "OpenClaw Tencent Cloud provider plugin (TokenHub + Token Plan)",
+      "name": "@nodoassist/tencent-provider",
+      "description": "NodoAssist Tencent Cloud provider plugin (TokenHub + Token Plan)",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "tencent",
           "label": "Tencent Cloud"
@@ -1347,19 +1347,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/tencent-provider",
-          "npmSpec": "@openclaw/tencent-provider",
+          "clawhubSpec": "clawhub:@nodoassist/tencent-provider",
+          "npmSpec": "@nodoassist/tencent-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.9"
         }
       }
     },
     {
-      "name": "@openclaw/venice-provider",
-      "description": "OpenClaw Venice provider plugin",
+      "name": "@nodoassist/venice-provider",
+      "description": "NodoAssist Venice provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "venice",
           "label": "Venice"
@@ -1397,19 +1397,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/venice-provider",
-          "npmSpec": "@openclaw/venice-provider",
+          "clawhubSpec": "clawhub:@nodoassist/venice-provider",
+          "npmSpec": "@nodoassist/venice-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.9"
         }
       }
     },
     {
-      "name": "@openclaw/vercel-ai-gateway-provider",
-      "description": "OpenClaw Vercel AI Gateway provider plugin",
+      "name": "@nodoassist/vercel-ai-gateway-provider",
+      "description": "NodoAssist Vercel AI Gateway provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "vercel-ai-gateway",
           "label": "Vercel AI Gateway"
@@ -1447,19 +1447,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/vercel-ai-gateway-provider",
-          "npmSpec": "@openclaw/vercel-ai-gateway-provider",
+          "clawhubSpec": "clawhub:@nodoassist/vercel-ai-gateway-provider",
+          "npmSpec": "@nodoassist/vercel-ai-gateway-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.9"
         }
       }
     },
     {
-      "name": "@openclaw/zai-provider",
-      "description": "OpenClaw Z.AI provider plugin",
+      "name": "@nodoassist/zai-provider",
+      "description": "NodoAssist Z.AI provider plugin",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "zai",
           "label": "Z.AI"
@@ -1578,19 +1578,19 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/zai-provider",
-          "npmSpec": "@openclaw/zai-provider",
+          "clawhubSpec": "clawhub:@nodoassist/zai-provider",
+          "npmSpec": "@nodoassist/zai-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.9"
         }
       }
     },
     {
-      "name": "@openclaw/stepfun-provider",
-      "description": "OpenClaw StepFun provider plugin.",
+      "name": "@nodoassist/stepfun-provider",
+      "description": "NodoAssist StepFun provider plugin.",
       "source": "official",
       "kind": "provider",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "stepfun",
           "label": "StepFun"
@@ -1690,8 +1690,8 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/stepfun-provider",
-          "npmSpec": "@openclaw/stepfun-provider",
+          "clawhubSpec": "clawhub:@nodoassist/stepfun-provider",
+          "npmSpec": "@nodoassist/stepfun-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.9"
         }

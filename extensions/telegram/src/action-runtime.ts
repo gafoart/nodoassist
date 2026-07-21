@@ -1,6 +1,6 @@
 // Telegram plugin module implements action runtime behavior.
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
-import { readBooleanParam } from "openclaw/plugin-sdk/boolean-param";
+import type { AgentToolResult } from "nodoassist/plugin-sdk/agent-core";
+import { readBooleanParam } from "nodoassist/plugin-sdk/boolean-param";
 import {
   jsonResult,
   readPositiveIntegerParam,
@@ -10,20 +10,20 @@ import {
   readStringParam,
   resolvePollMaxSelections,
   resolveReactionMessageId,
-} from "openclaw/plugin-sdk/channel-actions";
+} from "nodoassist/plugin-sdk/channel-actions";
 import {
   buildOutboundSessionContext,
   sendDurableMessageBatch,
   type DurableMessageBatchSendResult,
-} from "openclaw/plugin-sdk/channel-outbound";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "nodoassist/plugin-sdk/channel-outbound";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import {
   normalizeMessagePresentation,
   renderMessagePresentationFallbackText,
-} from "openclaw/plugin-sdk/interactive-runtime";
-import type { MessagePresentation } from "openclaw/plugin-sdk/interactive-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveStorePath } from "openclaw/plugin-sdk/session-store-runtime";
+} from "nodoassist/plugin-sdk/interactive-runtime";
+import type { MessagePresentation } from "nodoassist/plugin-sdk/interactive-runtime";
+import type { ReplyPayload } from "nodoassist/plugin-sdk/reply-runtime";
+import { resolveStorePath } from "nodoassist/plugin-sdk/session-store-runtime";
 import {
   createTelegramActionGate,
   resolveDefaultTelegramAccountId,
@@ -138,7 +138,10 @@ function readTelegramThreadId(params: Record<string, unknown>) {
   );
 }
 
-function resolveActionTopicNameCacheScope(cfg: OpenClawConfig, accountId?: string | null): string {
+function resolveActionTopicNameCacheScope(
+  cfg: NodoAssistConfig,
+  accountId?: string | null,
+): string {
   const storePath = resolveStorePath(cfg.session?.store, {
     agentId: accountId ?? resolveDefaultTelegramAccountId(cfg),
   });
@@ -317,7 +320,7 @@ function getLastDurableTelegramActionResult(
 
 export async function handleTelegramAction(
   params: Record<string, unknown>,
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   options?: {
     mediaLocalRoots?: readonly string[];
     mediaReadFile?: (filePath: string) => Promise<Buffer>;

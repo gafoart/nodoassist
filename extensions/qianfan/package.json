@@ -1,22 +1,22 @@
 {
-  "name": "@openclaw/qianfan-provider",
+  "name": "@nodoassist/qianfan-provider",
   "version": "2026.6.11",
-  "description": "OpenClaw Qianfan provider plugin.",
+  "description": "NodoAssist Qianfan provider plugin.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
   },
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/qianfan-provider",
-      "npmSpec": "@openclaw/qianfan-provider",
+      "clawhubSpec": "clawhub:@nodoassist/qianfan-provider",
+      "npmSpec": "@nodoassist/qianfan-provider",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.8"
     },
@@ -24,7 +24,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

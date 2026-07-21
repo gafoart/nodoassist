@@ -4,9 +4,9 @@
 import {
   findNormalizedProviderValue,
   normalizeProviderId,
-} from "@openclaw/model-catalog-core/provider-id";
-import { normalizeUniqueSingleOrTrimmedStringList } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+} from "@nodoassist/model-catalog-core/provider-id";
+import { normalizeUniqueSingleOrTrimmedStringList } from "@nodoassist/normalization-core/string-normalization";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 
 // Accept provider/model refs in addition to separate provider fields so aliases
 // and user-entered model refs discover the owning provider catalog.
@@ -36,7 +36,7 @@ function providerConfigDeclaresModel(
 
 /** Resolves provider/model refs used to scope model catalog discovery. */
 export function resolveModelCatalogScope(params: {
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   provider: string;
   model: string;
 }): { providerRefs: string[]; modelRefs: string[] } {

@@ -44,11 +44,11 @@ export function resolvePlainGhBin(
   env = process.env,
   systemCandidates = PLAIN_GH_SYSTEM_CANDIDATES,
 ) {
-  if (env.OPENCLAW_GH_BIN) {
-    if (isExecutable(env.OPENCLAW_GH_BIN)) {
-      return env.OPENCLAW_GH_BIN;
+  if (env.NODOASSIST_GH_BIN) {
+    if (isExecutable(env.NODOASSIST_GH_BIN)) {
+      return env.NODOASSIST_GH_BIN;
     }
-    throw new Error(`OPENCLAW_GH_BIN is not executable: ${env.OPENCLAW_GH_BIN}`);
+    throw new Error(`NODOASSIST_GH_BIN is not executable: ${env.NODOASSIST_GH_BIN}`);
   }
 
   for (const candidate of systemCandidates) {

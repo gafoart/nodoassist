@@ -1,16 +1,16 @@
 ---
-summary: "Move from Hermes to OpenClaw with a previewed, reversible import"
+summary: "Move from Hermes to NodoAssist with a previewed, reversible import"
 read_when:
   - You are coming from Hermes and want to keep your model config, prompts, memory, and skills
-  - You want to know what OpenClaw imports automatically and what stays archive-only
+  - You want to know what NodoAssist imports automatically and what stays archive-only
   - You need a clean, scripted migration path (CI, fresh laptop, automation)
 title: "Migrating from Hermes"
 ---
 
-The bundled Hermes migration provider detects state at `~/.hermes`, previews every change before applying, redacts secrets in plans and reports, and writes a verified OpenClaw backup before it touches anything.
+The bundled Hermes migration provider detects state at `~/.hermes`, previews every change before applying, redacts secrets in plans and reports, and writes a verified NodoAssist backup before it touches anything.
 
 <Note>
-Imports require a fresh OpenClaw setup. If you already have local OpenClaw state, reset config, credentials, sessions, and the workspace first, or use `openclaw migrate apply hermes` directly with `--overwrite` after reviewing the plan.
+Imports require a fresh NodoAssist setup. If you already have local NodoAssist state, reset config, credentials, sessions, and the workspace first, or use `nodoassist migrate apply hermes` directly with `--overwrite` after reviewing the plan.
 </Note>
 
 ## Two ways to import
@@ -20,22 +20,22 @@ Imports require a fresh OpenClaw setup. If you already have local OpenClaw state
     Detects Hermes at `~/.hermes` and shows a preview before applying.
 
     ```bash
-    openclaw onboard --flow import
+    nodoassist onboard --flow import
     ```
 
     Or point at a specific source:
 
     ```bash
-    openclaw onboard --import-from hermes --import-source ~/.hermes
+    nodoassist onboard --import-from hermes --import-source ~/.hermes
     ```
 
   </Tab>
   <Tab title="CLI">
-    Use `openclaw migrate` for scripted or repeatable runs. See [`openclaw migrate`](/cli/migrate) for the full reference.
+    Use `nodoassist migrate` for scripted or repeatable runs. See [`nodoassist migrate`](/cli/migrate) for the full reference.
 
     ```bash
-    openclaw migrate hermes --dry-run    # preview only
-    openclaw migrate apply hermes --yes  # apply with confirmation skipped
+    nodoassist migrate hermes --dry-run    # preview only
+    nodoassist migrate apply hermes --yes  # apply with confirmation skipped
     ```
 
     Add `--from <path>` when Hermes lives outside `~/.hermes`.
@@ -55,24 +55,24 @@ Imports require a fresh OpenClaw setup. If you already have local OpenClaw state
     MCP server definitions from `mcp_servers` or `mcp.servers`.
   </Accordion>
   <Accordion title="Workspace files">
-    - `SOUL.md` and `AGENTS.md` are copied into the OpenClaw agent workspace.
-    - `memories/MEMORY.md` and `memories/USER.md` are **appended** to the matching OpenClaw memory files instead of overwriting them.
+    - `SOUL.md` and `AGENTS.md` are copied into the NodoAssist agent workspace.
+    - `memories/MEMORY.md` and `memories/USER.md` are **appended** to the matching NodoAssist memory files instead of overwriting them.
 
   </Accordion>
   <Accordion title="Memory configuration">
-    Memory config defaults for OpenClaw file memory. External memory providers such as Honcho are recorded as archive or manual-review items so you can move them deliberately.
+    Memory config defaults for NodoAssist file memory. External memory providers such as Honcho are recorded as archive or manual-review items so you can move them deliberately.
   </Accordion>
   <Accordion title="Skills">
     Skills with a `SKILL.md` file under `skills/<name>/` are copied, along with per-skill config values from `skills.config`.
   </Accordion>
   <Accordion title="Auth credentials">
-    Interactive `openclaw migrate` asks before importing auth credentials, with yes selected by default. Accepting imports OpenCode OpenAI OAuth and GitHub Copilot entries from OpenCode's `auth.json`, plus the [supported Hermes `.env` keys](/cli/migrate#supported-env-keys). Hermes's own `auth.json` OAuth entries are legacy state: they surface as a manual reauth/doctor item instead of importing into live auth. Use `--include-secrets` to import credentials in a non-interactive run, `--no-auth-credentials` to skip credential import entirely, or the onboarding wizard's `--import-secrets` flag.
+    Interactive `nodoassist migrate` asks before importing auth credentials, with yes selected by default. Accepting imports OpenCode OpenAI OAuth and GitHub Copilot entries from OpenCode's `auth.json`, plus the [supported Hermes `.env` keys](/cli/migrate#supported-env-keys). Hermes's own `auth.json` OAuth entries are legacy state: they surface as a manual reauth/doctor item instead of importing into live auth. Use `--include-secrets` to import credentials in a non-interactive run, `--no-auth-credentials` to skip credential import entirely, or the onboarding wizard's `--import-secrets` flag.
   </Accordion>
 </AccordionGroup>
 
 ## What stays archive-only
 
-The provider copies these into the migration report directory for manual review, but does **not** load them into live OpenClaw config or credentials:
+The provider copies these into the migration report directory for manual review, but does **not** load them into live NodoAssist config or credentials:
 
 - `plugins/`
 - `sessions/`
@@ -81,14 +81,14 @@ The provider copies these into the migration report directory for manual review,
 - `mcp-tokens/`
 - `state.db`
 
-OpenClaw refuses to execute or trust this state automatically because formats and trust assumptions can drift between systems. Move what you need by hand after reviewing the archive.
+NodoAssist refuses to execute or trust this state automatically because formats and trust assumptions can drift between systems. Move what you need by hand after reviewing the archive.
 
 ## Recommended flow
 
 <Steps>
   <Step title="Preview the plan">
     ```bash
-    openclaw migrate hermes --dry-run
+    nodoassist migrate hermes --dry-run
     ```
 
     The plan lists everything that will change, including conflicts, skipped items, and sensitive items. Nested secret-looking keys are redacted in the output.
@@ -96,15 +96,15 @@ OpenClaw refuses to execute or trust this state automatically because formats an
   </Step>
   <Step title="Apply with backup">
     ```bash
-    openclaw migrate apply hermes --yes
+    nodoassist migrate apply hermes --yes
     ```
 
-    OpenClaw creates and verifies a backup before applying. This non-interactive example imports non-secret state only. Run without `--yes` to answer the credential prompt interactively, or add `--include-secrets` to include supported credentials in an unattended run.
+    NodoAssist creates and verifies a backup before applying. This non-interactive example imports non-secret state only. Run without `--yes` to answer the credential prompt interactively, or add `--include-secrets` to include supported credentials in an unattended run.
 
   </Step>
   <Step title="Run doctor">
     ```bash
-    openclaw doctor
+    nodoassist doctor
     ```
 
     [Doctor](/gateway/doctor) reapplies any pending config migrations and checks for issues introduced during the import.
@@ -112,8 +112,8 @@ OpenClaw refuses to execute or trust this state automatically because formats an
   </Step>
   <Step title="Restart and verify">
     ```bash
-    openclaw gateway restart
-    openclaw status
+    nodoassist gateway restart
+    nodoassist status
     ```
 
     Confirm the gateway is healthy and your imported model, memory, and skills are loaded.
@@ -135,7 +135,7 @@ If a conflict surfaces mid-apply (for example, an unexpected race on a config fi
 
 ## Secrets
 
-Interactive `openclaw migrate` asks whether to import detected auth credentials, with yes selected by default.
+Interactive `nodoassist migrate` asks whether to import detected auth credentials, with yes selected by default.
 
 - Accepting imports OpenCode OpenAI OAuth and GitHub Copilot entries from OpenCode's `auth.json`, plus the [supported `.env` keys](/cli/migrate#supported-env-keys). Hermes's own `auth.json` OAuth entries are reported for manual OpenAI reauth or doctor repair instead.
 - Use `--no-auth-credentials`, or answer no at the prompt, to import non-secret state only.
@@ -145,8 +145,8 @@ Interactive `openclaw migrate` asks whether to import detected auth credentials,
 ## JSON output for automation
 
 ```bash
-openclaw migrate hermes --dry-run --json
-openclaw migrate apply hermes --json --yes
+nodoassist migrate hermes --dry-run --json
+nodoassist migrate apply hermes --json --yes
 ```
 
 With `--json` and no `--yes`, apply prints the plan and does not mutate state — the safest mode for CI and shared scripts.
@@ -161,17 +161,17 @@ With `--json` and no `--yes`, apply prints the plan and does not mutate state �
     Pass `--from /actual/path` (CLI) or `--import-source /actual/path` (onboarding).
   </Accordion>
   <Accordion title="Onboarding refuses to import on an existing setup">
-    Onboarding imports require a fresh setup. Either reset state and re-onboard, or use `openclaw migrate apply hermes` directly, which supports `--overwrite` and explicit backup control.
+    Onboarding imports require a fresh setup. Either reset state and re-onboard, or use `nodoassist migrate apply hermes` directly, which supports `--overwrite` and explicit backup control.
   </Accordion>
   <Accordion title="API keys did not import">
-    Interactive `openclaw migrate` imports API keys only when you accept the credential prompt. Non-interactive `--yes` runs need `--include-secrets`; onboarding imports need `--import-secrets`. Only the [supported `.env` keys](/cli/migrate#supported-env-keys) are recognized — other `.env` variables are ignored.
+    Interactive `nodoassist migrate` imports API keys only when you accept the credential prompt. Non-interactive `--yes` runs need `--include-secrets`; onboarding imports need `--import-secrets`. Only the [supported `.env` keys](/cli/migrate#supported-env-keys) are recognized — other `.env` variables are ignored.
   </Accordion>
 </AccordionGroup>
 
 ## Related
 
-- [`openclaw migrate`](/cli/migrate): full CLI reference, plugin contract, and JSON shapes.
+- [`nodoassist migrate`](/cli/migrate): full CLI reference, plugin contract, and JSON shapes.
 - [Onboarding](/cli/onboard): wizard flow and non-interactive flags.
-- [Migrating](/install/migrating): move an OpenClaw install between machines.
+- [Migrating](/install/migrating): move an NodoAssist install between machines.
 - [Doctor](/gateway/doctor): post-migration health check.
 - [Agent workspace](/concepts/agent-workspace): where `SOUL.md`, `AGENTS.md`, and memory files live.

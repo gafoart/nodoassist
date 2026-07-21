@@ -1,10 +1,10 @@
 // Normalizes provider auth choice metadata from plugin setup surfaces.
-import { isRecord as isPlainRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord as isPlainRecord } from "@nodoassist/normalization-core/record-coerce";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/normalization-core/string-coerce";
 import { normalizeConfiguredProviderCatalogModelId } from "../agents/model-ref-shared.js";
 import { normalizeProviderId } from "../agents/model-selection.js";
 import {
@@ -14,7 +14,7 @@ import {
 import { normalizeProviderConfigForConfigDefaults } from "../config/provider-policy.js";
 import type { AgentModelConfig } from "../config/types.agents-shared.js";
 import type { ModelProviderConfig } from "../config/types.models.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type { ProviderAuthMethod, ProviderPlugin } from "./types.js";
 
 export function resolveProviderMatch(
@@ -168,9 +168,9 @@ function normalizeProviderCatalogModelIdsForWrite(
 }
 
 function normalizeModelProviderConfigsForWrite(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   providerConfigNormalizer: typeof normalizeProviderConfigForConfigDefaults,
-): OpenClawConfig {
+): NodoAssistConfig {
   const providers = cfg.models?.providers;
   if (!providers) {
     return cfg;
@@ -239,9 +239,9 @@ function normalizeAgentListForWrite(value: unknown): unknown {
 }
 
 function normalizeConfigModelRefsForWrite(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   providerConfigNormalizer: typeof normalizeProviderConfigForConfigDefaults,
-): OpenClawConfig {
+): NodoAssistConfig {
   const providerNormalized = normalizeModelProviderConfigsForWrite(cfg, providerConfigNormalizer);
   const defaults = providerNormalized.agents?.defaults;
   const agentsList = providerNormalized.agents?.list;
@@ -277,13 +277,13 @@ function normalizeConfigModelRefsForWrite(
 }
 
 export function applyProviderAuthConfigPatch(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   patch: unknown,
   options?: {
     replaceDefaultModels?: boolean;
     providerConfigNormalizer?: typeof normalizeProviderConfigForConfigDefaults;
   },
-): OpenClawConfig {
+): NodoAssistConfig {
   const providerConfigNormalizer =
     options?.providerConfigNormalizer ?? normalizeProviderConfigForConfigDefaults;
   const merged = normalizeConfigModelRefsForWrite(
@@ -309,7 +309,7 @@ export function applyProviderAuthConfigPatch(
           ...merged.agents?.defaults,
           // Opt-in replacement for migrations that rename/remove model keys.
           models: sanitizeConfigPatchValue(patchModels) as NonNullable<
-            NonNullable<OpenClawConfig["agents"]>["defaults"]
+            NonNullable<NodoAssistConfig["agents"]>["defaults"]
           >["models"],
         },
       },
@@ -323,10 +323,10 @@ export function applyProviderAuthConfigPatch(
  * `--set-default`, so `applyConfig` patches cannot replace the primary without an explicit opt-in.
  */
 export function restorePriorAgentsDefaultsModelUnlessOptIn(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   priorAgentsDefaultsModel?: AgentModelConfig;
   setDefault?: boolean;
-}): OpenClawConfig {
+}): NodoAssistConfig {
   if (params.setDefault || params.priorAgentsDefaultsModel === undefined) {
     return params.cfg;
   }
@@ -343,10 +343,10 @@ export function restorePriorAgentsDefaultsModelUnlessOptIn(params: {
 }
 
 export function applyDefaultModel(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   model: string,
   opts?: { preserveExistingPrimary?: boolean },
-): OpenClawConfig {
+): NodoAssistConfig {
   const normalizedModel = normalizeAgentModelRefForConfig(model);
   const models = {
     ...normalizeAgentModelMapForConfig(cfg.agents?.defaults?.models ?? {}),

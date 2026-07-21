@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "OpenClaw",
+  "name": "NodoAssist",
   "description": "Self-hosted gateway that connects Discord, Google Chat, iMessage, Matrix, Microsoft Teams, Signal, Slack, Telegram, WhatsApp, Zalo, and more to AI coding agents. Run one Gateway process on your own machine and message your AI assistant from anywhere.",
   "theme": "mint",
   "icons": {
@@ -61,11 +61,11 @@
       "destination": "/channels/matrix-migration"
     },
     {
-      "source": "/concepts/openclaw-sdk",
+      "source": "/concepts/nodoassist-sdk",
       "destination": "/gateway/external-apps"
     },
     {
-      "source": "/reference/openclaw-sdk-api-design",
+      "source": "/reference/nodoassist-sdk-api-design",
       "destination": "/gateway/external-apps"
     },
     {
@@ -102,7 +102,7 @@
     },
     {
       "source": "/pi-dev",
-      "destination": "/openclaw-agent-runtime"
+      "destination": "/nodoassist-agent-runtime"
     },
     {
       "source": "/providers/modelstudio",
@@ -325,7 +325,7 @@
       "destination": "/channels/zalo"
     },
     {
-      "source": "/channels/openclaw-zaloclawbot",
+      "source": "/channels/nodoassist-zaloclawbot",
       "destination": "/channels/zaloclawbot"
     },
     {
@@ -422,15 +422,15 @@
     },
     {
       "source": "/clawd",
-      "destination": "/start/openclaw"
+      "destination": "/start/nodoassist"
     },
     {
       "source": "/start/clawd",
-      "destination": "/start/openclaw"
+      "destination": "/start/nodoassist"
     },
     {
       "source": "/start/clawd/",
-      "destination": "/start/openclaw"
+      "destination": "/start/nodoassist"
     },
     {
       "source": "/start/pairing",
@@ -529,7 +529,7 @@
       "destination": "/channels/telegram"
     },
     {
-      "source": "/channels/openclaw-weixin",
+      "source": "/channels/nodoassist-weixin",
       "destination": "/channels/wechat"
     },
     {
@@ -1033,7 +1033,7 @@
               {
                 "group": "Guides",
                 "pages": [
-                  "start/openclaw",
+                  "start/nodoassist",
                   "start/wizard-cli-reference",
                   "start/wizard-cli-automation"
                 ]
@@ -1104,7 +1104,7 @@
                 "group": "Advanced setup",
                 "pages": [
                   "start/setup",
-                  "openclaw-agent-runtime"
+                  "nodoassist-agent-runtime"
                 ]
               }
             ]
@@ -1896,7 +1896,7 @@
                   "reference/wizard",
                   "reference/token-use",
                   "reference/secretref-credential-surface",
-                  "reference/openclaw-ai",
+                  "reference/nodoassist-ai",
                   "reference/prompt-caching",
                   "reference/api-usage-costs",
                   "reference/transcript-hygiene",

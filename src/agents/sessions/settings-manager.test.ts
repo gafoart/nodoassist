@@ -35,15 +35,15 @@ describe("SettingsManager runtime overrides", () => {
     });
 
     settingsManager.applyOverrides({ compaction: { reserveTokens: 50_000 } });
-    settingsManager.setProjectPackages(["npm:@openclaw/example"]);
+    settingsManager.setProjectPackages(["npm:@nodoassist/example"]);
 
-    expect(settingsManager.getPackages()).toEqual(["npm:@openclaw/example"]);
+    expect(settingsManager.getPackages()).toEqual(["npm:@nodoassist/example"]);
     expect(settingsManager.getCompactionReserveTokens()).toBe(50_000);
 
     await settingsManager.flush();
     await settingsManager.reload();
 
-    expect(settingsManager.getPackages()).toEqual(["npm:@openclaw/example"]);
+    expect(settingsManager.getPackages()).toEqual(["npm:@nodoassist/example"]);
     expect(settingsManager.getCompactionReserveTokens()).toBe(50_000);
   });
 });

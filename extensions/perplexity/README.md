@@ -1,12 +1,12 @@
-# OpenClaw Perplexity Plugin
+# NodoAssist Perplexity Plugin
 
-Official OpenClaw plugin for Perplexity.
+Official NodoAssist plugin for Perplexity.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/perplexity-plugin
-openclaw gateway restart
+nodoassist plugins install @nodoassist/perplexity-plugin
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/tools/perplexity-search> for setup and configuration.

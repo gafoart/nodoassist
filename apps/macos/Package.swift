@@ -1,18 +1,18 @@
 // swift-tools-version: 6.2
-// Package manifest for the OpenClaw macOS companion (menu bar app + IPC library).
+// Package manifest for the NodoAssist macOS companion (menu bar app + IPC library).
 
 import PackageDescription
 
 let package = Package(
-    name: "OpenClaw",
+    name: "NodoAssist",
     platforms: [
         .macOS(.v15),
     ],
     products: [
-        .library(name: "OpenClawIPC", targets: ["OpenClawIPC"]),
-        .library(name: "OpenClawDiscovery", targets: ["OpenClawDiscovery"]),
-        .executable(name: "OpenClaw", targets: ["OpenClaw"]),
-        .executable(name: "openclaw-mac", targets: ["OpenClawMacCLI"]),
+        .library(name: "NodoAssistIPC", targets: ["NodoAssistIPC"]),
+        .library(name: "NodoAssistDiscovery", targets: ["NodoAssistDiscovery"]),
+        .executable(name: "NodoAssist", targets: ["NodoAssist"]),
+        .executable(name: "nodoassist-mac", targets: ["NodoAssistMacCLI"]),
     ],
     dependencies: [
         .package(url: "https://github.com/orchetect/MenuBarExtraAccess", exact: "1.3.0"),
@@ -21,33 +21,33 @@ let package = Package(
         .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.0"),
         .package(url: "https://github.com/steipete/Peekaboo.git", exact: "3.5.2"),
         .package(url: "https://github.com/pointfreeco/swift-concurrency-extras", from: "1.3.1"),
-        .package(path: "../shared/OpenClawKit"),
+        .package(path: "../shared/NodoAssistKit"),
         .package(path: "../swabble"),
     ],
     targets: [
         .target(
-            name: "OpenClawIPC",
+            name: "NodoAssistIPC",
             dependencies: [],
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
             ]),
         .target(
-            name: "OpenClawDiscovery",
+            name: "NodoAssistDiscovery",
             dependencies: [
-                .product(name: "OpenClawKit", package: "OpenClawKit"),
+                .product(name: "NodoAssistKit", package: "NodoAssistKit"),
             ],
-            path: "Sources/OpenClawDiscovery",
+            path: "Sources/NodoAssistDiscovery",
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
             ]),
         .executableTarget(
-            name: "OpenClaw",
+            name: "NodoAssist",
             dependencies: [
-                "OpenClawIPC",
-                "OpenClawDiscovery",
-                .product(name: "OpenClawKit", package: "OpenClawKit"),
-                .product(name: "OpenClawChatUI", package: "OpenClawKit"),
-                .product(name: "OpenClawProtocol", package: "OpenClawKit"),
+                "NodoAssistIPC",
+                "NodoAssistDiscovery",
+                .product(name: "NodoAssistKit", package: "NodoAssistKit"),
+                .product(name: "NodoAssistChatUI", package: "NodoAssistKit"),
+                .product(name: "NodoAssistProtocol", package: "NodoAssistKit"),
                 .product(name: "SwabbleKit", package: "swabble"),
                 .product(name: "MenuBarExtraAccess", package: "MenuBarExtraAccess"),
                 .product(name: "Subprocess", package: "swift-subprocess"),
@@ -62,31 +62,31 @@ let package = Package(
                 "Resources/Localizable.xcstrings",
             ],
             resources: [
-                .copy("Resources/OpenClaw.icns"),
+                .copy("Resources/NodoAssist.icns"),
                 .copy("Resources/DeviceModels"),
             ],
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
             ]),
         .executableTarget(
-            name: "OpenClawMacCLI",
+            name: "NodoAssistMacCLI",
             dependencies: [
-                "OpenClawDiscovery",
-                .product(name: "OpenClawKit", package: "OpenClawKit"),
-                .product(name: "OpenClawProtocol", package: "OpenClawKit"),
+                "NodoAssistDiscovery",
+                .product(name: "NodoAssistKit", package: "NodoAssistKit"),
+                .product(name: "NodoAssistProtocol", package: "NodoAssistKit"),
             ],
-            path: "Sources/OpenClawMacCLI",
+            path: "Sources/NodoAssistMacCLI",
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
             ]),
         .testTarget(
-            name: "OpenClawIPCTests",
+            name: "NodoAssistIPCTests",
             dependencies: [
-                "OpenClawIPC",
-                "OpenClaw",
-                "OpenClawMacCLI",
-                "OpenClawDiscovery",
-                .product(name: "OpenClawProtocol", package: "OpenClawKit"),
+                "NodoAssistIPC",
+                "NodoAssist",
+                "NodoAssistMacCLI",
+                "NodoAssistDiscovery",
+                .product(name: "NodoAssistProtocol", package: "NodoAssistKit"),
                 .product(name: "SwabbleKit", package: "swabble"),
             ],
             swiftSettings: [

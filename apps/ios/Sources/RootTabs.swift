@@ -1,5 +1,5 @@
-import OpenClawKit
-import OpenClawProtocol
+import NodoAssistKit
+import NodoAssistProtocol
 import SwiftUI
 import UIKit
 
@@ -59,7 +59,7 @@ struct RootTabs: View {
     }
 
     static func initialTab(arguments: [String]) -> AppTab {
-        guard let flagIndex = arguments.firstIndex(of: "--openclaw-initial-tab") else {
+        guard let flagIndex = arguments.firstIndex(of: "--nodoassist-initial-tab") else {
             return self.fallbackInitialTab(arguments: arguments)
         }
         let valueIndex = arguments.index(after: flagIndex)
@@ -99,7 +99,7 @@ struct RootTabs: View {
     }
 
     static func requestedInitialSidebarDestination(arguments: [String]) -> SidebarDestination? {
-        guard let flagIndex = arguments.firstIndex(of: "--openclaw-initial-destination") else {
+        guard let flagIndex = arguments.firstIndex(of: "--nodoassist-initial-destination") else {
             return nil
         }
         let valueIndex = arguments.index(after: flagIndex)
@@ -114,7 +114,7 @@ struct RootTabs: View {
 
     private static var initialChatSessionKey: String? {
         let arguments = ProcessInfo.processInfo.arguments
-        guard let flagIndex = arguments.firstIndex(of: "--openclaw-chat-session") else {
+        guard let flagIndex = arguments.firstIndex(of: "--nodoassist-chat-session") else {
             return nil
         }
         let valueIndex = arguments.index(after: flagIndex)
@@ -145,7 +145,7 @@ struct RootTabs: View {
             self.rootLifecycle(
                 self.rootOverlays(
                     self.tabContent
-                        .tint(OpenClawBrand.accent))))
+                        .tint(NodoAssistBrand.accent))))
     }
 
     @ViewBuilder
@@ -178,7 +178,7 @@ struct RootTabs: View {
                 Label(
                     "Talk",
                     systemImage: self.appModel.talkMode.isEnabled ? "waveform.circle.fill" : "waveform.circle")
-                    .font(OpenClawType.captionSemiBold)
+                    .font(NodoAssistType.captionSemiBold)
             }
             .tag(AppTab.talk)
 
@@ -212,7 +212,7 @@ struct RootTabs: View {
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
                 .tag(AppTab.settings)
         }
-        .openClawTabBarBehavior()
+        .nodoAssistTabBarBehavior()
     }
 
     private var sidebarSplitContent: some View {
@@ -251,7 +251,7 @@ struct RootTabs: View {
             self.sidebarDetailNavigationShell
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .background(OpenClawProBackground())
+        .background(NodoAssistProBackground())
     }
 
     private func sidebarDrawerContent(sidebarWidth: CGFloat) -> some View {
@@ -304,12 +304,12 @@ struct RootTabs: View {
 
     private var sidebarIdentityHeader: some View {
         HStack(spacing: 10) {
-            OpenClawProMark(size: 30, shadowRadius: 3)
+            NodoAssistProMark(size: 30, shadowRadius: 3)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("OpenClaw")
-                    .font(OpenClawType.headline)
+                Text("NodoAssist")
+                    .font(NodoAssistType.headline)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
@@ -318,10 +318,10 @@ struct RootTabs: View {
                         .font(.system(size: 7, weight: .bold))
                         .foregroundStyle(self.sidebarGatewayStatusColor)
                     Text(self.sidebarGatewayStatusTitle)
-                        .font(OpenClawType.captionMedium)
+                        .font(NodoAssistType.captionMedium)
                         .lineLimit(1)
                 }
-                .font(OpenClawType.captionMedium)
+                .font(NodoAssistType.captionMedium)
                 .foregroundStyle(.secondary)
             }
 
@@ -338,7 +338,7 @@ struct RootTabs: View {
             self.sidebarHorizontalSeparator
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("OpenClaw \(self.sidebarGatewayStatusTitle)")
+        .accessibilityLabel("NodoAssist \(self.sidebarGatewayStatusTitle)")
     }
 
     private var sidebarGatewayStatusTitle: String {
@@ -366,7 +366,7 @@ struct RootTabs: View {
             }
         }
         .listStyle(.sidebar)
-        .tint(OpenClawBrand.accent)
+        .tint(NodoAssistBrand.accent)
         .scrollContentBackground(.hidden)
         .background(Color(uiColor: .systemBackground))
     }
@@ -386,11 +386,11 @@ struct RootTabs: View {
     private var sidebarGatewayStatusColor: Color {
         switch self.gatewayStatus {
         case .connected:
-            OpenClawBrand.ok
+            NodoAssistBrand.ok
         case .connecting:
-            OpenClawBrand.accent
+            NodoAssistBrand.accent
         case .error:
-            OpenClawBrand.warn
+            NodoAssistBrand.warn
         case .disconnected:
             .secondary
         }
@@ -404,7 +404,7 @@ struct RootTabs: View {
             self.selectSidebarDestination(destination)
         } label: {
             Label(title ?? destination.sidebarTitle, systemImage: destination.systemImage)
-                .font(OpenClawType.subheadSemiBold)
+                .font(NodoAssistType.subheadSemiBold)
                 .lineLimit(1)
                 .minimumScaleFactor(0.82)
                 .truncationMode(.tail)
@@ -413,12 +413,12 @@ struct RootTabs: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
         }
-        .font(OpenClawType.subheadSemiBold)
+        .font(NodoAssistType.subheadSemiBold)
         .buttonStyle(.plain)
-        .foregroundStyle(destination == self.selectedSidebarDestination ? OpenClawBrand.accent : .primary)
+        .foregroundStyle(destination == self.selectedSidebarDestination ? NodoAssistBrand.accent : .primary)
         .listRowBackground(
             destination == self.selectedSidebarDestination
-                ? OpenClawBrand.accent.opacity(0.12)
+                ? NodoAssistBrand.accent.opacity(0.12)
                 : Color.clear)
         .listRowSeparator(.hidden, edges: .all)
     }
@@ -513,7 +513,7 @@ struct RootTabs: View {
                 headerLeadingAction: self.sidebarHeaderLeadingAction,
                 gatewayAction: { self.selectSidebarDestination(.gateway) })
         case .docs:
-            OpenClawDocsScreen(
+            NodoAssistDocsScreen(
                 headerLeadingAction: self.sidebarHeaderLeadingAction,
                 gatewayAction: { self.selectSidebarDestination(.gateway) })
         case .settings:
@@ -589,7 +589,7 @@ struct RootTabs: View {
             layoutMode: self.isSidebarDrawerLayout ? .drawer : .split)
     }
 
-    private var sidebarHeaderLeadingAction: OpenClawSidebarHeaderAction? {
+    private var sidebarHeaderLeadingAction: NodoAssistSidebarHeaderAction? {
         guard Self.shouldShowSidebarRevealInDestinationHeader(
             isSidebarVisible: self.isSidebarVisible,
             layoutMode: self.isSidebarDrawerLayout ? .drawer : .split)
@@ -597,25 +597,25 @@ struct RootTabs: View {
             return nil
         }
         if self.isSidebarVisible {
-            return OpenClawSidebarHeaderAction(
+            return NodoAssistSidebarHeaderAction(
                 systemName: "sidebar.left",
                 accessibilityLabel: "Hide Sidebar",
                 accessibilityIdentifier: Self.sidebarHideButtonAccessibilityIdentifier,
                 action: { self.hideSidebar() })
         }
-        return OpenClawSidebarHeaderAction(
+        return NodoAssistSidebarHeaderAction(
             systemName: "sidebar.left",
             accessibilityLabel: "Show Sidebar",
             accessibilityIdentifier: Self.sidebarShowButtonAccessibilityIdentifier,
             action: { self.showSidebar() })
     }
 
-    private var phoneChatReturnAction: OpenClawSidebarHeaderAction? {
+    private var phoneChatReturnAction: NodoAssistSidebarHeaderAction? {
         guard !self.usesSidebarTabs, let phoneChatReturn else { return nil }
-        return OpenClawSidebarHeaderAction(
+        return NodoAssistSidebarHeaderAction(
             systemName: "chevron.left",
             accessibilityLabel: "Back to \(phoneChatReturn.destination.title)",
-            accessibilityIdentifier: "OpenClawChatBackToControlDetailButton",
+            accessibilityIdentifier: "NodoAssistChatBackToControlDetailButton",
             action: { self.openPhoneControlDetail(phoneChatReturn.destination) })
     }
 
@@ -632,12 +632,12 @@ struct RootTabs: View {
             self.hideSidebar()
         } label: {
             Image(systemName: self.isSidebarDrawerLayout ? "xmark" : "sidebar.left")
-                .font(OpenClawType.subheadSemiBold)
+                .font(NodoAssistType.subheadSemiBold)
         }
         .frame(width: 44, height: 44)
         .contentShape(Rectangle())
         .buttonStyle(.plain)
-        .foregroundStyle(OpenClawBrand.accent)
+        .foregroundStyle(NodoAssistBrand.accent)
         .accessibilityLabel("Hide Sidebar")
         .accessibilityIdentifier(Self.sidebarHideButtonAccessibilityIdentifier)
     }
@@ -912,7 +912,7 @@ struct RootTabs: View {
                     GatewayQuickSetupSheet()
                         .environment(self.appModel)
                         .environment(self.gatewayController)
-                        .openClawSheetChrome()
+                        .nodoAssistSheetChrome()
                 }
             }
             .fullScreenCover(isPresented: self.$showOnboarding) {
@@ -996,7 +996,7 @@ struct RootTabs: View {
                 activeAgentCaption: "Routes chat and talk",
                 agentCount: agents.count,
                 agents: Array(agents.prefix(6)),
-                footer: "OpenClaw only runs phone-side capabilities while the app is connected and permitted.")
+                footer: "NodoAssist only runs phone-side capabilities while the app is connected and permitted.")
         case .connecting:
             return RootTabsHomeCanvasPayload(
                 gatewayState: "connecting",
@@ -1014,7 +1014,7 @@ struct RootTabs: View {
         case .error, .disconnected:
             return RootTabsHomeCanvasPayload(
                 gatewayState: self.gatewayStatus == .error ? "error" : "offline",
-                eyebrow: self.gatewayStatus == .error ? "Gateway needs attention" : "OpenClaw iOS",
+                eyebrow: self.gatewayStatus == .error ? "Gateway needs attention" : "NodoAssist iOS",
                 title: "Pair a gateway",
                 subtitle:
                 "Connect this phone as a local node for chat, realtime voice, share intake, and approved device tools.",
@@ -1025,7 +1025,7 @@ struct RootTabs: View {
                 agentCount: agents.count,
                 agents: Array(agents.prefix(4)),
                 footer:
-                "Use Settings to scan a pairing QR code or paste a setup code from your OpenClaw gateway.")
+                "Use Settings to scan a pairing QR code or paste a setup code from your NodoAssist gateway.")
         }
     }
 

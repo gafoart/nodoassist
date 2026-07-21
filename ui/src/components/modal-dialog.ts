@@ -13,7 +13,7 @@ const FOCUSABLE_SELECTOR = [
   "[tabindex]:not([tabindex='-1'])",
 ].join(",");
 
-export class OpenClawModalDialog extends LitElement {
+export class NodoAssistModalDialog extends LitElement {
   @property() label = "";
   @property() description = "";
 
@@ -98,8 +98,8 @@ export class OpenClawModalDialog extends LitElement {
   }
 
   override render() {
-    const labelId = this.label ? "openclaw-modal-dialog-label" : "";
-    const descriptionId = this.description ? "openclaw-modal-dialog-description" : "";
+    const labelId = this.label ? "nodoassist-modal-dialog-label" : "";
+    const descriptionId = this.description ? "nodoassist-modal-dialog-description" : "";
     return html`
       <dialog
         role="dialog"
@@ -269,12 +269,12 @@ export class OpenClawModalDialog extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-modal-dialog")) {
-  customElements.define("openclaw-modal-dialog", OpenClawModalDialog);
+if (!customElements.get("nodoassist-modal-dialog")) {
+  customElements.define("nodoassist-modal-dialog", NodoAssistModalDialog);
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "openclaw-modal-dialog": OpenClawModalDialog;
+    "nodoassist-modal-dialog": NodoAssistModalDialog;
   }
 }

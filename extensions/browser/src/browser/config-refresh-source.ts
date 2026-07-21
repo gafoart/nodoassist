@@ -7,10 +7,10 @@
 import {
   getRuntimeConfig,
   getRuntimeConfigSourceSnapshot,
-  type OpenClawConfig,
+  type NodoAssistConfig,
 } from "../config/config.js";
 
 /** Load the best available config object for browser route runtime refresh. */
-export function loadBrowserConfigForRuntimeRefresh(): OpenClawConfig {
+export function loadBrowserConfigForRuntimeRefresh(): NodoAssistConfig {
   return getRuntimeConfigSourceSnapshot() ?? getRuntimeConfig();
 }

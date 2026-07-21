@@ -2,7 +2,7 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+import { resolvePreferredNodoAssistTmpDir } from "nodoassist/plugin-sdk/temp-path";
 import {
   appendQaChildOutput,
   appendQaChildOutputTail,
@@ -180,12 +180,12 @@ export async function loadQaRunnerModelOptions(params: {
 }) {
   const abortKillGraceMs = Math.max(1, params.abortKillGraceMs ?? CATALOG_ABORT_KILL_GRACE_MS);
   const tempRoot = await fs.mkdtemp(
-    path.join(resolvePreferredOpenClawTmpDir(), "openclaw-qa-model-catalog-"),
+    path.join(resolvePreferredNodoAssistTmpDir(), "nodoassist-qa-model-catalog-"),
   );
   const workspaceDir = path.join(tempRoot, "workspace");
   const stateDir = path.join(tempRoot, "state");
   const homeDir = path.join(tempRoot, "home");
-  const configPath = path.join(tempRoot, "openclaw.json");
+  const configPath = path.join(tempRoot, "nodoassist.json");
 
   try {
     await Promise.all([
@@ -223,11 +223,11 @@ export async function loadQaRunnerModelOptions(params: {
         env: {
           ...process.env,
           HOME: homeDir,
-          OPENCLAW_HOME: homeDir,
-          OPENCLAW_CONFIG_PATH: configPath,
-          OPENCLAW_STATE_DIR: stateDir,
-          OPENCLAW_OAUTH_DIR: path.join(stateDir, "credentials"),
-          OPENCLAW_CODEX_DISCOVERY_LIVE: "0",
+          NODOASSIST_HOME: homeDir,
+          NODOASSIST_CONFIG_PATH: configPath,
+          NODOASSIST_STATE_DIR: stateDir,
+          NODOASSIST_OAUTH_DIR: path.join(stateDir, "credentials"),
+          NODOASSIST_CODEX_DISCOVERY_LIVE: "0",
         },
         detached: process.platform !== "win32",
         stdio: ["ignore", "pipe", "pipe"],

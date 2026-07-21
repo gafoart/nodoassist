@@ -244,4 +244,4 @@ class ActivityPage extends LitElement {
   }
 }
 
-customElements.define("openclaw-activity-page", ActivityPage);
+customElements.define("nodoassist-activity-page", ActivityPage);

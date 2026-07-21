@@ -2,7 +2,7 @@
 import {
   hasOutboundReplyContent,
   isReasoningReplyPayload,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "nodoassist/plugin-sdk/reply-payload";
 import type { ReplyPayload } from "./types.js";
 
 /**

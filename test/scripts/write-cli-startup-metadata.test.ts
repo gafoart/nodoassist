@@ -25,7 +25,7 @@ function writeStartupMetadataSourceSignatureFixture(rootDir: string): void {
     ["extensions/canvas/src/a2ui-jsonl.ts", "export const a2uiJsonl = 'canvas';\n"],
     ["extensions/canvas/src/cli-helpers.ts", "export const canvasHelpers = 'canvas';\n"],
     ["extensions/canvas/src/cli.ts", "export const canvasCliHelp = 'canvas';\n"],
-    ["src/cli/banner.ts", "export const banner = 'openclaw';\n"],
+    ["src/cli/banner.ts", "export const banner = 'nodoassist';\n"],
     [
       "src/cli/daemon-cli/register-service-commands.ts",
       "export const gatewayServiceCommands = 'gateway';\n",
@@ -191,7 +191,7 @@ describe("write-cli-startup-metadata", () => {
   it.runIf(process.platform !== "win32")(
     "kills descendant processes when command help rendering times out",
     async () => {
-      const tempRoot = createTempDir("openclaw-startup-metadata-timeout-");
+      const tempRoot = createTempDir("nodoassist-startup-metadata-timeout-");
       const markerPath = path.join(tempRoot, "grandchild.pid");
       const grandchildScript = [
         "process.on('SIGTERM', () => {});",
@@ -225,7 +225,7 @@ describe("write-cli-startup-metadata", () => {
   it.runIf(process.platform !== "win32")(
     "waits for all command help descendants before re-raising parent signals",
     async () => {
-      const tempRoot = createTempDir("openclaw-startup-metadata-signal-");
+      const tempRoot = createTempDir("nodoassist-startup-metadata-signal-");
       const fastCommandPath = path.join(tempRoot, "fast-command.mjs");
       const fastReadyPath = path.join(tempRoot, "fast-ready");
       const commandPath = path.join(tempRoot, "command.mjs");
@@ -337,7 +337,7 @@ describe("write-cli-startup-metadata", () => {
   );
 
   it("writes startup metadata with populated root help text when dist falls back to source rendering", async () => {
-    const tempRoot = createTempDir("openclaw-startup-metadata-");
+    const tempRoot = createTempDir("nodoassist-startup-metadata-");
     const distDir = path.join(tempRoot, "dist");
     const extensionsDir = path.join(tempRoot, "extensions");
     const outputPath = path.join(distDir, "cli-startup-metadata.json");
@@ -347,7 +347,7 @@ describe("write-cli-startup-metadata", () => {
     writeFileSync(
       path.join(extensionsDir, "matrix", "package.json"),
       JSON.stringify({
-        openclaw: {
+        nodoassist: {
           channel: {
             id: "matrix",
             order: 120,
@@ -365,17 +365,17 @@ describe("write-cli-startup-metadata", () => {
       renderBundledRootHelpText: async () => {
         throw new Error("dist root help unavailable");
       },
-      renderSourceRootHelpText: () => "Usage: openclaw\n",
-      renderSourceBrowserHelpText: () => "Usage: openclaw browser\n",
-      renderSourceSecretsHelpText: () => "Usage: openclaw secrets\n",
-      renderSourceNodesHelpText: () => "Usage: openclaw nodes\n",
+      renderSourceRootHelpText: () => "Usage: nodoassist\n",
+      renderSourceBrowserHelpText: () => "Usage: nodoassist browser\n",
+      renderSourceSecretsHelpText: () => "Usage: nodoassist secrets\n",
+      renderSourceNodesHelpText: () => "Usage: nodoassist nodes\n",
       renderSourceSubcommandHelpTextRecord: () => ({
-        doctor: "Usage: openclaw doctor\n",
-        gateway: "Usage: openclaw gateway\n",
-        models: "Usage: openclaw models\n",
-        plugins: "Usage: openclaw plugins\n",
-        sessions: "Usage: openclaw sessions\n",
-        tasks: "Usage: openclaw tasks\n",
+        doctor: "Usage: nodoassist doctor\n",
+        gateway: "Usage: nodoassist gateway\n",
+        models: "Usage: nodoassist models\n",
+        plugins: "Usage: nodoassist plugins\n",
+        sessions: "Usage: nodoassist sessions\n",
+        tasks: "Usage: nodoassist tasks\n",
       }),
     });
 
@@ -398,23 +398,23 @@ describe("write-cli-startup-metadata", () => {
     expect(written.channelOptions).toContain("matrix");
     expect(written.generatorSignature).toMatch(/^[a-f0-9]{40}$/u);
     expect(written.browserHelpText).toContain("Usage:");
-    expect(written.browserHelpText).toContain("openclaw browser");
+    expect(written.browserHelpText).toContain("nodoassist browser");
     expect(written.secretsHelpText).toContain("Usage:");
-    expect(written.secretsHelpText).toContain("openclaw secrets");
+    expect(written.secretsHelpText).toContain("nodoassist secrets");
     expect(written.nodesHelpText).toContain("Usage:");
-    expect(written.nodesHelpText).toContain("openclaw nodes");
+    expect(written.nodesHelpText).toContain("nodoassist nodes");
     expect(written.rootHelpText).toContain("Usage:");
-    expect(written.rootHelpText).toContain("openclaw");
-    expect(written.subcommandHelpText.doctor).toContain("openclaw doctor");
-    expect(written.subcommandHelpText.gateway).toContain("openclaw gateway");
-    expect(written.subcommandHelpText.models).toContain("openclaw models");
-    expect(written.subcommandHelpText.plugins).toContain("openclaw plugins");
-    expect(written.subcommandHelpText.sessions).toContain("openclaw sessions");
-    expect(written.subcommandHelpText.tasks).toContain("openclaw tasks");
+    expect(written.rootHelpText).toContain("nodoassist");
+    expect(written.subcommandHelpText.doctor).toContain("nodoassist doctor");
+    expect(written.subcommandHelpText.gateway).toContain("nodoassist gateway");
+    expect(written.subcommandHelpText.models).toContain("nodoassist models");
+    expect(written.subcommandHelpText.plugins).toContain("nodoassist plugins");
+    expect(written.subcommandHelpText.sessions).toContain("nodoassist sessions");
+    expect(written.subcommandHelpText.tasks).toContain("nodoassist tasks");
   });
 
   it("renders independent startup help snapshots concurrently", async () => {
-    const tempRoot = createTempDir("openclaw-startup-metadata-concurrency-");
+    const tempRoot = createTempDir("nodoassist-startup-metadata-concurrency-");
     const distDir = path.join(tempRoot, "dist");
     const extensionsDir = path.join(tempRoot, "extensions");
     const outputPath = path.join(distDir, "cli-startup-metadata.json");
@@ -454,22 +454,22 @@ describe("write-cli-startup-metadata", () => {
       outputPath,
       extensionsDir,
       sourceRootDir: tempRoot,
-      renderBundledRootHelpText: async () => "Usage: openclaw\n",
-      renderSourceBrowserHelpText: renderAfterUnblock("browser", "Usage: openclaw browser\n"),
-      renderSourceSecretsHelpText: renderAfterUnblock("secrets", "Usage: openclaw secrets\n"),
-      renderSourceNodesHelpText: renderAfterUnblock("nodes", "Usage: openclaw nodes\n"),
+      renderBundledRootHelpText: async () => "Usage: nodoassist\n",
+      renderSourceBrowserHelpText: renderAfterUnblock("browser", "Usage: nodoassist browser\n"),
+      renderSourceSecretsHelpText: renderAfterUnblock("secrets", "Usage: nodoassist secrets\n"),
+      renderSourceNodesHelpText: renderAfterUnblock("nodes", "Usage: nodoassist nodes\n"),
       renderSourceSubcommandHelpTextRecord: async () => {
         started.push("subcommands");
         await new Promise<void>((resolve) => {
           unblockers.set("subcommands", resolve);
         });
         return {
-          doctor: "Usage: openclaw doctor\n",
-          gateway: "Usage: openclaw gateway\n",
-          models: "Usage: openclaw models\n",
-          plugins: "Usage: openclaw plugins\n",
-          sessions: "Usage: openclaw sessions\n",
-          tasks: "Usage: openclaw tasks\n",
+          doctor: "Usage: nodoassist doctor\n",
+          gateway: "Usage: nodoassist gateway\n",
+          models: "Usage: nodoassist models\n",
+          plugins: "Usage: nodoassist plugins\n",
+          sessions: "Usage: nodoassist sessions\n",
+          tasks: "Usage: nodoassist tasks\n",
         };
       },
     });
@@ -485,13 +485,13 @@ describe("write-cli-startup-metadata", () => {
       nodesHelpText: string;
       secretsHelpText: string;
     };
-    expect(written.browserHelpText).toContain("openclaw browser");
-    expect(written.secretsHelpText).toContain("openclaw secrets");
-    expect(written.nodesHelpText).toContain("openclaw nodes");
+    expect(written.browserHelpText).toContain("nodoassist browser");
+    expect(written.secretsHelpText).toContain("nodoassist secrets");
+    expect(written.nodesHelpText).toContain("nodoassist nodes");
   });
 
   it("regenerates nodes help when bundled canvas CLI help sources change", async () => {
-    const tempRoot = createTempDir("openclaw-startup-metadata-signature-");
+    const tempRoot = createTempDir("nodoassist-startup-metadata-signature-");
     const distDir = path.join(tempRoot, "dist");
     const extensionsDir = path.join(tempRoot, "extensions");
     const outputPath = path.join(distDir, "cli-startup-metadata.json");
@@ -506,20 +506,20 @@ describe("write-cli-startup-metadata", () => {
         outputPath,
         extensionsDir,
         sourceRootDir: tempRoot,
-        renderBundledRootHelpText: async () => "Usage: openclaw\n",
-        renderSourceBrowserHelpText: () => "Usage: openclaw browser\n",
-        renderSourceSecretsHelpText: () => "Usage: openclaw secrets\n",
+        renderBundledRootHelpText: async () => "Usage: nodoassist\n",
+        renderSourceBrowserHelpText: () => "Usage: nodoassist browser\n",
+        renderSourceSecretsHelpText: () => "Usage: nodoassist secrets\n",
         renderSourceNodesHelpText: () => {
           nodesRenderCount += 1;
-          return `Usage: openclaw nodes ${nodesRenderCount}\n`;
+          return `Usage: nodoassist nodes ${nodesRenderCount}\n`;
         },
         renderSourceSubcommandHelpTextRecord: () => ({
-          doctor: "Usage: openclaw doctor\n",
-          gateway: "Usage: openclaw gateway\n",
-          models: "Usage: openclaw models\n",
-          plugins: "Usage: openclaw plugins\n",
-          sessions: "Usage: openclaw sessions\n",
-          tasks: "Usage: openclaw tasks\n",
+          doctor: "Usage: nodoassist doctor\n",
+          gateway: "Usage: nodoassist gateway\n",
+          models: "Usage: nodoassist models\n",
+          plugins: "Usage: nodoassist plugins\n",
+          sessions: "Usage: nodoassist sessions\n",
+          tasks: "Usage: nodoassist tasks\n",
         }),
       });
     };
@@ -550,6 +550,6 @@ describe("write-cli-startup-metadata", () => {
       nodesHelpText: string;
     };
     expect(nodesRenderCount).toBe(3);
-    expect(written.nodesHelpText).toContain("openclaw nodes 3");
+    expect(written.nodesHelpText).toContain("nodoassist nodes 3");
   });
 });

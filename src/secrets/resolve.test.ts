@@ -15,7 +15,7 @@ vi.mock("node:child_process", async (importOriginal) => {
       spawnMock(...args) ?? actual.spawn(...args),
   };
 });
-import type { OpenClawConfig } from "../config/config.js";
+import type { NodoAssistConfig } from "../config/config.js";
 import { MAX_TIMER_TIMEOUT_MS } from "../shared/number-coercion.js";
 import {
   killPidIfAlive,
@@ -129,7 +129,7 @@ describe("secret ref resolver", () => {
   }
 
   beforeAll(async () => {
-    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-secrets-resolve-"));
+    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-secrets-resolve-"));
     const sharedExecDir = path.join(fixtureRoot, "shared-exec");
     await fs.mkdir(sharedExecDir, { recursive: true });
 
@@ -183,7 +183,7 @@ describe("secret ref resolver", () => {
   });
 
   it("resolves env refs via implicit default env provider", async () => {
-    const config: OpenClawConfig = {};
+    const config: NodoAssistConfig = {};
     const value = await resolveSecretRefString(
       { source: "env", provider: "default", id: "OPENAI_API_KEY" },
       {
@@ -680,7 +680,7 @@ describe("runExecResolver stream error handling", () => {
   });
 
   it("swallows stdout and stderr stream errors without rejecting", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-secrets-resolve-stream-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-secrets-resolve-stream-"));
     const scriptPath = path.join(dir, "resolver.cjs");
     await fs.writeFile(scriptPath, "module.exports = {};", "utf8");
     await fs.chmod(scriptPath, 0o700);

@@ -2,8 +2,8 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { ApplicationCommandType, type APIApplicationCommand } from "discord-api-types/v10";
-import { KeyedAsyncQueue } from "openclaw/plugin-sdk/keyed-async-queue";
-import { privateFileStore } from "openclaw/plugin-sdk/security-runtime";
+import { KeyedAsyncQueue } from "nodoassist/plugin-sdk/keyed-async-queue";
+import { privateFileStore } from "nodoassist/plugin-sdk/security-runtime";
 import {
   createApplicationCommand,
   deleteApplicationCommand,

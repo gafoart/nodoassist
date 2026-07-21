@@ -6,7 +6,7 @@ import { t } from "../i18n/index.ts";
 import { getSafeLocalStorage } from "../local-storage.ts";
 import { icons } from "./icons.ts";
 
-const UPDATE_BANNER_DISMISS_KEY = "openclaw:control-ui:update-banner-dismissed:v1";
+const UPDATE_BANNER_DISMISS_KEY = "nodoassist:control-ui:update-banner-dismissed:v1";
 
 type DismissedUpdateBanner = {
   latestVersion: string;
@@ -104,7 +104,7 @@ class UpdateBanner extends LitElement {
             >
               ${props.updateRunning ? t("chat.updating") : t("chat.updateNow")}
             </button>
-            <openclaw-tooltip .content=${t("common.dismiss")}>
+            <nodoassist-tooltip .content=${t("common.dismiss")}>
               <button
                 class="update-banner__close"
                 type="button"
@@ -116,13 +116,13 @@ class UpdateBanner extends LitElement {
               >
                 ${icons.x}
               </button>
-            </openclaw-tooltip>
+            </nodoassist-tooltip>
           </div>`
         : nothing}
     `;
   }
 }
 
-if (!customElements.get("openclaw-update-banner")) {
-  customElements.define("openclaw-update-banner", UpdateBanner);
+if (!customElements.get("nodoassist-update-banner")) {
+  customElements.define("nodoassist-update-banner", UpdateBanner);
 }

@@ -173,4 +173,4 @@ class InstancesPage extends LitElement {
   }
 }
 
-customElements.define("openclaw-instances-page", InstancesPage);
+customElements.define("nodoassist-instances-page", InstancesPage);

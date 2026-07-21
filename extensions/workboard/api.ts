@@ -1,2 +1,2 @@
 // Workboard API module exposes the plugin public contract.
-export { definePluginEntry, type OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
+export { definePluginEntry, type NodoAssistPluginApi } from "nodoassist/plugin-sdk/plugin-entry";

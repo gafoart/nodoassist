@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { OpenClawPluginApi, OpenClawPluginToolContext } from "openclaw/plugin-sdk/core";
+import type { NodoAssistPluginApi, NodoAssistPluginToolContext } from "nodoassist/plugin-sdk/core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createWhatsAppCallTool, testing } from "./agent-tools-call.js";
 import {
@@ -13,10 +13,10 @@ import {
 
 function createApi(params?: {
   speech?: Partial<
-    Awaited<ReturnType<OpenClawPluginApi["runtime"]["tts"]["textToSpeechTelephony"]>>
+    Awaited<ReturnType<NodoAssistPluginApi["runtime"]["tts"]["textToSpeechTelephony"]>>
   >;
-  runCommand?: OpenClawPluginApi["runtime"]["system"]["runCommandWithTimeout"];
-}): OpenClawPluginApi {
+  runCommand?: NodoAssistPluginApi["runtime"]["system"]["runCommandWithTimeout"];
+}): NodoAssistPluginApi {
   return {
     config: {},
     runtime: {
@@ -43,12 +43,12 @@ function createApi(params?: {
           })),
       },
     },
-  } as unknown as OpenClawPluginApi;
+  } as unknown as NodoAssistPluginApi;
 }
 
 function createContext(
-  overrides: Partial<OpenClawPluginToolContext> = {},
-): OpenClawPluginToolContext {
+  overrides: Partial<NodoAssistPluginToolContext> = {},
+): NodoAssistPluginToolContext {
   return {
     config: { channels: { whatsapp: { actions: { calls: true } } } },
     messageChannel: "whatsapp",
@@ -62,7 +62,7 @@ describe("WhatsApp call tool", () => {
   let stateDir: string;
 
   beforeEach(async () => {
-    stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-whatsapp-call-test-"));
+    stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-whatsapp-call-test-"));
   });
 
   afterEach(async () => {
@@ -128,7 +128,7 @@ describe("WhatsApp call tool", () => {
         killed: false,
         termination: "exit" as const,
       };
-    }) as OpenClawPluginApi["runtime"]["system"]["runCommandWithTimeout"];
+    }) as NodoAssistPluginApi["runtime"]["system"]["runCommandWithTimeout"];
     const api = createApi({ runCommand });
     const tool = testing.createWhatsAppCallToolWithDependencies(api, createContext(), {
       detectMeowCaller: async () => true,
@@ -225,7 +225,7 @@ describe("WhatsApp call tool", () => {
         killed: false,
         termination: "exit" as const,
       };
-    }) as OpenClawPluginApi["runtime"]["system"]["runCommandWithTimeout"];
+    }) as NodoAssistPluginApi["runtime"]["system"]["runCommandWithTimeout"];
     const tool = testing.createWhatsAppCallToolWithDependencies(
       createApi({ runCommand }),
       createContext(),
@@ -251,7 +251,7 @@ describe("WhatsApp call tool", () => {
       signal: "SIGTERM" as const,
       killed: true,
       termination: "timeout" as const,
-    })) as OpenClawPluginApi["runtime"]["system"]["runCommandWithTimeout"];
+    })) as NodoAssistPluginApi["runtime"]["system"]["runCommandWithTimeout"];
     const tool = testing.createWhatsAppCallToolWithDependencies(
       createApi({ runCommand }),
       createContext(),

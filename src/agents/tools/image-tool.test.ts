@@ -4,9 +4,9 @@ import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { isInboundPathAllowed } from "@openclaw/media-core/inbound-path-policy";
+import { isInboundPathAllowed } from "@nodoassist/media-core/inbound-path-policy";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { NodoAssistConfig } from "../../config/config.js";
 import type { ModelDefinitionConfig } from "../../config/types.models.js";
 import { encodePngRgba, fillPixel } from "../../media/png-encode.js";
 import type {
@@ -16,7 +16,7 @@ import type {
 } from "../../plugin-sdk/media-understanding.js";
 import { withEnvAsync } from "../../test-utils/env.js";
 import { withFetchPreconnect } from "../../test-utils/fetch-mock.js";
-import { createOpenClawCodingTools } from "../agent-tools.js";
+import { createNodoAssistCodingTools } from "../agent-tools.js";
 import type { AuthProfileCredential, AuthProfileStore } from "../auth-profiles/types.js";
 import { minimaxUnderstandImage } from "../minimax-vlm.js";
 import type { SandboxFsBridge } from "../sandbox/fs-bridge.js";
@@ -43,7 +43,7 @@ const publicSurfaceLoaderMocks = vi.hoisted(() => ({
             cfg,
           }: {
             accountId?: string | null;
-            cfg: OpenClawConfig;
+            cfg: NodoAssistConfig;
           }) => [
             ...((accountId
               ? cfg.channels?.imessage?.accounts?.[accountId]?.attachmentRoots
@@ -62,9 +62,9 @@ const publicSurfaceLoaderMocks = vi.hoisted(() => ({
 
 vi.mock("../../plugins/public-surface-loader.js", () => publicSurfaceLoaderMocks);
 
-type CreateOpenClawCodingToolsArgs = Parameters<typeof createOpenClawCodingTools>[0];
-type MockOpenClawToolsOptions = {
-  config?: OpenClawConfig;
+type CreateNodoAssistCodingToolsArgs = Parameters<typeof createNodoAssistCodingTools>[0];
+type MockNodoAssistToolsOptions = {
+  config?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   sandboxRoot?: string;
@@ -145,7 +145,7 @@ vi.mock("../agent-tools.abort.js", () => ({
 // and channel-inbound tests cover the real bundled contract loader.
 vi.mock("../../media/channel-inbound-roots.js", () => ({
   resolveChannelInboundAttachmentRootsForChannel: (params: {
-    cfg?: OpenClawConfig;
+    cfg?: NodoAssistConfig;
     channelId?: string | null;
     accountId?: string | null;
   }) => {
@@ -190,7 +190,7 @@ vi.mock("../auth-profiles.js", () => ({
   externalCliDiscoveryForProviderAuth: (params: { provider: string }) => params,
   ensureAuthProfileStore: (agentDir?: string) => {
     const store = readMockAuthProfileStore(agentDir);
-    if (process.env.OPENCLAW_TEST_CODEX_CLI_OAUTH === "1") {
+    if (process.env.NODOASSIST_TEST_CODEX_CLI_OAUTH === "1") {
       store.profiles["openai:default"] = {
         provider: "openai",
         type: "oauth",
@@ -214,7 +214,7 @@ vi.mock("../auth-profiles.js", () => ({
       .filter(([, profile]) => profile?.provider === provider)
       .map(([profileId]) => profileId),
   resolveAuthProfileOrder: (params: {
-    cfg?: OpenClawConfig;
+    cfg?: NodoAssistConfig;
     store: { profiles?: Record<string, { provider?: string }> };
     provider: string;
   }) => {
@@ -235,7 +235,7 @@ vi.mock("../auth-profiles/external-cli-sync.js", () => ({
       Array.from(options?.providerIds ?? []).map((providerId) => providerId.toLowerCase()),
     );
     if (
-      process.env.OPENCLAW_TEST_CODEX_CLI_OAUTH !== "1" ||
+      process.env.NODOASSIST_TEST_CODEX_CLI_OAUTH !== "1" ||
       (!providerIds.has("openai") && !providerIds.has("codex"))
     ) {
       return [];
@@ -257,7 +257,7 @@ vi.mock("../auth-profiles/external-cli-sync.js", () => ({
 
 vi.mock("../model-auth.js", () => ({
   resolveProviderEntryApiKeyProfileReference: (params: {
-    cfg?: OpenClawConfig;
+    cfg?: NodoAssistConfig;
     provider: string;
     store: { profiles?: Record<string, { provider?: string; type?: string }> };
   }) => {
@@ -273,19 +273,19 @@ vi.mock("../model-auth.js", () => ({
   },
   hasRuntimeAvailableProviderAuth: (params: {
     provider: string;
-    cfg?: OpenClawConfig;
+    cfg?: NodoAssistConfig;
     modelApi?: string;
   }) => {
     const providerConfig = params.cfg?.models?.providers?.[params.provider];
     if (params.provider === "codex") {
-      return process.env.OPENCLAW_TEST_CODEX_ROUTE === "1";
+      return process.env.NODOASSIST_TEST_CODEX_ROUTE === "1";
     }
     if (params.provider === "openai" && params.modelApi === "openai-responses") {
       return Boolean(process.env.OPENAI_API_KEY || providerConfig?.apiKey);
     }
     return Boolean(providerConfig?.apiKey);
   },
-  hasUsableCustomProviderApiKey: (cfg?: OpenClawConfig, provider?: string) => {
+  hasUsableCustomProviderApiKey: (cfg?: NodoAssistConfig, provider?: string) => {
     const providerConfig = cfg?.models?.providers?.[provider ?? ""];
     const apiKey = providerConfig?.apiKey;
     return typeof apiKey === "string" && apiKey.trim().length > 0;
@@ -314,10 +314,10 @@ vi.mock("../model-auth.js", () => ({
   },
 }));
 
-vi.mock("../openclaw-tools.js", async () => {
+vi.mock("../nodoassist-tools.js", async () => {
   const { createImageTool: createImageToolLocal } = await import("./image-tool.js");
   return {
-    createOpenClawTools: vi.fn((options?: MockOpenClawToolsOptions) => {
+    createNodoAssistTools: vi.fn((options?: MockNodoAssistToolsOptions) => {
       const imageTool = createImageToolLocal({
         config: options?.config,
         agentDir: options?.agentDir,
@@ -349,13 +349,15 @@ async function writeAuthProfiles(agentDir: string, profiles: unknown) {
   );
 }
 
-async function createOpenClawCodingToolsWithFreshModules(options?: CreateOpenClawCodingToolsArgs) {
+async function createNodoAssistCodingToolsWithFreshModules(
+  options?: CreateNodoAssistCodingToolsArgs,
+) {
   installFastLocalImageProviderStubs(minimaxProvider, moonshotProvider);
-  return createOpenClawCodingTools(options);
+  return createNodoAssistCodingTools(options);
 }
 
 async function withTempAgentDir<T>(run: (agentDir: string) => Promise<T>): Promise<T> {
-  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-image-"));
+  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-image-"));
   try {
     return await run(agentDir);
   } finally {
@@ -421,7 +423,7 @@ async function withTempWorkspacePng(
   options?: { parentDir?: string },
 ) {
   const parentDir = options?.parentDir ?? os.tmpdir();
-  const workspaceParent = await fs.mkdtemp(path.join(parentDir, "openclaw-workspace-image-"));
+  const workspaceParent = await fs.mkdtemp(path.join(parentDir, "nodoassist-workspace-image-"));
   try {
     const workspaceDir = path.join(workspaceParent, "workspace");
     await fs.mkdir(workspaceDir, { recursive: true });
@@ -515,7 +517,7 @@ function stubOpenAiCompletionsOkFetch(text = "ok") {
   return fetch;
 }
 
-function createMinimaxImageConfig(): OpenClawConfig {
+function createMinimaxImageConfig(): NodoAssistConfig {
   return {
     agents: {
       defaults: {
@@ -859,7 +861,7 @@ type ImageToolInstance = ReturnType<typeof createRequiredImageTool>;
 async function withTempSandboxState(
   run: (ctx: { stateDir: string; agentDir: string; sandboxRoot: string }) => Promise<void>,
 ) {
-  const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-image-sandbox-"));
+  const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-image-sandbox-"));
   const agentDir = path.join(stateDir, "agent");
   const sandboxRoot = path.join(stateDir, "sandbox");
   await fs.mkdir(agentDir, { recursive: true });
@@ -903,7 +905,7 @@ describe("image tool implicit imageModel config", () => {
   type Profiles = AuthProfileStore["profiles"];
   type ImplicitImageRoutingCase = {
     name: string;
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     profiles?: Profiles;
     codexRoute?: boolean;
     openAiApiKey?: boolean;
@@ -912,10 +914,10 @@ describe("image tool implicit imageModel config", () => {
 
   const openAiPrimaryCfg = {
     agents: { defaults: { model: { primary: "openai/gpt-5.4" } } },
-  } satisfies OpenClawConfig;
+  } satisfies NodoAssistConfig;
   const anthropicPrimaryCfg = {
     agents: { defaults: { model: { primary: "anthropic/claude-sonnet-4-6" } } },
-  } satisfies OpenClawConfig;
+  } satisfies NodoAssistConfig;
   const codexImageModel = { primary: "codex/gpt-5.5" };
   const openAiDefaultImageModel = { primary: "openai/gpt-5.4-mini" };
 
@@ -950,8 +952,8 @@ describe("image tool implicit imageModel config", () => {
     "DASHSCOPE_API_KEY",
     "ZAI_API_KEY",
     "Z_AI_API_KEY",
-    "OPENCLAW_TEST_CODEX_CLI_OAUTH",
-    "OPENCLAW_TEST_CODEX_ROUTE",
+    "NODOASSIST_TEST_CODEX_CLI_OAUTH",
+    "NODOASSIST_TEST_CODEX_ROUTE",
     // Avoid implicit Copilot provider discovery hitting the network in tests.
     "COPILOT_GITHUB_TOKEN",
     "GH_TOKEN",
@@ -1060,7 +1062,7 @@ describe("image tool implicit imageModel config", () => {
     "$name",
     async ({ cfg, profiles, codexRoute, openAiApiKey, expected }) => {
       if (codexRoute) {
-        vi.stubEnv("OPENCLAW_TEST_CODEX_ROUTE", "1");
+        vi.stubEnv("NODOASSIST_TEST_CODEX_ROUTE", "1");
       }
       if (openAiApiKey) {
         vi.stubEnv("OPENAI_API_KEY", "openai-test");
@@ -1083,8 +1085,8 @@ describe("image tool implicit imageModel config", () => {
   it("uses Codex media when OAuth-only OpenAI has configured vision model metadata", async () => {
     await withTempAgentDir(async (agentDir) => {
       await writeProfiles(agentDir, { "openai:chatgpt": openAiOAuthProfile() });
-      vi.stubEnv("OPENCLAW_TEST_CODEX_ROUTE", "1");
-      const cfg: OpenClawConfig = {
+      vi.stubEnv("NODOASSIST_TEST_CODEX_ROUTE", "1");
+      const cfg: NodoAssistConfig = {
         ...openAiPrimaryCfg,
         models: {
           providers: {
@@ -1105,7 +1107,7 @@ describe("image tool implicit imageModel config", () => {
   it("keeps configured OpenAI vision metadata when direct OpenAI API key auth exists", async () => {
     vi.stubEnv("OPENAI_API_KEY", "openai-test");
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         ...openAiPrimaryCfg,
         models: {
           providers: {
@@ -1126,7 +1128,7 @@ describe("image tool implicit imageModel config", () => {
 
   it("preserves explicit OpenAI image model config without direct auth", async () => {
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "openai/gpt-5.4" },
@@ -1143,7 +1145,7 @@ describe("image tool implicit imageModel config", () => {
 
   it("preserves explicit Codex image model config", async () => {
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "openai/gpt-5.4" },
@@ -1158,8 +1160,8 @@ describe("image tool implicit imageModel config", () => {
 
   it("lets external CLI Codex OAuth survive the candidate auth filter", async () => {
     await withTempAgentDir(async (agentDir) => {
-      vi.stubEnv("OPENCLAW_TEST_CODEX_CLI_OAUTH", "1");
-      vi.stubEnv("OPENCLAW_TEST_CODEX_ROUTE", "1");
+      vi.stubEnv("NODOASSIST_TEST_CODEX_CLI_OAUTH", "1");
+      vi.stubEnv("NODOASSIST_TEST_CODEX_ROUTE", "1");
 
       expect(resolveImageModelConfigForTool({ cfg: openAiPrimaryCfg, agentDir })).toEqual(
         codexImageModel,
@@ -1169,8 +1171,8 @@ describe("image tool implicit imageModel config", () => {
 
   it("lets external CLI Codex OAuth survive a supplied scoped auth store", async () => {
     await withTempAgentDir(async (agentDir) => {
-      vi.stubEnv("OPENCLAW_TEST_CODEX_CLI_OAUTH", "1");
-      vi.stubEnv("OPENCLAW_TEST_CODEX_ROUTE", "1");
+      vi.stubEnv("NODOASSIST_TEST_CODEX_CLI_OAUTH", "1");
+      vi.stubEnv("NODOASSIST_TEST_CODEX_ROUTE", "1");
 
       expect(
         resolveImageModelConfigForTool({
@@ -1185,7 +1187,7 @@ describe("image tool implicit imageModel config", () => {
   it("does not re-import persisted OpenAI OAuth when a scoped auth store is supplied", async () => {
     await withTempAgentDir(async (agentDir) => {
       await writeProfiles(agentDir, { "openai:chatgpt": openAiOAuthProfile() });
-      vi.stubEnv("OPENCLAW_TEST_CODEX_ROUTE", "1");
+      vi.stubEnv("NODOASSIST_TEST_CODEX_ROUTE", "1");
 
       expect(
         resolveImageModelConfigForTool({
@@ -1213,7 +1215,7 @@ describe("image tool implicit imageModel config", () => {
         resolveDefaultMediaModel: resolveDefaultMediaModelSpy,
         resolveAutoMediaKeyProviders: resolveAutoMediaKeyProvidersSpy,
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "openai/gpt-5.4" } } },
       };
 
@@ -1240,7 +1242,7 @@ describe("image tool implicit imageModel config", () => {
         capabilities: ["image"],
         describeImage,
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "opencode-go/kimi-k2.6" } } },
       };
       const tool = createRequiredImageTool({
@@ -1297,7 +1299,7 @@ describe("image tool implicit imageModel config", () => {
       vi.stubEnv("MINIMAX_OAUTH_TOKEN", "minimax-oauth-test");
       vi.stubEnv("OPENAI_API_KEY", "openai-test");
       vi.stubEnv("ANTHROPIC_API_KEY", "anthropic-test");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "minimax/MiniMax-M2.7" } } },
       };
       expect(resolveImageModelConfigForTool({ cfg, agentDir })).toEqual({
@@ -1313,7 +1315,7 @@ describe("image tool implicit imageModel config", () => {
       vi.stubEnv("MINIMAX_API_KEY", "minimax-test");
       vi.stubEnv("OPENAI_API_KEY", "openai-test");
       vi.stubEnv("ANTHROPIC_API_KEY", "anthropic-test");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "minimax/MiniMax-M2.7" } } },
         models: {
           mode: "merge",
@@ -1337,7 +1339,7 @@ describe("image tool implicit imageModel config", () => {
 
   it("keeps MiniMax CN chat metadata off automatic image routing", async () => {
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "minimax-cn/MiniMax-M2.5" } } },
         models: {
           mode: "merge",
@@ -1387,7 +1389,7 @@ describe("image tool implicit imageModel config", () => {
         resolveDefaultMediaModel: ({ providerId, capability }) =>
           capability === "image" ? defaultImageModels.get(providerId.toLowerCase()) : undefined,
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         models: {
           mode: "merge",
           providers: {
@@ -1430,7 +1432,7 @@ describe("image tool implicit imageModel config", () => {
         resolveDefaultMediaModel: ({ providerId, capability }) =>
           capability === "image" && providerId === "minimax" ? "MiniMax-VL-01" : undefined,
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         models: {
           mode: "merge",
           providers: {
@@ -1468,7 +1470,7 @@ describe("image tool implicit imageModel config", () => {
           capabilities: ["image"],
           describeImage,
         });
-        const cfg: OpenClawConfig = {
+        const cfg: NodoAssistConfig = {
           agents: {
             defaults: {
               imageModel: { primary: "ollama/gemma4:26b-a4b-it-q4_K_M" },
@@ -1501,7 +1503,7 @@ describe("image tool implicit imageModel config", () => {
           capabilities: ["image"],
           describeImage,
         });
-        const cfg: OpenClawConfig = {
+        const cfg: NodoAssistConfig = {
           agents: {
             defaults: {
               imageModel: { primary: "ollama/gemma4:26b-a4b-it-q4_K_M" },
@@ -1547,7 +1549,7 @@ describe("image tool implicit imageModel config", () => {
       });
       vi.stubEnv("OPENAI_API_KEY", "openai-test");
       vi.stubEnv("ANTHROPIC_API_KEY", "anthropic-test");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "minimax-portal/MiniMax-M2.7" } } },
       };
       expect(resolveImageModelConfigForTool({ cfg, agentDir })).toEqual(
@@ -1560,7 +1562,7 @@ describe("image tool implicit imageModel config", () => {
   it("pairs opencode primary with the plugin-owned image model when auth exists", async () => {
     await withTempAgentDir(async (agentDir) => {
       vi.stubEnv("OPENCODE_API_KEY", "opencode-test");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "opencode/minimax-m2.7" } } },
       };
       expect(resolveImageModelConfigForTool({ cfg, agentDir })).toEqual({
@@ -1573,7 +1575,7 @@ describe("image tool implicit imageModel config", () => {
   it("pairs opencode-go primary with the Go plugin-owned image model when auth exists", async () => {
     await withTempAgentDir(async (agentDir) => {
       vi.stubEnv("OPENCODE_API_KEY", "opencode-test");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "opencode-go/minimax-m2.7" } } },
       };
       expect(resolveImageModelConfigForTool({ cfg, agentDir })).toEqual({
@@ -1588,7 +1590,7 @@ describe("image tool implicit imageModel config", () => {
       vi.stubEnv("ZAI_API_KEY", "zai-test");
       vi.stubEnv("OPENAI_API_KEY", "openai-test");
       vi.stubEnv("ANTHROPIC_API_KEY", "anthropic-test");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "zai/glm-4.7" } } },
       };
       expect(resolveImageModelConfigForTool({ cfg, agentDir })).toEqual(
@@ -1606,7 +1608,7 @@ describe("image tool implicit imageModel config", () => {
           "acme:default": { type: "api_key", provider: "acme", key: "sk-test" },
         },
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "acme/text-1" } } },
         models: {
           providers: {
@@ -1629,7 +1631,7 @@ describe("image tool implicit imageModel config", () => {
 
   it("pairs a custom provider when config declares its api key", async () => {
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "hatchery-qwen3.6-plus/text-1" } } },
         models: {
           providers: {
@@ -1659,7 +1661,7 @@ describe("image tool implicit imageModel config", () => {
           "kimchi:default": { type: "api_key", provider: "kimchi", key: "sk-test" },
         },
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "kimchi/text-1" } } },
         models: {
           providers: {
@@ -1692,7 +1694,7 @@ describe("image tool implicit imageModel config", () => {
           },
         },
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "aws-bedrock/text-1" } } },
         models: {
           providers: {
@@ -1712,7 +1714,7 @@ describe("image tool implicit imageModel config", () => {
 
   it("prefers explicit agents.defaults.imageModel", async () => {
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "minimax/MiniMax-M2.7" },
@@ -1728,7 +1730,7 @@ describe("image tool implicit imageModel config", () => {
 
   it("resolves providerless explicit image models from unique configured image providers", async () => {
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             imageModel: {
@@ -1769,7 +1771,7 @@ describe("image tool implicit imageModel config", () => {
         capabilities: ["image"],
         describeImage,
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             imageModel: { primary: "moondream" },
@@ -1800,7 +1802,7 @@ describe("image tool implicit imageModel config", () => {
 
   it("rejects ambiguous providerless explicit image models", async () => {
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             imageModel: { primary: "moondream" },
@@ -1828,7 +1830,7 @@ describe("image tool implicit imageModel config", () => {
 
   it("keeps unmatched providerless explicit image models on the legacy default-provider path", async () => {
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             imageModel: { primary: "gpt-5.4-mini" },
@@ -1848,7 +1850,7 @@ describe("image tool implicit imageModel config", () => {
     // adjusted via modelHasVision to discourage redundant usage.
     vi.stubEnv("OPENAI_API_KEY", "test-key");
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "acme/vision-1" },
@@ -1881,7 +1883,7 @@ describe("image tool implicit imageModel config", () => {
       installFastLocalImageProviderStubs(minimaxProvider, moonshotProvider);
       vi.stubEnv("MOONSHOT_API_KEY", "moonshot-test");
       const fetch = stubOpenAiCompletionsOkFetch("ok moonshot");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "moonshot/kimi-k2.5" },
@@ -1940,7 +1942,7 @@ describe("image tool implicit imageModel config", () => {
   it("falls back to the generic image runtime when openrouter has no media provider registration", async () => {
     await withTempAgentDir(async (agentDir) => {
       const fetch = stubOpenAiCompletionsOkFetch("ok openrouter");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "openrouter/google/gemini-2.5-flash-lite" },
@@ -1973,7 +1975,7 @@ describe("image tool implicit imageModel config", () => {
   it("falls back to the generic multi-image runtime when openrouter has no media provider registration", async () => {
     await withTempAgentDir(async (agentDir) => {
       const fetch = stubOpenAiCompletionsOkFetch("ok multi");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "openrouter/google/gemini-2.5-flash-lite" },
@@ -2022,7 +2024,7 @@ describe("image tool implicit imageModel config", () => {
         },
       });
       const fetch = stubMinimaxOkFetch();
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "minimax-portal/MiniMax-M2.7" },
@@ -2115,7 +2117,7 @@ describe("image tool implicit imageModel config", () => {
         expect(fetch).toHaveBeenCalledTimes(1);
 
         // File outside workspace is rejected even without sandbox.
-        const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-outside-"));
+        const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-outside-"));
         const outsideImage = path.join(outsideDir, "secret.png");
         await fs.writeFile(outsideImage, Buffer.from(ONE_PIXEL_PNG_B64, "base64"));
         try {
@@ -2133,7 +2135,7 @@ describe("image tool implicit imageModel config", () => {
     const fetch = stubMinimaxOkFetch();
     await withTempAgentDir(async (agentDir) => {
       const cfg = createMinimaxImageConfig();
-      const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-image-outside-"));
+      const outsideDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-image-outside-"));
       const outsideImage = path.join(outsideDir, "secret.png");
       await fs.writeFile(outsideImage, Buffer.from(ONE_PIXEL_PNG_B64, "base64"));
       try {
@@ -2164,11 +2166,11 @@ describe("image tool implicit imageModel config", () => {
         capabilities: ["image"],
         describeImage,
       });
-      const attachmentRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-imessage-root-"));
+      const attachmentRoot = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-imessage-root-"));
       const imagePath = path.join(attachmentRoot, "photo.png");
       await fs.writeFile(imagePath, Buffer.from(ONE_PIXEL_PNG_B64, "base64"));
       try {
-        const cfg: OpenClawConfig = {
+        const cfg: NodoAssistConfig = {
           agents: {
             defaults: {
               imageModel: { primary: "ollama/moondream" },
@@ -2234,14 +2236,14 @@ describe("image tool implicit imageModel config", () => {
         describeImage,
       });
       const attachmentRootParent = await fs.mkdtemp(
-        path.join(os.tmpdir(), "openclaw-imessage-wildcard-root-"),
+        path.join(os.tmpdir(), "nodoassist-imessage-wildcard-root-"),
       );
       const attachmentRoot = path.join(attachmentRootParent, "work", "Attachments");
       const imagePath = path.join(attachmentRoot, "photo.png");
       await fs.mkdir(attachmentRoot, { recursive: true });
       await fs.writeFile(imagePath, Buffer.from(ONE_PIXEL_PNG_B64, "base64"));
       try {
-        const cfg: OpenClawConfig = {
+        const cfg: NodoAssistConfig = {
           agents: {
             defaults: {
               imageModel: { primary: "ollama/moondream" },
@@ -2281,13 +2283,13 @@ describe("image tool implicit imageModel config", () => {
     });
   });
 
-  it("allows workspace images via createOpenClawCodingTools when workspace root is explicit", async () => {
+  it("allows workspace images via createNodoAssistCodingTools when workspace root is explicit", async () => {
     await withTempWorkspacePng(async ({ workspaceDir, imagePath }) => {
       const fetch = stubMinimaxOkFetch();
       await withTempAgentDir(async (agentDir) => {
         const cfg = createMinimaxImageConfig();
 
-        const tools = await createOpenClawCodingToolsWithFreshModules({
+        const tools = await createNodoAssistCodingToolsWithFreshModules({
           config: cfg,
           agentDir,
           workspaceDir,
@@ -2337,7 +2339,7 @@ describe("image tool implicit imageModel config", () => {
     vi.stubEnv("MINIMAX_API_KEY", "minimax-test");
 
     await withTempAgentDir(async (agentDir) => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         ...createMinimaxImageConfig(),
         tools: { web: { fetch: { ssrfPolicy: { allowRfc2544BenchmarkRange: true } } } },
       };
@@ -2396,7 +2398,7 @@ describe("image tool implicit imageModel config", () => {
       const sandbox = { root: sandboxRoot, bridge: createHostSandboxFsBridge(sandboxRoot) };
 
       vi.stubEnv("OPENAI_API_KEY", "openai-test");
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: { defaults: { model: { primary: "minimax/MiniMax-M2.7" } } },
       };
       const tool = createRequiredImageTool({ config: cfg, agentDir, sandbox });
@@ -2419,12 +2421,12 @@ describe("image tool implicit imageModel config", () => {
       );
       const sandbox = createUnsafeMountedSandbox({ sandboxRoot, agentRoot: agentDir });
       const fetch = stubMinimaxOkFetch();
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         ...createMinimaxImageConfig(),
         tools: { fs: { workspaceOnly: true } },
       };
 
-      const tools = await createOpenClawCodingToolsWithFreshModules({
+      const tools = await createNodoAssistCodingToolsWithFreshModules({
         config: cfg,
         agentDir,
         sandbox,
@@ -2461,7 +2463,7 @@ describe("image tool implicit imageModel config", () => {
 
       const fetch = stubMinimaxOkFetch();
 
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "minimax/MiniMax-M2.7" },
@@ -2474,7 +2476,7 @@ describe("image tool implicit imageModel config", () => {
 
       const res = await tool.execute("t1", {
         prompt: "Describe the image.",
-        image: "@/Users/steipete/.openclaw/media/inbound/photo.png",
+        image: "@/Users/steipete/.nodoassist/media/inbound/photo.png",
       });
 
       expect(fetch).toHaveBeenCalledTimes(1);
@@ -2524,7 +2526,7 @@ describe("image tool data URL support", () => {
           models: [model.mediaInput.image],
         }),
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             imageModel: { primary: "openai/tiny-vision" },
@@ -2579,7 +2581,7 @@ describe("image tool data URL support", () => {
           }),
         },
       );
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             imageModel: { primary: "openai/tiny-vision" },
@@ -2625,7 +2627,7 @@ describe("image tool data URL support", () => {
           return { text: "ok", model: params.model };
         },
       });
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             imageModel: { primary: "openai/plain-vision" },
@@ -2679,7 +2681,7 @@ describe("image tool MiniMax VLM routing", () => {
   async function createMinimaxVlmFixture(baseResp: { status_code: number; status_msg: string }) {
     const fetch = stubMinimaxFetch(baseResp, baseResp.status_code === 0 ? "ok" : "");
 
-    const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-minimax-vlm-"));
+    const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-minimax-vlm-"));
     vi.stubEnv("MINIMAX_API_KEY", "minimax-test");
     const cfg = createMinimaxImageConfig();
     const tool = createRequiredImageTool({ config: cfg, agentDir });
@@ -2831,14 +2833,14 @@ describe("image tool managed inbound media", () => {
   async function withManagedInboundPng(
     run: (params: { stateDir: string; mediaId: string; mediaPath: string }) => Promise<void>,
   ) {
-    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-image-managed-inbound-"));
+    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-image-managed-inbound-"));
     const inboundDir = path.join(stateDir, "media", "inbound");
     const mediaId = "claim-check-test.png";
     const mediaPath = path.join(inboundDir, mediaId);
     await fs.mkdir(inboundDir, { recursive: true });
     await fs.writeFile(mediaPath, Buffer.from(ONE_PIXEL_PNG_B64, "base64"));
     try {
-      await withEnvAsync({ OPENCLAW_STATE_DIR: stateDir }, async () => {
+      await withEnvAsync({ NODOASSIST_STATE_DIR: stateDir }, async () => {
         await run({ stateDir, mediaId, mediaPath });
       });
     } finally {
@@ -3140,12 +3142,12 @@ describe("image compression policy", () => {
         },
       },
     },
-  } satisfies OpenClawConfig;
+  } satisfies NodoAssistConfig;
 
   it("derives model metadata, quality preference, and image count from config", async () => {
     const cfg = {
       ...cfgWithImageModelMetadata,
-    } satisfies OpenClawConfig;
+    } satisfies NodoAssistConfig;
 
     await expect(
       testing.resolveImageCompressionPolicy({
@@ -3274,7 +3276,7 @@ describe("image compression policy", () => {
                 },
               },
             },
-          } satisfies OpenClawConfig,
+          } satisfies NodoAssistConfig,
           imageModelConfig: {
             primary: "anthropic/claude-opus-4.7-20260219",
           },

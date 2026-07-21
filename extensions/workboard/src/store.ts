@@ -4,8 +4,8 @@ import {
   isFutureDateTimestampMs,
   MAX_DATE_TIMESTAMP_MS,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "nodoassist/plugin-sdk/number-runtime";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import type {
   PersistedWorkboardAttachment,
   PersistedWorkboardBoard,

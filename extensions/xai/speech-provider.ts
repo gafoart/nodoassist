@@ -1,10 +1,10 @@
 // Xai provider module implements model/runtime integration.
 import {
   isProviderAuthProfileConfigured,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-auth";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
+  type NodoAssistConfig,
+} from "nodoassist/plugin-sdk/provider-auth";
+import { resolveApiKeyForProvider } from "nodoassist/plugin-sdk/provider-auth-runtime";
+import { normalizeResolvedSecretInputString } from "nodoassist/plugin-sdk/secret-input";
 import {
   trimToUndefined,
   type SpeechDirectiveTokenParseContext,
@@ -12,11 +12,11 @@ import {
   type SpeechProviderOverrides,
   type SpeechProviderPlugin,
   type SpeechSynthesisTarget,
-} from "openclaw/plugin-sdk/speech";
+} from "nodoassist/plugin-sdk/speech";
 import {
   asFiniteNumberInRange,
   normalizeLowercaseStringOrEmpty,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   isValidXaiTtsVoice,
   normalizeXaiLanguageCode,
@@ -280,7 +280,7 @@ export function buildXaiSpeechProvider(): SpeechProviderPlugin {
 // 3. xAI OAuth auth profile (cfg-scoped)
 async function resolveXaiAudioApiKey(
   configApiKey: string | undefined,
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
 ): Promise<string> {
   const direct = trimToUndefined(configApiKey) ?? trimToUndefined(process.env.XAI_API_KEY);
   if (direct) {
@@ -292,6 +292,6 @@ async function resolveXaiAudioApiKey(
     return oauthKey;
   }
   throw new Error(
-    "xAI credentials missing for TTS. Sign in with `openclaw onboard --auth-choice xai-oauth`, or run `openclaw onboard --auth-choice xai-api-key`, or set XAI_API_KEY.",
+    "xAI credentials missing for TTS. Sign in with `nodoassist onboard --auth-choice xai-oauth`, or run `nodoassist onboard --auth-choice xai-api-key`, or set XAI_API_KEY.",
   );
 }

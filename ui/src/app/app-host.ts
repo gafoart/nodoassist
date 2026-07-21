@@ -131,7 +131,7 @@ function isMobileNavLayout(): boolean {
   return globalThis.matchMedia?.("(max-width: 1100px)").matches ?? false;
 }
 
-class OpenClawApp extends LitElement {
+class NodoAssistApp extends LitElement {
   @state() private gatewayConnected = false;
   @state() private gatewayReconnecting = false;
   @state() private gatewayLastError: string | null = null;
@@ -193,7 +193,7 @@ class OpenClawApp extends LitElement {
       });
     }
     void this.runtime.start().catch((error: unknown) => {
-      console.error("[openclaw] application start failed", error);
+      console.error("[nodoassist] application start failed", error);
     });
   }
 
@@ -254,7 +254,7 @@ class OpenClawApp extends LitElement {
     }
     const gatewayUrlConfirmation = this.pendingGatewayUrl
       ? html`
-          <openclaw-gateway-url-confirmation
+          <nodoassist-gateway-url-confirmation
             .props=${{
               pendingGatewayUrl: this.pendingGatewayUrl,
               onConfirm: () => {
@@ -266,19 +266,19 @@ class OpenClawApp extends LitElement {
                 this.pendingGatewayUrl = null;
               },
             }}
-          ></openclaw-gateway-url-confirmation>
+          ></nodoassist-gateway-url-confirmation>
         `
       : nothing;
     // Embedded mobile terminals own the whole document. Keep the generic login
     // gate out of this path or a connecting native session exposes Web UI chrome.
     if (this.terminalOnly) {
       return html`
-        <openclaw-terminal-panel
+        <nodoassist-terminal-panel
           .client=${this.terminalClient}
           .available=${this.terminalAvailable}
           .themeMode=${resolveTerminalThemeMode()}
           fullscreen
-        ></openclaw-terminal-panel>
+        ></nodoassist-terminal-panel>
         ${!this.terminalAvailable && (this.gatewayConnected || this.gatewayLastError)
           ? html`<div class="terminal-view-unavailable">${t("terminal.unavailable")}</div>`
           : nothing}
@@ -299,17 +299,17 @@ class OpenClawApp extends LitElement {
       context.gateway.snapshot.client !== null;
     if (initialConnectPending) {
       return html`
-        <openclaw-tooltip-provider>
+        <nodoassist-tooltip-provider>
           ${renderConnectingSplash(context.basePath)} ${gatewayUrlConfirmation}
-        </openclaw-tooltip-provider>
+        </nodoassist-tooltip-provider>
       `;
     }
     const showLoginGate =
       !this.gatewayConnected && (this.loginGatePinned || !this.gatewayReconnecting);
     if (showLoginGate) {
       return html`
-        <openclaw-tooltip-provider>
-          <openclaw-login-gate
+        <nodoassist-tooltip-provider>
+          <nodoassist-login-gate
             .props=${{
               basePath: context.basePath,
               connected: this.gatewayConnected,
@@ -346,26 +346,26 @@ class OpenClawApp extends LitElement {
                 });
               },
             }}
-          ></openclaw-login-gate>
+          ></nodoassist-login-gate>
           ${gatewayUrlConfirmation}
-        </openclaw-tooltip-provider>
+        </nodoassist-tooltip-provider>
       `;
     }
     return html`
-      <openclaw-tooltip-provider>
-        <openclaw-github-link-hovercard-provider .client=${context.gateway.snapshot.client}>
+      <nodoassist-tooltip-provider>
+        <nodoassist-github-link-hovercard-provider .client=${context.gateway.snapshot.client}>
           ${gatewayUrlConfirmation}
-          <openclaw-app-shell
+          <nodoassist-app-shell
             .runtime=${runtime}
             .onboarding=${this.onboarding}
-          ></openclaw-app-shell>
-        </openclaw-github-link-hovercard-provider>
-      </openclaw-tooltip-provider>
+          ></nodoassist-app-shell>
+        </nodoassist-github-link-hovercard-provider>
+      </nodoassist-tooltip-provider>
     `;
   }
 }
 
-class OpenClawShell extends LitElement {
+class NodoAssistShell extends LitElement {
   @property({ attribute: false }) runtime?: ApplicationRuntime;
   @property({ attribute: false }) onboarding = false;
   @consume({ context: applicationContext, subscribe: false })
@@ -395,7 +395,7 @@ class OpenClawShell extends LitElement {
     devicePairSetup: null,
     devicePairPendingCount: 0,
   };
-  @query("openclaw-command-palette") private commandPalette?: CommandPalette;
+  @query("nodoassist-command-palette") private commandPalette?: CommandPalette;
   private commandPaletteTarget?: CommandPaletteTargetDetail;
   private navDrawerTrigger: HTMLElement | null = null;
   private agentsListClient: GatewayBrowserClient | null = null;
@@ -748,14 +748,14 @@ class OpenClawShell extends LitElement {
     // stays persisted for when the viewport returns to the desktop layout.
     const navCollapsed = this.navCollapsed && !navDrawerOpen;
     return html`
-      <openclaw-command-palette
+      <nodoassist-command-palette
         .onNavigate=${(routeId: RouteId) => this.navigate(routeId)}
         .onSelectSession=${(sessionKey: string) => {
           context.gateway.setSessionKey(sessionKey);
           this.navigate("chat", { search: searchForSession(sessionKey) });
         }}
         .onSlashCommand=${this.handleCommandPaletteSlashCommand}
-      ></openclaw-command-palette>
+      ></nodoassist-command-palette>
       <div
         class="shell ${activeRoute === "chat" ? "shell--chat" : ""} ${navCollapsed
           ? "shell--nav-collapsed"
@@ -771,7 +771,7 @@ class OpenClawShell extends LitElement {
           aria-label="Close navigation"
           @click=${() => this.closeNavDrawer({ restoreFocus: true })}
         ></button>
-        <openclaw-app-topbar
+        <nodoassist-app-topbar
           .routeId=${activeRoute}
           .basePath=${context.basePath}
           .agentLabel=${this.agentLabel}
@@ -783,9 +783,9 @@ class OpenClawShell extends LitElement {
           .onToggleDrawer=${(trigger: HTMLElement) => this.toggleNavigationSurface(trigger)}
           .onNavigate=${(routeId: string, options?: ApplicationNavigationOptions) =>
             this.navigate(routeId, options)}
-        ></openclaw-app-topbar>
+        ></nodoassist-app-topbar>
         <div class="shell-nav">
-          <openclaw-app-sidebar
+          <nodoassist-app-sidebar
             .basePath=${context.basePath}
             .activeRouteId=${activeRoute}
             .activePluginTabId=${activePluginTabId}
@@ -811,7 +811,7 @@ class OpenClawShell extends LitElement {
               this.navigate(routeId, options)}
             .onPreloadRoute=${(routeId: string) =>
               isRouteId(routeId) ? context.preload(routeId) : Promise.resolve()}
-          ></openclaw-app-sidebar>
+          ></nodoassist-app-sidebar>
         </div>
         <main
           class="content ${activeRoute === "chat" ? "content--chat" : ""} ${activeRoute ===
@@ -821,13 +821,13 @@ class OpenClawShell extends LitElement {
         >
           ${this.gatewayConnected
             ? nothing
-            : html`<openclaw-connection-banner
+            : html`<nodoassist-connection-banner
                 .props=${{
                   lastError: this.gatewayLastError,
                   onRetry: () => context.gateway.connect(),
                 }}
-              ></openclaw-connection-banner>`}
-          <openclaw-update-banner
+              ></nodoassist-connection-banner>`}
+          <nodoassist-update-banner
             .props=${{
               statusBanner: this.overlaySnapshot.updateStatusBanner,
               updateAvailable: this.overlaySnapshot.updateAvailable,
@@ -836,19 +836,19 @@ class OpenClawShell extends LitElement {
               onUpdate: () => context.overlays.runUpdate(),
               onDismiss: () => context.overlays.dismissUpdate(),
             }}
-          ></openclaw-update-banner>
-          <openclaw-router-outlet
+          ></nodoassist-update-banner>
+          <nodoassist-router-outlet
             .router=${runtime.router}
             .retryContext=${context}
             .onNotFound=${() => this.replaceChatWithCurrentSession()}
-          ></openclaw-router-outlet>
+          ></nodoassist-router-outlet>
         </main>
-        <openclaw-terminal-panel
+        <nodoassist-terminal-panel
           .client=${this.terminalClient}
           .available=${this.terminalAvailable}
           .themeMode=${resolveTerminalThemeMode()}
-        ></openclaw-terminal-panel>
-        <openclaw-exec-approval
+        ></nodoassist-terminal-panel>
+        <nodoassist-exec-approval
           .props=${{
             queue: this.overlaySnapshot.approvalQueue,
             busy: this.overlaySnapshot.approvalBusy,
@@ -856,7 +856,7 @@ class OpenClawShell extends LitElement {
             onDecision: (decision: Parameters<typeof context.overlays.decideApproval>[0]) =>
               context.overlays.decideApproval(decision),
           }}
-        ></openclaw-exec-approval>
+        ></nodoassist-exec-approval>
         ${renderDevicePairSetup({
           open: this.overlaySnapshot.devicePairSetupOpen,
           loading: this.overlaySnapshot.devicePairSetupLoading,
@@ -876,9 +876,9 @@ class OpenClawShell extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-app")) {
-  customElements.define("openclaw-app", OpenClawApp);
+if (!customElements.get("nodoassist-app")) {
+  customElements.define("nodoassist-app", NodoAssistApp);
 }
-if (!customElements.get("openclaw-app-shell")) {
-  customElements.define("openclaw-app-shell", OpenClawShell);
+if (!customElements.get("nodoassist-app-shell")) {
+  customElements.define("nodoassist-app-shell", NodoAssistShell);
 }

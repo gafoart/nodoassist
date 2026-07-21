@@ -1,13 +1,13 @@
-# Tavily OpenClaw plugin
+# Tavily NodoAssist plugin
 
-Official OpenClaw plugin for Tavily.
+Official NodoAssist plugin for Tavily.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/tavily-plugin
+nodoassist plugins install @nodoassist/tavily-plugin
 ```
 
 ## Docs
 
-See `docs/tools/tavily.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/tools/tavily`.
+See `docs/tools/tavily.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/tools/tavily`.

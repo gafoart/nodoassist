@@ -26,7 +26,7 @@ const overview: CrestodianOverview = {
   defaultAgentId: "main",
   agents: [{ id: "main", isDefault: true }],
   config: {
-    path: "/tmp/openclaw.json",
+    path: "/tmp/nodoassist.json",
     exists: true,
     valid: true,
     issues: [],

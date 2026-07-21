@@ -1,18 +1,18 @@
 import { commitConfigWithPendingPluginInstalls } from "../../cli/plugins-install-record-commit.js";
 import { refreshPluginRegistryAfterConfigMutation } from "../../cli/plugins-registry-refresh.js";
 import { replaceConfigFile } from "../../config/config.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import type { RuntimeEnv } from "../../runtime.js";
 
 export async function persistResolvedChannelPluginConfig(params: {
   resolved: {
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     configChanged: boolean;
     pluginInstalled: boolean;
   };
   baseHash?: string;
   runtime: RuntimeEnv;
-}): Promise<OpenClawConfig> {
+}): Promise<NodoAssistConfig> {
   if (!params.resolved.configChanged) {
     return params.resolved.cfg;
   }

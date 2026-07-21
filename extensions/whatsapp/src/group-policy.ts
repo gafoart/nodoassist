@@ -3,11 +3,11 @@ import {
   resolveChannelGroupRequireMention,
   resolveChannelGroupToolsPolicy,
   type GroupToolPolicyConfig,
-} from "openclaw/plugin-sdk/channel-policy";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "nodoassist/plugin-sdk/channel-policy";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 
 type WhatsAppGroupContext = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   groupId?: string | null;
   senderId?: string | null;

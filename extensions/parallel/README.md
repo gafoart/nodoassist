@@ -1,12 +1,12 @@
-# OpenClaw Parallel Plugin
+# NodoAssist Parallel Plugin
 
-Official OpenClaw plugin for Parallel.
+Official NodoAssist plugin for Parallel.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/parallel-plugin
-openclaw gateway restart
+nodoassist plugins install @nodoassist/parallel-plugin
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/tools/parallel-search> for setup and configuration.

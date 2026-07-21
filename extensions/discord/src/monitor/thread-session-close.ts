@@ -1,11 +1,11 @@
 // Discord plugin module implements thread session close behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import {
   listSessionEntries,
   patchSessionEntry,
   resolveStorePath,
-} from "openclaw/plugin-sdk/session-store-runtime";
-import { normalizeOptionalLowercaseString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/session-store-runtime";
+import { normalizeOptionalLowercaseString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 
 /**
  * Marks every session entry in the store whose key contains {@link threadId}
@@ -17,7 +17,7 @@ import { normalizeOptionalLowercaseString } from "openclaw/plugin-sdk/string-coe
  * any on-disk transcript history.
  */
 export async function closeDiscordThreadSessions(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId: string;
   threadId: string;
 }): Promise<number> {

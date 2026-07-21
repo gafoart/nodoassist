@@ -1,14 +1,14 @@
 // Discord plugin module implements native command.options behavior.
 import { ApplicationCommandOptionType } from "discord-api-types/v10";
-import { loadModelCatalog } from "openclaw/plugin-sdk/agent-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { loadModelCatalog } from "nodoassist/plugin-sdk/agent-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import {
   resolveCommandArgChoices,
   type ChatCommandDefinition,
-} from "openclaw/plugin-sdk/native-command-registry";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "nodoassist/plugin-sdk/native-command-registry";
+import { createSubsystemLogger } from "nodoassist/plugin-sdk/runtime-env";
+import { normalizeLowercaseStringOrEmpty } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import type { AutocompleteInteraction, CommandOptions } from "../internal/discord.js";
 
 const log = createSubsystemLogger("discord/native-command");
@@ -59,8 +59,8 @@ function resolveDiscordCommandLogLabel(command: ChatCommandDefinition): string {
 
 export function buildDiscordCommandOptions(params: {
   command: ChatCommandDefinition;
-  cfg: OpenClawConfig;
-  resolveConfig?: () => OpenClawConfig;
+  cfg: NodoAssistConfig;
+  resolveConfig?: () => NodoAssistConfig;
   authorizeChoiceContext?: (interaction: AutocompleteInteraction) => Promise<boolean>;
   resolveChoiceContext?: (
     interaction: AutocompleteInteraction,

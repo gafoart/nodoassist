@@ -127,7 +127,7 @@ function renderRealtimeTalkInputSetting(props: ChatRealtimeTalkOptionsProps) {
         })}
         ${props.onRealtimeTalkInputRefresh
           ? html`
-              <openclaw-tooltip .content=${refreshLabel}>
+              <nodoassist-tooltip .content=${refreshLabel}>
                 <button
                   type="button"
                   class="agent-chat__talk-input-refresh"
@@ -137,7 +137,7 @@ function renderRealtimeTalkInputSetting(props: ChatRealtimeTalkOptionsProps) {
                 >
                   ${props.realtimeTalkInputLoading ? icons.loader : icons.refresh}
                 </button>
-              </openclaw-tooltip>
+              </nodoassist-tooltip>
             `
           : nothing}
       </div>

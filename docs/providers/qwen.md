@@ -1,12 +1,12 @@
 ---
-summary: "Use Qwen Cloud through its OpenClaw plugin"
+summary: "Use Qwen Cloud through its NodoAssist plugin"
 read_when:
-  - You want to use Qwen with OpenClaw
+  - You want to use Qwen with NodoAssist
   - You previously used Qwen OAuth
 title: "Qwen"
 ---
 
-Qwen Cloud is an official external OpenClaw provider plugin with canonical id `qwen`. It targets Qwen Cloud / Alibaba DashScope Standard and Coding Plan endpoints, keeps legacy `modelstudio` ids working as a compatibility alias, and exposes the Qwen Portal token flow as a separate provider, [`qwen-oauth`](/providers/qwen-oauth).
+Qwen Cloud is an official external NodoAssist provider plugin with canonical id `qwen`. It targets Qwen Cloud / Alibaba DashScope Standard and Coding Plan endpoints, keeps legacy `modelstudio` ids working as a compatibility alias, and exposes the Qwen Portal token flow as a separate provider, [`qwen-oauth`](/providers/qwen-oauth).
 
 | Property               | Value                                      |
 | ---------------------- | ------------------------------------------ |
@@ -25,8 +25,8 @@ For `qwen3.6-plus`, use a **Standard (pay-as-you-go)** endpoint. It is not avail
 `qwen` ships as an official external plugin, not bundled with core. Install it and restart Gateway:
 
 ```bash
-openclaw plugins install @openclaw/qwen-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/qwen-provider
+nodoassist gateway restart
 ```
 
 ## Getting started
@@ -45,13 +45,13 @@ Choose your plan type and follow the setup steps.
         For the **Global** endpoint:
 
         ```bash
-        openclaw onboard --auth-choice qwen-api-key
+        nodoassist onboard --auth-choice qwen-api-key
         ```
 
         For the **China** endpoint:
 
         ```bash
-        openclaw onboard --auth-choice qwen-api-key-cn
+        nodoassist onboard --auth-choice qwen-api-key-cn
         ```
       </Step>
       <Step title="Set a default model">
@@ -67,7 +67,7 @@ Choose your plan type and follow the setup steps.
       </Step>
       <Step title="Verify the model is available">
         ```bash
-        openclaw models list --provider qwen
+        nodoassist models list --provider qwen
         ```
       </Step>
     </Steps>
@@ -94,13 +94,13 @@ Choose your plan type and follow the setup steps.
         For the **Global** endpoint:
 
         ```bash
-        openclaw onboard --auth-choice qwen-standard-api-key
+        nodoassist onboard --auth-choice qwen-standard-api-key
         ```
 
         For the **China** endpoint:
 
         ```bash
-        openclaw onboard --auth-choice qwen-standard-api-key-cn
+        nodoassist onboard --auth-choice qwen-standard-api-key-cn
         ```
       </Step>
       <Step title="Set a default model">
@@ -116,7 +116,7 @@ Choose your plan type and follow the setup steps.
       </Step>
       <Step title="Verify the model is available">
         ```bash
-        openclaw models list --provider qwen
+        nodoassist models list --provider qwen
         ```
       </Step>
     </Steps>
@@ -141,7 +141,7 @@ Choose your plan type and follow the setup steps.
     <Steps>
       <Step title="Provide your portal token">
         ```bash
-        openclaw onboard --auth-choice qwen-oauth
+        nodoassist onboard --auth-choice qwen-oauth
         ```
       </Step>
       <Step title="Set a default model">
@@ -157,7 +157,7 @@ Choose your plan type and follow the setup steps.
       </Step>
       <Step title="Verify the model is available">
         ```bash
-        openclaw models list --provider qwen-oauth
+        nodoassist models list --provider qwen-oauth
         ```
       </Step>
     </Steps>
@@ -165,7 +165,7 @@ Choose your plan type and follow the setup steps.
     <Note>
     `qwen-oauth` uses the same `QWEN_API_KEY` env var name as the Qwen Cloud
     provider, but stores auth under the `qwen-oauth` provider id when configured
-    through OpenClaw onboarding.
+    through NodoAssist onboarding.
     </Note>
 
   </Tab>
@@ -192,7 +192,7 @@ Override with a custom `baseUrl` in config.
 
 ## Built-in catalog
 
-OpenClaw ships this Qwen static catalog. The catalog is endpoint-aware: Coding
+NodoAssist ships this Qwen static catalog. The catalog is endpoint-aware: Coding
 Plan configs omit models that only work on the Standard endpoint.
 
 | Model ref                   | Input       | Context   | Notes                   |
@@ -217,7 +217,7 @@ present in the static catalog.
 
 `qwen/MiniMax-M2.5` is the only reasoning-enabled model in the built-in
 catalog. For reasoning models on the `qwen` family, the provider maps
-OpenClaw thinking levels to DashScope's top-level `enable_thinking` request
+NodoAssist thinking levels to DashScope's top-level `enable_thinking` request
 flag: disabled thinking sends `enable_thinking: false`, any other level sends
 `enable_thinking: true`. Custom models can opt into an alternate chat-template
 thinking payload by setting `compat.thinkingFormat: "qwen-chat-template"` on
@@ -271,7 +271,7 @@ See [Video generation](/tools/video-generation) for shared tool parameters, prov
     `qwen3.6-plus`, switch to Standard (pay-as-you-go) instead of the Coding Plan
     endpoint/key pair.
 
-    OpenClaw's Qwen static catalog does not advertise `qwen3.6-plus` on Coding
+    NodoAssist's Qwen static catalog does not advertise `qwen3.6-plus` on Coding
     Plan endpoints, but an explicitly configured `qwen/qwen3.6-plus` entry under
     `models.providers.qwen.models` is honored on Coding Plan base URLs, so you
     can opt that model in if Aliyun enables it on your subscription. The
@@ -280,7 +280,7 @@ See [Video generation](/tools/video-generation) for shared tool parameters, prov
   </Accordion>
 
   <Accordion title="Video generation region routing">
-    OpenClaw maps the configured Qwen region to the matching DashScope AIGC host
+    NodoAssist maps the configured Qwen region to the matching DashScope AIGC host
     before submitting a video job:
 
     - Global/Intl: `https://dashscope-intl.aliyuncs.com`
@@ -322,7 +322,7 @@ See [Video generation](/tools/video-generation) for shared tool parameters, prov
 
   <Accordion title="Environment and daemon setup">
     If the Gateway runs as a daemon (launchd/systemd), make sure `QWEN_API_KEY` is
-    available to that process (for example, in `~/.openclaw/.env` or via
+    available to that process (for example, in `~/.nodoassist/.env` or via
     `env.shellEnv`).
   </Accordion>
 </AccordionGroup>

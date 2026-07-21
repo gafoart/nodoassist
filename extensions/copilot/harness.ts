@@ -13,8 +13,8 @@ import {
   type AgentHarnessCompactParams,
   type AgentHarnessCompactResult,
   type AgentHarnessResetParams,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import type { PluginStateSyncKeyedStore } from "openclaw/plugin-sdk/plugin-state-runtime";
+} from "nodoassist/plugin-sdk/agent-harness-runtime";
+import type { PluginStateSyncKeyedStore } from "nodoassist/plugin-sdk/plugin-state-runtime";
 import type { CopilotSessionConfig } from "./src/attempt.js";
 import { createCopilotByokAuth, resolveCopilotAuth, tokenFingerprint } from "./src/auth-bridge.js";
 import { createCopilotByokProxy } from "./src/byok-proxy.js";
@@ -578,7 +578,7 @@ export function createCopilotAgentHarness(
     string,
     Map<Promise<DeferredCompactionCleanupOutcome>, DeferredCompactionCleanup>
   >();
-  // Maps OpenClaw session id (from AgentHarnessAttemptParams.sessionId) to
+  // Maps NodoAssist session id (from AgentHarnessAttemptParams.sessionId) to
   // the SDK session id + client that owns it. Populated by
   // runCopilotAttempt via the onSessionEstablished callback so that
   // reset(params) can call client.deleteSession on the right client.
@@ -728,11 +728,11 @@ export function createCopilotAgentHarness(
           }
           throw error;
         }
-        const openclawSessionId =
+        const nodoassistSessionId =
           typeof params.sessionId === "string" ? params.sessionId : undefined;
 
         // Dogfood finding #4: reuse the SDK session across turns within
-        // the same OpenClaw session so that the GitHub Copilot agent runtime's prompt
+        // the same NodoAssist session so that the GitHub Copilot agent runtime's prompt
         // cache, tool-call history, and any server-side compaction state
         // survive turn boundaries. Without this, every turn called
         // `createSession()` and lost cache + thread continuity — the
@@ -754,16 +754,19 @@ export function createCopilotAgentHarness(
         const currentCompatKey = computeSessionCompatKey(params);
         const currentCompactKey = computeSessionCompactKey(params);
         const compactionCleanupPending =
-          openclawSessionId !== undefined && hasPendingDeferredCompactionCleanup(openclawSessionId);
+          nodoassistSessionId !== undefined &&
+          hasPendingDeferredCompactionCleanup(nodoassistSessionId);
         const replayBlocked =
-          openclawSessionId !== undefined &&
-          (compactionCleanupPending || resetBlockedStoredSessions.has(openclawSessionId));
+          nodoassistSessionId !== undefined &&
+          (compactionCleanupPending || resetBlockedStoredSessions.has(nodoassistSessionId));
         const tracked =
-          openclawSessionId && !replayBlocked ? trackedSessions.get(openclawSessionId) : undefined;
-        const stored = openclawSessionId
+          nodoassistSessionId && !replayBlocked
+            ? trackedSessions.get(nodoassistSessionId)
+            : undefined;
+        const stored = nodoassistSessionId
           ? replayBlocked
             ? undefined
-            : lookupStoredBinding(options?.sessionStore, openclawSessionId)
+            : lookupStoredBinding(options?.sessionStore, nodoassistSessionId)
           : undefined;
         const resumableSessionId =
           tracked && tracked.compatKey === currentCompatKey
@@ -783,7 +786,7 @@ export function createCopilotAgentHarness(
 
         return runCopilotAttempt(effectiveParams, {
           pool,
-          onSessionEstablished: openclawSessionId
+          onSessionEstablished: nodoassistSessionId
             ? ({
                 compactionSessionConfig,
                 sdkSessionId,
@@ -795,7 +798,7 @@ export function createCopilotAgentHarness(
                 pooledClient: PooledClient;
                 sessionConfig: CopilotSessionConfig;
               }) => {
-                trackedSessions.set(openclawSessionId, {
+                trackedSessions.set(nodoassistSessionId, {
                   sdkSessionId,
                   client: pooledClient.client,
                   clientOptions: poolAcquire.options,
@@ -805,7 +808,7 @@ export function createCopilotAgentHarness(
                   sessionConfig: compactionSessionConfig ?? sessionConfig,
                   ...sessionAuthFields(poolAcquire.auth),
                 });
-                registerStoredBinding(options?.sessionStore, openclawSessionId, {
+                registerStoredBinding(options?.sessionStore, nodoassistSessionId, {
                   schemaVersion: 2,
                   sdkSessionId,
                   compatKey: currentCompatKey,
@@ -813,10 +816,10 @@ export function createCopilotAgentHarness(
                   ...sessionAuthFields(poolAcquire.auth),
                   updatedAt: Date.now(),
                 });
-                resetBlockedStoredSessions.delete(openclawSessionId);
+                resetBlockedStoredSessions.delete(nodoassistSessionId);
               }
             : undefined,
-          onDeferredCompaction: openclawSessionId
+          onDeferredCompaction: nodoassistSessionId
             ? ({
                 abort,
                 cleanup,
@@ -826,8 +829,11 @@ export function createCopilotAgentHarness(
                 cleanup: Promise<DeferredCompactionCleanupOutcome>;
                 sdkSessionId: string;
               }) => {
-                const trackedBinding = trackedSessions.get(openclawSessionId);
-                const storedBinding = lookupStoredBinding(options?.sessionStore, openclawSessionId);
+                const trackedBinding = trackedSessions.get(nodoassistSessionId);
+                const storedBinding = lookupStoredBinding(
+                  options?.sessionStore,
+                  nodoassistSessionId,
+                );
                 const ownsTrackedSession = trackedBinding?.sdkSessionId === sdkSessionId;
                 const ownsStoredSession = storedBinding?.sdkSessionId === sdkSessionId;
                 if (!ownsTrackedSession && !ownsStoredSession) {
@@ -836,35 +842,35 @@ export function createCopilotAgentHarness(
                 trackDeferredCompactionCleanup({
                   abort,
                   cleanup,
-                  sessionId: openclawSessionId,
+                  sessionId: nodoassistSessionId,
                   sdkSessionId,
                 });
                 // The attempt retains this SDK session until its background
                 // compaction resolves. Preserve its binding for a successful
                 // completion, but do not let a new turn resume it yet.
-                resetBlockedStoredSessions.add(openclawSessionId);
+                resetBlockedStoredSessions.add(nodoassistSessionId);
                 void cleanup.then((outcome) => {
-                  const currentTracked = trackedSessions.get(openclawSessionId);
+                  const currentTracked = trackedSessions.get(nodoassistSessionId);
                   const currentStored = lookupStoredBinding(
                     options?.sessionStore,
-                    openclawSessionId,
+                    nodoassistSessionId,
                   );
                   const stillOwnsTrackedSession = currentTracked?.sdkSessionId === sdkSessionId;
                   const stillOwnsStoredSession = currentStored?.sdkSessionId === sdkSessionId;
                   if (outcome === "completed") {
                     if (stillOwnsTrackedSession || stillOwnsStoredSession) {
-                      resetBlockedStoredSessions.delete(openclawSessionId);
+                      resetBlockedStoredSessions.delete(nodoassistSessionId);
                     }
                     return;
                   }
                   if (stillOwnsTrackedSession) {
-                    trackedSessions.delete(openclawSessionId);
+                    trackedSessions.delete(nodoassistSessionId);
                   }
                   if (stillOwnsStoredSession) {
-                    deleteStoredBinding(options?.sessionStore, openclawSessionId);
+                    deleteStoredBinding(options?.sessionStore, nodoassistSessionId);
                   }
                   if (stillOwnsTrackedSession || stillOwnsStoredSession) {
-                    resetBlockedStoredSessions.add(openclawSessionId);
+                    resetBlockedStoredSessions.add(nodoassistSessionId);
                   }
                 });
               }
@@ -880,33 +886,34 @@ export function createCopilotAgentHarness(
     },
 
     async reset(params: AgentHarnessResetParams): Promise<void> {
-      const openclawSessionId = typeof params.sessionId === "string" ? params.sessionId : undefined;
-      if (!openclawSessionId) {
+      const nodoassistSessionId =
+        typeof params.sessionId === "string" ? params.sessionId : undefined;
+      if (!nodoassistSessionId) {
         return;
       }
       // Deferred cleanup yields while another attempt can establish a fresh
       // session. Capture the reset target first so reset never deletes that
       // replacement session or its durable binding.
-      const tracked = trackedSessions.get(openclawSessionId);
-      const stored = lookupStoredBinding(options?.sessionStore, openclawSessionId);
-      resetBlockedStoredSessions.add(openclawSessionId);
-      await abortDeferredCompactionCleanups(openclawSessionId);
-      const currentStored = lookupStoredBinding(options?.sessionStore, openclawSessionId);
+      const tracked = trackedSessions.get(nodoassistSessionId);
+      const stored = lookupStoredBinding(options?.sessionStore, nodoassistSessionId);
+      resetBlockedStoredSessions.add(nodoassistSessionId);
+      await abortDeferredCompactionCleanups(nodoassistSessionId);
+      const currentStored = lookupStoredBinding(options?.sessionStore, nodoassistSessionId);
       const stillOwnsStoredSession =
         stored !== undefined && currentStored?.sdkSessionId === stored.sdkSessionId;
       if (stillOwnsStoredSession) {
-        if (deleteStoredBinding(options?.sessionStore, openclawSessionId)) {
-          resetBlockedStoredSessions.delete(openclawSessionId);
+        if (deleteStoredBinding(options?.sessionStore, nodoassistSessionId)) {
+          resetBlockedStoredSessions.delete(nodoassistSessionId);
         }
       } else {
-        resetBlockedStoredSessions.delete(openclawSessionId);
+        resetBlockedStoredSessions.delete(nodoassistSessionId);
       }
       if (!tracked) {
         // Session was created by a different harness, or already reset.
         return;
       }
-      if (trackedSessions.get(openclawSessionId)?.sdkSessionId === tracked.sdkSessionId) {
-        trackedSessions.delete(openclawSessionId);
+      if (trackedSessions.get(nodoassistSessionId)?.sdkSessionId === tracked.sdkSessionId) {
+        trackedSessions.delete(nodoassistSessionId);
       }
       try {
         await tracked.client.deleteSession(tracked.sdkSessionId);
@@ -921,19 +928,20 @@ export function createCopilotAgentHarness(
     async compact(
       params: AgentHarnessCompactParams,
     ): Promise<AgentHarnessCompactResult | undefined> {
-      // The SDK owns Copilot history compaction. OpenClaw only resumes
+      // The SDK owns Copilot history compaction. NodoAssist only resumes
       // the tracked SDK session and calls the session-scoped RPC; durable
-      // OpenClaw session/transcript state stays in SQLite, with no marker
+      // NodoAssist session/transcript state stays in SQLite, with no marker
       // sidecars under the workspace.
-      const openclawSessionId = typeof params.sessionId === "string" ? params.sessionId : undefined;
-      if (!openclawSessionId) {
+      const nodoassistSessionId =
+        typeof params.sessionId === "string" ? params.sessionId : undefined;
+      if (!nodoassistSessionId) {
         return {
           ok: false,
           compacted: false,
           reason: "missing-required-params",
         };
       }
-      if (hasPendingDeferredCompactionCleanup(openclawSessionId)) {
+      if (hasPendingDeferredCompactionCleanup(nodoassistSessionId)) {
         return {
           ok: false,
           compacted: false,
@@ -941,7 +949,7 @@ export function createCopilotAgentHarness(
           failure: { reason: "background-compaction-pending" },
         };
       }
-      const tracked = trackedSessions.get(openclawSessionId);
+      const tracked = trackedSessions.get(nodoassistSessionId);
       const currentCompactKey = computeSessionCompactKey(params);
       const { resolvePoolAcquire } = await import("./src/attempt.js");
       let resolvedPoolAcquire: ReturnType<typeof resolvePoolAcquire> | undefined;
@@ -968,7 +976,7 @@ export function createCopilotAgentHarness(
           : undefined;
       if (!compatibleTracked) {
         // Durable bindings only carry SDK session ids. Manual SDK compaction also
-        // needs the live SessionConfig with OpenClaw hooks/tools, so preserve the
+        // needs the live SessionConfig with NodoAssist hooks/tools, so preserve the
         // binding for the next attempt and let the host compact transcript state.
         return {
           ok: false,
@@ -1038,8 +1046,8 @@ export function createCopilotAgentHarness(
       } catch (err) {
         const rawError = err instanceof Error ? err.message : String(err);
         if (isStaleSdkSessionError(err)) {
-          trackedSessions.delete(openclawSessionId);
-          deleteStoredBinding(options?.sessionStore, openclawSessionId);
+          trackedSessions.delete(nodoassistSessionId);
+          deleteStoredBinding(options?.sessionStore, nodoassistSessionId);
           return {
             ok: false,
             compacted: false,

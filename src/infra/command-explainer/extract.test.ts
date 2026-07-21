@@ -202,14 +202,14 @@ describe("command explainer tree-sitter runtime", () => {
   it("reports missing parser packages and wasm files with explainer context", () => {
     expect(() =>
       resolvePackageFileForCommandExplanation(
-        "definitely-missing-openclaw-parser-package",
+        "definitely-missing-nodoassist-parser-package",
         "parser.wasm",
       ),
-    ).toThrow("Unable to resolve definitely-missing-openclaw-parser-package");
+    ).toThrow("Unable to resolve definitely-missing-nodoassist-parser-package");
 
     expect(() =>
-      resolvePackageFileForCommandExplanation("web-tree-sitter", "missing-openclaw-parser.wasm"),
-    ).toThrow("Unable to locate missing-openclaw-parser.wasm in web-tree-sitter");
+      resolvePackageFileForCommandExplanation("web-tree-sitter", "missing-nodoassist-parser.wasm"),
+    ).toThrow("Unable to locate missing-nodoassist-parser.wasm in web-tree-sitter");
   });
 
   it("reports parser progress cancellation as a timeout", async () => {
@@ -386,7 +386,10 @@ describe("command explainer tree-sitter runtime", () => {
       }),
     ]);
     expect(
-      spanText(stderrPipe.source, stderrPipe.operators?.[0]?.span ?? { startIndex: 0, endIndex: 0 }),
+      spanText(
+        stderrPipe.source,
+        stderrPipe.operators?.[0]?.span ?? { startIndex: 0, endIndex: 0 },
+      ),
     ).toBe("|&");
 
     const newline = await explainShellCommand("echo a\npwd");
@@ -697,7 +700,7 @@ describe("command explainer tree-sitter runtime", () => {
   });
 
   it("detects eval, source, aliases, and carrier shell wrappers", async () => {
-    const evalCommand = await explainShellCommand('eval "$OPENCLAW_CMD"');
+    const evalCommand = await explainShellCommand('eval "$NODOASSIST_CMD"');
     expectRisk(evalCommand.risks, { kind: "eval" });
 
     const builtinEval = await explainShellCommand("builtin eval 'echo hi'");

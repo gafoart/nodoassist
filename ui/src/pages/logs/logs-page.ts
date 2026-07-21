@@ -243,7 +243,7 @@ class LogsPage extends LitElement {
     const anchor = document.createElement("a");
     const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
     anchor.href = url;
-    anchor.download = `openclaw-logs-${label}-${stamp}.log`;
+    anchor.download = `nodoassist-logs-${label}-${stamp}.log`;
     anchor.click();
     URL.revokeObjectURL(url);
   }
@@ -286,4 +286,4 @@ class LogsPage extends LitElement {
   }
 }
 
-customElements.define("openclaw-logs-page", LogsPage);
+customElements.define("nodoassist-logs-page", LogsPage);

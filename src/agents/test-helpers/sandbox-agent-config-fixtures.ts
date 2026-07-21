@@ -3,9 +3,11 @@
  *
  * Builds restricted agent configs for sandbox tool-policy and workspace tests.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 
-type AgentToolsConfig = NonNullable<NonNullable<OpenClawConfig["agents"]>["list"]>[number]["tools"];
+type AgentToolsConfig = NonNullable<
+  NonNullable<NodoAssistConfig["agents"]>["list"]
+>[number]["tools"];
 type SandboxToolsConfig = {
   allow?: string[];
   deny?: string[];
@@ -15,7 +17,7 @@ export function createRestrictedAgentSandboxConfig(params: {
   agentTools?: AgentToolsConfig;
   globalSandboxTools?: SandboxToolsConfig;
   workspace?: string;
-}): OpenClawConfig {
+}): NodoAssistConfig {
   return {
     agents: {
       defaults: {
@@ -27,7 +29,7 @@ export function createRestrictedAgentSandboxConfig(params: {
       list: [
         {
           id: "restricted",
-          workspace: params.workspace ?? "~/openclaw-restricted",
+          workspace: params.workspace ?? "~/nodoassist-restricted",
           sandbox: {
             mode: "all",
             scope: "agent",
@@ -45,5 +47,5 @@ export function createRestrictedAgentSandboxConfig(params: {
           },
         }
       : {}),
-  } as OpenClawConfig;
+  } as NodoAssistConfig;
 }

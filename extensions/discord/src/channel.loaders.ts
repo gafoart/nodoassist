@@ -1,5 +1,5 @@
 // Discord plugin module implements channel.loaders behavior.
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
 
 export const loadDiscordDirectoryConfigModule = createLazyRuntimeModule(
   () => import("./directory-config.js"),

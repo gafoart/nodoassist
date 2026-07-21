@@ -2,9 +2,9 @@
 import type {
   ProviderDefaultThinkingPolicyContext,
   ProviderThinkingProfile,
-} from "openclaw/plugin-sdk/core";
-import { buildProviderReplayFamilyHooks } from "openclaw/plugin-sdk/provider-model-shared";
-import { buildProviderToolCompatFamilyHooks } from "openclaw/plugin-sdk/provider-tools";
+} from "nodoassist/plugin-sdk/core";
+import { buildProviderReplayFamilyHooks } from "nodoassist/plugin-sdk/provider-model-shared";
+import { buildProviderToolCompatFamilyHooks } from "nodoassist/plugin-sdk/provider-tools";
 import { resolveGoogleThinkingProfile } from "./provider-policy.js";
 import { createGoogleThinkingStreamWrapper } from "./thinking-api.js";
 

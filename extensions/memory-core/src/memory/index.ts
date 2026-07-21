@@ -1,10 +1,10 @@
-// Memory Core plugin entrypoint registers its OpenClaw integration.
+// Memory Core plugin entrypoint registers its NodoAssist integration.
 export { MemoryIndexManager } from "./manager.js";
 export type {
   MemoryEmbeddingProbeResult,
   MemorySearchManager,
   MemorySearchResult,
-} from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+} from "nodoassist/plugin-sdk/memory-core-host-engine-storage";
 export {
   closeAllMemorySearchManagers,
   closeMemorySearchManager,

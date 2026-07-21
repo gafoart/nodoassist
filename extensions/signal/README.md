@@ -1,13 +1,13 @@
-# Signal OpenClaw channel
+# Signal NodoAssist channel
 
-Official OpenClaw channel plugin for Signal.
+Official NodoAssist channel plugin for Signal.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/signal
+nodoassist plugins install @nodoassist/signal
 ```
 
 ## Docs
 
-See `docs/channels/signal.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/channels/signal`.
+See `docs/channels/signal.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/channels/signal`.

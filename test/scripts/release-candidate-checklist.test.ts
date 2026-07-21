@@ -18,15 +18,15 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
 }
 
 async function withGithubApiTimeoutEnv<T>(value: string, fn: () => Promise<T>): Promise<T> {
-  const previous = process.env.OPENCLAW_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS;
-  process.env.OPENCLAW_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS = value;
+  const previous = process.env.NODOASSIST_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS;
+  process.env.NODOASSIST_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS = value;
   try {
     return await fn();
   } finally {
     if (previous === undefined) {
-      delete process.env.OPENCLAW_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS;
+      delete process.env.NODOASSIST_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS;
     } else {
-      process.env.OPENCLAW_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS = previous;
+      process.env.NODOASSIST_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS = previous;
     }
   }
 }
@@ -50,16 +50,16 @@ describe("release candidate checklist", () => {
   });
 
   it("runs Parallels against the exact prepared candidate tarball", () => {
-    expect(candidateParallelsArgs(".artifacts/preflight/openclaw.tgz")).toEqual([
+    expect(candidateParallelsArgs(".artifacts/preflight/nodoassist.tgz")).toEqual([
       "test:parallels:npm-update",
       "--",
       "--target-tarball",
-      ".artifacts/preflight/openclaw.tgz",
+      ".artifacts/preflight/nodoassist.tgz",
       "--json",
     ]);
     expect(
       candidateParallelsShellCommand(
-        ".artifacts/preflight/openclaw candidate.tgz",
+        ".artifacts/preflight/nodoassist candidate.tgz",
         "/opt/homebrew/bin/gtimeout",
       ),
     ).toContain(
@@ -67,10 +67,10 @@ describe("release candidate checklist", () => {
     );
     expect(
       candidateParallelsShellCommand(
-        ".artifacts/preflight/openclaw candidate.tgz",
+        ".artifacts/preflight/nodoassist candidate.tgz",
         "/opt/homebrew/bin/gtimeout",
       ),
-    ).toContain("'--target-tarball' '.artifacts/preflight/openclaw candidate.tgz'");
+    ).toContain("'--target-tarball' '.artifacts/preflight/nodoassist candidate.tgz'");
   });
 
   it("requires run ids when dispatch is disabled", () => {
@@ -87,11 +87,14 @@ describe("release candidate checklist", () => {
       secondValue: string,
       prefix = requiredArgs,
     ): [string, string[]] => [flag, [...prefix, flag, firstValue, flag, secondValue]];
-    const duplicateFlag = (flag: string): [string, string[]] => [flag, [...requiredArgs, flag, flag]];
+    const duplicateFlag = (flag: string): [string, string[]] => [
+      flag,
+      [...requiredArgs, flag, flag],
+    ];
     const duplicateCases = [
       duplicateOption("--tag", "v2026.5.14-beta.3", "v2026.5.14-beta.4", []),
       duplicateOption("--workflow-ref", "release/a", "release/b"),
-      duplicateOption("--repo", "openclaw/openclaw", "fork/openclaw"),
+      duplicateOption("--repo", "nodoassist/nodoassist", "fork/nodoassist"),
       duplicateOption("--full-release-run", "111", "222"),
       duplicateOption("--npm-preflight-run", "111", "222"),
       duplicateOption("--windows-node-tag", "v0.6.3", "v0.6.4"),
@@ -233,25 +236,25 @@ describe("release candidate checklist", () => {
       ]),
       workflowRef: "release/2026.5.14",
       windowsNodeInstallerDigests: JSON.stringify({
-        "OpenClawCompanion-Setup-x64.exe": `sha256:${"a".repeat(64)}`,
-        "OpenClawCompanion-Setup-arm64.exe": `sha256:${"b".repeat(64)}`,
+        "NodoAssistCompanion-Setup-x64.exe": `sha256:${"a".repeat(64)}`,
+        "NodoAssistCompanion-Setup-arm64.exe": `sha256:${"b".repeat(64)}`,
       }),
     };
 
     expect(buildPublishCommand(options)).toContain("'windows_node_tag=v0.6.3'");
     expect(buildPublishCommand(options)).toContain(
-      `'windows_node_installer_digests={"OpenClawCompanion-Setup-x64.exe":"sha256:${"a".repeat(64)}","OpenClawCompanion-Setup-arm64.exe":"sha256:${"b".repeat(64)}"}'`,
+      `'windows_node_installer_digests={"NodoAssistCompanion-Setup-x64.exe":"sha256:${"a".repeat(64)}","NodoAssistCompanion-Setup-arm64.exe":"sha256:${"b".repeat(64)}"}'`,
     );
   });
 
   it("validates the stable Windows source release and immutable installer digests", async () => {
     const assets = [
       {
-        name: "OpenClawCompanion-Setup-x64.exe",
+        name: "NodoAssistCompanion-Setup-x64.exe",
         digest: `sha256:${"a".repeat(64)}`,
       },
       {
-        name: "OpenClawCompanion-Setup-arm64.exe",
+        name: "NodoAssistCompanion-Setup-arm64.exe",
         digest: `sha256:${"b".repeat(64)}`,
       },
     ];
@@ -284,35 +287,35 @@ describe("release candidate checklist", () => {
     [{ tag_name: "v0.6.4" }, "Windows source release tag mismatch: expected v0.6.3, got v0.6.4"],
     [
       { assets: [] },
-      "must contain exactly one required asset OpenClawCompanion-Setup-x64.exe; found 0",
+      "must contain exactly one required asset NodoAssistCompanion-Setup-x64.exe; found 0",
     ],
     [
       {
         assets: [
           {
-            name: "OpenClawCompanion-Setup-x64.exe",
+            name: "NodoAssistCompanion-Setup-x64.exe",
             digest: `sha256:${"a".repeat(64)}`,
           },
           {
-            name: "OpenClawCompanion-Setup-x64.exe",
+            name: "NodoAssistCompanion-Setup-x64.exe",
             digest: `sha256:${"c".repeat(64)}`,
           },
           {
-            name: "OpenClawCompanion-Setup-arm64.exe",
+            name: "NodoAssistCompanion-Setup-arm64.exe",
             digest: `sha256:${"b".repeat(64)}`,
           },
         ],
       },
-      "must contain exactly one required asset OpenClawCompanion-Setup-x64.exe; found 2",
+      "must contain exactly one required asset NodoAssistCompanion-Setup-x64.exe; found 2",
     ],
     [
       {
         assets: [
-          { name: "OpenClawCompanion-Setup-x64.exe", digest: "" },
-          { name: "OpenClawCompanion-Setup-arm64.exe", digest: `sha256:${"b".repeat(64)}` },
+          { name: "NodoAssistCompanion-Setup-x64.exe", digest: "" },
+          { name: "NodoAssistCompanion-Setup-arm64.exe", digest: `sha256:${"b".repeat(64)}` },
         ],
       },
-      "asset OpenClawCompanion-Setup-x64.exe is missing its SHA-256 digest",
+      "asset NodoAssistCompanion-Setup-x64.exe is missing its SHA-256 digest",
     ],
   ])("rejects an invalid stable Windows source release", async (override, message) => {
     const fetchImpl = vi.fn(async () => {
@@ -323,11 +326,11 @@ describe("release candidate checklist", () => {
         html_url: "https://github.com/openclaw/openclaw-windows-node/releases/tag/v0.6.3",
         assets: [
           {
-            name: "OpenClawCompanion-Setup-x64.exe",
+            name: "NodoAssistCompanion-Setup-x64.exe",
             digest: `sha256:${"a".repeat(64)}`,
           },
           {
-            name: "OpenClawCompanion-Setup-arm64.exe",
+            name: "NodoAssistCompanion-Setup-arm64.exe",
             digest: `sha256:${"b".repeat(64)}`,
           },
         ],
@@ -378,9 +381,9 @@ describe("release candidate checklist", () => {
         "--plugin-publish-scope",
         "selected",
         "--plugins",
-        "@openclaw/diffs",
+        "@nodoassist/diffs",
       ]),
-    ).toThrow("release candidates publish OpenClaw with --plugin-publish-scope all-publishable");
+    ).toThrow("release candidates publish NodoAssist with --plugin-publish-scope all-publishable");
   });
 
   it("extracts a workflow run id from gh dispatch output", () => {
@@ -403,11 +406,11 @@ describe("release candidate checklist", () => {
   it("falls back to a single compatible artifact from the same run", () => {
     expect(
       resolveArtifactName(
-        [{ name: "openclaw-npm-preflight-dba00", expired: false }],
-        "openclaw-npm-preflight-v2026.5.16-beta.2",
-        "openclaw-npm-preflight-",
+        [{ name: "nodoassist-npm-preflight-dba00", expired: false }],
+        "nodoassist-npm-preflight-v2026.5.16-beta.2",
+        "nodoassist-npm-preflight-",
       ),
-    ).toBe("openclaw-npm-preflight-dba00");
+    ).toBe("nodoassist-npm-preflight-dba00");
   });
 
   it("bounds GitHub API requests with a timeout signal", async () => {
@@ -422,7 +425,7 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/openclaw/openclaw/actions/runs", {
+      githubApi("repos/nodoassist/nodoassist/actions/runs", {
         fetchImpl,
         timeoutMs: 1234,
         token: "test-token",
@@ -444,7 +447,7 @@ describe("release candidate checklist", () => {
 
     await withGithubApiTimeoutEnv("2500", async () => {
       await expect(
-        githubApi("repos/openclaw/openclaw/actions/runs", {
+        githubApi("repos/nodoassist/nodoassist/actions/runs", {
           fetchImpl,
           token: "test-token",
         }),
@@ -460,12 +463,12 @@ describe("release candidate checklist", () => {
 
       await withGithubApiTimeoutEnv(raw, async () => {
         await expect(
-          githubApi("repos/openclaw/openclaw/actions/runs", {
+          githubApi("repos/nodoassist/nodoassist/actions/runs", {
             fetchImpl,
             token: "test-token",
           }),
         ).rejects.toThrow(
-          "OPENCLAW_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS must be a positive integer",
+          "NODOASSIST_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS must be a positive integer",
         );
       });
       expect(fetchImpl).not.toHaveBeenCalled();
@@ -481,14 +484,14 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/openclaw/openclaw/actions/runs", {
+      githubApi("repos/nodoassist/nodoassist/actions/runs", {
         fetchImpl,
         maxBodyBytes: 64,
         timeoutMs: 1234,
         token: "test-token",
       }),
     ).rejects.toThrow(
-      "GitHub API repos/openclaw/openclaw/actions/runs response body exceeded 64 bytes",
+      "GitHub API repos/nodoassist/nodoassist/actions/runs response body exceeded 64 bytes",
     );
   });
 
@@ -500,12 +503,12 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/openclaw/openclaw/actions/runs", {
+      githubApi("repos/nodoassist/nodoassist/actions/runs", {
         fetchImpl,
         timeoutMs: 25,
         token: "test-token",
       }),
-    ).rejects.toThrow("GitHub API repos/openclaw/openclaw/actions/runs timed out after 25ms");
+    ).rejects.toThrow("GitHub API repos/nodoassist/nodoassist/actions/runs timed out after 25ms");
   });
 
   it("includes the GitHub API path when a request times out", async () => {
@@ -514,13 +517,13 @@ describe("release candidate checklist", () => {
     });
 
     await expect(
-      githubApi("repos/openclaw/openclaw/actions/runs/123/jobs", {
+      githubApi("repos/nodoassist/nodoassist/actions/runs/123/jobs", {
         fetchImpl,
         timeoutMs: 5,
         token: "test-token",
       }),
     ).rejects.toThrow(
-      "GitHub API repos/openclaw/openclaw/actions/runs/123/jobs timed out after 5ms",
+      "GitHub API repos/nodoassist/nodoassist/actions/runs/123/jobs timed out after 5ms",
     );
   });
 });

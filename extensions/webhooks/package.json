@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/webhooks",
+  "name": "@nodoassist/webhooks",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw webhook bridge plugin",
+  "description": "NodoAssist webhook bridge plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

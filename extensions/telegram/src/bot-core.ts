@@ -2,25 +2,28 @@
 import {
   resolveChannelGroupPolicy,
   resolveChannelGroupRequireMention,
-} from "openclaw/plugin-sdk/channel-policy";
+} from "nodoassist/plugin-sdk/channel-policy";
 import {
   resolveThreadBindingIdleTimeoutMsForChannel,
   resolveThreadBindingMaxAgeMsForChannel,
   resolveThreadBindingSpawnPolicy,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { formatErrorMessage, formatUncaughtError } from "openclaw/plugin-sdk/error-runtime";
+} from "nodoassist/plugin-sdk/conversation-runtime";
+import { formatErrorMessage, formatUncaughtError } from "nodoassist/plugin-sdk/error-runtime";
 import {
   isNativeCommandsExplicitlyDisabled,
   resolveNativeCommandsEnabled,
   resolveNativeSkillsEnabled,
-} from "openclaw/plugin-sdk/native-command-config-runtime";
-import { resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-chunking";
-import { DEFAULT_GROUP_HISTORY_LIMIT, type HistoryEntry } from "openclaw/plugin-sdk/reply-history";
-import { danger, logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { getChildLogger } from "openclaw/plugin-sdk/runtime-env";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { createNonExitingRuntime, type RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/native-command-config-runtime";
+import { resolveTextChunkLimit } from "nodoassist/plugin-sdk/reply-chunking";
+import {
+  DEFAULT_GROUP_HISTORY_LIMIT,
+  type HistoryEntry,
+} from "nodoassist/plugin-sdk/reply-history";
+import { danger, logVerbose, shouldLogVerbose } from "nodoassist/plugin-sdk/runtime-env";
+import { getChildLogger } from "nodoassist/plugin-sdk/runtime-env";
+import { createSubsystemLogger } from "nodoassist/plugin-sdk/runtime-env";
+import { createNonExitingRuntime, type RuntimeEnv } from "nodoassist/plugin-sdk/runtime-env";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { getOrCreateAccountThrottler } from "./account-throttler.js";
 import { resolveTelegramAccount } from "./accounts.js";
 import { normalizeTelegramApiRoot } from "./api-root.js";
@@ -265,7 +268,7 @@ export function createTelegramBotCore(
   );
   const groupHistories = new Map<string, HistoryEntry[]>();
   const botHistorySender = buildTelegramGroupHistorySelfSender(
-    account.name ?? opts.botInfo?.first_name ?? opts.botInfo?.username ?? "OpenClaw",
+    account.name ?? opts.botInfo?.first_name ?? opts.botInfo?.username ?? "NodoAssist",
   );
   const unregisterOutboundGroupHistoryRecorder = registerTelegramOutboundGroupHistoryRecorder({
     accountId: account.accountId,

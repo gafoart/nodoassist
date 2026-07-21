@@ -12,11 +12,11 @@ import {
   replaceSessionEntry,
 } from "../../config/sessions/session-accessor.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import {
-  type OpenClawTestState,
-  withOpenClawTestState,
-} from "../../test-utils/openclaw-test-state.js";
+  type NodoAssistTestState,
+  withNodoAssistTestState,
+} from "../../test-utils/nodoassist-test-state.js";
 import {
   clearSessionAuthProfileOverride,
   resolveSessionAuthProfileOverride,
@@ -44,7 +44,7 @@ const authStoreMocks = vi.hoisted(() => {
         store,
         provider,
       }: {
-        cfg?: OpenClawConfig;
+        cfg?: NodoAssistConfig;
         store: AuthProfileStore;
         provider: string;
       }) => {
@@ -86,7 +86,7 @@ vi.mock("./order.js", () => ({
     provider,
     credential,
   }: {
-    cfg?: OpenClawConfig;
+    cfg?: NodoAssistConfig;
     provider: string;
     credential: { type: string; provider: string };
   }) => {
@@ -105,7 +105,7 @@ vi.mock("./order.js", () => ({
     provider,
     profileId,
   }: {
-    cfg?: OpenClawConfig;
+    cfg?: NodoAssistConfig;
     provider: string;
     profileId: string;
   }) => {
@@ -123,11 +123,11 @@ vi.mock("./usage.js", () => ({
   isProfileInCooldown: authStoreMocks.isProfileInCooldown,
 }));
 
-async function withAuthState<T>(run: (state: OpenClawTestState) => Promise<T>): Promise<T> {
-  return await withOpenClawTestState(
+async function withAuthState<T>(run: (state: NodoAssistTestState) => Promise<T>): Promise<T> {
+  return await withNodoAssistTestState(
     {
       layout: "state-only",
-      prefix: "openclaw-auth-",
+      prefix: "nodoassist-auth-",
     },
     run,
   );
@@ -177,7 +177,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as NodoAssistConfig,
         provider: "openrouter",
         agentDir,
         sessionEntry,
@@ -215,7 +215,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as NodoAssistConfig,
         provider: "z.ai",
         agentDir,
         sessionEntry,
@@ -265,7 +265,7 @@ describe("resolveSessionAuthProfileOverride", () => {
               },
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
         provider: "amazon-bedrock",
         agentDir,
         sessionEntry,
@@ -323,7 +323,7 @@ describe("resolveSessionAuthProfileOverride", () => {
               },
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
         provider: "amazon-bedrock",
         agentDir,
         sessionEntry,
@@ -371,7 +371,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as NodoAssistConfig,
         provider: "openai",
         agentDir,
         sessionEntry,
@@ -414,7 +414,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as NodoAssistConfig,
         provider: "codex-cli",
         agentDir,
         sessionEntry,
@@ -456,7 +456,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as NodoAssistConfig,
         provider: "openai",
         acceptedProviderIds: ["openai"],
         agentDir,
@@ -504,7 +504,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as NodoAssistConfig,
         provider: "openai",
         acceptedProviderIds: ["openai"],
         agentDir,
@@ -556,7 +556,7 @@ describe("resolveSessionAuthProfileOverride", () => {
       const sessionStore = { "agent:main:main": sessionEntry };
 
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as NodoAssistConfig,
         provider: "openai",
         agentDir,
         sessionEntry,
@@ -648,7 +648,7 @@ describe("resolveSessionAuthProfileOverride", () => {
 
       await patchSessionEntry(scope, () => ({ label: "renamed", pinnedAt: undefined }));
       const resolved = await resolveSessionAuthProfileOverride({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as NodoAssistConfig,
         provider: "openai",
         agentDir,
         sessionEntry: sessionEntry!,

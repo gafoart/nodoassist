@@ -32,7 +32,7 @@ import {
 } from "./session-utils.fs.js";
 
 export type { ReadRecentSessionMessagesOptions, ReadSessionMessagesAsyncOptions };
-export { attachOpenClawTranscriptMeta, capArrayByJsonBytes } from "./session-utils.fs.js";
+export { attachNodoAssistTranscriptMeta, capArrayByJsonBytes } from "./session-utils.fs.js";
 
 export type { SessionTranscriptReadScope };
 

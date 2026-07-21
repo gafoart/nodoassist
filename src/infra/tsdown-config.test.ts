@@ -1,6 +1,6 @@
 // Covers bundling rules encoded in the root tsdown config.
 import { readFileSync } from "node:fs";
-import { bundledPluginRoot } from "openclaw/plugin-sdk/test-fixtures";
+import { bundledPluginRoot } from "nodoassist/plugin-sdk/test-fixtures";
 import { describe, expect, it } from "vitest";
 import tsdownConfig from "../../tsdown.config.ts";
 
@@ -116,7 +116,7 @@ describe("tsdown config", () => {
       "plugins/runtime/index",
       "plugins/synthetic-auth.runtime",
       "web-fetch/runtime",
-      "mcp/openclaw-tools-serve",
+      "mcp/nodoassist-tools-serve",
       "mcp/plugin-tools-serve",
       "plugin-sdk/compat",
       "plugin-sdk/index",

@@ -1,12 +1,12 @@
-# OpenClaw Qianfan Provider
+# NodoAssist Qianfan Provider
 
-Official OpenClaw provider plugin for Qianfan.
+Official NodoAssist provider plugin for Qianfan.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/qianfan-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/qianfan-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/qianfan> for setup and configuration.

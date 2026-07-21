@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
-import OpenClawKit
-import OpenClawProtocol
+import NodoAssistKit
+import NodoAssistProtocol
 import OSLog
 
 struct TalkGatewaySpeechAudio: Equatable {
@@ -160,7 +160,7 @@ final class TalkBufferedAudioPlayer: NSObject, TalkBufferedAudioPlaying, @precon
         }
     }
 
-    private let logger = Logger(subsystem: "ai.openclaw", category: "talk.tts")
+    private let logger = Logger(subsystem: "ai.nodoassist", category: "talk.tts")
     private var player: AVAudioPlayer?
     private var playback: Playback?
 

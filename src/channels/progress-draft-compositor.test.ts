@@ -272,8 +272,8 @@ describe("createChannelProgressDraftCompositor", () => {
     });
 
     await progress.pushToolProgress("🛠️ Exec", { startImmediately: true });
-    await progress.pushReasoningProgress("Thinking\n\n_Reading_");
-    await progress.pushReasoningProgress("Thinking\n\n_Reading files_");
+    await progress.pushReasoningProgress(".nodoassist\n\n_Reading_");
+    await progress.pushReasoningProgress(".nodoassist\n\n_Reading files_");
 
     expect(update).toHaveBeenLastCalledWith("Shelling\n\n🛠️ Exec\n🧠 _Reading files_", {
       lines: ["🛠️ Exec", "🧠 _Reading files_"],

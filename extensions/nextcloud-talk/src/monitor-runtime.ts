@@ -1,8 +1,8 @@
 // Nextcloud Talk plugin module implements monitor runtime behavior.
 import os from "node:os";
-import { resolveLoggerBackedRuntime } from "openclaw/plugin-sdk/extension-shared";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { resolveLoggerBackedRuntime } from "nodoassist/plugin-sdk/extension-shared";
+import type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime";
+import { normalizeLowercaseStringOrEmpty } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { resolveNextcloudTalkAccount } from "./accounts.js";
 import { handleNextcloudTalkInbound } from "./inbound.js";
 import {

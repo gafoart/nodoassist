@@ -1,11 +1,11 @@
-# OpenClaw Google Chat
+# NodoAssist Google Chat
 
-Official OpenClaw channel plugin for Google Chat spaces and direct messages.
+Official NodoAssist channel plugin for Google Chat spaces and direct messages.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugin add @openclaw/googlechat
+nodoassist plugin add @nodoassist/googlechat
 ```
 
-Configure the Google Chat app credentials and allowed spaces in OpenClaw. The plugin lets agents receive Google Chat events and reply through the configured app.
+Configure the Google Chat app credentials and allowed spaces in NodoAssist. The plugin lets agents receive Google Chat events and reply through the configured app.

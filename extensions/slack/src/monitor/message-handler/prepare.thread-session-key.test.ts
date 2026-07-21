@@ -1,18 +1,18 @@
 // Slack tests cover prepare.thread session key plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import {
   registerSessionBindingAdapter,
   unregisterSessionBindingAdapter,
   type SessionBindingAdapter,
   type SessionBindingRecord,
-} from "openclaw/plugin-sdk/conversation-runtime";
+} from "nodoassist/plugin-sdk/conversation-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const resolveConfiguredBindingRouteMock = vi.hoisted(() => vi.fn());
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/conversation-runtime")>(
-    "openclaw/plugin-sdk/conversation-runtime",
+vi.mock("nodoassist/plugin-sdk/conversation-runtime", async () => {
+  const actual = await vi.importActual<typeof import("nodoassist/plugin-sdk/conversation-runtime")>(
+    "nodoassist/plugin-sdk/conversation-runtime",
   );
   return {
     ...actual,
@@ -36,7 +36,7 @@ function buildCtx(overrides?: {
       channels: {
         slack: { enabled: true, replyToMode },
       },
-    } as OpenClawConfig,
+    } as NodoAssistConfig,
     teamId: "T1",
     threadInheritParent: false,
     threadHistoryScope: "thread",

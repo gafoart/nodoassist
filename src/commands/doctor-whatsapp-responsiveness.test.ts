@@ -1,12 +1,12 @@
 // Doctor WhatsApp responsiveness tests cover warning heuristics and note output for stale connections.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 
 const noteMock = vi.hoisted(() => vi.fn());
 const spawnSyncMock = vi.hoisted(() => vi.fn());
 
 vi.mock("node:child_process", async () => {
-  const { mockNodeChildProcessSpawnSync } = await import("openclaw/plugin-sdk/test-node-mocks");
+  const { mockNodeChildProcessSpawnSync } = await import("nodoassist/plugin-sdk/test-node-mocks");
   return mockNodeChildProcessSpawnSync(spawnSyncMock, () =>
     vi.importActual<typeof import("node:child_process")>("node:child_process"),
   );
@@ -32,14 +32,14 @@ describe("doctor WhatsApp responsiveness", () => {
     spawnSyncMock.mockReturnValue({
       status: 0,
       stdout: [
-        " 101 openclaw-tui",
-        " 102 /usr/bin/node /usr/lib/node_modules/openclaw/dist/index.js gateway --port 18789",
-        " 103 openclaw channels",
-        " 104 openclaw tui --local",
-        " 105 /usr/bin/openclaw chat",
-        " 106 helper --note 'openclaw tui'",
-        " 107 openclaw-helper openclaw terminal",
-        " 108 openclaw --flag tui",
+        " 101 nodoassist-tui",
+        " 102 /usr/bin/node /usr/lib/node_modules/nodoassist/dist/index.js gateway --port 18789",
+        " 103 nodoassist channels",
+        " 104 nodoassist tui --local",
+        " 105 /usr/bin/nodoassist chat",
+        " 106 helper --note 'nodoassist tui'",
+        " 107 nodoassist-helper nodoassist terminal",
+        " 108 nodoassist --flag tui",
       ].join("\n"),
     });
 
@@ -48,9 +48,9 @@ describe("doctor WhatsApp responsiveness", () => {
       expect(spawnSyncMock).not.toHaveBeenCalled();
     } else {
       expect(listLocalTuiProcesses()).toEqual([
-        { pid: 101, command: "openclaw-tui" },
-        { pid: 104, command: "openclaw tui --local" },
-        { pid: 105, command: "/usr/bin/openclaw chat" },
+        { pid: 101, command: "nodoassist-tui" },
+        { pid: 104, command: "nodoassist tui --local" },
+        { pid: 105, command: "/usr/bin/nodoassist chat" },
       ]);
     }
   });
@@ -77,7 +77,7 @@ describe("doctor WhatsApp responsiveness", () => {
 
     await expect(
       terminateLocalTuiProcesses({
-        processes: [{ pid: 101, command: "openclaw-tui" }],
+        processes: [{ pid: 101, command: "nodoassist-tui" }],
         controller,
         graceMs: 0,
       }),
@@ -92,7 +92,7 @@ describe("doctor WhatsApp responsiveness", () => {
 
   it("warns and repairs local TUI pressure when WhatsApp is enabled and the gateway is degraded", async () => {
     const terminate = vi.fn().mockResolvedValue({ stopped: [101], failed: [] });
-    const cfg = { channels: { whatsapp: { enabled: true } } } as OpenClawConfig;
+    const cfg = { channels: { whatsapp: { enabled: true } } } as NodoAssistConfig;
 
     await noteWhatsappResponsivenessHealth({
       cfg,
@@ -108,12 +108,12 @@ describe("doctor WhatsApp responsiveness", () => {
         },
       },
       shouldRepair: true,
-      listLocalTuiProcesses: () => [{ pid: 101, command: "openclaw-tui" }],
+      listLocalTuiProcesses: () => [{ pid: 101, command: "nodoassist-tui" }],
       terminateLocalTuiProcesses: terminate,
     });
 
     expect(terminate).toHaveBeenCalledWith({
-      processes: [{ pid: 101, command: "openclaw-tui" }],
+      processes: [{ pid: 101, command: "nodoassist-tui" }],
     });
     expect(noteMock).toHaveBeenCalledWith(
       [
@@ -128,7 +128,7 @@ describe("doctor WhatsApp responsiveness", () => {
   });
 
   it("collects a warning finding for local TUI pressure when WhatsApp is enabled", () => {
-    const cfg = { channels: { whatsapp: { enabled: true } } } as OpenClawConfig;
+    const cfg = { channels: { whatsapp: { enabled: true } } } as NodoAssistConfig;
 
     const findings = collectWhatsappResponsivenessHealthFindings({
       cfg,
@@ -143,7 +143,7 @@ describe("doctor WhatsApp responsiveness", () => {
           cpuCoreRatio: 0.4,
         },
       },
-      listLocalTuiProcesses: () => [{ pid: 101, command: "openclaw-tui" }],
+      listLocalTuiProcesses: () => [{ pid: 101, command: "nodoassist-tui" }],
     });
 
     expect(findings).toEqual([
@@ -153,13 +153,13 @@ describe("doctor WhatsApp responsiveness", () => {
         path: "channels.whatsapp",
         target: "101",
         requirement: "local-tui-event-loop-pressure",
-        fixHint: expect.stringContaining("openclaw doctor --fix"),
+        fixHint: expect.stringContaining("nodoassist doctor --fix"),
       }),
     ]);
   });
 
   it("keeps WhatsApp responsiveness findings quiet without the exact pressure signal", () => {
-    const cfg = { channels: { whatsapp: { enabled: true } } } as OpenClawConfig;
+    const cfg = { channels: { whatsapp: { enabled: true } } } as NodoAssistConfig;
 
     expect(
       collectWhatsappResponsivenessHealthFindings({
@@ -175,7 +175,7 @@ describe("doctor WhatsApp responsiveness", () => {
             cpuCoreRatio: 0,
           },
         },
-        listLocalTuiProcesses: () => [{ pid: 101, command: "openclaw-tui" }],
+        listLocalTuiProcesses: () => [{ pid: 101, command: "nodoassist-tui" }],
       }),
     ).toEqual([]);
     expect(
@@ -197,7 +197,7 @@ describe("doctor WhatsApp responsiveness", () => {
     ).toEqual([]);
     expect(
       collectWhatsappResponsivenessHealthFindings({
-        cfg: { channels: { whatsapp: { enabled: false } } } as OpenClawConfig,
+        cfg: { channels: { whatsapp: { enabled: false } } } as NodoAssistConfig,
         status: {
           eventLoop: {
             degraded: true,
@@ -209,7 +209,7 @@ describe("doctor WhatsApp responsiveness", () => {
             cpuCoreRatio: 0.4,
           },
         },
-        listLocalTuiProcesses: () => [{ pid: 101, command: "openclaw-tui" }],
+        listLocalTuiProcesses: () => [{ pid: 101, command: "nodoassist-tui" }],
       }),
     ).toEqual([]);
   });
@@ -218,7 +218,7 @@ describe("doctor WhatsApp responsiveness", () => {
     const cfg = {
       channels: { whatsapp: { enabled: true } },
       agents: { defaults: { model: { primary: "openai-codex/gpt-5.5" } } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await noteWhatsappResponsivenessHealth({
       cfg,

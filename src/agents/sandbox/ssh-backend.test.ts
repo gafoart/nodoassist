@@ -7,9 +7,9 @@ import {
   createSandboxBrowserConfig,
   createSandboxPruneConfig,
   createSandboxSshConfig,
-} from "openclaw/plugin-sdk/test-fixtures";
+} from "nodoassist/plugin-sdk/test-fixtures";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { NodoAssistConfig } from "../../config/config.js";
 import { captureFullEnv } from "../../test-utils/env.js";
 import type { SandboxConfig } from "./types.js";
 
@@ -43,7 +43,7 @@ async function createTempDir(prefix: string): Promise<string> {
   return dir;
 }
 
-function createConfig(): OpenClawConfig {
+function createConfig(): NodoAssistConfig {
   return {
     agents: {
       defaults: {
@@ -55,7 +55,7 @@ function createConfig(): OpenClawConfig {
           ssh: {
             target: "peter@example.com:2222",
             command: "ssh",
-            workspaceRoot: "/remote/openclaw",
+            workspaceRoot: "/remote/nodoassist",
             strictHostKeyChecking: true,
             updateHostKeys: true,
           },
@@ -68,8 +68,8 @@ function createConfig(): OpenClawConfig {
 function createSession() {
   return {
     command: "ssh",
-    configPath: path.join(os.tmpdir(), "openclaw-test-ssh-config"),
-    host: "openclaw-sandbox",
+    configPath: path.join(os.tmpdir(), "nodoassist-test-ssh-config"),
+    host: "nodoassist-sandbox",
   };
 }
 
@@ -100,7 +100,7 @@ function createBackendSandboxConfig(params?: { binds?: string[]; target?: string
     backend: "ssh",
     scope: "session",
     workspaceAccess: "rw" as const,
-    workspaceRoot: "~/.openclaw/sandboxes",
+    workspaceRoot: "~/.nodoassist/sandboxes",
     docker: {
       image: "img",
       containerPrefix: "prefix-",
@@ -114,7 +114,7 @@ function createBackendSandboxConfig(params?: { binds?: string[]; target?: string
     },
     ssh: {
       ...createSandboxSshConfig(
-        "/remote/openclaw",
+        "/remote/nodoassist",
         params?.target ? { target: params.target } : {},
       ),
     },
@@ -185,9 +185,9 @@ describe("ssh sandbox backend", () => {
   it("describes runtimes via the configured ssh target", async () => {
     const result = await sshSandboxBackendManager.describeRuntime({
       entry: {
-        containerName: "openclaw-ssh-worker-abcd1234",
+        containerName: "nodoassist-ssh-worker-abcd1234",
         backendId: "ssh",
-        runtimeLabel: "openclaw-ssh-worker-abcd1234",
+        runtimeLabel: "nodoassist-ssh-worker-abcd1234",
         sessionKey: "agent:worker",
         createdAtMs: 1,
         lastUsedAtMs: 1,
@@ -208,17 +208,17 @@ describe("ssh sandbox backend", () => {
       "ssh session settings",
     );
     expect(sessionSettings.target).toBe("peter@example.com:2222");
-    expect(sessionSettings.workspaceRoot).toBe("/remote/openclaw");
+    expect(sessionSettings.workspaceRoot).toBe("/remote/nodoassist");
     const commandParams = requireSshRunCommandParams();
-    expect(commandParams.remoteCommand).toContain("/remote/openclaw/openclaw-ssh-agent-worker");
+    expect(commandParams.remoteCommand).toContain("/remote/nodoassist/nodoassist-ssh-agent-worker");
   });
 
   it("removes runtimes by deleting the remote scope root", async () => {
     await sshSandboxBackendManager.removeRuntime({
       entry: {
-        containerName: "openclaw-ssh-worker-abcd1234",
+        containerName: "nodoassist-ssh-worker-abcd1234",
         backendId: "ssh",
-        runtimeLabel: "openclaw-ssh-worker-abcd1234",
+        runtimeLabel: "nodoassist-ssh-worker-abcd1234",
         sessionKey: "agent:worker",
         createdAtMs: 1,
         lastUsedAtMs: 1,
@@ -250,7 +250,7 @@ describe("ssh sandbox backend", () => {
         stderr: Buffer.alloc(0),
         code: 0,
       });
-    const skillsWorkspaceDir = await createTempDir("openclaw-ssh-skills-");
+    const skillsWorkspaceDir = await createTempDir("nodoassist-ssh-skills-");
     await fs.mkdir(path.join(skillsWorkspaceDir, "skills"), { recursive: true });
 
     const backend = await createSshSandboxBackend({
@@ -264,10 +264,10 @@ describe("ssh sandbox backend", () => {
         backend: "ssh",
         scope: "session",
         workspaceAccess: "rw",
-        workspaceRoot: "~/.openclaw/sandboxes",
+        workspaceRoot: "~/.nodoassist/sandboxes",
         docker: {
-          image: "openclaw-sandbox:bookworm-slim",
-          containerPrefix: "openclaw-sbx-",
+          image: "nodoassist-sandbox:bookworm-slim",
+          containerPrefix: "nodoassist-sbx-",
           workdir: "/workspace",
           readOnlyRoot: true,
           tmpfs: ["/tmp"],
@@ -278,14 +278,14 @@ describe("ssh sandbox backend", () => {
         ssh: {
           target: "peter@example.com:2222",
           command: "ssh",
-          workspaceRoot: "/remote/openclaw",
+          workspaceRoot: "/remote/nodoassist",
           strictHostKeyChecking: true,
           updateHostKeys: true,
         },
         browser: {
           enabled: false,
-          image: "openclaw-browser",
-          containerPrefix: "openclaw-browser-",
+          image: "nodoassist-browser",
+          containerPrefix: "nodoassist-browser-",
           network: "bridge",
           cdpPort: 9222,
           vncPort: 5900,
@@ -314,7 +314,7 @@ describe("ssh sandbox backend", () => {
       "-T",
       createSession().host,
     ]);
-    expect(execSpec.argv.at(-1)).toContain("/remote/openclaw/openclaw-ssh-agent-worker");
+    expect(execSpec.argv.at(-1)).toContain("/remote/nodoassist/nodoassist-ssh-agent-worker");
     expect(sshMocks.uploadDirectoryToSshTarget).toHaveBeenCalledTimes(3);
     const workspaceUploadParams = requireSshUploadParams(0, "workspace upload params");
     expect(workspaceUploadParams.localDir).toBe("/tmp/workspace");
@@ -330,7 +330,7 @@ describe("ssh sandbox backend", () => {
       "skills upload params",
     );
     expect(skillsUploadParams.localDir).toBe(skillsWorkspaceDir);
-    expect(skillsUploadParams.remoteDir).toContain("/workspace/.openclaw/sandbox-skills");
+    expect(skillsUploadParams.remoteDir).toContain("/workspace/.nodoassist/sandbox-skills");
 
     await backend.finalizeExec?.({
       status: "completed",
@@ -350,7 +350,9 @@ describe("ssh sandbox backend", () => {
         code: 0,
       })
       .mockResolvedValueOnce({
-        stdout: Buffer.from("/remote/openclaw/openclaw-ssh-agent-worker-abcd1234/workspace/src\n"),
+        stdout: Buffer.from(
+          "/remote/nodoassist/nodoassist-ssh-agent-worker-abcd1234/workspace/src\n",
+        ),
         stderr: Buffer.alloc(0),
         code: 0,
       })
@@ -360,7 +362,7 @@ describe("ssh sandbox backend", () => {
         code: 1,
       })
       .mockResolvedValueOnce({
-        stdout: Buffer.from("/remote/openclaw/openclaw-ssh-agent-worker-abcd1234/agent/src\n"),
+        stdout: Buffer.from("/remote/nodoassist/nodoassist-ssh-agent-worker-abcd1234/agent/src\n"),
         stderr: Buffer.alloc(0),
         code: 0,
       });
@@ -377,31 +379,33 @@ describe("ssh sandbox backend", () => {
 
     await expect(
       backend.validateWorkdir?.(
-        "/remote/openclaw/openclaw-ssh-agent-worker-abcd1234/workspace/src",
+        "/remote/nodoassist/nodoassist-ssh-agent-worker-abcd1234/workspace/src",
       ),
-    ).resolves.toBe("/remote/openclaw/openclaw-ssh-agent-worker-abcd1234/workspace/src");
+    ).resolves.toBe("/remote/nodoassist/nodoassist-ssh-agent-worker-abcd1234/workspace/src");
     await expect(
       backend.validateWorkdir?.(
-        "/remote/openclaw/openclaw-ssh-agent-worker-abcd1234/workspace/missing",
+        "/remote/nodoassist/nodoassist-ssh-agent-worker-abcd1234/workspace/missing",
       ),
     ).resolves.toBeNull();
     await expect(
-      backend.validateWorkdir?.("/remote/openclaw/openclaw-ssh-agent-worker-abcd1234/agent/src"),
-    ).resolves.toBe("/remote/openclaw/openclaw-ssh-agent-worker-abcd1234/agent/src");
+      backend.validateWorkdir?.(
+        "/remote/nodoassist/nodoassist-ssh-agent-worker-abcd1234/agent/src",
+      ),
+    ).resolves.toBe("/remote/nodoassist/nodoassist-ssh-agent-worker-abcd1234/agent/src");
 
     const validationCommand = String(requireSshRunCommandParams(1).remoteCommand);
-    expect(validationCommand).toContain("openclaw-validate-workdir");
+    expect(validationCommand).toContain("nodoassist-validate-workdir");
     expect(validationCommand).toContain("remote directory must stay under root");
     const agentValidationCommand = String(requireSshRunCommandParams(3).remoteCommand);
     expect(agentValidationCommand).toContain(
-      "/remote/openclaw/openclaw-ssh-agent-worker-abcd1234/agent",
+      "/remote/nodoassist/nodoassist-ssh-agent-worker-abcd1234/agent",
     );
   });
 
   it("refreshes materialized skills before validating a skills workdir", async () => {
-    const skillsWorkspaceDir = await createTempDir("openclaw-ssh-skills-");
+    const skillsWorkspaceDir = await createTempDir("nodoassist-ssh-skills-");
     await fs.mkdir(path.join(skillsWorkspaceDir, "skills", "demo"), { recursive: true });
-    const runtimePaths = resolveSshRuntimePaths("/remote/openclaw", "agent:worker");
+    const runtimePaths = resolveSshRuntimePaths("/remote/nodoassist", "agent:worker");
     const skillsWorkdir = path.posix.join(runtimePaths.remoteSkillsWorkspaceDir, "skills", "demo");
     sshMocks.runSshSandboxCommand
       .mockResolvedValueOnce({
@@ -453,9 +457,9 @@ describe("ssh sandbox backend", () => {
   });
 
   it("discards validated materialized skills refreshes that do not launch", async () => {
-    const skillsWorkspaceDir = await createTempDir("openclaw-ssh-skills-");
+    const skillsWorkspaceDir = await createTempDir("nodoassist-ssh-skills-");
     await fs.mkdir(path.join(skillsWorkspaceDir, "skills", "demo"), { recursive: true });
-    const runtimePaths = resolveSshRuntimePaths("/remote/openclaw", "agent:worker");
+    const runtimePaths = resolveSshRuntimePaths("/remote/nodoassist", "agent:worker");
     const skillsWorkdir = path.posix.join(runtimePaths.remoteSkillsWorkspaceDir, "skills", "demo");
     sshMocks.runSshSandboxCommand
       .mockResolvedValueOnce({
@@ -510,7 +514,7 @@ describe("ssh sandbox backend", () => {
   });
 
   it("refreshes materialized skills before each exec and remote fs command", async () => {
-    const skillsWorkspaceDir = await createTempDir("openclaw-ssh-skills-");
+    const skillsWorkspaceDir = await createTempDir("nodoassist-ssh-skills-");
     await fs.mkdir(path.join(skillsWorkspaceDir, "skills"), { recursive: true });
     const backend = await createSshSandboxBackend({
       sessionKey: "agent:worker:task",
@@ -540,7 +544,7 @@ describe("ssh sandbox backend", () => {
     expect(sshMocks.uploadDirectoryToSshTarget).toHaveBeenCalledTimes(3);
     const skillsUploadParams = requireSshUploadParams(0, "skills upload params");
     expect(skillsUploadParams.localDir).toBe(skillsWorkspaceDir);
-    expect(skillsUploadParams.remoteDir).toContain("/workspace/.openclaw/sandbox-skills");
+    expect(skillsUploadParams.remoteDir).toContain("/workspace/.nodoassist/sandbox-skills");
     await backend.finalizeExec?.({
       status: "completed",
       exitCode: 0,
@@ -556,7 +560,7 @@ describe("ssh sandbox backend", () => {
   });
 
   it("clears stale remote materialized skills when the local copy is missing", async () => {
-    const tmpDir = await createTempDir("openclaw-ssh-skills-");
+    const tmpDir = await createTempDir("nodoassist-ssh-skills-");
     const skillsWorkspaceDir = path.join(tmpDir, "missing");
     const backend = await createSshSandboxBackend({
       sessionKey: "agent:worker:task",
@@ -577,8 +581,8 @@ describe("ssh sandbox backend", () => {
 
     expect(sshMocks.uploadDirectoryToSshTarget).not.toHaveBeenCalled();
     const commandParams = requireSshRunCommandParams(1);
-    expect(commandParams.remoteCommand).toContain("openclaw-sandbox-clear");
-    expect(commandParams.remoteCommand).toContain("/workspace/.openclaw/sandbox-skills");
+    expect(commandParams.remoteCommand).toContain("nodoassist-sandbox-clear");
+    expect(commandParams.remoteCommand).toContain("/workspace/.nodoassist/sandbox-skills");
     await backend.finalizeExec?.({
       status: "completed",
       exitCode: 0,
@@ -588,7 +592,7 @@ describe("ssh sandbox backend", () => {
   });
 
   it("disposes the exec ssh session when materialized skills refresh fails", async () => {
-    const skillsWorkspaceDir = await createTempDir("openclaw-ssh-skills-");
+    const skillsWorkspaceDir = await createTempDir("nodoassist-ssh-skills-");
     await fs.mkdir(path.join(skillsWorkspaceDir, "skills"), { recursive: true });
     const backend = await createSshSandboxBackend({
       sessionKey: "agent:worker:task",

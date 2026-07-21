@@ -1,4 +1,4 @@
-import { createWebSearchProviderContractFields } from "openclaw/plugin-sdk/provider-web-search-contract";
+import { createWebSearchProviderContractFields } from "nodoassist/plugin-sdk/provider-web-search-contract";
 
 const PARALLEL_FREE_ONBOARDING_SCOPES: Array<"text-inference"> = ["text-inference"];
 

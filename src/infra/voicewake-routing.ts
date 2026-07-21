@@ -1,16 +1,16 @@
 // Persists and resolves voice wake routing rules.
-import { isRecord as isPlainObject } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { isRecord as isPlainObject } from "@nodoassist/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
 import {
   classifySessionKeyShape,
   isValidAgentId,
   normalizeAgentId,
 } from "../routing/session-key.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as NodoAssistStateKyselyDatabase } from "../state/nodoassist-state-db.generated.js";
 import {
-  openOpenClawStateDatabase,
-  runOpenClawStateWriteTransaction,
-} from "../state/openclaw-state-db.js";
+  openNodoAssistStateDatabase,
+  runNodoAssistStateWriteTransaction,
+} from "../state/nodoassist-state-db.js";
 import {
   executeSqliteQuerySync,
   executeSqliteQueryTakeFirstSync,
@@ -48,13 +48,13 @@ const DEFAULT_ROUTING: VoiceWakeRoutingConfig = {
 };
 
 type VoiceWakeRoutingDatabase = Pick<
-  OpenClawStateKyselyDatabase,
+  NodoAssistStateKyselyDatabase,
   "voicewake_routing_config" | "voicewake_routing_routes"
 >;
 
 function openStateDatabase(stateDir?: string) {
-  return openOpenClawStateDatabase({
-    env: stateDir ? { ...process.env, OPENCLAW_STATE_DIR: stateDir } : process.env,
+  return openNodoAssistStateDatabase({
+    env: stateDir ? { ...process.env, NODOASSIST_STATE_DIR: stateDir } : process.env,
   });
 }
 
@@ -352,7 +352,7 @@ export async function setVoiceWakeRoutingConfig(
     ...normalized,
     updatedAtMs,
   };
-  runOpenClawStateWriteTransaction(
+  runNodoAssistStateWriteTransaction(
     ({ db }) => {
       const routingDb = getNodeSqliteKysely<VoiceWakeRoutingDatabase>(db);
       executeSqliteQuerySync(
@@ -399,7 +399,7 @@ export async function setVoiceWakeRoutingConfig(
         );
       }
     },
-    baseDir ? { env: { ...process.env, OPENCLAW_STATE_DIR: baseDir } } : {},
+    baseDir ? { env: { ...process.env, NODOASSIST_STATE_DIR: baseDir } } : {},
   );
   return next;
 }

@@ -1558,21 +1558,21 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     const updateCalls = streamingInstances[0].update.mock.calls.map((c: unknown[]) =>
       typeof c[0] === "string" ? c[0] : "",
     );
-    const reasoningUpdate = updateCalls.find((c) => c.includes("Thinking"));
-    expect(reasoningUpdate).toContain("> 💭 **Thinking**");
+    const reasoningUpdate = updateCalls.find((c) => c.includes(".nodoassist"));
+    expect(reasoningUpdate).toContain("> 💭 **.nodoassist**");
     // formatReasoningPrefix strips "Reasoning:" prefix and italic markers
     expect(reasoningUpdate).toContain("> thinking step");
     expect(reasoningUpdate).not.toContain("Reasoning:");
     expect(reasoningUpdate).not.toMatch(/> _.*_/);
 
-    const combinedUpdate = updateCalls.find((c) => c.includes("Thinking") && c.includes("---"));
+    const combinedUpdate = updateCalls.find((c) => c.includes(".nodoassist") && c.includes("---"));
     if (!combinedUpdate) {
       throw new Error("expected combined reasoning and final-answer streaming update");
     }
 
     expect(streamingInstances[0].close).toHaveBeenCalledTimes(1);
     const closeArg = firstStreamingCloseText();
-    expect(closeArg).toContain("> 💭 **Thinking**");
+    expect(closeArg).toContain("> 💭 **.nodoassist**");
     expect(closeArg).toContain("---");
     expect(closeArg).toContain("answer part final");
   });
@@ -1630,7 +1630,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     expect(streamingInstances).toHaveLength(1);
     expect(streamingInstances[0].close).toHaveBeenCalledTimes(1);
     const closeArg = firstStreamingCloseText();
-    expect(closeArg).toContain("> 💭 **Thinking**");
+    expect(closeArg).toContain("> 💭 **.nodoassist**");
     expect(closeArg).toContain("> deep thought");
     expect(closeArg).not.toContain("Reasoning:");
     expect(closeArg).not.toContain("---");
@@ -1650,7 +1650,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
 
     expect(streamingInstances).toHaveLength(1);
     const closeArg = firstStreamingCloseText();
-    expect(closeArg).not.toContain("Thinking");
+    expect(closeArg).not.toContain(".nodoassist");
     expect(closeArg).toBe("```ts\ncode\n```");
   });
 

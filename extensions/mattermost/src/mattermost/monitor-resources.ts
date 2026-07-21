@@ -1,10 +1,10 @@
 // Mattermost plugin module implements monitor resources behavior.
-import { formatInboundMediaUnavailableText } from "openclaw/plugin-sdk/channel-inbound";
+import { formatInboundMediaUnavailableText } from "nodoassist/plugin-sdk/channel-inbound";
 import {
   asDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/number-runtime";
+import { normalizeStringEntries } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   fetchMattermostChannel,
   fetchMattermostUser,

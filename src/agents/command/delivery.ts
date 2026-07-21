@@ -18,7 +18,7 @@ import { getChannelPlugin, normalizeChannelId } from "../../channels/plugins/ind
 import { createReplyPrefixContext } from "../../channels/reply-prefix.js";
 import { createOutboundSendDeps, type CliDeps } from "../../cli/outbound-send-deps.js";
 import type { SessionEntry } from "../../config/sessions.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { formatErrorMessage, toErrorObject } from "../../infra/errors.js";
 import {
   resolveAgentDeliveryPlanWithSessionRoute,
@@ -112,7 +112,7 @@ type FreshSessionDeliveryRefreshParams =
     };
 
 type DeliverAgentCommandResultParams = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   deps: CliDeps;
   runtime: RuntimeEnv;
   opts: AgentCommandOpts;
@@ -300,7 +300,7 @@ function noVisiblePayloadStatus(): AgentCommandDeliveryStatus {
 }
 
 async function normalizeReplyMediaPathsForDelivery(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   payloads: ReplyPayload[];
   sessionKey?: string;
   outboundSession: OutboundSessionContext | undefined;
@@ -334,7 +334,7 @@ async function normalizeReplyMediaPathsForDelivery(params: {
 
 /** Normalizes reply payloads and media paths before delivery. */
 export function normalizeAgentCommandReplyPayloads(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   opts: AgentCommandOpts;
   outboundSession: OutboundSessionContext | undefined;
   payloads: RunResult["payloads"];

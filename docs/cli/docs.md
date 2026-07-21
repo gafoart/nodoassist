@@ -1,39 +1,39 @@
 ---
-summary: "CLI reference for `openclaw docs` (search the live docs index)"
+summary: "CLI reference for `nodoassist docs` (search the live docs index)"
 read_when:
-  - You want to search the live OpenClaw docs from the terminal
+  - You want to search the live NodoAssist docs from the terminal
   - You need to know which hosted search API the docs CLI calls
 title: "Docs"
 ---
 
-# `openclaw docs`
+# `nodoassist docs`
 
-Search the live OpenClaw docs index from the terminal.
+Search the live NodoAssist docs index from the terminal.
 
 ## Usage
 
 ```bash
-openclaw docs                       # print docs entrypoint and example search
-openclaw docs <query...>            # search the live docs index
+nodoassist docs                       # print docs entrypoint and example search
+nodoassist docs <query...>            # search the live docs index
 ```
 
 | Argument     | Description                                                                        |
 | ------------ | ---------------------------------------------------------------------------------- |
 | `[query...]` | Free-form search query. Multi-word queries are joined with spaces and sent as one. |
 
-With no query, `openclaw docs` prints the docs entrypoint URL and a sample search command instead of running a search.
+With no query, `nodoassist docs` prints the docs entrypoint URL and a sample search command instead of running a search.
 
 ## Examples
 
 ```bash
-openclaw docs browser existing-session
-openclaw docs sandbox allowHostControl
-openclaw docs gateway token secretref
+nodoassist docs browser existing-session
+nodoassist docs sandbox allowHostControl
+nodoassist docs gateway token secretref
 ```
 
 ## How it works
 
-`openclaw docs` calls `https://docs.openclaw.ai/api/search` and renders the JSON results. The search request uses a fixed 30 second timeout.
+`nodoassist docs` calls `https://docs.openclaw.ai/api/search` and renders the JSON results. The search request uses a fixed 30 second timeout.
 
 ## Output
 

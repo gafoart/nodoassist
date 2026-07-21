@@ -1,0 +1,4 @@
+interface:
+  display_name: "NodoAssist CI Limits"
+  short_description: "Tune NodoAssist CI fanout and runner budgets"
+  default_prompt: "Use $nodoassist-ci-limits to inspect NodoAssist CI pressure, tune runner-registration fanout safely, and document the exact validation before landing."

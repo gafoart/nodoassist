@@ -2,7 +2,7 @@
 import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { MAX_TIMER_TIMEOUT_MS } from "@openclaw/normalization-core/number-coercion";
+import { MAX_TIMER_TIMEOUT_MS } from "@nodoassist/normalization-core/number-coercion";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runWindowsBackgroundPowerShell } from "../../scripts/e2e/parallels/guest-transports.ts";
 import { run as hostCommandRun } from "../../scripts/e2e/parallels/host-command.ts";
@@ -34,7 +34,7 @@ const TEST_AUTH = {
 const tempDirs: string[] = [];
 
 function makeTempDir(): string {
-  const root = mkdtempSync(path.join(tmpdir(), "openclaw-parallels-npm-update-"));
+  const root = mkdtempSync(path.join(tmpdir(), "nodoassist-parallels-npm-update-"));
   tempDirs.push(root);
   return root;
 }
@@ -92,8 +92,8 @@ function extractWindowsBackgroundControlMarkers(decoded: string): {
     return match[0];
   };
   return {
-    done: marker("__OPENCLAW_BACKGROUND_DONE__", false),
-    exitPrefix: marker("__OPENCLAW_BACKGROUND_EXIT__", true),
+    done: marker("__NODOASSIST_BACKGROUND_DONE__", false),
+    exitPrefix: marker("__NODOASSIST_BACKGROUND_EXIT__", true),
   };
 }
 
@@ -106,13 +106,13 @@ afterEach(() => {
 
 describe("parallels npm update smoke", () => {
   it("accepts one prepared tarball target for update and fresh install", () => {
-    expect(parseArgs(["--target-tarball", "/tmp/openclaw-candidate.tgz"])).toMatchObject({
-      targetTarball: "/tmp/openclaw-candidate.tgz",
+    expect(parseArgs(["--target-tarball", "/tmp/nodoassist-candidate.tgz"])).toMatchObject({
+      targetTarball: "/tmp/nodoassist-candidate.tgz",
       updateTarget: "",
       freshTargetSpec: undefined,
     });
     expect(() =>
-      parseArgs(["--target-tarball", "/tmp/openclaw-candidate.tgz", "--update-target", "beta"]),
+      parseArgs(["--target-tarball", "/tmp/nodoassist-candidate.tgz", "--update-target", "beta"]),
     ).toThrow("--target-tarball cannot be combined");
   });
 
@@ -143,7 +143,7 @@ describe("parallels npm update smoke", () => {
       const smoke = new FailingNpmUpdateSmoke({
         ...TEST_AUTH,
         json: false,
-        packageSpec: "openclaw@latest",
+        packageSpec: "nodoassist@latest",
         platforms: new Set<Platform>(["linux"]),
         provider: "openai",
         updateTarget: "local-main",
@@ -166,15 +166,15 @@ set -euo pipefail
 log_path=${JSON.stringify(logPath)}
 printf '%s\\n' "$*" >>"$log_path"
 args=" $* "
-if [[ "$args" == *" /usr/bin/tee /tmp/openclaw-parallels-npm-update-linux-"* ]]; then
+if [[ "$args" == *" /usr/bin/tee /tmp/nodoassist-parallels-npm-update-linux-"* ]]; then
   cat >/dev/null
   exit 0
 fi
-if [[ "$args" == *" /bin/chmod 755 /tmp/openclaw-parallels-npm-update-linux-"* ]]; then
+if [[ "$args" == *" /bin/chmod 755 /tmp/nodoassist-parallels-npm-update-linux-"* ]]; then
   echo "chmod denied" >&2
   exit 7
 fi
-if [[ "$args" == *" /bin/rm -f /tmp/openclaw-parallels-npm-update-linux-"* ]]; then
+if [[ "$args" == *" /bin/rm -f /tmp/nodoassist-parallels-npm-update-linux-"* ]]; then
   printf 'cleanup\\n' >>"$log_path"
   exit 0
 fi
@@ -192,7 +192,7 @@ exit 1
         const smoke = new NpmUpdateSmoke({
           ...TEST_AUTH,
           json: false,
-          packageSpec: "openclaw@latest",
+          packageSpec: "nodoassist@latest",
           platforms: new Set<Platform>(["linux"]),
           provider: "openai",
           updateTarget: "local-main",
@@ -208,15 +208,15 @@ exit 1
             smoke,
             "Linux VM",
             "echo update",
-            "openclaw-parallels-npm-update-linux",
+            "nodoassist-parallels-npm-update-linux",
           ),
         ).toThrow("failed to chmod guest script");
       },
     );
 
     const log = readFileSync(logPath, "utf8");
-    expect(log).toContain("/bin/chmod 755 /tmp/openclaw-parallels-npm-update-linux-");
-    expect(log).toContain("/bin/rm -f /tmp/openclaw-parallels-npm-update-linux-");
+    expect(log).toContain("/bin/chmod 755 /tmp/nodoassist-parallels-npm-update-linux-");
+    expect(log).toContain("/bin/rm -f /tmp/nodoassist-parallels-npm-update-linux-");
     expect(log.match(/^cleanup$/gm)).toHaveLength(1);
   });
 
@@ -224,9 +224,9 @@ exit 1
     const script = readFileSync(SCRIPT_PATH, "utf8");
 
     expect(script).toContain("--beta-validation [target]");
-    expect(script).toContain("resolveOpenClawRegistryVersion");
+    expect(script).toContain("resolveNodoAssistRegistryVersion");
     expect(script).toContain("this.options.updateTarget = version");
-    expect(script).toContain("this.options.freshTargetSpec = `openclaw@${version}`");
+    expect(script).toContain("this.options.freshTargetSpec = `nodoassist@${version}`");
     expect(script).toContain("runFreshTargetInstalls");
     expect(script).toContain("freshTargetStatus");
   });
@@ -282,8 +282,8 @@ exit 1
 
     expect(script).toContain("assertPublishedTargetMatchesHarnessCheckout");
     expect(script).toContain("readHarnessCheckoutVersion");
-    expect(script).toContain("openClawVersionFamily");
-    expect(script).toContain("OPENCLAW_PARALLELS_ALLOW_HARNESS_TARGET_MISMATCH");
+    expect(script).toContain("nodoAssistVersionFamily");
+    expect(script).toContain("NODOASSIST_PARALLELS_ALLOW_HARNESS_TARGET_MISMATCH");
     expect(script).toContain("checkout the matching release branch");
   });
 
@@ -333,12 +333,12 @@ exit 1
     ].join("\n");
 
     expect(scripts).toContain("print_log_tail()");
-    expect(scripts).toContain("OPENCLAW_PARALLELS_NPM_UPDATE_LOG_TAIL_BYTES");
+    expect(scripts).toContain("NODOASSIST_PARALLELS_NPM_UPDATE_LOG_TAIL_BYTES");
     expect(scripts).toContain('print_log_tail "$output_file"');
-    expect(scripts).toContain("print_log_tail /tmp/openclaw-parallels-macos-gateway.log >&2");
-    expect(scripts).toContain("print_log_tail /tmp/openclaw-parallels-linux-gateway.log >&2");
+    expect(scripts).toContain("print_log_tail /tmp/nodoassist-parallels-macos-gateway.log >&2");
+    expect(scripts).toContain("print_log_tail /tmp/nodoassist-parallels-linux-gateway.log >&2");
     expect(scripts).not.toContain('cat "$output_file"');
-    expect(scripts).not.toContain("cat /tmp/openclaw-parallels-");
+    expect(scripts).not.toContain("cat /tmp/nodoassist-parallels-");
   });
 
   it("passes platform model timeouts to POSIX update agent turns", () => {
@@ -349,9 +349,9 @@ exit 1
     };
     withEnv(
       {
-        OPENCLAW_PARALLELS_LINUX_MODEL_TIMEOUT_S: undefined,
-        OPENCLAW_PARALLELS_MACOS_MODEL_TIMEOUT_S: undefined,
-        OPENCLAW_PARALLELS_MODEL_TIMEOUT_S: undefined,
+        NODOASSIST_PARALLELS_LINUX_MODEL_TIMEOUT_S: undefined,
+        NODOASSIST_PARALLELS_MACOS_MODEL_TIMEOUT_S: undefined,
+        NODOASSIST_PARALLELS_MODEL_TIMEOUT_S: undefined,
       },
       () => {
         expect(macosUpdateScript(input)).toContain("--timeout 1800 --json");
@@ -360,8 +360,8 @@ exit 1
     );
     withEnv(
       {
-        OPENCLAW_PARALLELS_LINUX_MODEL_TIMEOUT_S: "321",
-        OPENCLAW_PARALLELS_MACOS_MODEL_TIMEOUT_S: "654",
+        NODOASSIST_PARALLELS_LINUX_MODEL_TIMEOUT_S: "321",
+        NODOASSIST_PARALLELS_MACOS_MODEL_TIMEOUT_S: "654",
       },
       () => {
         expect(macosUpdateScript(input)).toContain("--timeout 654 --json");
@@ -393,18 +393,18 @@ exit 1
   });
 
   it("sets platform-aware fresh lane timeouts", () => {
-    withEnv({ OPENCLAW_PARALLELS_NPM_UPDATE_FRESH_TIMEOUT_S: undefined }, () => {
+    withEnv({ NODOASSIST_PARALLELS_NPM_UPDATE_FRESH_TIMEOUT_S: undefined }, () => {
       expect(freshLaneTimeoutMs("macos")).toBe(75 * 60 * 1000);
       expect(freshLaneTimeoutMs("linux")).toBe(75 * 60 * 1000);
       expect(freshLaneTimeoutMs("windows")).toBe(90 * 60 * 1000);
     });
 
-    withEnv({ OPENCLAW_PARALLELS_NPM_UPDATE_FRESH_TIMEOUT_S: "3" }, () => {
+    withEnv({ NODOASSIST_PARALLELS_NPM_UPDATE_FRESH_TIMEOUT_S: "3" }, () => {
       expect(freshLaneTimeoutMs("macos")).toBe(3000);
     });
 
     withEnv(
-      { OPENCLAW_PARALLELS_NPM_UPDATE_FRESH_TIMEOUT_S: String(Number.MAX_SAFE_INTEGER) },
+      { NODOASSIST_PARALLELS_NPM_UPDATE_FRESH_TIMEOUT_S: String(Number.MAX_SAFE_INTEGER) },
       () => {
         expect(freshLaneTimeoutMs("linux")).toBe(MAX_TIMER_TIMEOUT_MS);
       },
@@ -515,7 +515,7 @@ exit 1
         new NpmUpdateSmoke({
           ...TEST_AUTH,
           json: false,
-          packageSpec: "openclaw@latest",
+          packageSpec: "nodoassist@latest",
           platforms: new Set<Platform>(["linux"]),
           provider: "openai",
           updateTarget: "local-main",
@@ -533,11 +533,17 @@ exit 1
     ) => Promise<number>;
 
     await expect(
-      runStreamingToJobLog.call(smoke, "openclaw-definitely-missing-command", [], 60 * 60 * 1000, {
-        append: () => undefined,
-        logPath: "",
-        signal: new AbortController().signal,
-      }),
+      runStreamingToJobLog.call(
+        smoke,
+        "nodoassist-definitely-missing-command",
+        [],
+        60 * 60 * 1000,
+        {
+          append: () => undefined,
+          logPath: "",
+          signal: new AbortController().signal,
+        },
+      ),
     ).rejects.toMatchObject({ code: "ENOENT" });
     expect(vi.getTimerCount()).toBe(0);
   });
@@ -555,7 +561,7 @@ exit 1
           new NpmUpdateSmoke({
             ...TEST_AUTH,
             json: false,
-            packageSpec: "openclaw@latest",
+            packageSpec: "nodoassist@latest",
             platforms: new Set<Platform>(["linux"]),
             provider: "openai",
             updateTarget: "local-main",
@@ -611,8 +617,8 @@ exit 1
 
     expect(script).toContain("runWindowsBackgroundPowerShell");
     expect(transports).toContain("runWindowsBackgroundPowerShell");
-    expect(transports).toContain("__OPENCLAW_BACKGROUND_EXIT__");
-    expect(transports).toContain("__OPENCLAW_BACKGROUND_DONE__");
+    expect(transports).toContain("__NODOASSIST_BACKGROUND_EXIT__");
+    expect(transports).toContain("__NODOASSIST_BACKGROUND_DONE__");
     expect(transports).toContain("${options.label} timed out");
   });
 
@@ -648,14 +654,14 @@ exit 1
     const commands = decodedCommands.join("\n---\n");
     const payloads = inputs.join("\n---\n");
     expect(commands).toContain("$pidPath");
-    expect(commands).toContain("function Write-OpenClawUtf8File");
+    expect(commands).toContain("function Write-NodoAssistUtf8File");
     expect(commands).toContain("[System.Text.UTF8Encoding]::new($false)");
-    expect(payloads).toContain("Write-OpenClawUtf8File $exitPath '0'");
-    expect(payloads).toContain("Write-OpenClawUtf8File $donePath 'done'");
-    expect(payloads).toContain("Write-OpenClawUtf8File $pidPath ([string]$PID)");
+    expect(payloads).toContain("Write-NodoAssistUtf8File $exitPath '0'");
+    expect(payloads).toContain("Write-NodoAssistUtf8File $donePath 'done'");
+    expect(payloads).toContain("Write-NodoAssistUtf8File $pidPath ([string]$PID)");
     expect(commands).toContain('cmd.exe /d /s /c start "" /b powershell.exe');
     expect(commands).toContain("icacls.exe $runDir /inheritance:r");
-    expect(commands).toContain("Stop-OpenClawBackgroundProcessTree ([int]$backgroundPid)");
+    expect(commands).toContain("Stop-NodoAssistBackgroundProcessTree ([int]$backgroundPid)");
     expect(commands).toContain(
       'Get-CimInstance Win32_Process -Filter "ParentProcessId=$ProcessId"',
     );
@@ -695,7 +701,7 @@ exit 1
     ).rejects.toThrow("windows background marker smuggle timed out");
 
     expect(decodedCommands.join("\n")).toContain(
-      "Stop-OpenClawBackgroundProcessTree ([int]$backgroundPid)",
+      "Stop-NodoAssistBackgroundProcessTree ([int]$backgroundPid)",
     );
   });
 
@@ -743,7 +749,7 @@ exit 1
 
     expect(pollCount).toBe(1);
     expect(output.join("")).toContain("first chunk");
-    expect(decodedCommands.join("\n")).not.toContain("Stop-OpenClawBackgroundProcessTree");
+    expect(decodedCommands.join("\n")).not.toContain("Stop-NodoAssistBackgroundProcessTree");
     expect(decodedCommands.join("\n")).toContain(
       "Remove-Item -Path $scriptPath, $logPath, $donePath, $exitPath, $pidPath",
     );
@@ -787,7 +793,7 @@ exit 7
         const smoke = new NpmUpdateSmoke({
           ...TEST_AUTH,
           json: false,
-          packageSpec: "openclaw@latest",
+          packageSpec: "nodoassist@latest",
           platforms: new Set<Platform>(["macos"]),
           provider: "openai",
           updateTarget: "local-main",
@@ -828,7 +834,7 @@ exit 7
         const smoke = new NpmUpdateSmoke({
           ...TEST_AUTH,
           json: false,
-          packageSpec: "openclaw@latest",
+          packageSpec: "nodoassist@latest",
           platforms: new Set<Platform>(["macos"]),
           provider: "openai",
           updateTarget: "local-main",
@@ -872,21 +878,21 @@ exit 7
     expect(windowsScript).toContain(
       "Remove-Item $nodeScriptPath -Force -ErrorAction SilentlyContinue",
     );
-    expect(windowsScript).toContain("Remove-FuturePluginEntries\nStop-OpenClawGatewayProcesses");
-    expect(script).toContain("scrub_future_plugin_entries\nstop_openclaw_gateway_processes");
-    expect(script).toContain("Invoke-WithScopedEnv @{ OPENCLAW_DISABLE_BUNDLED_PLUGINS = '1'");
-    expect(macosScript).toContain('OPENCLAW_BIN="$(resolve_required_command openclaw)"');
+    expect(windowsScript).toContain("Remove-FuturePluginEntries\nStop-NodoAssistGatewayProcesses");
+    expect(script).toContain("scrub_future_plugin_entries\nstop_nodoassist_gateway_processes");
+    expect(script).toContain("Invoke-WithScopedEnv @{ NODOASSIST_DISABLE_BUNDLED_PLUGINS = '1'");
+    expect(macosScript).toContain('NODOASSIST_BIN="$(resolve_required_command nodoassist)"');
     expect(macosScript).toContain("/usr/local/bin:/usr/local/sbin");
     expect(macosScript).toContain(
-      'OPENCLAW_DISABLE_BUNDLED_PLUGINS=1 "$OPENCLAW_BIN" update --tag',
+      'NODOASSIST_DISABLE_BUNDLED_PLUGINS=1 "$NODOASSIST_BIN" update --tag',
     );
-    expect(macosScript).not.toContain("/opt/homebrew/bin/openclaw");
-    expect(script).toContain("OPENCLAW_DISABLE_BUNDLED_PLUGINS=1 openclaw update --tag");
+    expect(macosScript).not.toContain("/opt/homebrew/bin/nodoassist");
+    expect(script).toContain("NODOASSIST_DISABLE_BUNDLED_PLUGINS=1 nodoassist update --tag");
     expect(macosScript).toContain(
-      'OPENCLAW_DISABLE_BUNDLED_PLUGINS=1 "$OPENCLAW_BIN" gateway stop',
+      'NODOASSIST_DISABLE_BUNDLED_PLUGINS=1 "$NODOASSIST_BIN" gateway stop',
     );
     expect(script).toContain(
-      "OPENCLAW_DISABLE_BUNDLED_PLUGINS=1 OPENCLAW_ALLOW_ROOT=1 openclaw gateway stop",
+      "NODOASSIST_DISABLE_BUNDLED_PLUGINS=1 NODOASSIST_ALLOW_ROOT=1 nodoassist gateway stop",
     );
   });
 
@@ -897,11 +903,13 @@ exit 7
       updateTarget: "2026.5.3-beta.2",
     });
 
-    const updateIndex = script.indexOf("Invoke-OpenClaw update --tag");
-    const scopedIndex = script.indexOf("Invoke-WithScopedEnv @{ OPENCLAW_DISABLE_BUNDLED_PLUGINS");
-    const versionIndex = script.indexOf("Invoke-OpenClaw --version", scopedIndex);
-    const restartIndex = script.indexOf("Invoke-OpenClaw gateway restart");
-    const agentIndex = script.indexOf("Invoke-OpenClaw agent --local");
+    const updateIndex = script.indexOf("Invoke-NodoAssist update --tag");
+    const scopedIndex = script.indexOf(
+      "Invoke-WithScopedEnv @{ NODOASSIST_DISABLE_BUNDLED_PLUGINS",
+    );
+    const versionIndex = script.indexOf("Invoke-NodoAssist --version", scopedIndex);
+    const restartIndex = script.indexOf("Invoke-NodoAssist gateway restart");
+    const agentIndex = script.indexOf("Invoke-NodoAssist agent --local");
 
     expect(updateIndex).toBeGreaterThanOrEqual(0);
     expect(scopedIndex).toBeGreaterThanOrEqual(0);
@@ -909,7 +917,7 @@ exit 7
     expect(versionIndex).toBeGreaterThan(updateIndex);
     expect(restartIndex).toBeGreaterThan(updateIndex);
     expect(agentIndex).toBeGreaterThan(updateIndex);
-    expect(script).not.toContain("$env:OPENCLAW_DISABLE_BUNDLED_PLUGINS = '1'");
+    expect(script).not.toContain("$env:NODOASSIST_DISABLE_BUNDLED_PLUGINS = '1'");
   });
 
   it("generates a .NET-safe Windows stale import regex in the update-failure guard", () => {
@@ -931,13 +939,13 @@ exit 7
     expect(staleImportLine).toContain("$updateText -match 'ERR_MODULE_NOT_FOUND'");
     expect(staleImportLine).toContain(`$updateText -match '${staleImportPattern}'`);
     expect(staleImportPattern).toBe(
-      String.raw`node_modules\\openclaw\\dist\\[^\\]+-[A-Za-z0-9_-]+\.js`,
+      String.raw`node_modules\\nodoassist\\dist\\[^\\]+-[A-Za-z0-9_-]+\.js`,
     );
-    expect(staleImportPattern).not.toContain("node_modules\\openclaw\\dist\\");
+    expect(staleImportPattern).not.toContain("node_modules\\nodoassist\\dist\\");
     expect(staleImportPattern.match(/\\\\/g)).toHaveLength(4);
-    const representativeUpdateFailure = String.raw`Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\Users\runner\AppData\Roaming\npm\node_modules\openclaw\dist\main-a1_B2.js' imported from C:\Users\runner\AppData\Roaming\npm\node_modules\openclaw\dist\cli.js`;
+    const representativeUpdateFailure = String.raw`Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\Users\runner\AppData\Roaming\npm\node_modules\nodoassist\dist\main-a1_B2.js' imported from C:\Users\runner\AppData\Roaming\npm\node_modules\nodoassist\dist\cli.js`;
     const generatedRegex = new RegExp(staleImportPattern);
     expect(generatedRegex.test(representativeUpdateFailure)).toBe(true);
-    expect(generatedRegex.test(String.raw`node_modules\openclaw\dist\main.js`)).toBe(false);
+    expect(generatedRegex.test(String.raw`node_modules\nodoassist\dist\main.js`)).toBe(false);
   });
 });

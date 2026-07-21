@@ -1,8 +1,8 @@
-// Novita plugin entrypoint registers its OpenClaw integration.
-import { readConfiguredProviderCatalogEntries } from "openclaw/plugin-sdk/provider-catalog-shared";
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
-import { buildProviderReplayFamilyHooks } from "openclaw/plugin-sdk/provider-model-shared";
-import { buildProviderToolCompatFamilyHooks } from "openclaw/plugin-sdk/provider-tools";
+// Novita plugin entrypoint registers its NodoAssist integration.
+import { readConfiguredProviderCatalogEntries } from "nodoassist/plugin-sdk/provider-catalog-shared";
+import { defineSingleProviderPluginEntry } from "nodoassist/plugin-sdk/provider-entry";
+import { buildProviderReplayFamilyHooks } from "nodoassist/plugin-sdk/provider-model-shared";
+import { buildProviderToolCompatFamilyHooks } from "nodoassist/plugin-sdk/provider-tools";
 import { NOVITA_DEFAULT_MODEL_REF } from "./models.js";
 import { buildNovitaProvider } from "./provider-catalog.js";
 

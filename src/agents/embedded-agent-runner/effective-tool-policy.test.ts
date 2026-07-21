@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { setPluginToolMeta } from "../../plugins/tools.js";
 import {
   type ConversationCapabilityProfileParams,
@@ -29,7 +29,7 @@ function makeTool(name: string): AnyAgentTool {
 function applyFinalPolicy(
   params: {
     bundledTools: AnyAgentTool[];
-    config?: OpenClawConfig;
+    config?: NodoAssistConfig;
     warn?: (message: string) => void;
   } & Pick<
     ConversationCapabilityProfileParams,
@@ -64,7 +64,7 @@ describe("applyFinalEffectiveToolPolicy", () => {
     // so parsing and lookup match production policy application.
     const agentId = `bundled-inherited-allow-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const sessionKey = `agent:${agentId}:subagent:limited`;
-    const storePath = path.join(os.tmpdir(), `openclaw-bundled-inherited-allow-${agentId}.json`);
+    const storePath = path.join(os.tmpdir(), `nodoassist-bundled-inherited-allow-${agentId}.json`);
     fs.writeFileSync(
       storePath,
       JSON.stringify(
@@ -101,7 +101,7 @@ describe("applyFinalEffectiveToolPolicy", () => {
   it("honors configured plugin allow entries alongside inherited bundled tool allows", () => {
     const agentId = `bundled-plugin-allow-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const sessionKey = `agent:${agentId}:subagent:limited`;
-    const storePath = path.join(os.tmpdir(), `openclaw-bundled-plugin-allow-${agentId}.json`);
+    const storePath = path.join(os.tmpdir(), `nodoassist-bundled-plugin-allow-${agentId}.json`);
     fs.writeFileSync(
       storePath,
       JSON.stringify(

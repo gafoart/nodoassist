@@ -1,10 +1,10 @@
 // Discord plugin module implements manager behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { DiscordAccountConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import type { DiscordAccountConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { resolveAgentRoute } from "nodoassist/plugin-sdk/routing";
+import { createSubsystemLogger } from "nodoassist/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime-env";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/ssrf-runtime";
 import { resolveDiscordAccountAllowFrom } from "../accounts.js";
 import {
   type APIVoiceState,
@@ -213,11 +213,11 @@ function startAutoJoin(manager: Pick<DiscordVoiceManager, "autoJoin">) {
 }
 
 function resolveVoiceConnectionGroup(accountId: string): string {
-  return `openclaw:${accountId}`;
+  return `nodoassist:${accountId}`;
 }
 
 function resolveDiscordVoiceAgentRoute(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId: string;
   guildId: string;
   sessionChannelId: string;
@@ -291,7 +291,7 @@ export class DiscordVoiceManager {
   constructor(
     private params: {
       client: Client;
-      cfg: OpenClawConfig;
+      cfg: NodoAssistConfig;
       discordConfig: DiscordAccountConfig;
       accountId: string;
       runtime: RuntimeEnv;

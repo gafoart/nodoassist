@@ -617,7 +617,7 @@ export function renderAgentFiles(params: {
                             </div>
                           </div>
                           <div class="md-preview-dialog__actions">
-                            <openclaw-tooltip .content=${t("agents.files.expandPreview")}>
+                            <nodoassist-tooltip .content=${t("agents.files.expandPreview")}>
                               <button
                                 type="button"
                                 class="btn btn--sm md-preview-icon-btn md-preview-expand-btn"
@@ -638,8 +638,8 @@ export function renderAgentFiles(params: {
                                   >${icons.minimize}</span
                                 >
                               </button>
-                            </openclaw-tooltip>
-                            <openclaw-tooltip .content=${t("agents.files.editFile")}>
+                            </nodoassist-tooltip>
+                            <nodoassist-tooltip .content=${t("agents.files.editFile")}>
                               <button
                                 type="button"
                                 class="btn btn--sm md-preview-icon-btn"
@@ -653,8 +653,8 @@ export function renderAgentFiles(params: {
                               >
                                 <span aria-hidden="true">${icons.edit}</span>
                               </button>
-                            </openclaw-tooltip>
-                            <openclaw-tooltip .content=${t("agents.files.closePreview")}>
+                            </nodoassist-tooltip>
+                            <nodoassist-tooltip .content=${t("agents.files.closePreview")}>
                               <button
                                 type="button"
                                 class="btn btn--sm md-preview-icon-btn"
@@ -665,7 +665,7 @@ export function renderAgentFiles(params: {
                               >
                                 <span aria-hidden="true">${icons.x}</span>
                               </button>
-                            </openclaw-tooltip>
+                            </nodoassist-tooltip>
                           </div>
                         </div>
                         <div class="md-preview-dialog__meta">

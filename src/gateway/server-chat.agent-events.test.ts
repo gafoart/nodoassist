@@ -938,11 +938,11 @@ describe("agent event handler", () => {
       [
         "Visible before.",
         "",
-        "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
-        "OpenClaw runtime context (internal):",
+        "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>",
+        "NodoAssist runtime context (internal):",
         "[Internal task completion event]",
         "secret child result",
-        "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+        "<<<END_NODOASSIST_INTERNAL_CONTEXT>>>",
         "",
         "Visible after.",
       ].join("\n"),
@@ -954,7 +954,7 @@ describe("agent event handler", () => {
       message?: { content?: Array<{ text?: string }> };
     };
     expect(payload.message?.content?.[0]?.text).toBe("Visible before.\n\nVisible after.");
-    expect(payload.message?.content?.[0]?.text).not.toContain("BEGIN_OPENCLAW_INTERNAL_CONTEXT");
+    expect(payload.message?.content?.[0]?.text).not.toContain("BEGIN_NODOASSIST_INTERNAL_CONTEXT");
     expect(payload.message?.content?.[0]?.text).not.toContain("secret child result");
     expect(sessionChatCalls(nodeSendToSession)).toHaveLength(1);
     nowSpy?.mockRestore();
@@ -1957,7 +1957,7 @@ describe("agent event handler", () => {
         name: "tool_search_code",
         toolCallId: "tool-search-node-1",
         args: {
-          code: 'return await openclaw.tools.call("openclaw:core:exec", { command: "echo hi" });',
+          code: 'return await nodoassist.tools.call("nodoassist:core:exec", { command: "echo hi" });',
         },
       },
     });
@@ -1972,7 +1972,7 @@ describe("agent event handler", () => {
       name: "exec",
       toolCallId: "tool-search-node-1",
       bridgeToolName: "tool_search_code",
-      bridgeTargetToolName: "openclaw:core:exec",
+      bridgeTargetToolName: "nodoassist:core:exec",
       bridgeVerb: "call",
       args: { command: "echo hi" },
     });

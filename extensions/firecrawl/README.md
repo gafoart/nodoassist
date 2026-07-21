@@ -1,12 +1,12 @@
-# OpenClaw Firecrawl Plugin
+# NodoAssist Firecrawl Plugin
 
-Official OpenClaw plugin for Firecrawl.
+Official NodoAssist plugin for Firecrawl.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/firecrawl-plugin
-openclaw gateway restart
+nodoassist plugins install @nodoassist/firecrawl-plugin
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/tools/firecrawl> for setup and configuration.

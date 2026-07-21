@@ -5,9 +5,9 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
-  closeOpenClawStateDatabaseForTest,
-  openOpenClawStateDatabase,
-} from "../state/openclaw-state-db.js";
+  closeNodoAssistStateDatabaseForTest,
+  openNodoAssistStateDatabase,
+} from "../state/nodoassist-state-db.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import {
   loadSubagentRegistryFromSqlite,
@@ -59,11 +59,11 @@ describe("subagent registry sqlite store", () => {
   let tempStateDir: string | null = null;
 
   beforeEach(async () => {
-    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-subagent-sqlite-"));
+    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-subagent-sqlite-"));
   });
 
   afterEach(async () => {
-    closeOpenClawStateDatabaseForTest();
+    closeNodoAssistStateDatabaseForTest();
     if (tempStateDir) {
       await fs.rm(tempStateDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
       tempStateDir = null;
@@ -74,7 +74,7 @@ describe("subagent registry sqlite store", () => {
     if (!tempStateDir) {
       throw new Error("expected temp state dir");
     }
-    return await withEnvAsync({ OPENCLAW_STATE_DIR: tempStateDir }, fn);
+    return await withEnvAsync({ NODOASSIST_STATE_DIR: tempStateDir }, fn);
   }
 
   it("persists subagent runs in the shared sqlite state database", async () => {
@@ -94,7 +94,7 @@ describe("subagent registry sqlite store", () => {
         completion: run.completion,
         delivery: run.delivery,
       });
-      expect(await fs.stat(path.join(tempStateDir!, "state", "openclaw.sqlite"))).toBeTruthy();
+      expect(await fs.stat(path.join(tempStateDir!, "state", "nodoassist.sqlite"))).toBeTruthy();
       await expect(fs.stat(path.join(tempStateDir!, "subagents", "runs.json"))).rejects.toThrow();
     });
   });
@@ -141,7 +141,9 @@ describe("subagent registry sqlite store", () => {
         "import legacy registry",
       );
       expect(
-        openOpenClawStateDatabase().db.prepare("SELECT COUNT(*) AS count FROM subagent_runs").get(),
+        openNodoAssistStateDatabase()
+          .db.prepare("SELECT COUNT(*) AS count FROM subagent_runs")
+          .get(),
       ).toEqual({ count: 1 });
     });
   });

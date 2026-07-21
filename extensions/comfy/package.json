@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/comfy-provider",
+  "name": "@nodoassist/comfy-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw ComfyUI provider plugin",
+  "description": "NodoAssist ComfyUI provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

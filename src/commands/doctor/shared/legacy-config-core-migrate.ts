@@ -1,5 +1,5 @@
 // Core doctor compatibility migration pipeline for current config objects.
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../../config/types.nodoassist.js";
 import { runPluginSetupConfigMigrations } from "../../../plugins/setup-registry.js";
 import { migrateLegacySecretRefEnvMarkers } from "../../../secrets/legacy-secretref-env-marker.js";
 import { applyChannelDoctorCompatibilityMigrations } from "./channel-legacy-config-migrate.js";
@@ -10,7 +10,7 @@ import {
   normalizeLegacyOpenAICodexModelsAddMetadata,
 } from "./legacy-config-core-normalizers.js";
 
-function repairNullAgentWorkspaces(cfg: OpenClawConfig, changes: string[]): OpenClawConfig {
+function repairNullAgentWorkspaces(cfg: NodoAssistConfig, changes: string[]): NodoAssistConfig {
   const agents = cfg.agents?.list;
   if (!Array.isArray(agents)) {
     return cfg;
@@ -49,8 +49,8 @@ function repairNullAgentWorkspaces(cfg: OpenClawConfig, changes: string[]): Open
 }
 
 /** Normalize current config through core, plugin setup, channel, and secret-ref migrations. */
-export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
-  config: OpenClawConfig;
+export function normalizeCompatibilityConfigValues(cfg: NodoAssistConfig): {
+  config: NodoAssistConfig;
   changes: string[];
 } {
   const changes: string[] = [];

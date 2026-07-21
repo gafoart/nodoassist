@@ -4,15 +4,15 @@ import {
   extractErrorCode,
   formatErrorMessage,
   readErrorName,
-} from "openclaw/plugin-sdk/error-runtime";
-import { parseStrictNonNegativeInteger } from "openclaw/plugin-sdk/number-runtime";
+} from "nodoassist/plugin-sdk/error-runtime";
+import { parseStrictNonNegativeInteger } from "nodoassist/plugin-sdk/number-runtime";
 import {
   resolveRetryConfig,
   retryAsync,
   type RetryConfig,
   type RetryRunner,
-} from "openclaw/plugin-sdk/retry-runtime";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
+} from "nodoassist/plugin-sdk/retry-runtime";
+import { createSubsystemLogger } from "nodoassist/plugin-sdk/runtime-env";
 import { RateLimitError } from "./internal/discord.js";
 
 const DISCORD_RETRY_DEFAULTS = {

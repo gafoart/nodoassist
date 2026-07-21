@@ -1,18 +1,18 @@
 {
-  "name": "@openclaw/vercel-ai-gateway-provider",
+  "name": "@nodoassist/vercel-ai-gateway-provider",
   "version": "2026.6.11",
-  "description": "OpenClaw Vercel AI Gateway provider plugin",
+  "description": "NodoAssist Vercel AI Gateway provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/vercel-ai-gateway-provider",
-      "npmSpec": "@openclaw/vercel-ai-gateway-provider",
+      "clawhubSpec": "clawhub:@nodoassist/vercel-ai-gateway-provider",
+      "npmSpec": "@nodoassist/vercel-ai-gateway-provider",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.9"
     },
@@ -20,7 +20,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

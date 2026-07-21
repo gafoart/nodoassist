@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/microsoft-foundry",
+  "name": "@nodoassist/microsoft-foundry",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw Microsoft Foundry provider plugin",
+  "description": "NodoAssist Microsoft Foundry provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

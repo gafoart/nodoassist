@@ -1,13 +1,13 @@
 // Signal type declarations define plugin contracts.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import type {
   DmPolicy,
   GroupPolicy,
   SignalReactionNotificationMode,
-} from "openclaw/plugin-sdk/config-contracts";
-import type { HistoryEntry } from "openclaw/plugin-sdk/reply-history";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+} from "nodoassist/plugin-sdk/config-contracts";
+import type { HistoryEntry } from "nodoassist/plugin-sdk/reply-history";
+import type { ReplyPayload } from "nodoassist/plugin-sdk/reply-runtime";
+import type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime-env";
 import type { SignalSender } from "../identity.js";
 
 export type SignalEnvelope = {
@@ -90,7 +90,7 @@ export type SignalNativeReplyContext = {
 
 export type SignalEventHandlerDeps = {
   runtime: RuntimeEnv;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   baseUrl: string;
   account?: string;
   accountUuid?: string;
@@ -118,7 +118,7 @@ export type SignalEventHandlerDeps = {
     maxBytes: number;
   }) => Promise<{ path: string; contentType?: string } | null>;
   deliverReplies: (params: {
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     replies: ReplyPayload[];
     target: string;
     baseUrl: string;

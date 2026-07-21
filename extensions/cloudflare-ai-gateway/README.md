@@ -1,12 +1,12 @@
-# OpenClaw Cloudflare AI Gateway Provider
+# NodoAssist Cloudflare AI Gateway Provider
 
-Official OpenClaw provider plugin for Cloudflare AI Gateway.
+Official NodoAssist provider plugin for Cloudflare AI Gateway.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/cloudflare-ai-gateway-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/cloudflare-ai-gateway-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/cloudflare-ai-gateway> for setup and configuration.

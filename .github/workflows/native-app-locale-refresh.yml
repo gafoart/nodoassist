@@ -9,7 +9,7 @@ on:
       - apps/ios/**
       - apps/macos/Sources/**
       - apps/macos/Package.swift
-      - apps/shared/OpenClawKit/Sources/**
+      - apps/shared/NodoAssistKit/Sources/**
       - apps/.i18n/native-source.json
       - scripts/control-ui-i18n.ts
       - scripts/native-app-i18n.ts
@@ -26,7 +26,7 @@ concurrency:
 
 jobs:
   refresh:
-    if: github.repository == 'openclaw/openclaw' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main') && (github.event_name != 'push' || github.actor != 'github-actions[bot]')
+    if: github.repository == 'nodoassist/nodoassist' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main') && (github.event_name != 'push' || github.actor != 'github-actions[bot]')
     strategy:
       fail-fast: false
       max-parallel: 2
@@ -71,25 +71,25 @@ jobs:
 
       - name: Ensure translation provider secrets exist
         env:
-          OPENCLAW_DOCS_I18N_OPENAI_API_KEY: ${{ secrets.OPENCLAW_DOCS_I18N_OPENAI_API_KEY }}
+          NODOASSIST_DOCS_I18N_OPENAI_API_KEY: ${{ secrets.NODOASSIST_DOCS_I18N_OPENAI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           set -euo pipefail
-          if [ -z "${OPENCLAW_DOCS_I18N_OPENAI_API_KEY:-}" ] && [ -z "${OPENAI_API_KEY:-}" ] && [ -z "${ANTHROPIC_API_KEY:-}" ]; then
-            echo "Missing OPENCLAW_DOCS_I18N_OPENAI_API_KEY, OPENAI_API_KEY, or ANTHROPIC_API_KEY secret."
+          if [ -z "${NODOASSIST_DOCS_I18N_OPENAI_API_KEY:-}" ] && [ -z "${OPENAI_API_KEY:-}" ] && [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "Missing NODOASSIST_DOCS_I18N_OPENAI_API_KEY, OPENAI_API_KEY, or ANTHROPIC_API_KEY secret."
             exit 1
           fi
 
       - name: Refresh native locale artifact
         env:
-          OPENCLAW_DOCS_I18N_OPENAI_API_KEY: ${{ secrets.OPENCLAW_DOCS_I18N_OPENAI_API_KEY }}
+          NODOASSIST_DOCS_I18N_OPENAI_API_KEY: ${{ secrets.NODOASSIST_DOCS_I18N_OPENAI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ANTHROPIC_MODEL: claude-opus-4-8
-          OPENAI_MODEL: ${{ vars.OPENCLAW_CI_OPENAI_MODEL_BARE || 'gpt-5.5' }}
-          OPENCLAW_CONTROL_UI_I18N_THINKING: low
-          OPENCLAW_CONTROL_UI_I18N_AUTH_OPTIONAL: "0"
+          OPENAI_MODEL: ${{ vars.NODOASSIST_CI_OPENAI_MODEL_BARE || 'gpt-5.5' }}
+          NODOASSIST_CONTROL_UI_I18N_THINKING: low
+          NODOASSIST_CONTROL_UI_I18N_AUTH_OPTIONAL: "0"
           LOCALE: ${{ matrix.locale }}
         run: |
           set -euo pipefail
@@ -100,27 +100,27 @@ jobs:
             local openai_api_key="${3-}"
             if [ "$provider" = "openai" ]; then
               OPENAI_API_KEY="$openai_api_key" \
-                OPENCLAW_CONTROL_UI_I18N_PROVIDER="$provider" \
-                OPENCLAW_CONTROL_UI_I18N_MODEL="$model" \
+                NODOASSIST_CONTROL_UI_I18N_PROVIDER="$provider" \
+                NODOASSIST_CONTROL_UI_I18N_MODEL="$model" \
                 node --import tsx scripts/native-app-i18n.ts sync --write --locale "${LOCALE}"
               return
             fi
-            OPENCLAW_CONTROL_UI_I18N_PROVIDER="$provider" \
-              OPENCLAW_CONTROL_UI_I18N_MODEL="$model" \
+            NODOASSIST_CONTROL_UI_I18N_PROVIDER="$provider" \
+              NODOASSIST_CONTROL_UI_I18N_MODEL="$model" \
               node --import tsx scripts/native-app-i18n.ts sync --write --locale "${LOCALE}"
           }
 
           run_openai_refresh() {
             local status=1
-            if [ -n "${OPENCLAW_DOCS_I18N_OPENAI_API_KEY:-}" ]; then
+            if [ -n "${NODOASSIST_DOCS_I18N_OPENAI_API_KEY:-}" ]; then
               set +e
-              run_refresh openai "${OPENAI_MODEL}" "${OPENCLAW_DOCS_I18N_OPENAI_API_KEY}"
+              run_refresh openai "${OPENAI_MODEL}" "${NODOASSIST_DOCS_I18N_OPENAI_API_KEY}"
               status="$?"
               set -e
               if [ "$status" -eq 0 ]; then
                 return 0
               fi
-              if [ -z "${OPENAI_API_KEY:-}" ] || [ "${OPENAI_API_KEY}" = "${OPENCLAW_DOCS_I18N_OPENAI_API_KEY}" ]; then
+              if [ -z "${OPENAI_API_KEY:-}" ] || [ "${OPENAI_API_KEY}" = "${NODOASSIST_DOCS_I18N_OPENAI_API_KEY}" ]; then
                 return "$status"
               fi
               echo "::warning::Docs OpenAI native locale refresh key failed for ${LOCALE}; retrying with repository OpenAI key."
@@ -139,7 +139,7 @@ jobs:
             if [ "$status" -eq 0 ]; then
               exit 0
             fi
-            if [ -z "${OPENCLAW_DOCS_I18N_OPENAI_API_KEY:-}" ] && [ -z "${OPENAI_API_KEY:-}" ]; then
+            if [ -z "${NODOASSIST_DOCS_I18N_OPENAI_API_KEY:-}" ] && [ -z "${OPENAI_API_KEY:-}" ]; then
               exit "$status"
             fi
             echo "::warning::Anthropic native locale refresh failed for ${LOCALE}; retrying with OpenAI."

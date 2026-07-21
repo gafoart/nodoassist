@@ -1,13 +1,13 @@
 import os from "node:os";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { saveSessionStore, type SessionEntry } from "openclaw/plugin-sdk/session-store-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { saveSessionStore, type SessionEntry } from "nodoassist/plugin-sdk/session-store-runtime";
 import { describe, expect, it } from "vitest";
 import { telegramApprovalCapability } from "./approval-native.js";
 
 function buildConfig(
-  overrides?: Partial<NonNullable<NonNullable<OpenClawConfig["channels"]>["telegram"]>>,
-): OpenClawConfig {
+  overrides?: Partial<NonNullable<NonNullable<NodoAssistConfig["channels"]>["telegram"]>>,
+): NodoAssistConfig {
   return {
     channels: {
       telegram: {
@@ -20,10 +20,10 @@ function buildConfig(
         ...overrides,
       },
     },
-  } as OpenClawConfig;
+  } as NodoAssistConfig;
 }
 
-const STORE_PATH = path.join(os.tmpdir(), "openclaw-telegram-approval-native-test.json");
+const STORE_PATH = path.join(os.tmpdir(), "nodoassist-telegram-approval-native-test.json");
 
 async function writeStore(store: Record<string, unknown>) {
   await saveSessionStore(STORE_PATH, store as Record<string, SessionEntry>, {

@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/openai-provider",
+  "name": "@nodoassist/openai-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw OpenAI provider plugins",
+  "description": "NodoAssist OpenAI provider plugins",
   "type": "module",
   "dependencies": {
     "ws": "8.21.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

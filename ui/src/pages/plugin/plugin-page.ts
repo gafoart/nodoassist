@@ -138,6 +138,6 @@ export class PluginPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-plugin-page")) {
-  customElements.define("openclaw-plugin-page", PluginPage);
+if (!customElements.get("nodoassist-plugin-page")) {
+  customElements.define("nodoassist-plugin-page", PluginPage);
 }

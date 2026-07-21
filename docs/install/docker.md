@@ -1,5 +1,5 @@
 ---
-summary: "Optional Docker-based setup and onboarding for OpenClaw"
+summary: "Optional Docker-based setup and onboarding for NodoAssist"
 read_when:
   - You want a containerized gateway instead of local installs
   - You are validating the Docker flow
@@ -27,21 +27,21 @@ The default sandbox backend uses Docker when `agents.defaults.sandbox` is enable
     ./scripts/docker/setup.sh
     ```
 
-    This builds the gateway image locally as `openclaw:local`. To use a pre-built image instead:
+    This builds the gateway image locally as `nodoassist:local`. To use a pre-built image instead:
 
     ```bash
-    export OPENCLAW_IMAGE="ghcr.io/openclaw/openclaw:latest"
+    export NODOASSIST_IMAGE="ghcr.io/nodoassist/nodoassist:latest"
     ./scripts/docker/setup.sh
     ```
 
-    Pre-built images are published first to the [GitHub Container Registry](https://github.com/openclaw/openclaw/pkgs/container/openclaw). GHCR is the primary registry for release automation, pinned deployments, and provenance checks. The same release publishes a Docker Hub mirror at `openclaw/openclaw`:
+    Pre-built images are published first to the [GitHub Container Registry](https://github.com/openclaw/openclaw/pkgs/container/openclaw). GHCR is the primary registry for release automation, pinned deployments, and provenance checks. The same release publishes a Docker Hub mirror at `nodoassist/nodoassist`:
 
     ```bash
-    export OPENCLAW_IMAGE="openclaw/openclaw:latest"
+    export NODOASSIST_IMAGE="nodoassist/nodoassist:latest"
     ./scripts/docker/setup.sh
     ```
 
-    Use `ghcr.io/openclaw/openclaw` or `openclaw/openclaw` and avoid unofficial mirrors, which don't share OpenClaw's release timing or retention policy. Official tags: `main`, `latest`, `<version>` (e.g. `2026.2.26`), and beta tags such as `2026.2.26-beta.1` (betas never move `latest`/`main`). The default `main`/`latest`/`<version>` image bundles the `codex` and `diagnostics-otel` plugins. A `-browser` variant (e.g. `latest-browser`) also ships with Chromium baked in, useful for the [sandboxed browser](/gateway/sandboxing#sandboxed-browser) tool without a first-run Playwright install.
+    Use `ghcr.io/nodoassist/nodoassist` or `nodoassist/nodoassist` and avoid unofficial mirrors, which don't share NodoAssist's release timing or retention policy. Official tags: `main`, `latest`, `<version>` (e.g. `2026.2.26`), and beta tags such as `2026.2.26-beta.1` (betas never move `latest`/`main`). The default `main`/`latest`/`<version>` image bundles the `codex` and `diagnostics-otel` plugins. A `-browser` variant (e.g. `latest-browser`) also ships with Chromium baked in, useful for the [sandboxed browser](/gateway/sandboxing#sandboxed-browser) tool without a first-run Playwright install.
 
   </Step>
 
@@ -49,14 +49,14 @@ The default sandbox backend uses Docker when `agents.defaults.sandbox` is enable
     On offline hosts, transfer and load the image first:
 
     ```bash
-    docker load -i openclaw-image.tar
-    export OPENCLAW_IMAGE="ghcr.io/openclaw/openclaw:latest"
+    docker load -i nodoassist-image.tar
+    export NODOASSIST_IMAGE="ghcr.io/nodoassist/nodoassist:latest"
     ./scripts/docker/setup.sh --offline
     ```
 
-    `--offline` verifies `OPENCLAW_IMAGE` already exists locally, disables implicit Compose pulls/builds, then runs the normal flow: `.env` sync, permission fixes, onboarding, gateway config sync, Compose startup.
+    `--offline` verifies `NODOASSIST_IMAGE` already exists locally, disables implicit Compose pulls/builds, then runs the normal flow: `.env` sync, permission fixes, onboarding, gateway config sync, Compose startup.
 
-    If `OPENCLAW_SANDBOX=1`, offline setup also checks the configured default and per-agent sandbox images on the daemon behind `OPENCLAW_DOCKER_SOCKET`, including the browser-contract label on Docker-backed browser images. If a required image is missing or stale, setup exits without changing sandbox config rather than reporting a broken success.
+    If `NODOASSIST_SANDBOX=1`, offline setup also checks the configured default and per-agent sandbox images on the daemon behind `NODOASSIST_DOCKER_SOCKET`, including the browser-contract label on Docker-backed browser images. If a required image is missing or stale, setup exits without changing sandbox config rather than reporting a broken success.
 
   </Step>
 
@@ -68,7 +68,7 @@ The default sandbox backend uses Docker when `agents.defaults.sandbox` is enable
     - creates the auth-profile secret key directory
     - starts the gateway via Docker Compose
 
-    Pre-start onboarding and config writes run through `openclaw-gateway` directly (with `--no-deps --entrypoint node`), since `openclaw-cli` shares the gateway's network namespace and only works once the gateway container exists.
+    Pre-start onboarding and config writes run through `nodoassist-gateway` directly (with `--no-deps --entrypoint node`), since `nodoassist-cli` shares the gateway's network namespace and only works once the gateway container exists.
 
   </Step>
 
@@ -78,7 +78,7 @@ The default sandbox backend uses Docker when `agents.defaults.sandbox` is enable
     Need the URL again?
 
     ```bash
-    docker compose run --rm openclaw-cli dashboard --no-open
+    docker compose run --rm nodoassist-cli dashboard --no-open
     ```
 
   </Step>
@@ -86,13 +86,13 @@ The default sandbox backend uses Docker when `agents.defaults.sandbox` is enable
   <Step title="Configure channels (optional)">
     ```bash
     # WhatsApp (QR)
-    docker compose run --rm openclaw-cli channels login
+    docker compose run --rm nodoassist-cli channels login
 
     # Telegram
-    docker compose run --rm openclaw-cli channels add --channel telegram --token "<token>"
+    docker compose run --rm nodoassist-cli channels add --channel telegram --token "<token>"
 
     # Discord
-    docker compose run --rm openclaw-cli channels add --channel discord --token "<token>"
+    docker compose run --rm nodoassist-cli channels add --channel discord --token "<token>"
     ```
 
     Docs: [WhatsApp](/channels/whatsapp), [Telegram](/channels/telegram), [Discord](/channels/discord)
@@ -103,34 +103,34 @@ The default sandbox backend uses Docker when `agents.defaults.sandbox` is enable
 ### Manual flow
 
 ```bash
-docker build -t openclaw:local -f Dockerfile .
-docker compose run --rm --no-deps --entrypoint node openclaw-gateway \
+docker build -t nodoassist:local -f Dockerfile .
+docker compose run --rm --no-deps --entrypoint node nodoassist-gateway \
   dist/index.js onboard --mode local --no-install-daemon
-docker compose run --rm --no-deps --entrypoint node openclaw-gateway \
+docker compose run --rm --no-deps --entrypoint node nodoassist-gateway \
   dist/index.js config set --batch-json '[{"path":"gateway.mode","value":"local"},{"path":"gateway.bind","value":"lan"},{"path":"gateway.controlUi.allowedOrigins","value":["http://localhost:18789","http://127.0.0.1:18789"]}]'
-docker compose up -d openclaw-gateway
+docker compose up -d nodoassist-gateway
 ```
 
 <Note>
-Run `docker compose` from the repo root. If you enabled `OPENCLAW_EXTRA_MOUNTS` or `OPENCLAW_HOME_VOLUME`, the setup script writes `docker-compose.extra.yml`; include it after any `docker-compose.override.yml` you maintain yourself, e.g. `-f docker-compose.yml -f docker-compose.override.yml -f docker-compose.extra.yml`.
+Run `docker compose` from the repo root. If you enabled `NODOASSIST_EXTRA_MOUNTS` or `NODOASSIST_HOME_VOLUME`, the setup script writes `docker-compose.extra.yml`; include it after any `docker-compose.override.yml` you maintain yourself, e.g. `-f docker-compose.yml -f docker-compose.override.yml -f docker-compose.extra.yml`.
 </Note>
 
 ### Upgrading container images
 
-When you replace the OpenClaw image but keep the same mounted state/config, the
+When you replace the NodoAssist image but keep the same mounted state/config, the
 new gateway runs startup-safe upgrade migrations and plugin convergence before
 readiness. Routine image upgrades should not require a separate
-`openclaw doctor --fix` pass.
+`nodoassist doctor --fix` pass.
 
 If startup cannot complete those repairs safely, the gateway exits instead of
 reporting healthy. With a restart policy, Docker, Podman, or Kubernetes may show
 the gateway container restarting. Keep the mounted state volume, then run the
-same image once with `openclaw doctor --fix` as the container command, using the
+same image once with `nodoassist doctor --fix` as the container command, using the
 same state/config mounts the gateway uses:
 
 ```bash
-docker run --rm -v <openclaw-state>:/home/node/.openclaw <image> openclaw doctor --fix
-podman run --rm -v <openclaw-state>:/home/node/.openclaw <image> openclaw doctor --fix
+docker run --rm -v <nodoassist-state>:/home/node/.nodoassist <image> nodoassist doctor --fix
+podman run --rm -v <nodoassist-state>:/home/node/.nodoassist <image> nodoassist doctor --fix
 ```
 
 After doctor finishes, restart the gateway container with its default command.
@@ -141,54 +141,54 @@ same PVC, then restart the Deployment or StatefulSet.
 
 Optional variables accepted by `scripts/docker/setup.sh` (and, for the gateway container, by `docker-compose.yml` directly):
 
-| Variable                                        | Purpose                                                                                                 |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `OPENCLAW_IMAGE`                                | Use a remote image instead of building locally                                                          |
-| `OPENCLAW_IMAGE_APT_PACKAGES`                   | Install extra apt packages during build (space-separated). Legacy alias: `OPENCLAW_DOCKER_APT_PACKAGES` |
-| `OPENCLAW_IMAGE_PIP_PACKAGES`                   | Install extra Python packages during build (space-separated)                                            |
-| `OPENCLAW_EXTENSIONS`                           | Pre-install plugin dependencies at build time (comma- or space-separated ids)                           |
-| `OPENCLAW_DOCKER_BUILD_NODE_OPTIONS`            | Override the local source-build Node options (default `--max-old-space-size=8192`)                      |
-| `OPENCLAW_DOCKER_BUILD_TSDOWN_MAX_OLD_SPACE_MB` | Override the local source-build tsdown heap in MB                                                       |
-| `OPENCLAW_DOCKER_BUILD_SKIP_DTS`                | Skip declaration output during runtime-only local image builds (default `1`)                            |
-| `OPENCLAW_INSTALL_BROWSER`                      | Bake Chromium + Xvfb into the image at build time                                                       |
-| `OPENCLAW_EXTRA_MOUNTS`                         | Extra host bind mounts (comma-separated `source:target[:opts]`)                                         |
-| `OPENCLAW_HOME_VOLUME`                          | Persist `/home/node` in a named Docker volume                                                           |
-| `OPENCLAW_SANDBOX`                              | Opt in to sandbox bootstrap (`1`, `true`, `yes`, `on`)                                                  |
-| `OPENCLAW_SKIP_ONBOARDING`                      | Skip the interactive onboarding step (`1`, `true`, `yes`, `on`)                                         |
-| `OPENCLAW_DOCKER_SOCKET`                        | Override the Docker socket path                                                                         |
-| `OPENCLAW_DISABLE_BONJOUR`                      | Force Bonjour/mDNS advertising on (`0`) or off (`1`); see [Bonjour / mDNS](#bonjour--mdns)              |
-| `OPENCLAW_DISABLE_BUNDLED_SOURCE_OVERLAYS`      | Disable bundled plugin source bind-mount overlays                                                       |
-| `OTEL_EXPORTER_OTLP_ENDPOINT`                   | Shared OTLP/HTTP collector endpoint for OpenTelemetry export                                            |
-| `OTEL_EXPORTER_OTLP_*_ENDPOINT`                 | Signal-specific OTLP endpoints for traces, metrics, or logs                                             |
-| `OTEL_EXPORTER_OTLP_PROTOCOL`                   | OTLP protocol override. Only `http/protobuf` is supported today                                         |
-| `OTEL_SERVICE_NAME`                             | Service name used for OpenTelemetry resources                                                           |
-| `OTEL_SEMCONV_STABILITY_OPT_IN`                 | Opt in to latest experimental GenAI semantic attributes                                                 |
-| `OPENCLAW_OTEL_PRELOADED`                       | Skip starting a second OpenTelemetry SDK when one is preloaded                                          |
+| Variable                                          | Purpose                                                                                                   |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `NODOASSIST_IMAGE`                                | Use a remote image instead of building locally                                                            |
+| `NODOASSIST_IMAGE_APT_PACKAGES`                   | Install extra apt packages during build (space-separated). Legacy alias: `NODOASSIST_DOCKER_APT_PACKAGES` |
+| `NODOASSIST_IMAGE_PIP_PACKAGES`                   | Install extra Python packages during build (space-separated)                                              |
+| `NODOASSIST_EXTENSIONS`                           | Pre-install plugin dependencies at build time (comma- or space-separated ids)                             |
+| `NODOASSIST_DOCKER_BUILD_NODE_OPTIONS`            | Override the local source-build Node options (default `--max-old-space-size=8192`)                        |
+| `NODOASSIST_DOCKER_BUILD_TSDOWN_MAX_OLD_SPACE_MB` | Override the local source-build tsdown heap in MB                                                         |
+| `NODOASSIST_DOCKER_BUILD_SKIP_DTS`                | Skip declaration output during runtime-only local image builds (default `1`)                              |
+| `NODOASSIST_INSTALL_BROWSER`                      | Bake Chromium + Xvfb into the image at build time                                                         |
+| `NODOASSIST_EXTRA_MOUNTS`                         | Extra host bind mounts (comma-separated `source:target[:opts]`)                                           |
+| `NODOASSIST_HOME_VOLUME`                          | Persist `/home/node` in a named Docker volume                                                             |
+| `NODOASSIST_SANDBOX`                              | Opt in to sandbox bootstrap (`1`, `true`, `yes`, `on`)                                                    |
+| `NODOASSIST_SKIP_ONBOARDING`                      | Skip the interactive onboarding step (`1`, `true`, `yes`, `on`)                                           |
+| `NODOASSIST_DOCKER_SOCKET`                        | Override the Docker socket path                                                                           |
+| `NODOASSIST_DISABLE_BONJOUR`                      | Force Bonjour/mDNS advertising on (`0`) or off (`1`); see [Bonjour / mDNS](#bonjour--mdns)                |
+| `NODOASSIST_DISABLE_BUNDLED_SOURCE_OVERLAYS`      | Disable bundled plugin source bind-mount overlays                                                         |
+| `OTEL_EXPORTER_OTLP_ENDPOINT`                     | Shared OTLP/HTTP collector endpoint for OpenTelemetry export                                              |
+| `OTEL_EXPORTER_OTLP_*_ENDPOINT`                   | Signal-specific OTLP endpoints for traces, metrics, or logs                                               |
+| `OTEL_EXPORTER_OTLP_PROTOCOL`                     | OTLP protocol override. Only `http/protobuf` is supported today                                           |
+| `OTEL_SERVICE_NAME`                               | Service name used for OpenTelemetry resources                                                             |
+| `OTEL_SEMCONV_STABILITY_OPT_IN`                   | Opt in to latest experimental GenAI semantic attributes                                                   |
+| `NODOASSIST_OTEL_PRELOADED`                       | Skip starting a second OpenTelemetry SDK when one is preloaded                                            |
 
-The official image ships no Homebrew. During onboarding, OpenClaw hides brew-only skill dependency installers in a Linux container without `brew`; provide those dependencies through a custom image or install manually. Use `OPENCLAW_IMAGE_APT_PACKAGES` for Debian-packaged dependencies and `OPENCLAW_IMAGE_PIP_PACKAGES` for Python dependencies (runs `python3 -m pip install --break-system-packages` at build time, so pin versions and use only indexes you trust).
+The official image ships no Homebrew. During onboarding, NodoAssist hides brew-only skill dependency installers in a Linux container without `brew`; provide those dependencies through a custom image or install manually. Use `NODOASSIST_IMAGE_APT_PACKAGES` for Debian-packaged dependencies and `NODOASSIST_IMAGE_PIP_PACKAGES` for Python dependencies (runs `python3 -m pip install --break-system-packages` at build time, so pin versions and use only indexes you trust).
 
 If Docker reports `ResourceExhausted`, `cannot allocate memory`, or aborts during `tsdown`, increase the Docker builder memory limit or retry with smaller explicit heaps:
 
 ```bash
-OPENCLAW_DOCKER_BUILD_NODE_OPTIONS=--max-old-space-size=4096 OPENCLAW_DOCKER_BUILD_TSDOWN_MAX_OLD_SPACE_MB=4096
+NODOASSIST_DOCKER_BUILD_NODE_OPTIONS=--max-old-space-size=4096 NODOASSIST_DOCKER_BUILD_TSDOWN_MAX_OLD_SPACE_MB=4096
 ```
 
-To test bundled plugin source against a packaged image, mount one plugin source directory over its packaged source path, e.g. `OPENCLAW_EXTRA_MOUNTS=/path/to/fork/extensions/synology-chat:/app/extensions/synology-chat:ro`. That overrides the matching compiled `/app/dist/extensions/synology-chat` bundle for the same plugin id.
+To test bundled plugin source against a packaged image, mount one plugin source directory over its packaged source path, e.g. `NODOASSIST_EXTRA_MOUNTS=/path/to/fork/extensions/synology-chat:/app/extensions/synology-chat:ro`. That overrides the matching compiled `/app/dist/extensions/synology-chat` bundle for the same plugin id.
 
 ### Observability
 
 OpenTelemetry export is outbound from the Gateway container to your OTLP collector; it needs no published Docker port. To include the bundled exporter in a locally built image:
 
 ```bash
-export OPENCLAW_EXTENSIONS="diagnostics-otel"
+export NODOASSIST_EXTENSIONS="diagnostics-otel"
 export OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4318"
-export OTEL_SERVICE_NAME="openclaw-gateway"
+export OTEL_SERVICE_NAME="nodoassist-gateway"
 ./scripts/docker/setup.sh
 ```
 
-Official prebuilt images already bundle `diagnostics-otel`; install `clawhub:@openclaw/diagnostics-otel` yourself only if you removed it. To enable export, allow and enable the `diagnostics-otel` plugin in config, then set `diagnostics.otel.enabled=true` (see the full example in [OpenTelemetry export](/gateway/opentelemetry)). Collector auth headers go through `diagnostics.otel.headers`, not Docker environment variables.
+Official prebuilt images already bundle `diagnostics-otel`; install `clawhub:@nodoassist/diagnostics-otel` yourself only if you removed it. To enable export, allow and enable the `diagnostics-otel` plugin in config, then set `diagnostics.otel.enabled=true` (see the full example in [OpenTelemetry export](/gateway/opentelemetry)). Collector auth headers go through `diagnostics.otel.headers`, not Docker environment variables.
 
-Prometheus metrics reuse the already-published Gateway port. Install `clawhub:@openclaw/diagnostics-prometheus`, enable the `diagnostics-prometheus` plugin, then scrape:
+Prometheus metrics reuse the already-published Gateway port. Install `clawhub:@nodoassist/diagnostics-prometheus`, enable the `diagnostics-prometheus` plugin, then scrape:
 
 ```text
 http://<gateway-host>:18789/api/diagnostics/prometheus
@@ -210,12 +210,12 @@ The image's built-in `HEALTHCHECK` pings `/healthz`; repeated failures mark the 
 Authenticated deep health snapshot:
 
 ```bash
-docker compose exec openclaw-gateway node dist/index.js health --token "$OPENCLAW_GATEWAY_TOKEN"
+docker compose exec nodoassist-gateway node dist/index.js health --token "$NODOASSIST_GATEWAY_TOKEN"
 ```
 
 ### LAN vs loopback
 
-`scripts/docker/setup.sh` defaults `OPENCLAW_GATEWAY_BIND=lan` so `http://127.0.0.1:18789` on the host works with Docker port publishing.
+`scripts/docker/setup.sh` defaults `NODOASSIST_GATEWAY_BIND=lan` so `http://127.0.0.1:18789` on the host works with Docker port publishing.
 
 - `lan` (default): host browser and host CLI can reach the published gateway port.
 - `loopback`: only processes inside the container network namespace can reach the gateway directly.
@@ -249,8 +249,8 @@ The official image does not pre-install Claude Code. Install and log in inside t
 For a new install, enable a persistent `/home/node` volume before running setup:
 
 ```bash
-export OPENCLAW_IMAGE="ghcr.io/openclaw/openclaw:latest"
-export OPENCLAW_HOME_VOLUME="openclaw_home"
+export NODOASSIST_IMAGE="ghcr.io/nodoassist/nodoassist:latest"
+export NODOASSIST_HOME_VOLUME="nodoassist_home"
 ./scripts/docker/setup.sh
 ```
 
@@ -260,23 +260,23 @@ For an existing install, stop the stack and reload the current `.env` values fir
 set -a
 . ./.env
 set +a
-export OPENCLAW_HOME_VOLUME="${OPENCLAW_HOME_VOLUME:-openclaw_home}"
+export NODOASSIST_HOME_VOLUME="${NODOASSIST_HOME_VOLUME:-nodoassist_home}"
 ./scripts/docker/setup.sh
 ```
 
-If `.env` contains values your shell can't source, re-export what you rely on manually first (`OPENCLAW_IMAGE`, ports, bind mode, custom paths, `OPENCLAW_EXTRA_MOUNTS`, sandbox, skip-onboarding). The generated overlay mounts the home volume for both `openclaw-gateway` and `openclaw-cli`; run the remaining commands with that overlay (and `docker-compose.override.yml` first, if you use one):
+If `.env` contains values your shell can't source, re-export what you rely on manually first (`NODOASSIST_IMAGE`, ports, bind mode, custom paths, `NODOASSIST_EXTRA_MOUNTS`, sandbox, skip-onboarding). The generated overlay mounts the home volume for both `nodoassist-gateway` and `nodoassist-cli`; run the remaining commands with that overlay (and `docker-compose.override.yml` first, if you use one):
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.extra.yml run --rm \
-  --entrypoint sh openclaw-cli -lc \
+  --entrypoint sh nodoassist-cli -lc \
   'curl -fsSL https://claude.ai/install.sh | bash'
 ```
 
-The native installer writes `claude` to `/home/node/.local/bin/claude`. Point OpenClaw at that path:
+The native installer writes `claude` to `/home/node/.local/bin/claude`. Point NodoAssist at that path:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.extra.yml run --rm \
-  openclaw-cli config set \
+  nodoassist-cli config set \
   agents.defaults.cliBackends.claude-cli.command \
   /home/node/.local/bin/claude
 ```
@@ -285,27 +285,27 @@ Log in and verify from the same persisted home:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.extra.yml run --rm \
-  --entrypoint /home/node/.local/bin/claude openclaw-cli auth login
+  --entrypoint /home/node/.local/bin/claude nodoassist-cli auth login
 docker compose -f docker-compose.yml -f docker-compose.extra.yml run --rm \
-  --entrypoint /home/node/.local/bin/claude openclaw-cli auth status --text
+  --entrypoint /home/node/.local/bin/claude nodoassist-cli auth status --text
 docker compose -f docker-compose.yml -f docker-compose.extra.yml run --rm \
-  openclaw-cli models auth login \
+  nodoassist-cli models auth login \
   --provider anthropic --method cli --set-default
 docker compose -f docker-compose.yml -f docker-compose.extra.yml run --rm \
-  openclaw-cli models list --provider anthropic
+  nodoassist-cli models list --provider anthropic
 ```
 
 Then use the bundled `claude-cli` backend:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.extra.yml run --rm \
-  openclaw-cli agent \
+  nodoassist-cli agent \
   --agent main \
   --model claude-cli/claude-sonnet-4-6 \
   --message "Say hello from Docker Claude CLI"
 ```
 
-`OPENCLAW_HOME_VOLUME` persists the native install under `/home/node/.local/bin` and `/home/node/.local/share/claude`, plus Claude Code settings/auth under `/home/node/.claude` and `/home/node/.claude.json`. Persisting only `/home/node/.openclaw` is not enough; if you use `OPENCLAW_EXTRA_MOUNTS` instead of a home volume, mount all of those Claude paths into both services.
+`NODOASSIST_HOME_VOLUME` persists the native install under `/home/node/.local/bin` and `/home/node/.local/share/claude`, plus Claude Code settings/auth under `/home/node/.claude` and `/home/node/.claude.json`. Persisting only `/home/node/.nodoassist` is not enough; if you use `NODOASSIST_EXTRA_MOUNTS` instead of a home volume, mount all of those Claude paths into both services.
 
 <Note>
 For shared production automation or predictable Anthropic billing, prefer the Anthropic API-key path. Claude CLI reuse follows Claude Code's installed version, account login, billing, and update behavior.
@@ -313,27 +313,27 @@ For shared production automation or predictable Anthropic billing, prefer the An
 
 ### Bonjour / mDNS
 
-Docker bridge networking usually doesn't forward Bonjour/mDNS multicast (`224.0.0.251:5353`) reliably. When `OPENCLAW_DISABLE_BONJOUR` is unset, the bundled Bonjour plugin auto-disables LAN advertising once it detects it's running in a container, so it won't crash-loop retrying multicast the bridge drops. Set `OPENCLAW_DISABLE_BONJOUR=1` to force it off regardless of detection, or `0` to force it on (only on host networking, macvlan, or another network where mDNS multicast is known to work).
+Docker bridge networking usually doesn't forward Bonjour/mDNS multicast (`224.0.0.251:5353`) reliably. When `NODOASSIST_DISABLE_BONJOUR` is unset, the bundled Bonjour plugin auto-disables LAN advertising once it detects it's running in a container, so it won't crash-loop retrying multicast the bridge drops. Set `NODOASSIST_DISABLE_BONJOUR=1` to force it off regardless of detection, or `0` to force it on (only on host networking, macvlan, or another network where mDNS multicast is known to work).
 
 Use the published Gateway URL, Tailscale, or wide-area DNS-SD for Docker hosts otherwise. See [Bonjour discovery](/gateway/bonjour) for gotchas and troubleshooting.
 
 ### Storage and persistence
 
-Docker Compose bind-mounts `OPENCLAW_CONFIG_DIR` to `/home/node/.openclaw`, `OPENCLAW_WORKSPACE_DIR` to `/home/node/.openclaw/workspace`, and `OPENCLAW_AUTH_PROFILE_SECRET_DIR` to `/home/node/.config/openclaw`, so those paths survive container replacement. When a variable is unset, `docker-compose.yml` falls back under `${HOME}`, or `/tmp` if `HOME` itself is missing, so `docker compose up` never emits an empty-source volume spec on bare environments.
+Docker Compose bind-mounts `NODOASSIST_CONFIG_DIR` to `/home/node/.nodoassist`, `NODOASSIST_WORKSPACE_DIR` to `/home/node/.nodoassist/workspace`, and `NODOASSIST_AUTH_PROFILE_SECRET_DIR` to `/home/node/.config/nodoassist`, so those paths survive container replacement. When a variable is unset, `docker-compose.yml` falls back under `${HOME}`, or `/tmp` if `HOME` itself is missing, so `docker compose up` never emits an empty-source volume spec on bare environments.
 
 That mounted config directory holds:
 
-- `openclaw.json` for behavior config
+- `nodoassist.json` for behavior config
 - `agents/<agentId>/agent/auth-profiles.json` for stored provider OAuth/API-key auth
-- `.env` for env-backed runtime secrets such as `OPENCLAW_GATEWAY_TOKEN`
+- `.env` for env-backed runtime secrets such as `NODOASSIST_GATEWAY_TOKEN`
 
-The auth-profile secret directory stores the local encryption key for OAuth-backed auth profile token material. Keep it with your Docker host state, but separate from `OPENCLAW_CONFIG_DIR`.
+The auth-profile secret directory stores the local encryption key for OAuth-backed auth profile token material. Keep it with your Docker host state, but separate from `NODOASSIST_CONFIG_DIR`.
 
-Installed downloadable plugins store package state under the mounted OpenClaw home, so install records and package roots survive container replacement; gateway startup does not regenerate bundled-plugin dependency trees.
+Installed downloadable plugins store package state under the mounted NodoAssist home, so install records and package roots survive container replacement; gateway startup does not regenerate bundled-plugin dependency trees.
 
 For full VM persistence details, see [Docker VM Runtime - What persists where](/install/docker-vm-runtime#what-persists-where).
 
-**Disk growth hotspots:** `media/`, session JSONL files, the shared SQLite state database, installed plugin package roots, and rolling file logs under `/tmp/openclaw/`.
+**Disk growth hotspots:** `media/`, session JSONL files, the shared SQLite state database, installed plugin package roots, and rolling file logs under `/tmp/nodoassist/`.
 
 ### Shell helpers (optional)
 
@@ -349,19 +349,19 @@ If you installed from the older `scripts/shell-helpers/clawdock-helpers.sh` path
 <AccordionGroup>
   <Accordion title="Enable agent sandbox for Docker gateway">
     ```bash
-    export OPENCLAW_SANDBOX=1
+    export NODOASSIST_SANDBOX=1
     ./scripts/docker/setup.sh
     ```
 
     Custom socket path (e.g. rootless Docker):
 
     ```bash
-    export OPENCLAW_SANDBOX=1
-    export OPENCLAW_DOCKER_SOCKET=/run/user/1000/docker.sock
+    export NODOASSIST_SANDBOX=1
+    export NODOASSIST_DOCKER_SOCKET=/run/user/1000/docker.sock
     ./scripts/docker/setup.sh
     ```
 
-    The script mounts `docker.sock` only after sandbox prerequisites pass. If sandbox setup can't complete, it resets `agents.defaults.sandbox.mode` to `off`. Codex code mode is disabled for turns where the OpenClaw sandbox is active (see [Sandboxing § Docker backend](/gateway/sandboxing#docker-backend)); never mount the host Docker socket into agent sandbox containers.
+    The script mounts `docker.sock` only after sandbox prerequisites pass. If sandbox setup can't complete, it resets `agents.defaults.sandbox.mode` to `off`. Codex code mode is disabled for turns where the NodoAssist sandbox is active (see [Sandboxing § Docker backend](/gateway/sandboxing#docker-backend)); never mount the host Docker socket into agent sandbox containers.
 
   </Accordion>
 
@@ -369,41 +369,41 @@ If you installed from the older `scripts/shell-helpers/clawdock-helpers.sh` path
     Disable Compose pseudo-TTY allocation with `-T`:
 
     ```bash
-    docker compose run -T --rm openclaw-cli gateway probe
-    docker compose run -T --rm openclaw-cli devices list --json
+    docker compose run -T --rm nodoassist-cli gateway probe
+    docker compose run -T --rm nodoassist-cli devices list --json
     ```
 
   </Accordion>
 
   <Accordion title="Shared-network security note">
-    `openclaw-cli` uses `network_mode: "service:openclaw-gateway"` so CLI commands can reach the gateway over `127.0.0.1`. Treat this as a shared trust boundary. The compose config drops `NET_RAW`/`NET_ADMIN` and enables `no-new-privileges` on both `openclaw-gateway` and `openclaw-cli`.
+    `nodoassist-cli` uses `network_mode: "service:nodoassist-gateway"` so CLI commands can reach the gateway over `127.0.0.1`. Treat this as a shared trust boundary. The compose config drops `NET_RAW`/`NET_ADMIN` and enables `no-new-privileges` on both `nodoassist-gateway` and `nodoassist-cli`.
   </Accordion>
 
-  <Accordion title="Docker Desktop DNS failures in openclaw-cli">
-    Some Docker Desktop setups fail DNS lookups from the shared-network `openclaw-cli` sidecar after `NET_RAW` is dropped, showing up as `EAI_AGAIN` during npm-backed commands like `openclaw plugins install`. Keep the default hardened compose file for normal operation. The override below restores default capabilities for the `openclaw-cli` container only — use it for the one-off command that needs registry access, not as your default invocation:
+  <Accordion title="Docker Desktop DNS failures in nodoassist-cli">
+    Some Docker Desktop setups fail DNS lookups from the shared-network `nodoassist-cli` sidecar after `NET_RAW` is dropped, showing up as `EAI_AGAIN` during npm-backed commands like `nodoassist plugins install`. Keep the default hardened compose file for normal operation. The override below restores default capabilities for the `nodoassist-cli` container only — use it for the one-off command that needs registry access, not as your default invocation:
 
     ```bash
     printf '%s\n' \
       'services:' \
-      '  openclaw-cli:' \
+      '  nodoassist-cli:' \
       '    cap_drop: !reset []' \
       > docker-compose.cli-no-dropped-caps.local.yml
 
-    docker compose -f docker-compose.yml -f docker-compose.cli-no-dropped-caps.local.yml run --rm openclaw-cli plugins install <package>
+    docker compose -f docker-compose.yml -f docker-compose.cli-no-dropped-caps.local.yml run --rm nodoassist-cli plugins install <package>
     ```
 
-    If you already created a long-running `openclaw-cli` container, recreate it with the same override — `docker compose exec`/`docker exec` can't change Linux capabilities on an already-created container.
+    If you already created a long-running `nodoassist-cli` container, recreate it with the same override — `docker compose exec`/`docker exec` can't change Linux capabilities on an already-created container.
 
   </Accordion>
 
   <Accordion title="Permissions and EACCES">
-    The image runs as `node` (uid 1000). If you see permission errors on `/home/node/.openclaw`, make sure your host bind mounts are owned by uid 1000:
+    The image runs as `node` (uid 1000). If you see permission errors on `/home/node/.nodoassist`, make sure your host bind mounts are owned by uid 1000:
 
     ```bash
-    sudo chown -R 1000:1000 /path/to/openclaw-config /path/to/openclaw-workspace
+    sudo chown -R 1000:1000 /path/to/nodoassist-config /path/to/nodoassist-workspace
     ```
 
-    The same mismatch can show up as `blocked plugin candidate: suspicious ownership (... uid=1000, expected uid=0 or root)` followed by `plugin present but blocked` — the process uid and the mounted plugin directory owner disagree. Prefer running as the default uid 1000 and fixing the bind mount ownership. Only chown `/path/to/openclaw-config/npm` to `root:root` if you intentionally run OpenClaw as root long term.
+    The same mismatch can show up as `blocked plugin candidate: suspicious ownership (... uid=1000, expected uid=0 or root)` followed by `plugin present but blocked` — the process uid and the mounted plugin directory owner disagree. Prefer running as the default uid 1000 and fixing the bind mount ownership. Only chown `/path/to/nodoassist-config/npm` to `root:root` if you intentionally run NodoAssist as root long term.
 
   </Accordion>
 
@@ -433,16 +433,16 @@ If you installed from the older `scripts/shell-helpers/clawdock-helpers.sh` path
   <Accordion title="Power-user container options">
     The default image is security-first and runs as non-root `node`. For a more full-featured container:
 
-    1. **Persist `/home/node`**: `export OPENCLAW_HOME_VOLUME="openclaw_home"`
-    2. **Bake system deps**: `export OPENCLAW_IMAGE_APT_PACKAGES="git curl jq"`
-    3. **Bake Python deps**: `export OPENCLAW_IMAGE_PIP_PACKAGES="requests==2.32.5 humanize==4.14.0"`
-    4. **Bake Playwright Chromium**: `export OPENCLAW_INSTALL_BROWSER=1`, or use the official `-browser` image tag
+    1. **Persist `/home/node`**: `export NODOASSIST_HOME_VOLUME="nodoassist_home"`
+    2. **Bake system deps**: `export NODOASSIST_IMAGE_APT_PACKAGES="git curl jq"`
+    3. **Bake Python deps**: `export NODOASSIST_IMAGE_PIP_PACKAGES="requests==2.32.5 humanize==4.14.0"`
+    4. **Bake Playwright Chromium**: `export NODOASSIST_INSTALL_BROWSER=1`, or use the official `-browser` image tag
     5. **Or install Playwright browsers into a persisted volume**:
        ```bash
-       docker compose run --rm openclaw-cli \
+       docker compose run --rm nodoassist-cli \
          node /app/node_modules/playwright-core/cli.js install chromium
        ```
-    6. **Persist browser downloads**: use `OPENCLAW_HOME_VOLUME` or `OPENCLAW_EXTRA_MOUNTS`. OpenClaw auto-detects the image's Playwright-managed Chromium on Linux.
+    6. **Persist browser downloads**: use `NODOASSIST_HOME_VOLUME` or `NODOASSIST_EXTRA_MOUNTS`. NodoAssist auto-detects the image's Playwright-managed Chromium on Linux.
 
   </Accordion>
 
@@ -506,7 +506,7 @@ For npm installs without a source checkout, see [Sandboxing § Images and setup]
   </Accordion>
 
   <Accordion title="Custom tools not found in sandbox">
-    OpenClaw runs commands with `sh -lc` (login shell), which sources `/etc/profile` and may reset PATH. Set `docker.env.PATH` to prepend your custom tool paths, or add a script under `/etc/profile.d/` in your Dockerfile.
+    NodoAssist runs commands with `sh -lc` (login shell), which sources `/etc/profile` and may reset PATH. Set `docker.env.PATH` to prepend your custom tool paths, or add a script under `/etc/profile.d/` in your Dockerfile.
   </Accordion>
 
   <Accordion title="OOM-killed during image build (exit 137)">
@@ -517,9 +517,9 @@ For npm installs without a source checkout, see [Sandboxing § Images and setup]
     Fetch a fresh dashboard link and approve the browser device:
 
     ```bash
-    docker compose run --rm openclaw-cli dashboard --no-open
-    docker compose run --rm openclaw-cli devices list
-    docker compose run --rm openclaw-cli devices approve <requestId>
+    docker compose run --rm nodoassist-cli dashboard --no-open
+    docker compose run --rm nodoassist-cli devices list
+    docker compose run --rm nodoassist-cli devices approve <requestId>
     ```
 
     More detail: [Dashboard](/web/dashboard), [Devices](/cli/devices).
@@ -530,8 +530,8 @@ For npm installs without a source checkout, see [Sandboxing § Images and setup]
     Reset gateway mode and bind:
 
     ```bash
-    docker compose run --rm openclaw-cli config set --batch-json '[{"path":"gateway.mode","value":"local"},{"path":"gateway.bind","value":"lan"}]'
-    docker compose run --rm openclaw-cli devices list --url ws://127.0.0.1:18789
+    docker compose run --rm nodoassist-cli config set --batch-json '[{"path":"gateway.mode","value":"local"},{"path":"gateway.bind","value":"lan"}]'
+    docker compose run --rm nodoassist-cli devices list --url ws://127.0.0.1:18789
     ```
 
   </Accordion>
@@ -542,5 +542,5 @@ For npm installs without a source checkout, see [Sandboxing § Images and setup]
 - [Install Overview](/install) — all installation methods
 - [Podman](/install/podman) — Podman alternative to Docker
 - [ClawDock](/install/clawdock) — Docker Compose community setup
-- [Updating](/install/updating) — keeping OpenClaw up to date
+- [Updating](/install/updating) — keeping NodoAssist up to date
 - [Configuration](/gateway/configuration) — gateway configuration after install

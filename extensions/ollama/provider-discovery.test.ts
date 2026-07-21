@@ -2,10 +2,10 @@
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { clearLiveCatalogCacheForTests } from "openclaw/plugin-sdk/provider-catalog-shared";
-import type { ModelDefinitionConfig } from "openclaw/plugin-sdk/provider-onboard";
-import { withFetchPreconnect } from "openclaw/plugin-sdk/test-env";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { clearLiveCatalogCacheForTests } from "nodoassist/plugin-sdk/provider-catalog-shared";
+import type { ModelDefinitionConfig } from "nodoassist/plugin-sdk/provider-onboard";
+import { withFetchPreconnect } from "nodoassist/plugin-sdk/test-env";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ollamaProviderDiscovery } from "./provider-discovery.js";
 
@@ -18,7 +18,7 @@ afterEach(() => {
 });
 
 describe("Ollama provider", () => {
-  const createAgentDir = () => mkdtempSync(join(tmpdir(), "openclaw-test-"));
+  const createAgentDir = () => mkdtempSync(join(tmpdir(), "nodoassist-test-"));
 
   const enableDiscoveryEnv = () => {
     vi.stubEnv("VITEST", "");
@@ -59,7 +59,7 @@ describe("Ollama provider", () => {
   }
 
   async function runOllamaCatalog(params: {
-    config?: OpenClawConfig;
+    config?: NodoAssistConfig;
     env?: NodeJS.ProcessEnv;
     resolveProviderApiKey?: () => { apiKey: string | undefined; discoveryApiKey?: string };
   }) {

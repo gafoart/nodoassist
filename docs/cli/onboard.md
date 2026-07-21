@@ -1,20 +1,20 @@
 ---
-summary: "CLI reference for `openclaw onboard` (interactive onboarding)"
+summary: "CLI reference for `nodoassist onboard` (interactive onboarding)"
 read_when:
   - You want guided setup for gateway, workspace, auth, channels, and skills
 title: "Onboard"
 ---
 
-# `openclaw onboard`
+# `nodoassist onboard`
 
-Guided setup for model auth, workspace, gateway, channels, skills, and health in one flow. `openclaw setup` is the same entry point; `openclaw setup --baseline` only writes the baseline config/workspace.
+Guided setup for model auth, workspace, gateway, channels, skills, and health in one flow. `nodoassist setup` is the same entry point; `nodoassist setup --baseline` only writes the baseline config/workspace.
 
 <CardGroup cols={2}>
   <Card title="CLI onboarding hub" href="/start/wizard" icon="rocket">
     Walkthrough of the interactive CLI flow.
   </Card>
   <Card title="Onboarding overview" href="/start/onboarding-overview" icon="map">
-    How OpenClaw onboarding fits together.
+    How NodoAssist onboarding fits together.
   </Card>
   <Card title="CLI setup reference" href="/start/wizard-cli-reference" icon="book">
     Outputs, internals, and per-step behavior.
@@ -30,22 +30,22 @@ Guided setup for model auth, workspace, gateway, channels, skills, and health in
 ## Examples
 
 ```bash
-openclaw onboard
-openclaw onboard --modern
-openclaw onboard --flow quickstart
-openclaw onboard --flow manual
-openclaw onboard --flow import
-openclaw onboard --import-from hermes --import-source ~/.hermes
-openclaw onboard --skip-bootstrap
-openclaw onboard --mode remote --remote-url wss://gateway-host:18789
+nodoassist onboard
+nodoassist onboard --modern
+nodoassist onboard --flow quickstart
+nodoassist onboard --flow manual
+nodoassist onboard --flow import
+nodoassist onboard --import-from hermes --import-source ~/.hermes
+nodoassist onboard --skip-bootstrap
+nodoassist onboard --mode remote --remote-url wss://gateway-host:18789
 ```
 
 - `--flow quickstart`: minimal prompts, auto-generates a gateway token.
 - `--flow manual` (alias `advanced`): full prompts for port, bind, and auth.
-- `--flow import`: runs a detected migration provider (for example Hermes via `--import-from hermes`), previews the plan, then applies after confirmation. Import only runs against a fresh OpenClaw setup - reset config, credentials, sessions, and workspace state first if any exist. Use [`openclaw migrate`](/cli/migrate) for dry-run plans, overwrite mode, reports, and exact mappings.
+- `--flow import`: runs a detected migration provider (for example Hermes via `--import-from hermes`), previews the plan, then applies after confirmation. Import only runs against a fresh NodoAssist setup - reset config, credentials, sessions, and workspace state first if any exist. Use [`nodoassist migrate`](/cli/migrate) for dry-run plans, overwrite mode, reports, and exact mappings.
 - `--modern` starts the Crestodian conversational setup/repair assistant instead of the classic flow.
 
-In an interactive terminal, bare `openclaw` (no subcommand) routes by config
+In an interactive terminal, bare `nodoassist` (no subcommand) routes by config
 state:
 
 - If the active config file is missing or has no authored settings (empty or
@@ -54,15 +54,15 @@ state:
   [Crestodian](/cli/crestodian) for repair.
 - If the config file is valid, it opens the normal agent TUI, either locally
   or connected to a reachable configured Gateway. On a configured install,
-  reach Crestodian with `/crestodian` inside the TUI or `openclaw crestodian`.
+  reach Crestodian with `/crestodian` inside the TUI or `nodoassist crestodian`.
 
-Plaintext `ws://` is accepted for loopback, private IP literals, `.local`, and Tailnet `*.ts.net` gateway URLs. For other trusted private-DNS names, set `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1` in the onboarding process environment.
+Plaintext `ws://` is accepted for loopback, private IP literals, `.local`, and Tailnet `*.ts.net` gateway URLs. For other trusted private-DNS names, set `NODOASSIST_ALLOW_INSECURE_PRIVATE_WS=1` in the onboarding process environment.
 
 ## Reset
 
 ```bash
-openclaw onboard --reset
-openclaw onboard --reset --reset-scope full
+nodoassist onboard --reset
+nodoassist onboard --reset --reset-scope full
 ```
 
 `--reset` wipes state before running setup. `--reset-scope` controls how much: `config` (config only), `config+creds+sessions` (default when `--reset` is passed without a scope), or `full` (also resets the workspace). Workspace reset only happens with `--reset-scope full`.
@@ -71,7 +71,7 @@ openclaw onboard --reset --reset-scope full
 
 Interactive onboarding uses the CLI wizard locale for fixed setup copy. Resolve order:
 
-1. `OPENCLAW_LOCALE`
+1. `NODOASSIST_LOCALE`
 2. `LC_ALL`
 3. `LC_MESSAGES`
 4. `LANG`
@@ -80,7 +80,7 @@ Interactive onboarding uses the CLI wizard locale for fixed setup copy. Resolve 
 Supported wizard locales are `en`, `zh-CN`, and `zh-TW`. Locale values may use underscore or POSIX suffix forms such as `zh_CN.UTF-8`. Product names, command names, config keys, URLs, provider IDs, model IDs, and plugin/channel labels remain literal.
 
 ```bash
-OPENCLAW_LOCALE=zh-CN openclaw onboard
+NODOASSIST_LOCALE=zh-CN nodoassist onboard
 ```
 
 ## Non-interactive setup
@@ -88,7 +88,7 @@ OPENCLAW_LOCALE=zh-CN openclaw onboard
 `--non-interactive` requires `--accept-risk` (acknowledges that agents are powerful and full system access is risky). `--mode` defaults to `local`.
 
 ```bash
-openclaw onboard --non-interactive \
+nodoassist onboard --non-interactive \
   --auth-choice custom-api-key \
   --custom-base-url "https://llm.example.com/v1" \
   --custom-model-id "foo-large" \
@@ -98,12 +98,12 @@ openclaw onboard --non-interactive \
   --custom-image-input
 ```
 
-`--custom-api-key` is optional; if omitted, onboarding checks `CUSTOM_API_KEY` in env. OpenClaw marks common vision model IDs (GPT-4o/4.1/5.x, Claude 3/4, Gemini, Qwen-VL, LLaVA, Pixtral, and similar) as image-capable automatically. Pass `--custom-image-input` for unknown custom vision IDs, or `--custom-text-input` to force text-only metadata. Use `--custom-compatibility openai-responses` for OpenAI-compatible endpoints that support `/v1/responses` but not `/v1/chat/completions`; valid values are `openai` (default), `openai-responses`, `anthropic`.
+`--custom-api-key` is optional; if omitted, onboarding checks `CUSTOM_API_KEY` in env. NodoAssist marks common vision model IDs (GPT-4o/4.1/5.x, Claude 3/4, Gemini, Qwen-VL, LLaVA, Pixtral, and similar) as image-capable automatically. Pass `--custom-image-input` for unknown custom vision IDs, or `--custom-text-input` to force text-only metadata. Use `--custom-compatibility openai-responses` for OpenAI-compatible endpoints that support `/v1/responses` but not `/v1/chat/completions`; valid values are `openai` (default), `openai-responses`, `anthropic`.
 
 LM Studio also has a provider-specific key flag:
 
 ```bash
-openclaw onboard --non-interactive \
+nodoassist onboard --non-interactive \
   --auth-choice lmstudio \
   --custom-base-url "http://localhost:1234/v1" \
   --custom-model-id "qwen/qwen3.5-9b" \
@@ -114,7 +114,7 @@ openclaw onboard --non-interactive \
 Non-interactive Ollama:
 
 ```bash
-openclaw onboard --non-interactive \
+nodoassist onboard --non-interactive \
   --auth-choice ollama \
   --custom-base-url "http://ollama-host:11434" \
   --custom-model-id "qwen3.5:27b" \
@@ -126,7 +126,7 @@ openclaw onboard --non-interactive \
 Store provider keys as refs instead of plaintext:
 
 ```bash
-openclaw onboard --non-interactive \
+nodoassist onboard --non-interactive \
   --auth-choice openai-api-key \
   --secret-input-mode ref \
   --accept-risk
@@ -142,22 +142,22 @@ With `--secret-input-mode ref`, onboarding writes env-backed refs instead of pla
 - With `--install-daemon`: a SecretRef-managed `gateway.auth.token` is validated but not persisted as resolved plaintext in supervisor service environment metadata; if the ref is unresolved, install fails closed with remediation guidance. If both `gateway.auth.token` and `gateway.auth.password` are configured and `gateway.auth.mode` is unset, install blocks until mode is set explicitly.
 - Local onboarding writes `gateway.mode="local"` into the config. A later config file missing `gateway.mode` indicates config damage or an incomplete manual edit, not a valid local-mode shortcut.
 - Local onboarding installs downloadable plugins the chosen setup path requires (for example a Codex or Copilot runtime plugin for those auth choices). Remote onboarding only writes connection info for the remote Gateway - it never installs local plugin packages.
-- `--allow-unconfigured` is a separate `openclaw gateway run` escape hatch; it does not let onboarding skip `gateway.mode`.
+- `--allow-unconfigured` is a separate `nodoassist gateway run` escape hatch; it does not let onboarding skip `gateway.mode`.
 
 ```bash
-export OPENCLAW_GATEWAY_TOKEN="your-token"
-openclaw onboard --non-interactive \
+export NODOASSIST_GATEWAY_TOKEN="your-token"
+nodoassist onboard --non-interactive \
   --mode local \
   --auth-choice skip \
   --gateway-auth token \
-  --gateway-token-ref-env OPENCLAW_GATEWAY_TOKEN \
+  --gateway-token-ref-env NODOASSIST_GATEWAY_TOKEN \
   --accept-risk
 ```
 
 ### Local gateway health
 
 - Unless you pass `--skip-health`, onboarding waits for a reachable local gateway before exiting successfully.
-- `--install-daemon` starts the managed gateway install path first. Without it, a local gateway must already be running (for example `openclaw gateway run`).
+- `--install-daemon` starts the managed gateway install path first. Without it, a local gateway must already be running (for example `nodoassist gateway run`).
 - `--skip-health` skips the wait if you only want config/workspace/bootstrap writes in automation.
 - `--skip-bootstrap` sets `agents.defaults.skipBootstrap: true` and skips creating `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `IDENTITY.md`, `USER.md`, `HEARTBEAT.md`, and `BOOTSTRAP.md`.
 - On native Windows, `--install-daemon` tries Scheduled Tasks first and falls back to a per-user Startup-folder login item if task creation is denied.
@@ -175,7 +175,7 @@ openclaw onboard --non-interactive \
 
 ```bash
 # Promptless endpoint selection
-openclaw onboard --non-interactive \
+nodoassist onboard --non-interactive \
   --auth-choice zai-coding-global \
   --zai-api-key "$ZAI_API_KEY"
 
@@ -185,7 +185,7 @@ openclaw onboard --non-interactive \
 Mistral:
 
 ```bash
-openclaw onboard --non-interactive \
+nodoassist onboard --non-interactive \
   --auth-choice mistral-api-key \
   --mistral-api-key "$MISTRAL_API_KEY"
 ```
@@ -229,16 +229,16 @@ Some web-search providers trigger provider-specific follow-up prompts during onb
 ## Other behaviors
 
 - Local onboarding DM scope behavior: [CLI setup reference](/start/wizard-cli-reference#outputs-and-internals).
-- Fastest first chat: `openclaw dashboard` (Control UI, no channel setup).
+- Fastest first chat: `nodoassist dashboard` (Control UI, no channel setup).
 - Custom provider: connect any OpenAI- or Anthropic-compatible endpoint, including hosted providers not listed. Use **Unknown** compatibility to auto-detect via a live probe.
 - If Hermes state is detected, onboarding offers a migration flow (see `--flow import` above).
 
 ## Common follow-up commands
 
-Use `openclaw configure` later for targeted changes and `openclaw channels add` for channel-only setup.
+Use `nodoassist configure` later for targeted changes and `nodoassist channels add` for channel-only setup.
 
 ```bash
-openclaw channels add
-openclaw configure
-openclaw agents add <name>
+nodoassist channels add
+nodoassist configure
+nodoassist agents add <name>
 ```

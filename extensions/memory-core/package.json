@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/memory-core",
+  "name": "@nodoassist/memory-core",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw core memory search plugin",
+  "description": "NodoAssist core memory search plugin",
   "type": "module",
   "dependencies": {
     "chokidar": "5.0.0",
@@ -10,18 +10,18 @@
     "typebox": "1.3.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

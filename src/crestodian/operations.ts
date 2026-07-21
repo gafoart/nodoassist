@@ -142,7 +142,7 @@ const CONFIG_SET_REF_RE = new RegExp(
   "i",
 );
 const SETUP_RE = new RegExp(
-  String.raw`^(?:setup|set\s+me\s+up|set\s+up\s+openclaw|onboard(?:\s+me)?|bootstrap|first\s+run)(?:\s+workspace\s+(?<workspace>${TOKEN}))?(?:\s+model\s+(?<model>\S+))?$`,
+  String.raw`^(?:setup|set\s+me\s+up|set\s+up\s+nodoassist|onboard(?:\s+me)?|bootstrap|first\s+run)(?:\s+workspace\s+(?<workspace>${TOKEN}))?(?:\s+model\s+(?<model>\S+))?$`,
   "i",
 );
 const MODEL_SETUP_RE = new RegExp(
@@ -511,7 +511,7 @@ function formatSetupPlanDescription(
 ): string {
   const workspace = shortenHomePath(resolveUserPath(operation.workspace ?? process.cwd()));
   const model = operation.model ? ` and default model ${operation.model}` : "";
-  return `bootstrap OpenClaw setup for workspace ${workspace}${model}`;
+  return `bootstrap NodoAssist setup for workspace ${workspace}${model}`;
 }
 
 async function chooseSetupModel(params: {
@@ -1053,8 +1053,8 @@ export async function executeCrestodianOperation(
       runtime.log(
         [
           `Connecting ${operation.channel} needs an interactive session.`,
-          "Run `openclaw crestodian` and say `connect " + operation.channel + "`,",
-          "or run `openclaw channels add` for the terminal wizard.",
+          "Run `nodoassist crestodian` and say `connect " + operation.channel + "`,",
+          "or run `nodoassist channels add` for the terminal wizard.",
         ].join("\n"),
       );
       return { applied: false };
@@ -1062,8 +1062,8 @@ export async function executeCrestodianOperation(
       runtime.log(
         [
           "Model provider setup needs an interactive session with masked credential prompts.",
-          "Run `openclaw crestodian` and say `configure model provider`,",
-          "or run `openclaw configure --section model` directly.",
+          "Run `nodoassist crestodian` and say `configure model provider`,",
+          "or run `nodoassist configure --section model` directly.",
         ].join("\n"),
       );
       return { applied: false };

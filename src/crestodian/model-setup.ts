@@ -22,7 +22,7 @@ export async function runCrestodianModelSetup(params: {
   ]);
   const before = await readSetupConfigFileSnapshot();
   if (before.exists && !before.valid) {
-    throw new Error("openclaw.json is invalid; run `openclaw doctor` before model setup");
+    throw new Error("nodoassist.json is invalid; run `nodoassist doctor` before model setup");
   }
   const baseConfig = before.exists ? (before.sourceConfig ?? before.config) : {};
   const workspace = resolveUserPath(
@@ -42,7 +42,9 @@ export async function runCrestodianModelSetup(params: {
     writeOptions: { allowConfigSizeDrop: false },
     transform: (currentConfig, context) => {
       if (!context.snapshot.valid) {
-        throw new Error("openclaw.json became invalid during model setup; run `openclaw doctor`");
+        throw new Error(
+          "nodoassist.json became invalid during model setup; run `nodoassist doctor`",
+        );
       }
       return {
         nextConfig: mergeWizardConfigOntoLatest(currentConfig, baseConfig, nextConfig),

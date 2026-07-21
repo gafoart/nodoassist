@@ -1,0 +1,52 @@
+import Foundation
+
+// Stable identifier used for both the macOS LaunchAgent label and Nix-managed defaults suite.
+// nix-nodoassist writes app defaults into this suite to survive app bundle identifier churn.
+let launchdLabel = "ai.nodoassist.mac"
+let gatewayLaunchdLabel = "ai.nodoassist.gateway"
+let onboardingVersionKey = "nodoassist.onboardingVersion"
+let onboardingSeenKey = "nodoassist.onboardingSeen"
+let currentOnboardingVersion = 8
+let pauseDefaultsKey = "nodoassist.pauseEnabled"
+let iconAnimationsEnabledKey = "nodoassist.iconAnimationsEnabled"
+let swabbleEnabledKey = "nodoassist.swabbleEnabled"
+let swabbleTriggersKey = "nodoassist.swabbleTriggers"
+let voiceWakeTriggerChimeKey = "nodoassist.voiceWakeTriggerChime"
+let voiceWakeSendChimeKey = "nodoassist.voiceWakeSendChime"
+let showDockIconKey = "nodoassist.showDockIcon"
+let defaultVoiceWakeTriggers = ["nodoassist"]
+let voiceWakeMaxWords = 32
+let voiceWakeMaxWordLength = 64
+let voiceWakeMicKey = "nodoassist.voiceWakeMicID"
+let voiceWakeMicNameKey = "nodoassist.voiceWakeMicName"
+let voiceWakeLocaleKey = "nodoassist.voiceWakeLocaleID"
+let voiceWakeAdditionalLocalesKey = "nodoassist.voiceWakeAdditionalLocaleIDs"
+let voicePushToTalkEnabledKey = "nodoassist.voicePushToTalkEnabled"
+let voiceWakeTriggersTalkModeKey = "nodoassist.voiceWakeTriggersTalkMode"
+let talkEnabledKey = "nodoassist.talkEnabled"
+let talkPhaseSoundsEnabledKey = "nodoassist.talkPhaseSoundsEnabled"
+let talkShiftToStopEnabledKey = "nodoassist.talkShiftToStopEnabled"
+let iconOverrideKey = "nodoassist.iconOverride"
+let connectionModeKey = "nodoassist.connectionMode"
+let remoteTargetKey = "nodoassist.remoteTarget"
+let remoteIdentityKey = "nodoassist.remoteIdentity"
+let remoteProjectRootKey = "nodoassist.remoteProjectRoot"
+let remoteCliPathKey = "nodoassist.remoteCliPath"
+let canvasEnabledKey = "nodoassist.canvasEnabled"
+let cameraEnabledKey = "nodoassist.cameraEnabled"
+let systemRunPolicyKey = "nodoassist.systemRunPolicy"
+let systemRunAllowlistKey = "nodoassist.systemRunAllowlist"
+let systemRunEnabledKey = "nodoassist.systemRunEnabled"
+let locationModeKey = "nodoassist.locationMode"
+let locationPreciseKey = "nodoassist.locationPreciseEnabled"
+let peekabooBridgeEnabledKey = "nodoassist.peekabooBridgeEnabled"
+let deepLinkKeyKey = "nodoassist.deepLinkKey"
+let cliInstallPromptedVersionKey = "nodoassist.cliInstallPromptedVersion"
+let cliValidatedExecutableKey = "nodoassist.cliValidatedExecutable"
+let cliValidatedVersionKey = "nodoassist.cliValidatedVersion"
+let macNodeIdentityProfileKey = "nodoassist.macNodeIdentityProfile"
+let heartbeatsEnabledKey = "nodoassist.heartbeatsEnabled"
+let debugPaneEnabledKey = "nodoassist.debugPaneEnabled"
+let debugFileLogEnabledKey = "nodoassist.debug.fileLogEnabled"
+let appLogLevelKey = "nodoassist.debug.appLogLevel"
+let voiceWakeSupported: Bool = ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26

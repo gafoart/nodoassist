@@ -1,7 +1,7 @@
-// Signal alias helpers keep OpenClaw-side names inside the Signal plugin boundary.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { ChannelDirectoryEntry } from "openclaw/plugin-sdk/core";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+// Signal alias helpers keep NodoAssist-side names inside the Signal plugin boundary.
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import type { ChannelDirectoryEntry } from "nodoassist/plugin-sdk/core";
+import { normalizeLowercaseStringOrEmpty } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { resolveSignalAccount } from "./accounts.js";
 import { looksLikeSignalTargetId, normalizeSignalMessagingTarget } from "./normalize.js";
 
@@ -34,7 +34,7 @@ function normalizeAliasKey(raw: string): string | undefined {
 }
 
 function resolveAliasMap(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
 }): Map<string, string> {
   const account = resolveSignalAccount({
@@ -112,7 +112,7 @@ function resolveSignalAliasTargetFromMap(params: {
 }
 
 export function resolveSignalAliasTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   input: string;
 }): ResolvedSignalAliasTarget | null {
@@ -124,7 +124,7 @@ export function resolveSignalAliasTarget(params: {
 }
 
 export function resolveSignalTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   input: string;
 }): ResolvedSignalTarget | null {
@@ -143,7 +143,7 @@ export function resolveSignalTarget(params: {
 }
 
 export function listSignalAliasDirectoryEntries(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   kind: SignalResolvedTargetKind;
   query?: string | null;

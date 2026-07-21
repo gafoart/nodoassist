@@ -10,12 +10,12 @@ import {
   extractFirstTextBlock,
 } from "../../shared/chat-message-content.js";
 import {
-  OPENCLAW_DELIVERY_MIRROR_MODEL,
-  OPENCLAW_TRANSCRIPT_ARTIFACT_API,
-  OPENCLAW_TRANSCRIPT_ARTIFACT_PROVIDER,
-  isTranscriptOnlyOpenClawAssistantModel,
-} from "../../shared/transcript-only-openclaw-assistant.js";
-import type { OpenClawConfig } from "../types.openclaw.js";
+  NODOASSIST_DELIVERY_MIRROR_MODEL,
+  NODOASSIST_TRANSCRIPT_ARTIFACT_API,
+  NODOASSIST_TRANSCRIPT_ARTIFACT_PROVIDER,
+  isTranscriptOnlyNodoAssistAssistantModel,
+} from "../../shared/transcript-only-nodoassist-assistant.js";
+import type { NodoAssistConfig } from "../types.nodoassist.js";
 import {
   resolveDefaultSessionStorePath,
   resolveSessionFilePath,
@@ -114,7 +114,7 @@ export { resolveSessionTranscriptFile } from "./transcript-file-resolve.js";
 
 function parseAssistantTranscriptText(
   line: string,
-  options?: { excludeTranscriptOnlyOpenClawAssistant?: boolean },
+  options?: { excludeTranscriptOnlyNodoAssistAssistant?: boolean },
 ): AssistantTranscriptText | undefined {
   const parsed = JSON.parse(line) as {
     id?: unknown;
@@ -127,8 +127,8 @@ function parseAssistantTranscriptText(
     return undefined;
   }
   if (
-    options?.excludeTranscriptOnlyOpenClawAssistant &&
-    isTranscriptOnlyOpenClawAssistantMessage(message)
+    options?.excludeTranscriptOnlyNodoAssistAssistant &&
+    isTranscriptOnlyNodoAssistAssistantMessage(message)
   ) {
     return undefined;
   }
@@ -145,11 +145,11 @@ function parseAssistantTranscriptText(
   };
 }
 
-function isTranscriptOnlyOpenClawAssistantMessage(message: {
+function isTranscriptOnlyNodoAssistAssistantMessage(message: {
   provider?: unknown;
   model?: unknown;
 }): boolean {
-  return isTranscriptOnlyOpenClawAssistantModel(message.provider, message.model);
+  return isTranscriptOnlyNodoAssistAssistantModel(message.provider, message.model);
 }
 
 function normalizeTranscriptTimestamp(value: unknown): number | undefined {
@@ -193,7 +193,7 @@ function parseRecentConversationText(line: string): SessionRecentConversationTex
   if (!message || (message.role !== "user" && message.role !== "assistant")) {
     return undefined;
   }
-  if (message.role === "assistant" && isTranscriptOnlyOpenClawAssistantMessage(message)) {
+  if (message.role === "assistant" && isTranscriptOnlyNodoAssistAssistantMessage(message)) {
     return undefined;
   }
   const text =
@@ -291,7 +291,7 @@ export async function readLatestAssistantTextFromSessionTranscript(
   for await (const line of streamSessionTranscriptLinesReverse(sessionFile)) {
     try {
       const assistantText = parseAssistantTranscriptText(line, {
-        excludeTranscriptOnlyOpenClawAssistant: true,
+        excludeTranscriptOnlyNodoAssistAssistant: true,
       });
       if (assistantText) {
         return assistantText;
@@ -313,7 +313,7 @@ export async function readTailAssistantTextFromSessionTranscript(
   for await (const line of streamSessionTranscriptLinesReverse(sessionFile)) {
     try {
       const parsed = JSON.parse(line) as { message?: unknown };
-      // Skip non-message entries (e.g. `openclaw.cache-ttl` custom events) so
+      // Skip non-message entries (e.g. `nodoassist.cache-ttl` custom events) so
       // a metadata line emitted after the canonical assistant turn doesn't
       // make the tail reader fall through to "no assistant tail" and cause
       // persistTextTurnTranscript to append a duplicate. Stop at any real
@@ -342,7 +342,7 @@ export async function appendAssistantMessageToSessionTranscript(params: {
   /** Optional override for store path (mostly for tests). */
   storePath?: string;
   updateMode?: SessionTranscriptUpdateMode;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   beforeMessageWrite?: AssistantBeforeMessageWrite;
 }): Promise<SessionTranscriptAppendResult> {
   const sessionKey = params.sessionKey.trim();
@@ -373,9 +373,9 @@ export async function appendAssistantMessageToSessionTranscript(params: {
     message: {
       role: "assistant" as const,
       content: [{ type: "text", text: mirrorText }],
-      api: OPENCLAW_TRANSCRIPT_ARTIFACT_API,
-      provider: OPENCLAW_TRANSCRIPT_ARTIFACT_PROVIDER,
-      model: OPENCLAW_DELIVERY_MIRROR_MODEL,
+      api: NODOASSIST_TRANSCRIPT_ARTIFACT_API,
+      provider: NODOASSIST_TRANSCRIPT_ARTIFACT_PROVIDER,
+      model: NODOASSIST_DELIVERY_MIRROR_MODEL,
       usage: {
         input: 0,
         output: 0,
@@ -392,7 +392,7 @@ export async function appendAssistantMessageToSessionTranscript(params: {
       },
       stopReason: "stop" as const,
       timestamp: Date.now(),
-      ...(params.deliveryMirror ? { openclawDeliveryMirror: params.deliveryMirror } : {}),
+      ...(params.deliveryMirror ? { nodoassistDeliveryMirror: params.deliveryMirror } : {}),
     } as SessionTranscriptAssistantMessage,
   });
 }
@@ -406,7 +406,7 @@ export async function appendExactAssistantMessageToSessionTranscript(params: {
   idempotencyKey?: string;
   storePath?: string;
   updateMode?: SessionTranscriptUpdateMode;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   beforeMessageWrite?: AssistantBeforeMessageWrite;
 }): Promise<SessionTranscriptAppendResult> {
   const sessionKey = params.sessionKey.trim();
@@ -578,14 +578,14 @@ export async function appendExactAssistantMessageToSessionTranscript(params: {
 
 function isRedundantDeliveryMirror(message: SessionTranscriptAssistantMessage): boolean {
   return (
-    message.provider === OPENCLAW_TRANSCRIPT_ARTIFACT_PROVIDER &&
-    message.model === OPENCLAW_DELIVERY_MIRROR_MODEL
+    message.provider === NODOASSIST_TRANSCRIPT_ARTIFACT_PROVIDER &&
+    message.model === NODOASSIST_DELIVERY_MIRROR_MODEL
   );
 }
 
 function isIdentifiedDeliveryMirror(message: SessionTranscriptAssistantMessage): boolean {
-  const marker = (message as { openclawDeliveryMirror?: SessionTranscriptDeliveryMirror })
-    .openclawDeliveryMirror;
+  const marker = (message as { nodoassistDeliveryMirror?: SessionTranscriptDeliveryMirror })
+    .nodoassistDeliveryMirror;
   return (
     isRedundantDeliveryMirror(message) &&
     (marker?.kind === "channel-final" || marker?.kind === "channel-final-suppressed")
@@ -614,7 +614,7 @@ function extractAssistantMessageText(message: SessionTranscriptAssistantMessage)
 async function findLatestEquivalentAssistantMessageId(
   transcriptPath: string,
   message: SessionTranscriptAssistantMessage,
-  config?: OpenClawConfig,
+  config?: NodoAssistConfig,
 ): Promise<string | undefined> {
   const expectedText = extractAssistantMessageText(
     redactTranscriptMessage(message, config) as unknown as SessionTranscriptAssistantMessage,

@@ -1,8 +1,8 @@
 // Skill tool dispatch tests cover policy-filtered tool surfaces.
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 
-type CreateOpenClawToolsArg = {
+type CreateNodoAssistToolsArg = {
   beforeToolCallHookContext?: {
     skillCommand?: { skillFile?: string };
   };
@@ -19,7 +19,7 @@ const hoisted = vi.hoisted(() => {
     };
   }
   return {
-    createOpenClawToolsMock: vi.fn((_args: CreateOpenClawToolsArg) => [
+    createNodoAssistToolsMock: vi.fn((_args: CreateNodoAssistToolsArg) => [
       makeTool("read"),
       makeTool("cron"),
       makeTool("exec"),
@@ -27,8 +27,9 @@ const hoisted = vi.hoisted(() => {
   };
 });
 
-vi.mock("../../agents/openclaw-tools.runtime.js", () => ({
-  createOpenClawTools: (args: CreateOpenClawToolsArg) => hoisted.createOpenClawToolsMock(args),
+vi.mock("../../agents/nodoassist-tools.runtime.js", () => ({
+  createNodoAssistTools: (args: CreateNodoAssistToolsArg) =>
+    hoisted.createNodoAssistToolsMock(args),
 }));
 
 import { resolveSkillDispatchTools } from "./tool-dispatch.js";
@@ -39,15 +40,15 @@ describe("resolveSkillDispatchTools", () => {
       message: { surface: "telegram", senderId: "user-1" },
       cfg: {
         tools: { allow: ["read", "cron"] },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       agentId: "main",
       sessionKey: "agent:main:telegram:group:restricted-room",
-      workspaceDir: "/tmp/openclaw-skill-tool-dispatch-test",
+      workspaceDir: "/tmp/nodoassist-skill-tool-dispatch-test",
       provider: "openai",
       model: "gpt-5.5",
     });
 
-    const args = hoisted.createOpenClawToolsMock.mock.calls[0]?.[0];
+    const args = hoisted.createNodoAssistToolsMock.mock.calls[0]?.[0];
     expect(tools.map((tool) => tool.name)).toEqual(["read", "cron"]);
     expect(args?.cronCreatorToolAllowlist).toEqual([{ name: "read" }, { name: "cron" }]);
   });
@@ -55,10 +56,10 @@ describe("resolveSkillDispatchTools", () => {
   it("carries command skill file identity into tool diagnostics", () => {
     resolveSkillDispatchTools({
       message: { surface: "telegram", senderId: "user-1" },
-      cfg: {} as OpenClawConfig,
+      cfg: {} as NodoAssistConfig,
       agentId: "main",
       sessionKey: "agent:main:telegram:direct:user-1",
-      workspaceDir: "/tmp/openclaw-skill-tool-dispatch-test",
+      workspaceDir: "/tmp/nodoassist-skill-tool-dispatch-test",
       provider: "openai",
       model: "gpt-5.5",
       skillCommand: {
@@ -70,7 +71,7 @@ describe("resolveSkillDispatchTools", () => {
       },
     });
 
-    const args = hoisted.createOpenClawToolsMock.mock.calls.at(-1)?.[0];
+    const args = hoisted.createNodoAssistToolsMock.mock.calls.at(-1)?.[0];
     expect(args?.beforeToolCallHookContext?.skillCommand?.skillFile).toBe(
       "/workspace/skills/daily-brief/SKILL.md",
     );

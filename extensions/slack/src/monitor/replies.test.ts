@@ -12,16 +12,16 @@ const messageHookRunner = vi.hoisted(() => ({
   runMessageSent: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/hook-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/hook-runtime")>();
+vi.mock("nodoassist/plugin-sdk/hook-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("nodoassist/plugin-sdk/hook-runtime")>();
   return {
     ...actual,
     triggerInternalHook,
   };
 });
 
-vi.mock("openclaw/plugin-sdk/plugin-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/plugin-runtime")>();
+vi.mock("nodoassist/plugin-sdk/plugin-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("nodoassist/plugin-sdk/plugin-runtime")>();
   return {
     ...actual,
     getGlobalHookRunner: () => messageHookRunner,
@@ -112,7 +112,7 @@ describe("deliverReplies identity passthrough", () => {
         elements: [
           {
             type: "button",
-            action_id: "openclaw:reply_button",
+            action_id: "nodoassist:reply_button",
             text: { type: "plain_text", text: "Option A" },
             value: "reply_1_option_a",
           },
@@ -174,7 +174,7 @@ describe("deliverReplies identity passthrough", () => {
     expect(blocks[0]?.type).toBe("section");
     expect(blocks[1]?.type).toBe("actions");
     expect(blocks[1]?.elements).toHaveLength(1);
-    expect(blocks[1]?.elements?.[0]?.action_id).toBe("openclaw:reply_button:1:1");
+    expect(blocks[1]?.elements?.[0]?.action_id).toBe("nodoassist:reply_button:1:1");
     expect(blocks[1]?.elements?.[0]?.style).toBe("primary");
     expect(blocks[1]?.elements?.[0]?.value).toBe("approve");
   });

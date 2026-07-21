@@ -1,6 +1,6 @@
-// Groq plugin entrypoint registers its OpenClaw integration.
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
+// Groq plugin entrypoint registers its NodoAssist integration.
+import { definePluginEntry } from "nodoassist/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "nodoassist/plugin-sdk/provider-auth-api-key";
 import { groqMediaUnderstandingProvider } from "./media-understanding-provider.js";
 
 const GROQ_DEFAULT_MODEL_REF = "groq/llama-3.3-70b-versatile";

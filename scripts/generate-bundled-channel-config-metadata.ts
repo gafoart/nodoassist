@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Generate Bundled Channel Config Metadata script supports OpenClaw repository automation.
+// Generate Bundled Channel Config Metadata script supports NodoAssist repository automation.
 import fs from "node:fs";
 import path from "node:path";
 import { loadBundledPluginPublicArtifactModuleSync } from "../src/plugins/public-surface-loader.js";
@@ -98,19 +98,19 @@ function resolveChannelConfigSchemaModulePath(rootDir: string): string | null {
 }
 
 function resolvePackageChannelMeta(source: BundledPluginSource) {
-  const openclawMeta =
+  const nodoassistMeta =
     source.packageJson &&
     typeof source.packageJson === "object" &&
     !Array.isArray(source.packageJson) &&
-    "openclaw" in source.packageJson
-      ? (source.packageJson.openclaw as Record<string, unknown> | undefined)
+    "nodoassist" in source.packageJson
+      ? (source.packageJson.nodoassist as Record<string, unknown> | undefined)
       : undefined;
   const channelMeta =
-    openclawMeta &&
-    typeof openclawMeta.channel === "object" &&
-    openclawMeta.channel &&
-    !Array.isArray(openclawMeta.channel)
-      ? (openclawMeta.channel as Record<string, unknown>)
+    nodoassistMeta &&
+    typeof nodoassistMeta.channel === "object" &&
+    nodoassistMeta.channel &&
+    !Array.isArray(nodoassistMeta.channel)
+      ? (nodoassistMeta.channel as Record<string, unknown>)
       : undefined;
   return channelMeta;
 }

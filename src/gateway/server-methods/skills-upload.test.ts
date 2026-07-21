@@ -7,9 +7,9 @@ import path from "node:path";
 import JSZip from "jszip";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  createOpenClawTestState,
-  type OpenClawTestState,
-} from "../../test-utils/openclaw-test-state.js";
+  createNodoAssistTestState,
+  type NodoAssistTestState,
+} from "../../test-utils/nodoassist-test-state.js";
 import type { GatewayRequestHandlers } from "./types.js";
 
 const agentScopeState = vi.hoisted(() => ({
@@ -49,7 +49,7 @@ vi.mock("../../infra/replace-file.js", async (importOriginal) => {
       if (
         replaceFileState.publishFailures === 0 &&
         replaceFileState.publishFailureTarget &&
-        options.from.includes(".openclaw-install-stage-") &&
+        options.from.includes(".nodoassist-install-stage-") &&
         options.to === replaceFileState.publishFailureTarget
       ) {
         replaceFileState.publishFailures += 1;
@@ -61,7 +61,7 @@ vi.mock("../../infra/replace-file.js", async (importOriginal) => {
 });
 
 let tempDirs: string[] = [];
-let testStates: OpenClawTestState[] = [];
+let testStates: NodoAssistTestState[] = [];
 
 type CallResult = {
   ok: boolean;
@@ -74,9 +74,9 @@ async function makeHarness(): Promise<{
   stateDir: string;
   workspaceDir: string;
 }> {
-  const testState = await createOpenClawTestState({
+  const testState = await createNodoAssistTestState({
     layout: "state-only",
-    prefix: "openclaw-skill-upload-handler-",
+    prefix: "nodoassist-skill-upload-handler-",
   });
   testStates.push(testState);
   const stateDir = testState.stateDir;

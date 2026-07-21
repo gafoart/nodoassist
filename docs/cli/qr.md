@@ -1,30 +1,30 @@
 ---
-summary: "CLI reference for `openclaw qr` (generate mobile pairing QR + setup code)"
+summary: "CLI reference for `nodoassist qr` (generate mobile pairing QR + setup code)"
 read_when:
   - You want to pair a mobile node app with a gateway quickly
   - You need setup-code output for remote/manual sharing
 title: "QR"
 ---
 
-# `openclaw qr`
+# `nodoassist qr`
 
 Generate a mobile pairing QR and setup code from your current Gateway configuration.
 
 ```bash
-openclaw qr
-openclaw qr --setup-code-only
-openclaw qr --json
-openclaw qr --remote
-openclaw qr --url wss://gateway.example/ws
+nodoassist qr
+nodoassist qr --setup-code-only
+nodoassist qr --json
+nodoassist qr --remote
+nodoassist qr --url wss://gateway.example/ws
 ```
 
-Official OpenClaw iOS and Android apps connect automatically when their
+Official NodoAssist iOS and Android apps connect automatically when their
 setup-code metadata matches. If a request remains pending (for example, for a
 non-official client or mismatched metadata), review and approve it:
 
 ```bash
-openclaw devices list
-openclaw devices approve <requestId>
+nodoassist devices list
+nodoassist devices approve <requestId>
 ```
 
 ## Options
@@ -53,7 +53,7 @@ Pairing-mutation scopes and `operator.admin` still require a separate approved o
 
 Mobile pairing fails closed for Tailscale/public `ws://` gateway URLs: use Tailscale Serve/Funnel or a `wss://` gateway URL for those. Private LAN addresses and `.local` Bonjour hosts remain supported over plain `ws://`.
 
-When the selected Gateway URL comes from `gateway.bind=lan`, OpenClaw also checks persistent `tailscale serve status --json` routes. Any HTTPS Serve root that proxies the active Gateway's loopback port is included as a fallback. Specific-interface `custom` and `tailnet` binds do not receive that fallback because a loopback Serve proxy cannot reach those listeners. Current iOS clients probe the advertised routes in order and save the first reachable one; the legacy `url` field remains unchanged for older clients.
+When the selected Gateway URL comes from `gateway.bind=lan`, NodoAssist also checks persistent `tailscale serve status --json` routes. Any HTTPS Serve root that proxies the active Gateway's loopback port is included as a fallback. Specific-interface `custom` and `tailnet` binds do not receive that fallback because a loopback Serve proxy cannot reach those listeners. Current iOS clients probe the advertised routes in order and save the first reachable one; the legacy `url` field remains unchanged for older clients.
 
 With `--remote`, one of `gateway.remote.url` or `gateway.tailscale.mode=serve|funnel` is required.
 

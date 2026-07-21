@@ -6,34 +6,34 @@ import type {
   ChannelThreadingContext,
   ChannelThreadingToolContext,
   ChannelToolSend,
-} from "openclaw/plugin-sdk/channel-contract";
-import { createChatChannelPlugin } from "openclaw/plugin-sdk/channel-core";
-import { createChannelMessageAdapterFromOutbound } from "openclaw/plugin-sdk/channel-outbound";
-import { createLoggedPairingApprovalNotifier } from "openclaw/plugin-sdk/channel-pairing";
-import { createRestrictSendersChannelSecurity } from "openclaw/plugin-sdk/channel-policy";
+} from "nodoassist/plugin-sdk/channel-contract";
+import { createChatChannelPlugin } from "nodoassist/plugin-sdk/channel-core";
+import { createChannelMessageAdapterFromOutbound } from "nodoassist/plugin-sdk/channel-outbound";
+import { createLoggedPairingApprovalNotifier } from "nodoassist/plugin-sdk/channel-pairing";
+import { createRestrictSendersChannelSecurity } from "nodoassist/plugin-sdk/channel-policy";
 import {
   attachChannelToResult,
   createAttachedChannelResultAdapter,
   type ChannelOutboundAdapter,
-} from "openclaw/plugin-sdk/channel-send-result";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { createChannelDirectoryAdapter } from "openclaw/plugin-sdk/directory-runtime";
-import { buildPassiveProbedChannelStatusSummary } from "openclaw/plugin-sdk/extension-shared";
+} from "nodoassist/plugin-sdk/channel-send-result";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { createChannelDirectoryAdapter } from "nodoassist/plugin-sdk/directory-runtime";
+import { buildPassiveProbedChannelStatusSummary } from "nodoassist/plugin-sdk/extension-shared";
 import {
   type MessagePresentation,
   normalizeMessagePresentation,
   renderMessagePresentationFallbackText,
   resolveMessagePresentationControlValue,
-} from "openclaw/plugin-sdk/interactive-runtime";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import { resolvePayloadMediaUrls, sendTextMediaPayload } from "openclaw/plugin-sdk/reply-payload";
-import { isPrivateNetworkOptInEnabled } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "nodoassist/plugin-sdk/interactive-runtime";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
+import { resolvePayloadMediaUrls, sendTextMediaPayload } from "nodoassist/plugin-sdk/reply-payload";
+import { isPrivateNetworkOptInEnabled } from "nodoassist/plugin-sdk/ssrf-runtime";
 import {
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { sanitizeAssistantVisibleText } from "openclaw/plugin-sdk/text-chunking";
+} from "nodoassist/plugin-sdk/status-helpers";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { sanitizeAssistantVisibleText } from "nodoassist/plugin-sdk/text-chunking";
 import { mattermostApprovalAuth } from "./approval-auth.js";
 import {
   chunkTextForOutbound,
@@ -302,7 +302,7 @@ function normalizeMattermostThreadId(value: string | number | undefined): string
 }
 
 function buildMattermostThreadingToolContext(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   context: ChannelThreadingContext;
   hasRepliedRef?: { value: boolean };
@@ -895,7 +895,7 @@ export const mattermostPlugin: ChannelPlugin<ResolvedMattermostAccount> = create
   pairing: {
     text: {
       idLabel: "mattermostUserId",
-      message: "OpenClaw: your access has been approved.",
+      message: "NodoAssist: your access has been approved.",
       normalizeAllowEntry: (entry) => normalizeAllowEntry(entry),
       notify: createLoggedPairingApprovalNotifier(
         ({ id }) => `[mattermost] User ${id} approved for pairing`,

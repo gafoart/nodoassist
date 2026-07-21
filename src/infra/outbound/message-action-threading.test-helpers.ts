@@ -1,10 +1,10 @@
 // Shared threading test helpers build small tool contexts and auto-thread
 // resolvers without importing delivery runtime.
 import { vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 
 type AutoThreadResolver = (params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   to: string;
   toolContext?: Record<string, unknown>;
@@ -12,7 +12,7 @@ type AutoThreadResolver = (params: {
 }) => string | undefined;
 
 type OutboundThreadContext = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   to: string;
   accountId?: string | null;
   toolContext?: Record<string, unknown>;
@@ -131,7 +131,7 @@ export function createOutboundThreadingMock() {
         resolveAutoThreadId,
       }: {
         actionParams: Record<string, unknown>;
-        cfg: OpenClawConfig;
+        cfg: NodoAssistConfig;
         to: string;
         accountId?: string | null;
         toolContext?: Record<string, unknown>;

@@ -1,7 +1,7 @@
 // Simple completion runtime tests cover model resolution, provider auth, and
 // one-shot completion wiring before requests reach the shared LLM stream path.
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type { Model } from "../llm/types.js";
 import {
   looksLikeSecretSentinel,
@@ -133,7 +133,7 @@ describe("prepareSimpleCompletionModel", () => {
       cfg: undefined,
       provider: "anthropic",
       modelId: "claude-opus-4-6",
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/nodoassist-agent",
     });
 
     expectPreparedModelResult(result);
@@ -447,7 +447,7 @@ describe("prepareSimpleCompletionModel", () => {
       cfg: undefined,
       provider: "amazon-bedrock-mantle",
       modelId: "anthropic.claude-opus-4-7",
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/nodoassist-agent",
     });
 
     const runtimeAuthInput = callArg(hoisted.prepareProviderRuntimeAuthMock) as {
@@ -461,7 +461,7 @@ describe("prepareSimpleCompletionModel", () => {
       };
     };
     expect(runtimeAuthInput.provider).toBe("amazon-bedrock-mantle");
-    expect(runtimeAuthInput.workspaceDir).toBe("/tmp/openclaw-agent");
+    expect(runtimeAuthInput.workspaceDir).toBe("/tmp/nodoassist-agent");
     expect(runtimeAuthInput.context?.apiKey).toBe("__amazon_bedrock_mantle_iam__");
     expect(runtimeAuthInput.context?.authMode).toBe("api-key");
     expect(runtimeAuthInput.context?.modelId).toBe("anthropic.claude-opus-4-7");
@@ -597,7 +597,7 @@ describe("prepareSimpleCompletionModelForAgent", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     hoisted.resolveModelAsyncMock.mockResolvedValueOnce({
       model: {
         provider: "openai",
@@ -651,7 +651,7 @@ describe("completeWithPreparedSimpleCompletionModel", () => {
     } satisfies Model<"ollama">;
     const preparedModel = {
       ...model,
-      api: "openclaw-ollama-simple-test",
+      api: "nodoassist-ollama-simple-test",
     };
     const cfg = {
       models: { providers: { ollama: { baseUrl: "http://remote-ollama:11434", models: [] } } },
@@ -683,7 +683,7 @@ describe("completeWithPreparedSimpleCompletionModel", () => {
     );
   });
 
-  it("normalizes OpenClaw-only thinking levels before using shared model runtime simple completion", async () => {
+  it("normalizes NodoAssist-only thinking levels before using shared model runtime simple completion", async () => {
     const model = {
       provider: "openai",
       id: "gpt-5.4",
@@ -822,7 +822,7 @@ describe("completeWithPreparedSimpleCompletionModel", () => {
     } satisfies Model<"anthropic-messages">;
     const preparedModel = {
       ...model,
-      api: "openclaw-provider-simple:anthropic:production-sonnet",
+      api: "nodoassist-provider-simple:anthropic:production-sonnet",
     } satisfies Model;
     hoisted.prepareModelForSimpleCompletionMock.mockReturnValueOnce(preparedModel);
 

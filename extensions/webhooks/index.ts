@@ -1,9 +1,9 @@
-// Webhooks plugin entrypoint registers its OpenClaw integration.
-import { definePluginEntry, type OpenClawPluginApi } from "./api.js";
+// Webhooks plugin entrypoint registers its NodoAssist integration.
+import { definePluginEntry, type NodoAssistPluginApi } from "./api.js";
 import { resolveWebhooksPluginConfig } from "./src/config.js";
 import { createTaskFlowWebhookRequestHandler, type TaskFlowWebhookTarget } from "./src/http.js";
 
-function registerWebhookRoutes(api: OpenClawPluginApi): void {
+function registerWebhookRoutes(api: NodoAssistPluginApi): void {
   const routes = resolveWebhooksPluginConfig({
     pluginConfig: api.pluginConfig,
   });
@@ -47,8 +47,8 @@ export default definePluginEntry({
   id: "webhooks",
   name: "Webhooks",
   description:
-    "Authenticated inbound webhooks that bind external automation to OpenClaw TaskFlows.",
-  register(api: OpenClawPluginApi) {
+    "Authenticated inbound webhooks that bind external automation to NodoAssist TaskFlows.",
+  register(api: NodoAssistPluginApi) {
     registerWebhookRoutes(api);
   },
 });

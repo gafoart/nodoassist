@@ -1,12 +1,12 @@
 // Workboard plugin module implements tools behavior.
-import { jsonResult, readStringParam } from "openclaw/plugin-sdk/core";
-import type { AnyAgentTool, OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
-import type { OpenClawPluginToolContext } from "openclaw/plugin-sdk/plugin-entry";
+import { jsonResult, readStringParam } from "nodoassist/plugin-sdk/core";
+import type { AnyAgentTool, NodoAssistPluginApi } from "nodoassist/plugin-sdk/plugin-entry";
+import type { NodoAssistPluginToolContext } from "nodoassist/plugin-sdk/plugin-entry";
 import { Type } from "typebox";
 import { WorkboardStore } from "./store.js";
 import type { WorkboardCard } from "./types.js";
 
-function contextOwner(ctx: OpenClawPluginToolContext | undefined): string {
+function contextOwner(ctx: NodoAssistPluginToolContext | undefined): string {
   const record = (ctx ?? {}) as Record<string, unknown>;
   return (
     (typeof record.agentId === "string" && record.agentId) ||
@@ -186,8 +186,8 @@ const CardIdSchema = Type.Object(
 );
 
 export function createWorkboardTools(params: {
-  api: OpenClawPluginApi;
-  context?: OpenClawPluginToolContext;
+  api: NodoAssistPluginApi;
+  context?: NodoAssistPluginToolContext;
   store?: WorkboardStore;
 }): AnyAgentTool[] {
   const store = params.store ?? WorkboardStore.openSqlite();

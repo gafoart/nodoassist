@@ -1,13 +1,13 @@
-# ClickClack OpenClaw channel
+# ClickClack NodoAssist channel
 
-Official OpenClaw channel plugin for ClickClack.
+Official NodoAssist channel plugin for ClickClack.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/clickclack
+nodoassist plugins install @nodoassist/clickclack
 ```
 
 ## Docs
 
-See `docs/channels/clickclack.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/channels/clickclack`.
+See `docs/channels/clickclack.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/channels/clickclack`.

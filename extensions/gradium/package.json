@@ -1,22 +1,22 @@
 {
-  "name": "@openclaw/gradium-speech",
+  "name": "@nodoassist/gradium-speech",
   "version": "2026.6.11",
-  "description": "OpenClaw Gradium speech plugin.",
+  "description": "NodoAssist Gradium speech plugin.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
   },
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/gradium-speech",
-      "npmSpec": "@openclaw/gradium-speech",
+      "clawhubSpec": "clawhub:@nodoassist/gradium-speech",
+      "npmSpec": "@nodoassist/gradium-speech",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.8"
     },
@@ -24,7 +24,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

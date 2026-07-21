@@ -1,9 +1,9 @@
 // Telegram plugin module implements outbound message context behavior.
 import type { Message } from "grammy/types";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-payload";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { resolveStorePath } from "openclaw/plugin-sdk/session-store-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import type { ReplyPayload } from "nodoassist/plugin-sdk/reply-payload";
+import { logVerbose } from "nodoassist/plugin-sdk/runtime-env";
+import { resolveStorePath } from "nodoassist/plugin-sdk/session-store-runtime";
 import { createTelegramMessageCache, resolveTelegramMessageCacheScope } from "./message-cache.js";
 
 type TelegramPromptContextChannelData = {
@@ -15,7 +15,7 @@ type TelegramOutboundPromptContextMessage = {
   chat?: { id?: string | number; type?: string; title?: string; username?: string };
   date?: number;
   from?: { id?: number; is_bot?: boolean; first_name?: string; username?: string };
-  openclaw_prompt_context_timestamp_ms?: number;
+  nodoassist_prompt_context_timestamp_ms?: number;
   text?: string;
   caption?: string;
   message_thread_id?: number;
@@ -86,10 +86,10 @@ function resolveOutboundCacheMessageTimestamp(
   msg: TelegramOutboundPromptContextMessage,
 ): number | undefined {
   if (
-    typeof msg.openclaw_prompt_context_timestamp_ms === "number" &&
-    Number.isFinite(msg.openclaw_prompt_context_timestamp_ms)
+    typeof msg.nodoassist_prompt_context_timestamp_ms === "number" &&
+    Number.isFinite(msg.nodoassist_prompt_context_timestamp_ms)
   ) {
-    return msg.openclaw_prompt_context_timestamp_ms;
+    return msg.nodoassist_prompt_context_timestamp_ms;
   }
   return typeof msg.date === "number" && Number.isFinite(msg.date) ? msg.date * 1000 : undefined;
 }
@@ -113,7 +113,7 @@ function buildOutboundCacheMessage(params: {
     ...params.message,
     message_id: params.messageId,
     ...(params.promptContextTimestampMs !== undefined
-      ? { openclaw_prompt_context_timestamp_ms: params.promptContextTimestampMs }
+      ? { nodoassist_prompt_context_timestamp_ms: params.promptContextTimestampMs }
       : {}),
     date:
       typeof params.message.date === "number" && Number.isFinite(params.message.date)
@@ -128,7 +128,7 @@ function buildOutboundCacheMessage(params: {
     from: params.message.from ?? {
       id: 0,
       is_bot: true,
-      first_name: params.account.name ?? "OpenClaw",
+      first_name: params.account.name ?? "NodoAssist",
     },
     ...(text ? { text } : {}),
     ...(params.messageThreadId !== undefined ? { message_thread_id: params.messageThreadId } : {}),
@@ -136,7 +136,7 @@ function buildOutboundCacheMessage(params: {
 }
 
 export async function recordOutboundMessageForPromptContext(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   account: TelegramOutboundPromptContextAccount;
   chatId: string | number;
   message: TelegramOutboundPromptContextMessage;

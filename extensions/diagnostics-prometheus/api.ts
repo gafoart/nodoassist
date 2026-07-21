@@ -2,13 +2,13 @@
 export type {
   DiagnosticEventMetadata,
   DiagnosticEventPayload,
-} from "openclaw/plugin-sdk/diagnostic-runtime";
-export { isInternalDiagnosticEventMetadata } from "openclaw/plugin-sdk/diagnostic-runtime";
+} from "nodoassist/plugin-sdk/diagnostic-runtime";
+export { isInternalDiagnosticEventMetadata } from "nodoassist/plugin-sdk/diagnostic-runtime";
 export {
   emptyPluginConfigSchema,
-  type OpenClawPluginApi,
-  type OpenClawPluginHttpRouteHandler,
-  type OpenClawPluginService,
-  type OpenClawPluginServiceContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-export { redactSensitiveText } from "openclaw/plugin-sdk/security-runtime";
+  type NodoAssistPluginApi,
+  type NodoAssistPluginHttpRouteHandler,
+  type NodoAssistPluginService,
+  type NodoAssistPluginServiceContext,
+} from "nodoassist/plugin-sdk/plugin-entry";
+export { redactSensitiveText } from "nodoassist/plugin-sdk/security-runtime";

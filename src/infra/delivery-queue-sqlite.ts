@@ -1,6 +1,6 @@
 // Stores durable delivery queue entries in SQLite.
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
-import { openOpenClawStateDatabase } from "../state/openclaw-state-db.js";
+import type { DB as NodoAssistStateKyselyDatabase } from "../state/nodoassist-state-db.generated.js";
+import { openNodoAssistStateDatabase } from "../state/nodoassist-state-db.js";
 import {
   executeSqliteQuerySync,
   executeSqliteQueryTakeFirstSync,
@@ -10,7 +10,7 @@ import {
 // Generic durable delivery queue storage shared by session and outbound queues.
 // Queue-specific wrappers own payload shape; this layer owns SQLite state.
 type QueueStatus = "pending" | "failed";
-type DeliveryQueueDatabase = Pick<OpenClawStateKyselyDatabase, "delivery_queue_entries">;
+type DeliveryQueueDatabase = Pick<NodoAssistStateKyselyDatabase, "delivery_queue_entries">;
 
 /** Indexed metadata extracted from queue payloads for diagnostics and recovery. */
 export type DeliveryQueueRowMetadata = {
@@ -44,8 +44,8 @@ type QueueRow = {
 };
 
 function openStateDatabase(stateDir?: string) {
-  return openOpenClawStateDatabase({
-    env: stateDir ? { ...process.env, OPENCLAW_STATE_DIR: stateDir } : process.env,
+  return openNodoAssistStateDatabase({
+    env: stateDir ? { ...process.env, NODOASSIST_STATE_DIR: stateDir } : process.env,
   });
 }
 

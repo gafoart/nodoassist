@@ -1,5 +1,5 @@
 import Testing
-@testable import OpenClaw
+@testable import NodoAssist
 
 struct TalkProStateTests {
     @Test func `disabled talk without loaded config can start and retry load`() {

@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/voice-call",
+  "name": "@nodoassist/voice-call",
   "version": "2026.6.11",
-  "description": "OpenClaw voice-call plugin for Twilio, Telnyx, and Plivo phone calls.",
+  "description": "NodoAssist voice-call plugin for Twilio, Telnyx, and Plivo phone calls.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -14,23 +14,23 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "npmSpec": "@openclaw/voice-call",
+      "npmSpec": "@nodoassist/voice-call",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.10"
     },
@@ -38,7 +38,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11"
+      "nodoassistVersion": "2026.6.11"
     },
     "release": {
       "publishToClawHub": true,

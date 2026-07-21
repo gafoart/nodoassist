@@ -9,9 +9,9 @@ export {
   resolveThreadFlag,
   resolveChannelResetConfig,
   updateLastRoute,
-} from "openclaw/plugin-sdk/session-store-runtime";
+} from "nodoassist/plugin-sdk/session-store-runtime";
 export {
   getRuntimeConfig,
   getRuntimeConfigSourceSnapshot,
-} from "openclaw/plugin-sdk/runtime-config-snapshot";
-export { resolveChannelContextVisibilityMode } from "openclaw/plugin-sdk/context-visibility-runtime";
+} from "nodoassist/plugin-sdk/runtime-config-snapshot";
+export { resolveChannelContextVisibilityMode } from "nodoassist/plugin-sdk/context-visibility-runtime";

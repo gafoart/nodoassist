@@ -8,8 +8,8 @@ import type {
   ReplyKeyboardRemove,
   ReplyParameters,
 } from "grammy/types";
-import type { MarkdownTableMode } from "openclaw/plugin-sdk/config-contracts";
-import { chunkMarkdownTextWithMode, type ChunkMode } from "openclaw/plugin-sdk/reply-chunking";
+import type { MarkdownTableMode } from "nodoassist/plugin-sdk/config-contracts";
+import { chunkMarkdownTextWithMode, type ChunkMode } from "nodoassist/plugin-sdk/reply-chunking";
 import {
   escapeTelegramHtml,
   markdownToTelegramRichHtml,

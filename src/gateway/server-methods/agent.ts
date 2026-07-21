@@ -3,15 +3,15 @@
 import { randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { isFutureDateTimestampMs } from "@openclaw/normalization-core/number-coercion";
+import { isFutureDateTimestampMs } from "@nodoassist/normalization-core/number-coercion";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/normalization-core/string-coerce";
 import {
   normalizeStringEntries,
   uniqueStrings,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@nodoassist/normalization-core/string-normalization";
 import {
   GATEWAY_CLIENT_CAPS,
   GATEWAY_CLIENT_MODES,
@@ -85,7 +85,7 @@ import {
 } from "../../config/sessions.js";
 import { hasProviderOwnedSession } from "../../config/sessions/entry-freshness.js";
 import { resolveMaintenanceConfigFromInput } from "../../config/sessions/store-maintenance.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { isAbortError } from "../../infra/abort-signal.js";
 import {
   assertAgentRunLifecycleGenerationCurrent,
@@ -199,7 +199,7 @@ function isRecoverableTerminalSessionStatus(status: SessionEntry["status"] | und
 }
 
 type AgentSendSessionLifecycleTransition = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   sessionKey: string;
   sessionId: string;
   storePath: string;
@@ -240,7 +240,7 @@ function clientHasAdminScope(client: GatewayRequestHandlerOptions["client"]): bo
 }
 
 function respondDeletedAgentSession(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   canonicalKey: string;
   entry?: SessionEntry | null;
   acpMetadataSessionKey?: string;
@@ -405,7 +405,7 @@ function buildBareSessionResetResponse(params: {
 }
 
 async function deliverBareSessionResetResult(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   context: GatewayRequestHandlerOptions["context"];
   reason: "new" | "reset";
   sessionId?: string;
@@ -474,7 +474,7 @@ async function deliverBareSessionResetResult(params: {
 }
 
 async function resolveBareSessionResetResult(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   context: GatewayRequestHandlerOptions["context"];
   reason: "new" | "reset";
   sessionId?: string;
@@ -562,11 +562,11 @@ async function resolveBareSessionResetResult(params: {
 }
 
 function loadBareSessionResetDeliverySession(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   sessionKey: string;
   agentId?: string;
 }): {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   entry?: SessionEntry;
   agentId: string;
 } {
@@ -722,7 +722,7 @@ function isConfirmedAcpManualSpawnTaskOwner(params: {
 }
 
 async function registerPluginSubagentRunFromGateway(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   runId: string;
   childSessionKey: string;
   task: string;
@@ -1836,7 +1836,7 @@ export const agentHandlers: GatewayRequestHandlers = {
       let sessionEntry: SessionEntry | undefined;
       let sessionPersistedBeforeGatewayAdmission = false;
       let bestEffortDeliver = requestedBestEffortDeliver ?? false;
-      let cfgForAgent: OpenClawConfig | undefined;
+      let cfgForAgent: NodoAssistConfig | undefined;
       let resolvedSessionKey = requestedSessionKey;
       let resolvedSessionAgentId: string | undefined;
       let isNewSession = false;

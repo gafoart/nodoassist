@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/oc-path",
+  "name": "@nodoassist/oc-path",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw oc:// workspace path plugin",
+  "description": "NodoAssist oc:// workspace path plugin",
   "type": "module",
   "dependencies": {
     "commander": "15.0.0",
@@ -11,18 +11,18 @@
     "yaml": "2.9.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

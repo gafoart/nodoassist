@@ -1,7 +1,7 @@
 // Qa Lab plugin module implements qa channel transport behavior.
 import { setTimeout as sleep } from "node:timers/promises";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
 import type { QaBusState } from "./bus-state.js";
 import { QaSuiteInfraError } from "./errors.js";
 import { getQaProvider } from "./providers/index.js";
@@ -92,8 +92,8 @@ export function createQaChannelGatewayConfig(params: {
       [QA_CHANNEL_ID]: {
         enabled: true,
         baseUrl: params.baseUrl,
-        botUserId: "openclaw",
-        botDisplayName: "OpenClaw QA",
+        botUserId: "nodoassist",
+        botDisplayName: "NodoAssist QA",
         allowFrom: senderAllowlist ? [...senderAllowlist] : ["*"],
         ...(senderAllowlist
           ? {
@@ -116,7 +116,7 @@ export function createQaChannelGatewayConfig(params: {
     messages: {
       visibleReplies: "automatic",
       groupChat: {
-        mentionPatterns: ["\\b@?openclaw\\b"],
+        mentionPatterns: ["\\b@?nodoassist\\b"],
         visibleReplies: "automatic",
       },
     },
@@ -139,7 +139,7 @@ function createQaChannelReportNotes(params: QaTransportReportParams) {
 async function handleQaChannelAction(params: {
   action: QaTransportActionName;
   args: Record<string, unknown>;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
 }) {
   return await qaChannelPlugin.actions?.handleAction?.({
@@ -192,9 +192,6 @@ class QaChannelTransport extends QaStateBackedTransportAdapter {
   createReportNotes = createQaChannelReportNotes;
 }
 
-export function createQaChannelTransport(
-  state: QaBusState,
-  transportPolicy?: QaTransportPolicy,
-) {
+export function createQaChannelTransport(state: QaBusState, transportPolicy?: QaTransportPolicy) {
   return new QaChannelTransport(state, transportPolicy);
 }

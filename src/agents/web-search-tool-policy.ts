@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import {
   resolveEffectiveToolPolicy,
   resolveGroupToolPolicy,
@@ -15,7 +15,7 @@ import { isToolAllowedByPolicies } from "./tool-policy-match.js";
 import { mergeAlsoAllowPolicy, resolveToolProfilePolicy } from "./tool-policy.js";
 
 export type WebSearchToolPolicyParams = {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   modelProvider?: string;
   modelId?: string;
   agentId?: string;

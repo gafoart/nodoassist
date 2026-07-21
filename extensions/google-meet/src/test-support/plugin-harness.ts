@@ -1,10 +1,10 @@
 // Google Meet plugin module implements plugin harness behavior.
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
-import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+import type { NodoAssistPluginApi } from "nodoassist/plugin-sdk/plugin-entry";
+import { createTestPluginApi } from "nodoassist/plugin-sdk/plugin-test-api";
 import { vi } from "vitest";
 
 type GoogleMeetTestPluginEntry = {
-  register(api: OpenClawPluginApi): void;
+  register(api: NodoAssistPluginApi): void;
 };
 
 export const noopLogger = {
@@ -162,7 +162,7 @@ export function setupGoogleMeetPlugin(
         list: nodesList,
         invoke: nodesInvoke,
       },
-    } as unknown as OpenClawPluginApi["runtime"],
+    } as unknown as NodoAssistPluginApi["runtime"],
     logger: noopLogger,
     registerGatewayMethod: (method: string, handler: unknown) => methods.set(method, handler),
     registerTool: (tool: unknown) => {

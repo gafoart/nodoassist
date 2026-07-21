@@ -804,16 +804,16 @@ describe("mcp loopback server", () => {
       token: runtime?.nonOwnerToken,
       headers: jsonHeaders({
         "x-session-key": "agent:main:telegram:group:chat123",
-        "x-openclaw-session-id": "session-123",
-        "x-openclaw-account-id": "work",
-        "x-openclaw-message-channel": "telegram",
-        "x-openclaw-current-channel-id": "telegram:chat123",
-        "x-openclaw-current-thread-ts": "42",
-        "x-openclaw-current-message-id": "reply-message-1",
-        "x-openclaw-current-inbound-audio": "true",
-        "x-openclaw-inbound-event-kind": "room_event",
-        "x-openclaw-source-reply-delivery-mode": "message_tool_only",
-        "x-openclaw-require-explicit-message-target": "true",
+        "x-nodoassist-session-id": "session-123",
+        "x-nodoassist-account-id": "work",
+        "x-nodoassist-message-channel": "telegram",
+        "x-nodoassist-current-channel-id": "telegram:chat123",
+        "x-nodoassist-current-thread-ts": "42",
+        "x-nodoassist-current-message-id": "reply-message-1",
+        "x-nodoassist-current-inbound-audio": "true",
+        "x-nodoassist-inbound-event-kind": "room_event",
+        "x-nodoassist-source-reply-delivery-mode": "message_tool_only",
+        "x-nodoassist-require-explicit-message-target": "true",
       }),
       body: mcpToolsListBody(),
     });
@@ -856,12 +856,12 @@ describe("mcp loopback server", () => {
       token: grant.token,
       headers: jsonHeaders({
         "x-session-key": "agent:main:SPOOFED-other-session",
-        "x-openclaw-message-channel": "telegram",
-        "x-openclaw-account-id": "victim-account",
-        "x-openclaw-current-channel-id": "telegram:victim-chat",
-        "x-openclaw-current-thread-ts": "999",
-        "x-openclaw-source-reply-delivery-mode": "automatic",
-        "x-openclaw-inbound-event-kind": "room_event",
+        "x-nodoassist-message-channel": "telegram",
+        "x-nodoassist-account-id": "victim-account",
+        "x-nodoassist-current-channel-id": "telegram:victim-chat",
+        "x-nodoassist-current-thread-ts": "999",
+        "x-nodoassist-source-reply-delivery-mode": "automatic",
+        "x-nodoassist-inbound-event-kind": "room_event",
       }),
       body: mcpToolsListBody(),
     });
@@ -923,8 +923,8 @@ describe("mcp loopback server", () => {
         args: { message },
         headers: {
           "x-session-key": "agent:main:main",
-          "x-openclaw-session-id": "session-reused",
-          "x-openclaw-cli-capture-key": captureKey,
+          "x-nodoassist-session-id": "session-reused",
+          "x-nodoassist-cli-capture-key": captureKey,
         },
       });
     };
@@ -950,14 +950,14 @@ describe("mcp loopback server", () => {
         token: runtime?.ownerToken,
         headers: {
           "x-session-key": "agent:main:telegram:group:chat123",
-          "x-openclaw-message-channel": "telegram",
-          "x-openclaw-inbound-event-kind": inboundEventKind,
+          "x-nodoassist-message-channel": "telegram",
+          "x-nodoassist-inbound-event-kind": inboundEventKind,
           ...(sourceReplyDeliveryMode
-            ? { "x-openclaw-source-reply-delivery-mode": sourceReplyDeliveryMode }
+            ? { "x-nodoassist-source-reply-delivery-mode": sourceReplyDeliveryMode }
             : {}),
-          ...(currentInboundAudio ? { "x-openclaw-current-inbound-audio": "true" } : {}),
+          ...(currentInboundAudio ? { "x-nodoassist-current-inbound-audio": "true" } : {}),
           ...(requireExplicitMessageTarget
-            ? { "x-openclaw-require-explicit-message-target": "true" }
+            ? { "x-nodoassist-require-explicit-message-target": "true" }
             : {}),
         },
       });
@@ -1092,7 +1092,7 @@ describe("mcp loopback server", () => {
         token,
         headers: {
           "x-session-key": "agent:main:matrix:dm:test",
-          "x-openclaw-message-channel": "matrix",
+          "x-nodoassist-message-channel": "matrix",
         },
       });
 
@@ -1111,8 +1111,8 @@ describe("mcp loopback server", () => {
       token: runtime?.nonOwnerToken,
       headers: {
         "x-session-key": "agent:main:matrix:dm:test",
-        "x-openclaw-message-channel": "matrix",
-        "x-openclaw-sender-is-owner": "true",
+        "x-nodoassist-message-channel": "matrix",
+        "x-nodoassist-sender-is-owner": "true",
       },
     });
 
@@ -1323,7 +1323,7 @@ describe("mcp loopback server", () => {
           token: runtime.ownerToken,
           name: "message",
           args: { action: "send", target: "chat123", message: "sent" },
-          headers: { "x-openclaw-cli-capture-key": captureKey },
+          headers: { "x-nodoassist-cli-capture-key": captureKey },
         })
       ).status,
     ).toBe(200);
@@ -1339,7 +1339,7 @@ describe("mcp loopback server", () => {
           token: runtime.ownerToken,
           name: "message",
           args: { action: "send", target: "blocked", message: "not sent" },
-          headers: { "x-openclaw-cli-capture-key": captureKey },
+          headers: { "x-nodoassist-cli-capture-key": captureKey },
         })
       ).status,
     ).toBe(200);
@@ -1401,7 +1401,7 @@ describe("mcp loopback server", () => {
         token: runtime.ownerToken,
         name: "message",
         args: { action: "send", target: testCase.disposition, message: "not sent" },
-        headers: { "x-openclaw-cli-capture-key": captureKey },
+        headers: { "x-nodoassist-cli-capture-key": captureKey },
       });
       expect(response.status).toBe(200);
       expect((await readMcpPayload(response)).result?.isError).toBe(true);
@@ -1458,7 +1458,7 @@ describe("mcp loopback server", () => {
           status: testCase.status === "completed-timeout" ? "completed" : testCase.status,
           ...("timedOut" in testCase && testCase.timedOut ? { timedOut: true } : {}),
         },
-        headers: { "x-openclaw-cli-capture-key": captureKey },
+        headers: { "x-nodoassist-cli-capture-key": captureKey },
       });
       expect(response.status).toBe(200);
       const payload = await readMcpPayload(response);
@@ -1502,7 +1502,7 @@ describe("mcp loopback server", () => {
       token: runtime.ownerToken,
       name: "message",
       args: { action: "react", target: "original-target" },
-      headers: { "x-openclaw-cli-capture-key": captureKey },
+      headers: { "x-nodoassist-cli-capture-key": captureKey },
     });
 
     expect(updatedCalls).toHaveBeenCalledWith({
@@ -1630,7 +1630,7 @@ describe("mcp loopback server", () => {
               authorization: `Bearer ${runtime.ownerToken}`,
               "content-type": "application/json",
               "transfer-encoding": "chunked",
-              "x-openclaw-cli-capture-key": captureKey,
+              "x-nodoassist-cli-capture-key": captureKey,
             },
           },
           (res) => {
@@ -1707,7 +1707,7 @@ describe("mcp loopback server", () => {
       token: runtime.ownerToken,
       name: "message",
       args: { action: "send", target: "chat123", message: "sent" },
-      headers: { "x-openclaw-cli-capture-key": captureKey },
+      headers: { "x-nodoassist-cli-capture-key": captureKey },
     });
 
     expect(response.status).toBe(200);
@@ -1735,7 +1735,7 @@ describe("mcp loopback server", () => {
       token: runtime.ownerToken,
       name: "message",
       args: { action: "send", target: "chat123", message: "sent partly" },
-      headers: { "x-openclaw-cli-capture-key": captureKey },
+      headers: { "x-nodoassist-cli-capture-key": captureKey },
     });
 
     const payload = await readMcpPayload(response);
@@ -1772,7 +1772,7 @@ describe("mcp loopback server", () => {
       token: runtime.ownerToken,
       name: "message",
       args: { action: "send", target: "chat123", message: "late" },
-      headers: { "x-openclaw-cli-capture-key": captureKey },
+      headers: { "x-nodoassist-cli-capture-key": captureKey },
     });
 
     expect((await readMcpPayload(response)).result?.isError).toBe(true);
@@ -2085,8 +2085,8 @@ describe("mcp loopback server", () => {
   });
 
   it("times out stalled request bodies and closes uploads after flushing 408", async () => {
-    const previousTimeout = process.env.OPENCLAW_MCP_LOOPBACK_BODY_TIMEOUT_MS;
-    process.env.OPENCLAW_MCP_LOOPBACK_BODY_TIMEOUT_MS = "20";
+    const previousTimeout = process.env.NODOASSIST_MCP_LOOPBACK_BODY_TIMEOUT_MS;
+    process.env.NODOASSIST_MCP_LOOPBACK_BODY_TIMEOUT_MS = "20";
     try {
       server = await startMcpLoopbackServer(0);
       const runtime = getActiveMcpLoopbackRuntime();
@@ -2106,9 +2106,9 @@ describe("mcp loopback server", () => {
       });
     } finally {
       if (previousTimeout === undefined) {
-        delete process.env.OPENCLAW_MCP_LOOPBACK_BODY_TIMEOUT_MS;
+        delete process.env.NODOASSIST_MCP_LOOPBACK_BODY_TIMEOUT_MS;
       } else {
-        process.env.OPENCLAW_MCP_LOOPBACK_BODY_TIMEOUT_MS = previousTimeout;
+        process.env.NODOASSIST_MCP_LOOPBACK_BODY_TIMEOUT_MS = previousTimeout;
       }
     }
   });
@@ -2168,47 +2168,49 @@ describe("createMcpLoopbackServerConfig", () => {
         { alwaysLoad?: boolean; url?: string; headers?: Record<string, string> }
       >;
     };
-    expect(config.mcpServers?.openclaw?.url).toBe("http://127.0.0.1:23119/mcp");
-    expect(config.mcpServers?.openclaw?.alwaysLoad).toBe(true);
-    expect(config.mcpServers?.openclaw?.headers?.Authorization).toBe(
-      "Bearer ${OPENCLAW_MCP_TOKEN}",
+    expect(config.mcpServers?.nodoassist?.url).toBe("http://127.0.0.1:23119/mcp");
+    expect(config.mcpServers?.nodoassist?.alwaysLoad).toBe(true);
+    expect(config.mcpServers?.nodoassist?.headers?.Authorization).toBe(
+      "Bearer ${NODOASSIST_MCP_TOKEN}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-session-id"]).toBe(
-      "${OPENCLAW_MCP_SESSION_ID}",
+    expect(config.mcpServers?.nodoassist?.headers?.["x-nodoassist-session-id"]).toBe(
+      "${NODOASSIST_MCP_SESSION_ID}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-message-channel"]).toBe(
-      "${OPENCLAW_MCP_MESSAGE_CHANNEL}",
+    expect(config.mcpServers?.nodoassist?.headers?.["x-nodoassist-message-channel"]).toBe(
+      "${NODOASSIST_MCP_MESSAGE_CHANNEL}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-current-channel-id"]).toBe(
-      "${OPENCLAW_MCP_CURRENT_CHANNEL_ID}",
+    expect(config.mcpServers?.nodoassist?.headers?.["x-nodoassist-current-channel-id"]).toBe(
+      "${NODOASSIST_MCP_CURRENT_CHANNEL_ID}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-current-thread-ts"]).toBe(
-      "${OPENCLAW_MCP_CURRENT_THREAD_TS}",
+    expect(config.mcpServers?.nodoassist?.headers?.["x-nodoassist-current-thread-ts"]).toBe(
+      "${NODOASSIST_MCP_CURRENT_THREAD_TS}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-current-message-id"]).toBe(
-      "${OPENCLAW_MCP_CURRENT_MESSAGE_ID}",
+    expect(config.mcpServers?.nodoassist?.headers?.["x-nodoassist-current-message-id"]).toBe(
+      "${NODOASSIST_MCP_CURRENT_MESSAGE_ID}",
     );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-current-inbound-audio"]).toBe(
-      "${OPENCLAW_MCP_CURRENT_INBOUND_AUDIO}",
-    );
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-source-reply-delivery-mode"]).toBe(
-      "${OPENCLAW_MCP_SOURCE_REPLY_DELIVERY_MODE}",
+    expect(config.mcpServers?.nodoassist?.headers?.["x-nodoassist-current-inbound-audio"]).toBe(
+      "${NODOASSIST_MCP_CURRENT_INBOUND_AUDIO}",
     );
     expect(
-      config.mcpServers?.openclaw?.headers?.["x-openclaw-require-explicit-message-target"],
-    ).toBe("${OPENCLAW_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}");
-    expect(config.mcpServers?.openclaw?.headers?.["x-openclaw-cli-capture-key"]).toBe(
-      "${OPENCLAW_MCP_CLI_CAPTURE_KEY}",
+      config.mcpServers?.nodoassist?.headers?.["x-nodoassist-source-reply-delivery-mode"],
+    ).toBe("${NODOASSIST_MCP_SOURCE_REPLY_DELIVERY_MODE}");
+    expect(
+      config.mcpServers?.nodoassist?.headers?.["x-nodoassist-require-explicit-message-target"],
+    ).toBe("${NODOASSIST_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}");
+    expect(config.mcpServers?.nodoassist?.headers?.["x-nodoassist-cli-capture-key"]).toBe(
+      "${NODOASSIST_MCP_CLI_CAPTURE_KEY}",
     );
-    expect(config.mcpServers?.openclaw?.headers).not.toHaveProperty("x-openclaw-sender-is-owner");
+    expect(config.mcpServers?.nodoassist?.headers).not.toHaveProperty(
+      "x-nodoassist-sender-is-owner",
+    );
   });
 
   it("builds an attach grant config with only token-backed headers", () => {
     const config = createMcpAttachGrantServerConfig(23119) as {
       mcpServers?: Record<string, { headers?: Record<string, string> }>;
     };
-    expect(config.mcpServers?.openclaw?.headers).toEqual({
-      Authorization: "Bearer ${OPENCLAW_MCP_TOKEN}",
+    expect(config.mcpServers?.nodoassist?.headers).toEqual({
+      Authorization: "Bearer ${NODOASSIST_MCP_TOKEN}",
     });
   });
 

@@ -1,13 +1,13 @@
 // Googlechat plugin module implements channel behavior.
-import type { ChannelMessageActionName } from "openclaw/plugin-sdk/channel-contract";
-import { createChatChannelPlugin } from "openclaw/plugin-sdk/channel-core";
-import { buildPassiveProbedChannelStatusSummary } from "openclaw/plugin-sdk/extension-shared";
-import { createLazyRuntimeNamedExport } from "openclaw/plugin-sdk/lazy-runtime";
+import type { ChannelMessageActionName } from "nodoassist/plugin-sdk/channel-contract";
+import { createChatChannelPlugin } from "nodoassist/plugin-sdk/channel-core";
+import { buildPassiveProbedChannelStatusSummary } from "nodoassist/plugin-sdk/extension-shared";
+import { createLazyRuntimeNamedExport } from "nodoassist/plugin-sdk/lazy-runtime";
 import {
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
-import { extractToolSend } from "openclaw/plugin-sdk/tool-send";
+} from "nodoassist/plugin-sdk/status-helpers";
+import { extractToolSend } from "nodoassist/plugin-sdk/tool-send";
 import {
   googleChatApprovalCapability,
   shouldSuppressLocalGoogleChatExecApprovalPrompt,

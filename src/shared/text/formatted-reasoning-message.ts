@@ -6,10 +6,10 @@ export function stripFormattedReasoningMessage(text: string): string {
   const stripped = stripReasoningTagsFromText(text);
   const lines = stripped.split(/\r?\n/u);
   const prefix = lines[0]?.trim();
-  if (prefix !== "Reasoning:" && !/^Thinking\.{0,3}$/u.test(prefix ?? "")) {
+  if (prefix !== "Reasoning:" && !/^\.nodoassist\.{0,3}$/u.test(prefix ?? "")) {
     return stripped;
   }
-  if (/^Thinking\.{0,3}$/u.test(prefix ?? "")) {
+  if (/^\.nodoassist\.{0,3}$/u.test(prefix ?? "")) {
     const firstBodyLine = lines.slice(1).find((line) => line.trim());
     const trimmedBodyLine = firstBodyLine?.trim() ?? "";
     if (

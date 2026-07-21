@@ -2,9 +2,9 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString as normalizeTrimmedString } from "@openclaw/normalization-core/string-coerce";
-import { resolveOpenClawPackageRootSync } from "../infra/openclaw-root.js";
+import { isRecord } from "@nodoassist/normalization-core/record-coerce";
+import { normalizeOptionalString as normalizeTrimmedString } from "@nodoassist/normalization-core/string-coerce";
+import { resolveNodoAssistPackageRootSync } from "../infra/nodoassist-root.js";
 import { parseJsonWithJson5Fallback } from "../utils/parse-json-compat.js";
 import { resolveBundledPluginsDir } from "./bundled-dir.js";
 import { readPersistedInstalledPluginIndexSync } from "./installed-plugin-index-store.js";
@@ -22,7 +22,7 @@ type CandidateDir = {
   origin?: string;
 };
 
-const PLUGIN_MANIFEST_FILENAME = "openclaw.plugin.json";
+const PLUGIN_MANIFEST_FILENAME = "nodoassist.plugin.json";
 let manifestMetadataCache:
   | {
       key: string;
@@ -32,19 +32,19 @@ let manifestMetadataCache:
 
 function resolveUserPath(value: string, env: NodeJS.ProcessEnv): string {
   if (value === "~" || value.startsWith("~/")) {
-    const home = env.OPENCLAW_HOME ?? env.HOME ?? env.USERPROFILE ?? os.homedir();
+    const home = env.NODOASSIST_HOME ?? env.HOME ?? env.USERPROFILE ?? os.homedir();
     return path.join(home, value.slice(2));
   }
   return path.resolve(value);
 }
 
 function resolveStateDir(env: NodeJS.ProcessEnv): string {
-  const override = normalizeTrimmedString(env.OPENCLAW_STATE_DIR);
+  const override = normalizeTrimmedString(env.NODOASSIST_STATE_DIR);
   if (override) {
     return resolveUserPath(override, env);
   }
-  const home = env.OPENCLAW_HOME ?? env.HOME ?? env.USERPROFILE ?? os.homedir();
-  return path.join(home, ".openclaw");
+  const home = env.NODOASSIST_HOME ?? env.HOME ?? env.USERPROFILE ?? os.homedir();
+  return path.join(home, ".nodoassist");
 }
 
 function listChildPluginDirs(
@@ -130,7 +130,7 @@ function resolvePackageRootsForSourceManifestMetadata(): string[] {
     { argv1: process.argv[1] },
     { moduleUrl: import.meta.url },
   ] satisfies Array<{ argv1?: string; moduleUrl?: string }>) {
-    const root = resolveOpenClawPackageRootSync(params);
+    const root = resolveNodoAssistPackageRootSync(params);
     if (root && !roots.includes(root)) {
       roots.push(root);
     }
@@ -174,7 +174,7 @@ function uniqueCandidateDirs(candidates: CandidateDir[]): CandidateDir[] {
 }
 
 /** Lists plugin manifest metadata from installed, bundled, and global plugin roots. */
-export function listOpenClawPluginManifestMetadata(
+export function listNodoAssistPluginManifestMetadata(
   env: NodeJS.ProcessEnv = process.env,
 ): PluginManifestMetadataRecord[] {
   const candidates: CandidateDir[] = [];

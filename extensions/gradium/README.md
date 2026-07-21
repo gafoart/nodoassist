@@ -1,12 +1,12 @@
-# OpenClaw Gradium Plugin
+# NodoAssist Gradium Plugin
 
-Official OpenClaw plugin for Gradium.
+Official NodoAssist plugin for Gradium.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/gradium-speech
-openclaw gateway restart
+nodoassist plugins install @nodoassist/gradium-speech
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/gradium> for setup and configuration.

@@ -1,4 +1,4 @@
-// Covers the hosted OpenClaw marketplace feed refresh command.
+// Covers the hosted NodoAssist marketplace feed refresh command.
 import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -37,7 +37,7 @@ vi.mock("../plugins/official-external-plugin-catalog.js", () => ({
 }));
 
 async function createTimelinePath(): Promise<string> {
-  const dir = await mkdtemp(path.join(tmpdir(), "openclaw-marketplace-refresh-"));
+  const dir = await mkdtemp(path.join(tmpdir(), "nodoassist-marketplace-refresh-"));
   return path.join(dir, "timeline.jsonl");
 }
 
@@ -179,7 +179,7 @@ describe("plugins marketplace refresh", () => {
     mocks.getRuntimeConfig.mockReturnValue({});
     mocks.loadConfiguredHostedOfficialExternalPluginCatalogEntries.mockResolvedValue({
       source: "bundled-fallback",
-      entries: [{ name: "@openclaw/acpx" }],
+      entries: [{ name: "@nodoassist/acpx" }],
       error: "hosted catalog feed returned HTTP 503",
       metadata: {
         url: "https://clawhub.ai/v1/feeds/plugins",
@@ -200,7 +200,7 @@ describe("plugins marketplace refresh", () => {
     mocks.getRuntimeConfig.mockReturnValue({});
     mocks.loadConfiguredHostedOfficialExternalPluginCatalogEntries.mockResolvedValue({
       source: "bundled-fallback",
-      entries: [{ name: "@openclaw/acpx" }],
+      entries: [{ name: "@nodoassist/acpx" }],
       error:
         "hosted catalog feed fetch failed for https://clawhub.ai/v1/feeds/plugins?token=secret#frag",
       metadata: {
@@ -239,7 +239,7 @@ describe("plugins marketplace refresh", () => {
     mocks.getRuntimeConfig.mockReturnValue({});
     mocks.loadConfiguredHostedOfficialExternalPluginCatalogEntries.mockResolvedValue({
       source: "bundled-fallback",
-      entries: [{ name: "@openclaw/acpx" }],
+      entries: [{ name: "@nodoassist/acpx" }],
       error: "hosted catalog feed checksum mismatch: expected sha256:expected",
       metadata: {
         url: "https://clawhub.ai/v1/feeds/plugins",
@@ -264,7 +264,7 @@ describe("plugins marketplace refresh", () => {
 
   it("emits bounded diagnostics for refresh without raw feed URLs", async () => {
     const timelinePath = await createTimelinePath();
-    vi.stubEnv("OPENCLAW_DIAGNOSTICS_TIMELINE_PATH", timelinePath);
+    vi.stubEnv("NODOASSIST_DIAGNOSTICS_TIMELINE_PATH", timelinePath);
     const config = {
       diagnostics: { flags: ["timeline"] },
       marketplaces: {

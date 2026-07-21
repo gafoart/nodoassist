@@ -1,5 +1,5 @@
-// Update Job Timeout script supports OpenClaw repository automation.
-import { resolveTimerTimeoutMs } from "@openclaw/normalization-core/number-coercion";
+// Update Job Timeout script supports NodoAssist repository automation.
+import { resolveTimerTimeoutMs } from "@nodoassist/normalization-core/number-coercion";
 
 interface TimedUpdateJobOptions {
   abortSettleMs?: number;

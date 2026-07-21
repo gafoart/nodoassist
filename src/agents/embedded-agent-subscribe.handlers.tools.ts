@@ -6,11 +6,11 @@
 import {
   asOptionalObjectRecord,
   asOptionalRecord as readRecordField,
-} from "@openclaw/normalization-core/record-coerce";
+} from "@nodoassist/normalization-core/record-coerce";
 import {
   normalizeOptionalLowercaseString,
   readStringValue,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/normalization-core/string-coerce";
 import {
   HEARTBEAT_RESPONSE_TOOL_NAME,
   normalizeHeartbeatToolResponse,
@@ -455,17 +455,19 @@ function extractLiveExecOutput(result: unknown): string | undefined {
   return typeof output === "string" ? truncateLiveExecOutput(output) : undefined;
 }
 
-function isOpenClawExecutable(token: string | undefined): boolean {
+function isNodoAssistExecutable(token: string | undefined): boolean {
   const executable = normalizeOptionalLowercaseString(token);
-  return executable?.split(/[\\/]/).at(-1) === "openclaw";
+  return executable?.split(/[\\/]/).at(-1) === "nodoassist";
 }
 
-function isOpenClawPackageSpec(token: string | undefined): boolean {
+function isNodoAssistPackageSpec(token: string | undefined): boolean {
   const packageSpec = normalizeOptionalLowercaseString(token);
-  return packageSpec?.startsWith("openclaw@") === true && packageSpec.length > "openclaw@".length;
+  return (
+    packageSpec?.startsWith("nodoassist@") === true && packageSpec.length > "nodoassist@".length
+  );
 }
 
-function skipOpenClawPackageRunner(
+function skipNodoAssistPackageRunner(
   tokens: string[],
   startIndex: number,
 ): { commandIndex: number; acceptsPackageSpec: boolean } {
@@ -518,7 +520,7 @@ function skipOpenClawPackageRunner(
   return { commandIndex, acceptsPackageSpec };
 }
 
-function isOpenClawCronAddShellCommand(args: unknown): boolean {
+function isNodoAssistCronAddShellCommand(args: unknown): boolean {
   const record = asOptionalObjectRecord(args);
   const command = readStringValue(record?.command) ?? readStringValue(record?.cmd);
   if (!command || hasTopLevelShellControlOperator(command)) {
@@ -537,7 +539,7 @@ function isOpenClawCronAddShellCommand(args: unknown): boolean {
   while (/^[A-Za-z_][A-Za-z0-9_]*=/u.test(tokens[commandIndex] ?? "")) {
     commandIndex += 1;
   }
-  const packageRunner = skipOpenClawPackageRunner(tokens, commandIndex);
+  const packageRunner = skipNodoAssistPackageRunner(tokens, commandIndex);
   commandIndex = packageRunner.commandIndex;
 
   let cliArgIndex = commandIndex + 1;
@@ -551,8 +553,8 @@ function isOpenClawCronAddShellCommand(args: unknown): boolean {
   const action = normalizeOptionalLowercaseString(tokens[cliArgIndex + 1]);
   const actionArgs = tokens.slice(cliArgIndex + 2);
   return (
-    (isOpenClawExecutable(tokens[commandIndex]) ||
-      (packageRunner.acceptsPackageSpec && isOpenClawPackageSpec(tokens[commandIndex]))) &&
+    (isNodoAssistExecutable(tokens[commandIndex]) ||
+      (packageRunner.acceptsPackageSpec && isNodoAssistPackageSpec(tokens[commandIndex]))) &&
     normalizeOptionalLowercaseString(tokens[cliArgIndex]) === "cron" &&
     (action === "add" || action === "create") &&
     !actionArgs.some((token) => token === "-h" || token === "--help")
@@ -560,7 +562,7 @@ function isOpenClawCronAddShellCommand(args: unknown): boolean {
 }
 
 function didShellCronAddSucceed(args: unknown, result: unknown): boolean {
-  if (!isOpenClawCronAddShellCommand(args)) {
+  if (!isNodoAssistCronAddShellCommand(args)) {
     return false;
   }
   const details = readExecToolDetails(result);

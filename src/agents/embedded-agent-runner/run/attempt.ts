@@ -3,10 +3,10 @@
  */
 import fs from "node:fs/promises";
 import os from "node:os";
-import { ensureSystemPromptCacheBoundary } from "@openclaw/ai/internal/shared";
-import { MAX_IMAGE_BYTES } from "@openclaw/media-core/constants";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { ensureSystemPromptCacheBoundary } from "@nodoassist/ai/internal/shared";
+import { MAX_IMAGE_BYTES } from "@nodoassist/media-core/constants";
+import { normalizeProviderId } from "@nodoassist/model-catalog-core/provider-id";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
 import { isAcpRuntimeSpawnAvailable } from "../../../acp/runtime/availability.js";
 import { buildHierarchyReinforcementMessage } from "../../../auto-reply/handoff-summarizer.js";
 import { filterHeartbeatTranscriptArtifacts } from "../../../auto-reply/heartbeat-filter.js";
@@ -28,7 +28,7 @@ import {
 import type { SessionEntry } from "../../../config/sessions/types.js";
 import {
   assertContextEngineHostSupport,
-  OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+  NODOASSIST_EMBEDDED_CONTEXT_ENGINE_HOST,
 } from "../../../context-engine/host-compat.js";
 import { resolveContextEngineOwnerPluginId } from "../../../context-engine/registry.js";
 import { buildContextEngineRuntimeSettings } from "../../../context-engine/runtime-settings.js";
@@ -80,7 +80,7 @@ import {
 import { getPluginToolMeta } from "../../../plugins/tools.js";
 import { isSubagentSessionKey } from "../../../routing/session-key.js";
 import { annotateInterSessionPromptText } from "../../../sessions/input-provenance.js";
-import { isTranscriptOnlyOpenClawAssistantMessage } from "../../../shared/transcript-only-openclaw-assistant.js";
+import { isTranscriptOnlyNodoAssistAssistantMessage } from "../../../shared/transcript-only-nodoassist-assistant.js";
 import { resolveSkillsPromptForRun } from "../../../skills/loading/workspace.js";
 import { resolveEmbeddedRunSkillEntries } from "../../../skills/runtime/embedded-run-entries.js";
 import {
@@ -119,7 +119,7 @@ import {
 } from "../../agent-tool-definition-adapter.js";
 import { recordStructuredReplayTrustForToolCall } from "../../agent-tools.before-tool-call.js";
 import {
-  createOpenClawCodingTools,
+  createNodoAssistCodingTools,
   resolveProcessToolScopeKey,
   resolveToolLoopDetectionConfig,
 } from "../../agent-tools.js";
@@ -166,7 +166,7 @@ import {
 } from "../../conversation-capability-profile.js";
 import { resolveUserTimezone } from "../../date-time.js";
 import { DEFAULT_CONTEXT_TOKENS } from "../../defaults.js";
-import { resolveOpenClawReferencePaths } from "../../docs-path.js";
+import { resolveNodoAssistReferencePaths } from "../../docs-path.js";
 import {
   isCloudCodeAssistFormatError,
   resolveBootstrapMaxChars,
@@ -529,7 +529,7 @@ type PreflightRecoveryBudgetSnapshot = Pick<
 
 // Carries the measured prompt budget into the outer recovery loop. The synthetic
 // precheck error is only a routing signal, so compaction engines need these
-// fields to compact against the prompt OpenClaw actually rendered.
+// fields to compact against the prompt NodoAssist actually rendered.
 function buildPreflightRecoveryBudgetSnapshot(snapshot: PreflightRecoveryBudgetSnapshot) {
   return {
     estimatedPromptTokens: snapshot.estimatedPromptTokens,
@@ -737,7 +737,7 @@ function removeTrailingMidTurnPrecheckAssistantError(params: {
           entry.type === "custom" ||
           entry.type === "label" ||
           entry.type === "session_info" ||
-          (entry.type === "message" && isTranscriptOnlyOpenClawAssistantMessage(entry.message)),
+          (entry.type === "message" && isTranscriptOnlyNodoAssistAssistantMessage(entry.message)),
       },
     ) > 0;
   if (removedActiveError && !removedPersistedError) {
@@ -763,7 +763,7 @@ function normalizeCompactionRecoveryTranscriptTail(params: {
         entry.type === "custom" ||
         entry.type === "label" ||
         entry.type === "session_info" ||
-        (entry.type === "message" && isTranscriptOnlyOpenClawAssistantMessage(entry.message)),
+        (entry.type === "message" && isTranscriptOnlyNodoAssistAssistantMessage(entry.message)),
     },
   );
   params.activeSession.agent.state.messages =
@@ -1161,7 +1161,7 @@ export async function runEmbeddedAttempt(
       assertContextEngineHostSupport({
         contextEngine: activeContextEngine,
         operation: "agent-run",
-        host: OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+        host: NODOASSIST_EMBEDDED_CONTEXT_ENGINE_HOST,
       });
     }
     const resolveActiveContextEnginePluginId = () =>
@@ -1333,7 +1333,7 @@ export async function runEmbeddedAttempt(
     const toolsRaw = !shouldConstructTools
       ? []
       : (() => {
-          const allTools = createOpenClawCodingTools({
+          const allTools = createNodoAssistCodingTools({
             agentId: sessionAgentId,
             ...(params.crestodianTool ? { crestodianTool: params.crestodianTool } : {}),
             ...buildEmbeddedAttemptToolRunContext({ ...params, trace: runTrace }),
@@ -1439,7 +1439,7 @@ export async function runEmbeddedAttempt(
               abortSessionForYield?.();
             },
           });
-          corePluginToolStages.mark("attempt:create-openclaw-coding-tools");
+          corePluginToolStages.mark("attempt:create-nodoassist-coding-tools");
           const filteredTools = applyEmbeddedAttemptToolsAllow(allTools, effectiveToolsAllow, {
             toolMeta: (tool) => getPluginToolMeta(tool),
           });
@@ -2013,7 +2013,7 @@ export async function runEmbeddedAttempt(
     // When toolsAllow is set, use minimal prompt and strip skills catalog
     const effectivePromptMode = params.toolsAllow?.length ? ("minimal" as const) : promptMode;
     const effectiveSkillsPrompt = params.toolsAllow?.length ? undefined : skillsPrompt;
-    const openClawReferences = await resolveOpenClawReferencePaths({
+    const nodoAssistReferences = await resolveNodoAssistReferencePaths({
       workspaceDir: effectiveWorkspace,
       argv1: process.argv[1],
       cwd: effectiveCwd,
@@ -2078,8 +2078,8 @@ export async function runEmbeddedAttempt(
         reasoningTagHint,
         heartbeatPrompt,
         skillsPrompt: effectiveSkillsPrompt,
-        docsPath: openClawReferences.docsPath ?? undefined,
-        sourcePath: openClawReferences.sourcePath ?? undefined,
+        docsPath: nodoAssistReferences.docsPath ?? undefined,
+        sourcePath: nodoAssistReferences.sourcePath ?? undefined,
         workspaceNotes: workspaceNotes?.length ? workspaceNotes : undefined,
         reactionGuidance,
         promptMode: effectivePromptMode,
@@ -2306,7 +2306,7 @@ export async function runEmbeddedAttempt(
             activeAgentId: sessionAgentId,
             contextEnginePluginId: resolveActiveContextEnginePluginId(),
           }),
-          contextEngineHostSupport: OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+          contextEngineHostSupport: NODOASSIST_EMBEDDED_CONTEXT_ENGINE_HOST,
           providerId: params.provider,
           requestedModelId: params.requestedModelId,
           modelId: params.modelId,
@@ -2373,9 +2373,9 @@ export async function runEmbeddedAttempt(
         extensionFactories,
       });
       await resourceLoader.reload();
-      // DefaultResourceLoader.reload() rehydrates settings from disk and can drop OpenClaw
+      // DefaultResourceLoader.reload() rehydrates settings from disk and can drop NodoAssist
       // compaction overrides applied in createPreparedEmbeddedAgentSettingsManager — same
-      // rehydration also restores OpenClaw runtime's auto-compaction (openclaw#75799), so re-apply
+      // rehydration also restores NodoAssist runtime's auto-compaction (nodoassist#75799), so re-apply
       // both guards.
       applyAgentCompactionSettingsFromConfig({
         settingsManager,
@@ -2538,7 +2538,7 @@ export async function runEmbeddedAttempt(
 
       const allCustomTools = [...customTools, ...clientToolDefs];
       // The session runtime treats `tools` as a name allowlist during session creation. Pass the
-      // exact OpenClaw-managed registrations so custom tools survive startup and
+      // exact NodoAssist-managed registrations so custom tools survive startup and
       // client-provided names do not broaden the prompt/runtime boundary.
       const sessionToolAllowlist = toSessionToolAllowlist(
         collectRegisteredToolNames(allCustomTools),
@@ -2615,7 +2615,7 @@ export async function runEmbeddedAttempt(
         // Raw model probes should measure exactly the requested prompt against
         // the selected provider/model. Reset clears restored transcript state
         // and queues; the empty system prompt prevents the runtime from rebuilding the
-        // normal OpenClaw agent/tool prompt when `session.prompt()` starts.
+        // normal NodoAssist agent/tool prompt when `session.prompt()` starts.
         activeSession.agent.reset();
         setActiveSessionSystemPrompt("");
       }
@@ -2736,7 +2736,7 @@ export async function runEmbeddedAttempt(
       if (activeContextEngine?.info.ownsCompaction === true) {
         const selectedContextEngineId = activeContextEngine.info.id;
         const contextEngineLoopRuntimeSettings = buildContextEngineRuntimeSettings({
-          contextEngineHost: OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+          contextEngineHost: NODOASSIST_EMBEDDED_CONTEXT_ENGINE_HOST,
           provider: params.provider,
           requestedModel: params.requestedModelId,
           resolvedModel: params.modelId,
@@ -3375,7 +3375,7 @@ export async function runEmbeddedAttempt(
           }
 
           if (params.sessionKey && params.config && !isRawModelRun) {
-            // Capability guidance must include deferred OpenClaw tools without
+            // Capability guidance must include deferred NodoAssist tools without
             // interpreting arbitrary client tool names as native capabilities.
             const activeSubagentPromptAddition = buildActiveSubagentSystemPromptAddition({
               cfg: params.config,
@@ -3460,7 +3460,7 @@ export async function runEmbeddedAttempt(
               citationsMode: params.config?.memory?.citations,
               modelId: params.modelId,
               maxOutputTokens: contextEngineAssembleReserveTokens,
-              contextEngineHostSupport: OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+              contextEngineHostSupport: NODOASSIST_EMBEDDED_CONTEXT_ENGINE_HOST,
               providerId: params.provider,
               requestedModelId: params.requestedModelId,
               fallbackReason: params.fallbackReason,
@@ -3807,7 +3807,7 @@ export async function runEmbeddedAttempt(
       isCompactionInFlightForExternalSignal = () => activeSession.isCompacting;
       toolSearchCatalogExecutor = async (toolParams) => {
         try {
-          if (toolParams.source === "openclaw" && toolParams.sourceName === "core") {
+          if (toolParams.source === "nodoassist" && toolParams.sourceName === "core") {
             recordStructuredReplayTrustForToolCall(
               toolParams.toolCallId,
               toolParams.tool as never,
@@ -4509,7 +4509,7 @@ export async function runEmbeddedAttempt(
               content: [{ type: "text" as const, text: block.message }],
               timestamp: nowMs,
               idempotencyKey,
-              __openclaw: {
+              __nodoassist: {
                 beforeAgentRunBlocked: {
                   blockedBy: block.pluginId,
                   blockedAt: nowMs,
@@ -5370,7 +5370,7 @@ export async function runEmbeddedAttempt(
 
           if (promptError && promptErrorSource === "prompt" && !compactionOccurredThisAttempt) {
             try {
-              activeSessionManager.appendCustomEntry("openclaw:prompt-error", {
+              activeSessionManager.appendCustomEntry("nodoassist:prompt-error", {
                 timestamp: Date.now(),
                 runId: params.runId,
                 sessionId: params.sessionId,
@@ -5417,7 +5417,7 @@ export async function runEmbeddedAttempt(
             prePromptMessageCount: contextEngineAfterTurnCheckpoint ?? prePromptMessageCount,
             tokenBudget: params.contextTokenBudget,
             runtimeContext: afterTurnRuntimeContext,
-            contextEngineHostSupport: OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+            contextEngineHostSupport: NODOASSIST_EMBEDDED_CONTEXT_ENGINE_HOST,
             providerId: params.provider,
             requestedModelId: params.requestedModelId,
             modelId: params.modelId,

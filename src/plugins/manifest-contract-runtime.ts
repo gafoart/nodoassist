@@ -1,6 +1,6 @@
 // Resolves manifest contracts into runtime-facing plugin capabilities.
-import { sortUniqueStrings } from "@openclaw/normalization-core/string-normalization";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { sortUniqueStrings } from "@nodoassist/normalization-core/string-normalization";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import {
   hasManifestContractValue,
   listAvailableManifestContractPlugins,
@@ -14,7 +14,7 @@ export type ManifestContractRuntimePluginResolution = {
 };
 
 export function resolveManifestContractRuntimePluginResolution(params: {
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   contract: PluginManifestContractListKey;
   value?: string;
 }): ManifestContractRuntimePluginResolution {

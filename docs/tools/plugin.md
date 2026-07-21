@@ -1,5 +1,5 @@
 ---
-summary: "Install, configure, and manage OpenClaw plugins"
+summary: "Install, configure, and manage NodoAssist plugins"
 read_when:
   - Installing or configuring plugins
   - Understanding plugin discovery and load rules
@@ -9,7 +9,7 @@ sidebarTitle: "Getting Started"
 doc-schema-version: 1
 ---
 
-Plugins extend OpenClaw with channels, model providers, agent harnesses, tools,
+Plugins extend NodoAssist with channels, model providers, agent harnesses, tools,
 skills, speech, realtime transcription, voice, media understanding, generation,
 web fetch, web search, and other runtime capabilities.
 
@@ -21,7 +21,7 @@ bundled, official external, and source-only plugins, see
 
 ## Requirements
 
-- an OpenClaw checkout or installation with the `openclaw` CLI available
+- an NodoAssist checkout or installation with the `nodoassist` CLI available
 - network access to the selected source (ClawHub, npm, or a git host)
 - any plugin-specific credentials, config keys, or OS tools named by that
   plugin's setup docs
@@ -34,12 +34,12 @@ bundled, official external, and source-only plugins, see
     Search [ClawHub](/clawhub) for public plugin packages:
 
     ```bash
-    openclaw plugins search "calendar"
+    nodoassist plugins search "calendar"
     ```
 
     ClawHub is the primary discovery surface for community plugins. During the
     launch cutover, ordinary bare package specs still install from npm unless
-    they match an official plugin id. Raw `@openclaw/*` specs that match a
+    they match an official plugin id. Raw `@nodoassist/*` specs that match a
     bundled plugin resolve to that bundled copy. Use an explicit source prefix
     when you need one source specifically.
 
@@ -48,17 +48,17 @@ bundled, official external, and source-only plugins, see
   <Step title="Install the plugin">
     ```bash
     # From ClawHub.
-    openclaw plugins install clawhub:<package>
+    nodoassist plugins install clawhub:<package>
 
     # From npm.
-    openclaw plugins install npm:<package>
+    nodoassist plugins install npm:<package>
 
     # From git.
-    openclaw plugins install git:github.com/<owner>/<repo>@<ref>
+    nodoassist plugins install git:github.com/<owner>/<repo>@<ref>
 
     # From a local development checkout.
-    openclaw plugins install ./my-plugin
-    openclaw plugins install --link ./my-plugin
+    nodoassist plugins install ./my-plugin
+    nodoassist plugins install --link ./my-plugin
     ```
 
     Treat plugin installs like running code. Prefer pinned versions for
@@ -71,11 +71,11 @@ bundled, official external, and source-only plugins, see
     Enable the plugin if it is not already enabled:
 
     ```bash
-    openclaw plugins enable <plugin-id>
+    nodoassist plugins enable <plugin-id>
     ```
 
     If `plugins.allow` is set, the installed plugin id must be in that list
-    before the plugin can load. `openclaw plugins install` adds the installed
+    before the plugin can load. `nodoassist plugins install` adds the installed
     id to an existing `plugins.allow` list and removes the same id from
     `plugins.deny` so the explicit install can load after restart.
 
@@ -88,7 +88,7 @@ bundled, official external, and source-only plugins, see
     yourself:
 
     ```bash
-    openclaw gateway restart
+    nodoassist gateway restart
     ```
 
     Enable/disable update config and the cold registry. A runtime inspect is
@@ -98,7 +98,7 @@ bundled, official external, and source-only plugins, see
 
   <Step title="Verify runtime registration">
     ```bash
-    openclaw plugins inspect <plugin-id> --runtime --json
+    nodoassist plugins inspect <plugin-id> --runtime --json
     ```
 
     Use `--runtime` to prove registered tools, hooks, services, Gateway
@@ -112,28 +112,28 @@ bundled, official external, and source-only plugins, see
 
 ### Choose an install source
 
-| Source      | Use when                                                                       | Example                                                        |
-| ----------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| ClawHub     | You want OpenClaw-native discovery, scans, version metadata, and install hints | `openclaw plugins install clawhub:<package>`                   |
-| npm         | You need direct npm registry or dist-tag workflows                             | `openclaw plugins install npm:<package>`                       |
-| git         | You need a branch, tag, or commit from a repository                            | `openclaw plugins install git:github.com/<owner>/<repo>@<ref>` |
-| local path  | You are developing or testing a plugin on the same machine                     | `openclaw plugins install --link ./my-plugin`                  |
-| marketplace | You are installing a Claude-compatible marketplace plugin                      | `openclaw plugins install <plugin> --marketplace <source>`     |
+| Source      | Use when                                                                         | Example                                                          |
+| ----------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| ClawHub     | You want NodoAssist-native discovery, scans, version metadata, and install hints | `nodoassist plugins install clawhub:<package>`                   |
+| npm         | You need direct npm registry or dist-tag workflows                               | `nodoassist plugins install npm:<package>`                       |
+| git         | You need a branch, tag, or commit from a repository                              | `nodoassist plugins install git:github.com/<owner>/<repo>@<ref>` |
+| local path  | You are developing or testing a plugin on the same machine                       | `nodoassist plugins install --link ./my-plugin`                  |
+| marketplace | You are installing a Claude-compatible marketplace plugin                        | `nodoassist plugins install <plugin> --marketplace <source>`     |
 
 Bare package specs have special compatibility behavior: a bare name that
 matches a bundled plugin id uses that bundled source; a bare name that matches
 an official external plugin id uses the official package catalog; any other
-bare spec installs through npm during the launch cutover. Raw `@openclaw/*`
+bare spec installs through npm during the launch cutover. Raw `@nodoassist/*`
 specs that match bundled plugins also resolve to the bundled copy before npm
-fallback. Use `npm:@openclaw/<plugin>@<version>` to deliberately install the
+fallback. Use `npm:@nodoassist/<plugin>@<version>` to deliberately install the
 external npm package instead of the bundled copy. Use `clawhub:`, `npm:`,
 `git:`, or `npm-pack:` for deterministic source selection. See
-[`openclaw plugins`](/cli/plugins#install) for the full command contract.
+[`nodoassist plugins`](/cli/plugins#install) for the full command contract.
 
 For npm installs, unpinned specs and `@latest` choose the newest stable
-package that advertises compatibility with this OpenClaw build. If npm's
-current latest release declares a newer `openclaw.compat.pluginApi` or
-`openclaw.install.minHostVersion` than this build supports, OpenClaw scans
+package that advertises compatibility with this NodoAssist build. If npm's
+current latest release declares a newer `nodoassist.compat.pluginApi` or
+`nodoassist.install.minHostVersion` than this build supports, NodoAssist scans
 older stable versions and installs the newest one that fits. Exact versions
 and explicit channel tags such as `@beta` stay pinned to the selected package
 and fail when incompatible.
@@ -144,10 +144,10 @@ Configure `security.installPolicy` to run a trusted local policy command
 before a plugin install or update proceeds. The policy receives metadata plus
 the staged source path and can allow or block the install. It covers both CLI
 and Gateway-backed install/update paths. Plugin `before_install` hooks run
-later, and only in OpenClaw processes where plugin hooks are loaded, so use
+later, and only in NodoAssist processes where plugin hooks are loaded, so use
 `security.installPolicy` for operator-owned install decisions instead. The
 deprecated `--dangerously-force-unsafe-install` flag is accepted for
-compatibility but is a no-op: it does not bypass install policy or OpenClaw's
+compatibility but is a no-op: it does not bypass install policy or NodoAssist's
 built-in plugin dependency denylist.
 
 See [Skills config](/tools/skills-config#operator-install-policy-securityinstallpolicy)
@@ -208,29 +208,29 @@ When `plugins.allow` is unset and non-bundled plugins are auto-discovered from
 the workspace or global plugin roots, startup logs
 `plugins.allow is empty; discovered non-bundled plugins may auto-load: ...`
 with the discovered plugin ids and, for short lists, a minimal `plugins.allow`
-snippet. Run [`openclaw plugins list --enabled --verbose`](/cli/plugins#list)
-or [`openclaw plugins inspect <id>`](/cli/plugins#inspect) on the listed
-plugin id before copying trusted plugins into `openclaw.json`. The same
+snippet. Run [`nodoassist plugins list --enabled --verbose`](/cli/plugins#list)
+or [`nodoassist plugins inspect <id>`](/cli/plugins#inspect) on the listed
+plugin id before copying trusted plugins into `nodoassist.json`. The same
 trust-pinning applies when diagnostics say a plugin loaded
 `without install/load-path provenance`: inspect that plugin id, then pin it in
-`plugins.allow` or reinstall from a trusted source so OpenClaw records install
+`plugins.allow` or reinstall from a trusted source so NodoAssist records install
 provenance.
 
-Run `openclaw doctor` or `openclaw doctor --fix` when config validation
+Run `nodoassist doctor` or `nodoassist doctor --fix` when config validation
 reports stale plugin ids, allowlist/tool mismatches, or legacy bundled plugin
 paths.
 
 ## Understand plugin formats
 
-OpenClaw recognizes two plugin formats:
+NodoAssist recognizes two plugin formats:
 
-| Format                 | How it loads                                                                 | Use when                                                               |
-| ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Native OpenClaw plugin | `openclaw.plugin.json` plus a runtime module loaded in process               | You are installing or building OpenClaw-specific runtime capabilities  |
-| Compatible bundle      | Codex, Claude, or Cursor plugin layout mapped into OpenClaw plugin inventory | You are reusing compatible skills, commands, hooks, or bundle metadata |
+| Format                   | How it loads                                                                   | Use when                                                                |
+| ------------------------ | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| Native NodoAssist plugin | `nodoassist.plugin.json` plus a runtime module loaded in process               | You are installing or building NodoAssist-specific runtime capabilities |
+| Compatible bundle        | Codex, Claude, or Cursor plugin layout mapped into NodoAssist plugin inventory | You are reusing compatible skills, commands, hooks, or bundle metadata  |
 
-Both formats appear in `openclaw plugins list`, `openclaw plugins inspect`,
-`openclaw plugins enable`, and `openclaw plugins disable`. See
+Both formats appear in `nodoassist plugins list`, `nodoassist plugins inspect`,
+`nodoassist plugins enable`, and `nodoassist plugins disable`. See
 [Plugin bundles](/plugins/bundles) for the bundle compatibility boundary and
 [Building plugins](/plugins/building-plugins) for native plugin authoring.
 
@@ -250,85 +250,85 @@ block/cancel behavior, use typed hooks. If it just reacts to `command:new`,
 `command:reset`, `message:sent`, or similar coarse events, `api.registerHook`
 is fine.
 
-Plugin-managed internal hooks show up in `openclaw hooks list` with
-`plugin:<id>`. You cannot enable or disable them through `openclaw hooks`;
+Plugin-managed internal hooks show up in `nodoassist hooks list` with
+`plugin:<id>`. You cannot enable or disable them through `nodoassist hooks`;
 enable or disable the plugin instead.
 
 ## Verify the active Gateway
 
-`openclaw plugins list` and plain `openclaw plugins inspect` read cold config,
+`nodoassist plugins list` and plain `nodoassist plugins inspect` read cold config,
 manifest, and registry state. They do not prove that an already-running
 Gateway has imported the same plugin code.
 
 When a plugin appears installed but live chat traffic does not use it:
 
 ```bash
-openclaw gateway status --deep --require-rpc
-openclaw plugins inspect <plugin-id> --runtime --json
-openclaw gateway restart
+nodoassist gateway status --deep --require-rpc
+nodoassist plugins inspect <plugin-id> --runtime --json
+nodoassist gateway restart
 ```
 
 Managed Gateways restart automatically after plugin install, update, and
 uninstall changes that alter plugin source. On VPS or container installs, make
-sure any manual restart targets the actual `openclaw gateway run` child that
+sure any manual restart targets the actual `nodoassist gateway run` child that
 serves your channels, not only a wrapper or supervisor.
 
 ## Troubleshooting
 
-| Symptom                                                        | Check                                                                                                                                      | Fix                                                                                                     |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Plugin appears in `plugins list` but runtime hooks do not run  | Use `openclaw plugins inspect <id> --runtime --json` and confirm the active Gateway with `gateway status --deep --require-rpc`             | Restart the live Gateway after install, update, config, or source changes                               |
-| Duplicate channel or tool ownership diagnostics appear         | Run `openclaw plugins list --enabled --verbose`, inspect each suspected plugin with `--runtime --json`, and compare channel/tool ownership | Disable one owner, remove stale installs, or use manifest `preferOver` for intentional replacement      |
-| Config says a plugin is missing                                | Check [Plugin inventory](/plugins/plugin-inventory) for whether it is bundled, official external, or source-only                           | Install the external package, enable the bundled plugin, or remove stale config                         |
-| Config is invalid during install                               | Read the validation message and run `openclaw doctor --fix` if it points to stale plugin state                                             | Doctor can quarantine invalid plugin config by disabling the entry and removing the invalid payload     |
-| Plugin path is blocked for suspicious ownership or permissions | Inspect the diagnostic before the config error                                                                                             | Fix filesystem ownership/permissions, then run `openclaw plugins registry --refresh`                    |
-| `OPENCLAW_NIX_MODE=1` blocks lifecycle commands                | Confirm the install is managed by Nix                                                                                                      | Change plugin selection in the Nix source instead of using plugin mutator commands                      |
-| Dependency import fails at runtime                             | Check whether the plugin was installed through npm/git/ClawHub or loaded from a local path                                                 | Run `openclaw plugins update <id>`, reinstall the source, or install local plugin dependencies yourself |
+| Symptom                                                        | Check                                                                                                                                        | Fix                                                                                                       |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Plugin appears in `plugins list` but runtime hooks do not run  | Use `nodoassist plugins inspect <id> --runtime --json` and confirm the active Gateway with `gateway status --deep --require-rpc`             | Restart the live Gateway after install, update, config, or source changes                                 |
+| Duplicate channel or tool ownership diagnostics appear         | Run `nodoassist plugins list --enabled --verbose`, inspect each suspected plugin with `--runtime --json`, and compare channel/tool ownership | Disable one owner, remove stale installs, or use manifest `preferOver` for intentional replacement        |
+| Config says a plugin is missing                                | Check [Plugin inventory](/plugins/plugin-inventory) for whether it is bundled, official external, or source-only                             | Install the external package, enable the bundled plugin, or remove stale config                           |
+| Config is invalid during install                               | Read the validation message and run `nodoassist doctor --fix` if it points to stale plugin state                                             | Doctor can quarantine invalid plugin config by disabling the entry and removing the invalid payload       |
+| Plugin path is blocked for suspicious ownership or permissions | Inspect the diagnostic before the config error                                                                                               | Fix filesystem ownership/permissions, then run `nodoassist plugins registry --refresh`                    |
+| `NODOASSIST_NIX_MODE=1` blocks lifecycle commands              | Confirm the install is managed by Nix                                                                                                        | Change plugin selection in the Nix source instead of using plugin mutator commands                        |
+| Dependency import fails at runtime                             | Check whether the plugin was installed through npm/git/ClawHub or loaded from a local path                                                   | Run `nodoassist plugins update <id>`, reinstall the source, or install local plugin dependencies yourself |
 
 When stale plugin config still names a no-longer-discoverable channel plugin,
 config validation downgrades that channel key to a warning instead of a hard
 failure, so Gateway startup can still serve every other channel. Run
-`openclaw doctor --fix` to remove stale plugin and channel entries. Unknown
+`nodoassist doctor --fix` to remove stale plugin and channel entries. Unknown
 channel keys without stale-plugin evidence still fail validation so typos
 stay visible.
 
 For intentional channel replacement, the preferred plugin should declare
 `channelConfigs.<channel-id>.preferOver` with the legacy or lower-priority
-plugin id. If both plugins are explicitly enabled, OpenClaw keeps that request
+plugin id. If both plugins are explicitly enabled, NodoAssist keeps that request
 and reports duplicate channel/tool diagnostics instead of silently choosing
 one owner.
 
 If an installed package reports that it `requires compiled runtime output for
 TypeScript entry ...`, the package was published without the JavaScript files
-OpenClaw needs at runtime. Update or reinstall after the publisher ships
+NodoAssist needs at runtime. Update or reinstall after the publisher ships
 compiled JavaScript, or disable/uninstall the plugin until then.
 
 ### Blocked plugin path ownership
 
 If diagnostics say
 `blocked plugin candidate: suspicious ownership (... uid=1000, expected uid=0 or root)`
-and validation follows with `plugin present but blocked`, OpenClaw found
+and validation follows with `plugin present but blocked`, NodoAssist found
 plugin files owned by a different Unix user than the process loading them.
-Keep the plugin config in place; fix the filesystem ownership or run OpenClaw
+Keep the plugin config in place; fix the filesystem ownership or run NodoAssist
 as the same user that owns the state directory.
 
 For Docker installs, the official image runs as `node` (uid `1000`), so the
-host bind-mounted OpenClaw config and workspace directories should normally be
+host bind-mounted NodoAssist config and workspace directories should normally be
 owned by uid `1000`:
 
 ```bash
-sudo chown -R 1000:1000 /path/to/openclaw-config /path/to/openclaw-workspace
+sudo chown -R 1000:1000 /path/to/nodoassist-config /path/to/nodoassist-workspace
 ```
 
-If you intentionally run OpenClaw as root, repair the managed plugin root to
+If you intentionally run NodoAssist as root, repair the managed plugin root to
 root ownership instead:
 
 ```bash
-sudo chown -R root:root /path/to/openclaw-config/npm
+sudo chown -R root:root /path/to/nodoassist-config/npm
 ```
 
-After fixing ownership, rerun `openclaw doctor --fix` or
-`openclaw plugins registry --refresh` so the persisted plugin registry
+After fixing ownership, rerun `nodoassist doctor --fix` or
+`nodoassist plugins registry --refresh` so the persisted plugin registry
 matches the repaired files.
 
 ### Slow plugin tool setup
@@ -337,8 +337,8 @@ If agent turns appear to stall while preparing tools, enable trace logging
 and check for plugin tool factory timing lines:
 
 ```bash
-openclaw config set logging.level trace
-openclaw logs --follow
+nodoassist config set logging.level trace
+nodoassist logs --follow
 ```
 
 Look for:
@@ -352,7 +352,7 @@ including plugin id, declared tool names, result shape, and whether the tool
 is optional. Slow lines are promoted to warnings when a single factory takes
 at least 1s or total plugin tool factory prep takes at least 5s.
 
-OpenClaw caches successful plugin tool factory results for repeated
+NodoAssist caches successful plugin tool factory results for repeated
 resolutions with the same effective request context. The cache key includes
 the effective runtime config, workspace and agent id, sandbox policy, browser
 settings, delivery context, requester identity, and ownership state, so
@@ -363,7 +363,7 @@ returning its tool definitions.
 If one plugin dominates the timing, inspect its runtime registrations:
 
 ```bash
-openclaw plugins inspect <plugin-id> --runtime --json
+nodoassist plugins inspect <plugin-id> --runtime --json
 ```
 
 Then update, reinstall, or disable that plugin. Plugin authors should move
@@ -377,7 +377,7 @@ reload behavior, and legacy cleanup, see
 ## Related
 
 - [Manage plugins](/plugins/manage-plugins) - command examples for list, install, update, uninstall, and publish
-- [`openclaw plugins`](/cli/plugins) - full CLI reference
+- [`nodoassist plugins`](/cli/plugins) - full CLI reference
 - [Plugin inventory](/plugins/plugin-inventory) - generated bundled and external plugin list
 - [Plugin reference](/plugins/reference) - generated per-plugin reference pages
 - [Community plugins](/plugins/community) - ClawHub discovery and docs PR policy

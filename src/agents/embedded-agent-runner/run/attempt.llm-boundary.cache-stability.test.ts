@@ -1,4 +1,4 @@
-import { streamOpenAICompletions, streamOpenAIResponses } from "@openclaw/ai/internal/openai";
+import { streamOpenAICompletions, streamOpenAIResponses } from "@nodoassist/ai/internal/openai";
 /**
  * Cache-stability gate for the prompt-cache bust fix (issue #3658).
  *
@@ -23,7 +23,7 @@ import { stripInboundMetadata } from "../../../auto-reply/reply/strip-inbound-me
 import { buildTimestampPrefix } from "../../../gateway/server-methods/agent-timestamp.js";
 import type { Context, Model } from "../../../llm/types.js";
 import {
-  OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE,
+  NODOASSIST_RUNTIME_CONTEXT_CUSTOM_TYPE,
   relocateCurrentRuntimeContextCarrierToTail,
 } from "../../internal-runtime-context.js";
 import { normalizeMessagesForLlmBoundary } from "./attempt.llm-boundary.js";
@@ -361,10 +361,10 @@ describe("prompt-cache byte-identity (issue #3658)", () => {
 function runtimeCarrier(content: string, timestamp: number): AgentMsg {
   return {
     role: "custom",
-    customType: OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE,
+    customType: NODOASSIST_RUNTIME_CONTEXT_CUSTOM_TYPE,
     content,
     display: false,
-    details: { source: "openclaw-runtime-context", runtimeContextCarrier: true },
+    details: { source: "nodoassist-runtime-context", runtimeContextCarrier: true },
     timestamp,
   } as unknown as AgentMsg;
 }
@@ -373,7 +373,7 @@ function isCarrier(message: unknown): boolean {
   return Boolean(
     message &&
     typeof message === "object" &&
-    (message as { customType?: unknown }).customType === OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE,
+    (message as { customType?: unknown }).customType === NODOASSIST_RUNTIME_CONTEXT_CUSTOM_TYPE,
   );
 }
 
@@ -467,7 +467,7 @@ describe("prompt-cache tail carrier for current-turn metadata (issue #100271)", 
     // (Conversation info / Reply target / …), which room events never carry. So
     // the inline form is byte-identical active vs historical.
     const roomText = [
-      "[OpenClaw room event]",
+      "[NodoAssist room event]",
       "inbound_event_kind: room_event",
       "Room context:\n#1 Alice: hi",
     ].join("\n\n");

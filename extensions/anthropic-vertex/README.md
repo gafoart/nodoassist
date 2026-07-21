@@ -1,11 +1,11 @@
-# OpenClaw Anthropic Vertex Provider
+# NodoAssist Anthropic Vertex Provider
 
-Official OpenClaw provider plugin for Claude models hosted through Google Vertex AI.
+Official NodoAssist provider plugin for Claude models hosted through Google Vertex AI.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugin add @openclaw/anthropic-vertex-provider
+nodoassist plugin add @nodoassist/anthropic-vertex-provider
 ```
 
-Configure Google Cloud credentials and the target Vertex project/region in OpenClaw, then select Claude models with the Anthropic Vertex provider.
+Configure Google Cloud credentials and the target Vertex project/region in NodoAssist, then select Claude models with the Anthropic Vertex provider.

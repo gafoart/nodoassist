@@ -1,5 +1,5 @@
 // Defines plugin auto-enable decision and candidate types.
-import type { OpenClawConfig } from "./types.openclaw.js";
+import type { NodoAssistConfig } from "./types.nodoassist.js";
 
 /** Reasons a configured surface can cause a plugin to be auto-enabled. */
 export type PluginAutoEnableCandidate =
@@ -61,7 +61,7 @@ export type PluginAutoEnableCandidate =
     };
 
 export type PluginAutoEnableResult = {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   changes: string[];
   autoEnabledReasons: Record<string, string[]>;
 };

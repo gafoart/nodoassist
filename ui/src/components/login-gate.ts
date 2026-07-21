@@ -306,8 +306,8 @@ function renderLoginGate(props: LoginGateProps) {
     <div class="login-gate">
       <div class="login-gate__card">
         <div class="login-gate__header">
-          <img class="login-gate__logo" src=${faviconSrc} alt="OpenClaw" />
-          <div class="login-gate__title">OpenClaw</div>
+          <img class="login-gate__logo" src=${faviconSrc} alt="NodoAssist" />
+          <div class="login-gate__title">NodoAssist</div>
           <div class="login-gate__sub">${t("login.subtitle")}</div>
         </div>
         <div class="login-gate__form">
@@ -344,14 +344,14 @@ function renderLoginGate(props: LoginGateProps) {
                 @input=${(e: Event) => {
                   props.onTokenChange((e.target as HTMLInputElement).value);
                 }}
-                placeholder="OPENCLAW_GATEWAY_TOKEN (${t("login.passwordPlaceholder")})"
+                placeholder="NODOASSIST_GATEWAY_TOKEN (${t("login.passwordPlaceholder")})"
                 @keydown=${(e: KeyboardEvent) => {
                   if (e.key === "Enter") {
                     props.onConnect();
                   }
                 }}
               />
-              <openclaw-tooltip
+              <nodoassist-tooltip
                 .content=${props.showGatewayToken ? t("login.hideToken") : t("login.showToken")}
               >
                 <button
@@ -363,7 +363,7 @@ function renderLoginGate(props: LoginGateProps) {
                 >
                   ${props.showGatewayToken ? icons.eye : icons.eyeOff}
                 </button>
-              </openclaw-tooltip>
+              </nodoassist-tooltip>
             </div>
           </label>
           <label class="field">
@@ -385,7 +385,7 @@ function renderLoginGate(props: LoginGateProps) {
                   }
                 }}
               />
-              <openclaw-tooltip
+              <nodoassist-tooltip
                 .content=${props.showGatewayPassword
                   ? t("login.hidePassword")
                   : t("login.showPassword")}
@@ -399,7 +399,7 @@ function renderLoginGate(props: LoginGateProps) {
                 >
                   ${props.showGatewayPassword ? icons.eye : icons.eyeOff}
                 </button>
-              </openclaw-tooltip>
+              </nodoassist-tooltip>
             </div>
           </label>
           <button class="btn primary login-gate__connect" @click=${props.onConnect}>
@@ -411,9 +411,11 @@ function renderLoginGate(props: LoginGateProps) {
           <summary class="login-gate__help-title">${t("overview.connection.title")}</summary>
           <ol class="login-gate__steps">
             <li>
-              ${t("overview.connection.step1")}${renderConnectCommand("openclaw gateway run")}
+              ${t("overview.connection.step1")}${renderConnectCommand("nodoassist gateway run")}
             </li>
-            <li>${t("overview.connection.step2")} ${renderConnectCommand("openclaw dashboard")}</li>
+            <li>
+              ${t("overview.connection.step2")} ${renderConnectCommand("nodoassist dashboard")}
+            </li>
             <li>${t("overview.connection.step3")}</li>
           </ol>
           <div class="login-gate__docs">
@@ -448,6 +450,6 @@ class LoginGate extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-login-gate")) {
-  customElements.define("openclaw-login-gate", LoginGate);
+if (!customElements.get("nodoassist-login-gate")) {
+  customElements.define("nodoassist-login-gate", LoginGate);
 }

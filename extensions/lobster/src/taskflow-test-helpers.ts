@@ -1,9 +1,9 @@
 // Lobster helper module supports taskflow test helpers behavior.
 import { vi } from "vitest";
-import type { OpenClawPluginApi } from "../runtime-api.js";
+import type { NodoAssistPluginApi } from "../runtime-api.js";
 
 type BoundTaskFlow = ReturnType<
-  NonNullable<OpenClawPluginApi["runtime"]>["tasks"]["managedFlows"]["bindSession"]
+  NonNullable<NodoAssistPluginApi["runtime"]>["tasks"]["managedFlows"]["bindSession"]
 >;
 
 export function createFakeTaskFlow(overrides?: Partial<BoundTaskFlow>): BoundTaskFlow {

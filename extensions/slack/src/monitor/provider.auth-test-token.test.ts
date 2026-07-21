@@ -38,7 +38,7 @@ describe("auth.test boot call", () => {
       user_id: "UUSER",
       user: "human-installer",
       team_id: "T1",
-      team: "OpenClaw",
+      team: "NodoAssist",
     });
 
     const monitor = startSlackMonitor(monitorSlackProvider, {
@@ -76,7 +76,7 @@ describe("auth.test boot call", () => {
       user_id: "UUSER",
       user: "human-installer",
       team_id: "T1",
-      team: "OpenClaw",
+      team: "NodoAssist",
     });
     client.conversations.info.mockResolvedValueOnce({
       channel: { name: "general", is_channel: true },

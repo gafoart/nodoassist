@@ -1,7 +1,7 @@
 // Doctor workspace status tests cover workspace inspection and status output.
 import { describe, expect, it, vi } from "vitest";
 import * as noteModule from "../../packages/terminal-core/src/note.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type { PluginVersionDriftReport } from "../plugins/plugin-version-drift.js";
 import {
   createPluginLoadResult,
@@ -51,13 +51,13 @@ async function runNoteWorkspaceStatusForTest(
   loadResult: ReturnType<typeof createPluginLoadResult>,
   compatibilityWarnings: string[] = [],
   opts?: {
-    cfg?: OpenClawConfig;
+    cfg?: NodoAssistConfig;
     pluginVersionDrift?: PluginVersionDriftReport;
     flows?: unknown[];
     tasksByFlowId?: (flowId: string) => unknown[];
   },
 ) {
-  const cfg: OpenClawConfig = opts?.cfg ?? {};
+  const cfg: NodoAssistConfig = opts?.cfg ?? {};
   mocks.resolveDefaultAgentId.mockReturnValue("default");
   mocks.resolveAgentWorkspaceDir.mockReturnValue("/workspace");
   mocks.buildWorkspaceSkillStatus.mockReturnValue({
@@ -198,7 +198,7 @@ describe("noteWorkspaceStatus", () => {
         target: "codex",
         requirement: "plugin-version-drift",
         message: expect.stringContaining("2026.5.30-beta.1"),
-        fixHint: expect.stringContaining("openclaw plugins update codex"),
+        fixHint: expect.stringContaining("nodoassist plugins update codex"),
       }),
     ]);
   });
@@ -260,7 +260,7 @@ describe("noteWorkspaceStatus", () => {
         target: "flow-123",
         requirement: "taskflow-recovery",
         message: expect.stringContaining("task-missing"),
-        fixHint: expect.stringContaining("openclaw tasks flow show flow-123"),
+        fixHint: expect.stringContaining("nodoassist tasks flow show flow-123"),
       }),
     ]);
   });
@@ -303,10 +303,10 @@ describe("noteWorkspaceStatus", () => {
       const driftCalls = noteSpy.mock.calls.filter(([, title]) => title === "Plugin version drift");
       expect(driftCalls).toHaveLength(1);
       const [[body]] = driftCalls;
-      expect(body).toContain("1 active official plugin not on OpenClaw 2026.6.1");
+      expect(body).toContain("1 active official plugin not on NodoAssist 2026.6.1");
       expect(body).toContain("codex: 2026.5.30-beta.1 (npm) -> expected 2026.6.1");
-      expect(body).toContain("openclaw plugins update codex");
-      expect(body).toContain("openclaw gateway restart");
+      expect(body).toContain("nodoassist plugins update codex");
+      expect(body).toContain("nodoassist gateway restart");
     } finally {
       noteSpy.mockRestore();
     }
@@ -341,8 +341,8 @@ describe("noteWorkspaceStatus", () => {
               installedVersion: "2026.6.9",
               gatewayVersion: "2026.6.10-beta.1",
               source: "npm",
-              packageName: "@openclaw/brave-plugin",
-              spec: "@openclaw/brave-plugin@2026.6.9",
+              packageName: "@nodoassist/brave-plugin",
+              spec: "@nodoassist/brave-plugin@2026.6.9",
             },
           ],
         },
@@ -352,9 +352,9 @@ describe("noteWorkspaceStatus", () => {
       const driftCalls = noteSpy.mock.calls.filter(([, title]) => title === "Plugin version drift");
       expect(driftCalls).toHaveLength(1);
       const [[body]] = driftCalls;
-      expect(body).toContain("openclaw plugins update @openclaw/brave-plugin@2026.6.10-beta.1");
-      expect(body).not.toContain("openclaw plugins update brave");
-      expect(body).toContain("openclaw gateway restart");
+      expect(body).toContain("nodoassist plugins update @nodoassist/brave-plugin@2026.6.10-beta.1");
+      expect(body).not.toContain("nodoassist plugins update brave");
+      expect(body).toContain("nodoassist gateway restart");
     } finally {
       noteSpy.mockRestore();
     }
@@ -473,7 +473,7 @@ describe("noteWorkspaceStatus", () => {
       expect(recoveryCalls).toHaveLength(1);
       const [[body]] = recoveryCalls;
       expect(body).toContain("flow-123");
-      expect(body).toContain("openclaw tasks flow show <flow-id>");
+      expect(body).toContain("nodoassist tasks flow show <flow-id>");
     } finally {
       noteSpy.mockRestore();
     }

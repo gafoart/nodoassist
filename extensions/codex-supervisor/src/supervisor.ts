@@ -2,7 +2,7 @@
  * Codex app-server supervisor that lists sessions, reads transcripts, and
  * starts/steers/interrupts turns across configured endpoints.
  */
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { isRecord } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { connectCodexAppServerEndpoint } from "./json-rpc-client.js";
 import type {
   CodexJsonRpcConnection,
@@ -110,7 +110,7 @@ function isLoadedThreadReadMiss(error: unknown): boolean {
   return message.includes("thread not found") || message.includes("thread not loaded");
 }
 
-/** High-level supervisor facade used by OpenClaw tools and MCP tools. */
+/** High-level supervisor facade used by NodoAssist tools and MCP tools. */
 export class CodexSupervisor {
   private readonly connections = new Map<string, Promise<CodexJsonRpcConnection>>();
 

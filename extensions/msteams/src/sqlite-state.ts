@@ -1,6 +1,6 @@
 // Msteams plugin module implements sqlite state behavior.
 import path from "node:path";
-import { KeyedAsyncQueue } from "openclaw/plugin-sdk/keyed-async-queue";
+import { KeyedAsyncQueue } from "nodoassist/plugin-sdk/keyed-async-queue";
 import { getMSTeamsRuntime } from "./runtime.js";
 import { withFileLock } from "./store-fs.js";
 
@@ -26,7 +26,7 @@ function resolveStateDirOverride(
   if (options.homedir) {
     return getMSTeamsRuntime().state.resolveStateDir(options.env ?? process.env, options.homedir);
   }
-  return options.env?.OPENCLAW_STATE_DIR?.trim() || undefined;
+  return options.env?.NODOASSIST_STATE_DIR?.trim() || undefined;
 }
 
 export function resolveMSTeamsSqliteStateEnv(
@@ -38,7 +38,7 @@ export function resolveMSTeamsSqliteStateEnv(
   }
   return {
     ...(options?.env ?? process.env),
-    OPENCLAW_STATE_DIR: stateDir,
+    NODOASSIST_STATE_DIR: stateDir,
   };
 }
 

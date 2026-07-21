@@ -7,10 +7,10 @@ import type { ExecApprovalRequest } from "../../infra/exec-approvals.js";
 import type { ReplyPayload } from "../types.js";
 import { parseExportCommandOutputPath } from "./commands-export-common.js";
 import {
-  buildCurrentOpenClawCliArgv,
-  buildCurrentOpenClawCliCommand,
-  buildCurrentOpenClawCliExecEnv,
-} from "./commands-openclaw-cli.js";
+  buildCurrentNodoAssistCliArgv,
+  buildCurrentNodoAssistCliCommand,
+  buildCurrentNodoAssistCliExecEnv,
+} from "./commands-nodoassist-cli.js";
 import {
   deliverPrivateCommandReply,
   readCommandDeliveryTarget,
@@ -199,7 +199,7 @@ async function requestTrajectoryExportApproval(
     });
     const result = await execTool.execute("chat-export-trajectory", {
       command: request.command,
-      env: buildCurrentOpenClawCliExecEnv(),
+      env: buildCurrentNodoAssistCliExecEnv(),
       security: "allowlist",
       ask: "always",
       background: true,
@@ -294,9 +294,9 @@ function buildTrajectoryExportExecRequest(
   }
   const args = ["sessions", "export-trajectory", "--request-json-base64", encodedRequest, "--json"];
   return {
-    argv: buildCurrentOpenClawCliArgv(args),
-    command: buildCurrentOpenClawCliCommand(args),
-    displayCommand: ["openclaw", ...args].join(" "),
+    argv: buildCurrentNodoAssistCliArgv(args),
+    command: buildCurrentNodoAssistCliCommand(args),
+    displayCommand: ["nodoassist", ...args].join(" "),
     encodedRequest,
     request,
   };

@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/document-extract-plugin",
+  "name": "@nodoassist/document-extract-plugin",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw local document extraction plugin",
+  "description": "NodoAssist local document extraction plugin",
   "type": "module",
   "dependencies": {
     "clawpdf": "0.3.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

@@ -1,8 +1,8 @@
-// Fast `openclaw status --json` scan policy.
+// Fast `nodoassist status --json` scan policy.
 // Skips channel tables and most network/update work unless `--all` asks for fuller evidence.
 
 import { GENERATED_BUNDLED_CHANNEL_CONFIG_METADATA } from "../config/bundled-channel-config-metadata.generated.js";
-import type { OpenClawConfig } from "../config/types.js";
+import type { NodoAssistConfig } from "../config/types.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { isRecord } from "../utils.js";
 import { executeStatusScanFromOverview } from "./status.scan-execute.ts";
@@ -30,10 +30,10 @@ type StatusJsonScanPolicy = {
   fetchGitUpdate?: boolean;
   includeRegistryUpdate?: boolean;
   includeLocalStatusRpcFallback?: boolean;
-  gatewayProbeTimeoutMs?: number | ((cfg: OpenClawConfig) => number | undefined);
+  gatewayProbeTimeoutMs?: number | ((cfg: NodoAssistConfig) => number | undefined);
   resolveHasConfiguredChannels: (
-    cfg: OpenClawConfig,
-    sourceConfig: OpenClawConfig,
+    cfg: NodoAssistConfig,
+    sourceConfig: NodoAssistConfig,
   ) => boolean | Promise<boolean>;
   resolveMemory: Parameters<typeof executeStatusScanFromOverview>[0]["resolveMemory"];
 };
@@ -45,7 +45,7 @@ function hasMeaningfulStatusJsonChannelConfig(value: unknown): boolean {
   return Object.keys(value).some((key) => key !== "enabled");
 }
 
-function hasExplicitStatusJsonChannelConfig(cfg: OpenClawConfig): boolean {
+function hasExplicitStatusJsonChannelConfig(cfg: NodoAssistConfig): boolean {
   if (!isRecord(cfg.channels)) {
     return false;
   }
@@ -76,7 +76,7 @@ function hasStatusJsonChannelEnvConfig(env: NodeJS.ProcessEnv = process.env): bo
   return false;
 }
 
-function hasPotentialConfiguredChannelsForStatusJson(cfg: OpenClawConfig): boolean {
+function hasPotentialConfiguredChannelsForStatusJson(cfg: NodoAssistConfig): boolean {
   return hasExplicitStatusJsonChannelConfig(cfg) || hasStatusJsonChannelEnvConfig();
 }
 

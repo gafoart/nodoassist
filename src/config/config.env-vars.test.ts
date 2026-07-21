@@ -12,19 +12,23 @@ import {
   readStateDirDotEnvVars,
 } from "./env-vars.js";
 import { withEnvOverride, withTempHome, writeStateDirDotEnv } from "./test-helpers.js";
-import type { OpenClawConfig } from "./types.js";
+import type { NodoAssistConfig } from "./types.js";
 
 describe("config env vars", () => {
   it("applies env vars from env block when missing", async () => {
     await withEnvOverride({ OPENROUTER_API_KEY: undefined }, async () => {
-      applyConfigEnvVars({ env: { vars: { OPENROUTER_API_KEY: "config-key" } } } as OpenClawConfig);
+      applyConfigEnvVars({
+        env: { vars: { OPENROUTER_API_KEY: "config-key" } },
+      } as NodoAssistConfig);
       expect(process.env.OPENROUTER_API_KEY).toBe("config-key");
     });
   });
 
   it("does not override existing env vars", async () => {
     await withEnvOverride({ OPENROUTER_API_KEY: "existing-key" }, async () => {
-      applyConfigEnvVars({ env: { vars: { OPENROUTER_API_KEY: "config-key" } } } as OpenClawConfig);
+      applyConfigEnvVars({
+        env: { vars: { OPENROUTER_API_KEY: "config-key" } },
+      } as NodoAssistConfig);
       expect(process.env.OPENROUTER_API_KEY).toBe("existing-key");
     });
   });
@@ -32,7 +36,7 @@ describe("config env vars", () => {
   it("overrides only exact lower-precedence env values", () => {
     const config = {
       env: { vars: { OPENROUTER_API_KEY: "config-key" } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     const lowerPrecedenceEnv = { OPENROUTER_API_KEY: "shell-key" };
     const shellEnv = { OPENROUTER_API_KEY: "shell-key" };
     const changedEnv = { OPENROUTER_API_KEY: "changed-key" };
@@ -48,7 +52,7 @@ describe("config env vars", () => {
     const onLowerPrecedenceKeysReplaced = vi.fn();
     const env = { ZAI_API_KEY: "shell-key" };
 
-    applyConfigEnvVars({ env: { vars: { Z_AI_API_KEY: "config-key" } } } as OpenClawConfig, env, {
+    applyConfigEnvVars({ env: { vars: { Z_AI_API_KEY: "config-key" } } } as NodoAssistConfig, env, {
       lowerPrecedenceEnv: { ZAI_API_KEY: "shell-key" },
       onLowerPrecedenceKeysReplaced,
     });
@@ -66,7 +70,7 @@ describe("config env vars", () => {
       Z_AI_API_KEY: "invocation-key",
     };
 
-    applyConfigEnvVars({ env: { vars: { ZAI_API_KEY: "config-key" } } } as OpenClawConfig, env, {
+    applyConfigEnvVars({ env: { vars: { ZAI_API_KEY: "config-key" } } } as NodoAssistConfig, env, {
       lowerPrecedenceEnv: { ZAI_API_KEY: "shell-key" },
     });
 
@@ -79,7 +83,7 @@ describe("config env vars", () => {
   it("mirrors a higher-precedence canonical value into a config-declared alias", () => {
     const env = { ZAI_API_KEY: "invocation-key" };
 
-    applyConfigEnvVars({ env: { vars: { Z_AI_API_KEY: "config-key" } } } as OpenClawConfig, env);
+    applyConfigEnvVars({ env: { vars: { Z_AI_API_KEY: "config-key" } } } as NodoAssistConfig, env);
 
     expect(env).toEqual({
       ZAI_API_KEY: "invocation-key",
@@ -90,7 +94,7 @@ describe("config env vars", () => {
   it.runIf(process.platform !== "win32")("keeps unrelated POSIX env casing distinct", () => {
     const env = { FOO: "host-key" };
 
-    applyConfigEnvVars({ env: { vars: { foo: "config-key" } } } as OpenClawConfig, env);
+    applyConfigEnvVars({ env: { vars: { foo: "config-key" } } } as NodoAssistConfig, env);
 
     expect(env).toEqual({
       FOO: "host-key",
@@ -100,7 +104,7 @@ describe("config env vars", () => {
 
   it("applies env vars from env.vars when missing", async () => {
     await withEnvOverride({ GROQ_API_KEY: undefined }, async () => {
-      applyConfigEnvVars({ env: { vars: { GROQ_API_KEY: "gsk-config" } } } as OpenClawConfig);
+      applyConfigEnvVars({ env: { vars: { GROQ_API_KEY: "gsk-config" } } } as NodoAssistConfig);
       expect(process.env.GROQ_API_KEY).toBe("gsk-config");
     });
   });
@@ -128,7 +132,7 @@ describe("config env vars", () => {
     await withEnvOverride({ OPENROUTER_API_KEY: undefined }, async () => {
       const merged = createConfigRuntimeEnv({
         env: { vars: { OPENROUTER_API_KEY: "config-key" } },
-      } as OpenClawConfig);
+      } as NodoAssistConfig);
       expect(merged.OPENROUTER_API_KEY).toBe("config-key");
       expect(process.env.OPENROUTER_API_KEY).toBeUndefined();
     });
@@ -138,12 +142,12 @@ describe("config env vars", () => {
     const platformSpy = vi.spyOn(process, "platform", "get").mockReturnValue("win32");
     try {
       const merged = createConfigRuntimeEnv(
-        { env: { vars: { OPENCLAW_LOAD_SHELL_ENV: "1" } } } as OpenClawConfig,
-        { OpenClaw_Load_Shell_Env: "0" },
+        { env: { vars: { NODOASSIST_LOAD_SHELL_ENV: "1" } } } as NodoAssistConfig,
+        { NodoAssist_Load_Shell_Env: "0" },
       );
 
-      expect(merged.OPENCLAW_LOAD_SHELL_ENV).toBe("0");
-      expect(Object.keys(merged)).toEqual(["OpenClaw_Load_Shell_Env"]);
+      expect(merged.NODOASSIST_LOAD_SHELL_ENV).toBe("0");
+      expect(Object.keys(merged)).toEqual(["NodoAssist_Load_Shell_Env"]);
     } finally {
       platformSpy.mockRestore();
     }
@@ -156,9 +160,9 @@ describe("config env vars", () => {
         SHELL: undefined,
         HOME: undefined,
         ZDOTDIR: undefined,
-        OPENCLAW_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS: undefined,
-        OPENCLAW_INCLUDE_ROOTS: undefined,
-        openclaw_allow_older_binary_destructive_actions: undefined,
+        NODOASSIST_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS: undefined,
+        NODOASSIST_INCLUDE_ROOTS: undefined,
+        nodoassist_allow_older_binary_destructive_actions: undefined,
         OPENROUTER_API_KEY: undefined,
       },
       async () => {
@@ -169,31 +173,31 @@ describe("config env vars", () => {
               SHELL: "/tmp/evil-shell",
               HOME: "/tmp/evil-home",
               ZDOTDIR: "/tmp/evil-zdotdir",
-              OPENCLAW_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS: "1",
-              OPENCLAW_INCLUDE_ROOTS: "/tmp/evil-include-root",
-              openclaw_allow_older_binary_destructive_actions: "1",
+              NODOASSIST_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS: "1",
+              NODOASSIST_INCLUDE_ROOTS: "/tmp/evil-include-root",
+              nodoassist_allow_older_binary_destructive_actions: "1",
               OPENROUTER_API_KEY: "config-key",
             },
           },
         };
-        const entries = collectConfigRuntimeEnvVars(config as OpenClawConfig);
+        const entries = collectConfigRuntimeEnvVars(config as NodoAssistConfig);
         expect(entries.BASH_ENV).toBeUndefined();
         expect(entries.SHELL).toBeUndefined();
         expect(entries.HOME).toBeUndefined();
         expect(entries.ZDOTDIR).toBeUndefined();
-        expect(entries.OPENCLAW_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS).toBeUndefined();
-        expect(entries.OPENCLAW_INCLUDE_ROOTS).toBeUndefined();
-        expect(entries.openclaw_allow_older_binary_destructive_actions).toBeUndefined();
+        expect(entries.NODOASSIST_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS).toBeUndefined();
+        expect(entries.NODOASSIST_INCLUDE_ROOTS).toBeUndefined();
+        expect(entries.nodoassist_allow_older_binary_destructive_actions).toBeUndefined();
         expect(entries.OPENROUTER_API_KEY).toBe("config-key");
 
-        applyConfigEnvVars(config as OpenClawConfig);
+        applyConfigEnvVars(config as NodoAssistConfig);
         expect(process.env.BASH_ENV).toBeUndefined();
         expect(process.env.SHELL).toBeUndefined();
         expect(process.env.HOME).toBeUndefined();
         expect(process.env.ZDOTDIR).toBeUndefined();
-        expect(process.env.OPENCLAW_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS).toBeUndefined();
-        expect(process.env.OPENCLAW_INCLUDE_ROOTS).toBeUndefined();
-        expect(process.env.openclaw_allow_older_binary_destructive_actions).toBeUndefined();
+        expect(process.env.NODOASSIST_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS).toBeUndefined();
+        expect(process.env.NODOASSIST_INCLUDE_ROOTS).toBeUndefined();
+        expect(process.env.nodoassist_allow_older_binary_destructive_actions).toBeUndefined();
         expect(process.env.OPENROUTER_API_KEY).toBe("config-key");
       },
     );
@@ -210,7 +214,7 @@ describe("config env vars", () => {
           "NOT-PORTABLE": "bad",
         },
       };
-      const entries = collectConfigRuntimeEnvVars(config as OpenClawConfig);
+      const entries = collectConfigRuntimeEnvVars(config as NodoAssistConfig);
       expect(entries.OPENROUTER_API_KEY).toBe("config-key");
       expect(entries[" BAD KEY"]).toBeUndefined();
       expect(entries["NOT-PORTABLE"]).toBeUndefined();
@@ -225,7 +229,7 @@ describe("config env vars", () => {
           BRAVE_API_KEY: "config-key",
         },
       },
-    } as OpenClawConfig);
+    } as NodoAssistConfig);
 
     expect(entries.OPENROUTER_API_KEY).toBeUndefined();
     expect(entries.BRAVE_API_KEY).toBe("config-key");
@@ -237,7 +241,7 @@ describe("config env vars", () => {
         OPENROUTER_API_KEY: "${OPENROUTER_API_KEY}",
         BRAVE_API_KEY: "config-key",
       },
-    } as OpenClawConfig);
+    } as NodoAssistConfig);
 
     expect(entries.OPENROUTER_API_KEY).toBeUndefined();
     expect(entries.BRAVE_API_KEY).toBe("config-key");
@@ -254,7 +258,7 @@ describe("config env vars", () => {
         },
       },
       { OPENROUTER_API_KEY: "resolved-key" },
-    ) as OpenClawConfig;
+    ) as NodoAssistConfig;
 
     const entries = collectConfigRuntimeEnvVars(resolvedConfig);
 
@@ -262,17 +266,17 @@ describe("config env vars", () => {
     expect(entries.BRAVE_API_KEY).toBe("config-key");
   });
 
-  it("loads ${VAR} substitutions from ~/.openclaw/.env on repeated runtime loads", async () => {
+  it("loads ${VAR} substitutions from ~/.nodoassist/.env on repeated runtime loads", async () => {
     await withTempHome(async (_home) => {
       await withEnvOverride({ BRAVE_API_KEY: undefined }, async () => {
-        const stateDir = process.env.OPENCLAW_STATE_DIR?.trim();
+        const stateDir = process.env.NODOASSIST_STATE_DIR?.trim();
         if (!stateDir) {
-          throw new Error("Expected OPENCLAW_STATE_DIR to be set by withTempHome");
+          throw new Error("Expected NODOASSIST_STATE_DIR to be set by withTempHome");
         }
         await fs.mkdir(stateDir, { recursive: true });
         await fs.writeFile(path.join(stateDir, ".env"), "BRAVE_API_KEY=from-dotenv\n", "utf-8");
 
-        const config: OpenClawConfig = {
+        const config: NodoAssistConfig = {
           tools: {
             web: {
               search: {
@@ -283,12 +287,12 @@ describe("config env vars", () => {
         };
 
         loadDotEnv({ quiet: true });
-        const first = resolveConfigEnvVars(config, process.env) as OpenClawConfig;
+        const first = resolveConfigEnvVars(config, process.env) as NodoAssistConfig;
         expect(first.tools?.web?.search?.apiKey).toBe("from-dotenv");
 
         delete process.env.BRAVE_API_KEY;
         loadDotEnv({ quiet: true });
-        const second = resolveConfigEnvVars(config, process.env) as OpenClawConfig;
+        const second = resolveConfigEnvVars(config, process.env) as NodoAssistConfig;
         expect(second.tools?.web?.search?.apiKey).toBe("from-dotenv");
       });
     });
@@ -314,26 +318,26 @@ describe("config env vars", () => {
   it("drops dangerous and empty values from the state-dir .env file", async () => {
     await withTempHome(async (_home) => {
       await writeStateDirDotEnv(
-        "NODE_OPTIONS=--require /tmp/evil.js\nOPENCLAW_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS=1\nEMPTY=\nVALID=ok\n",
+        "NODE_OPTIONS=--require /tmp/evil.js\nNODOASSIST_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS=1\nEMPTY=\nVALID=ok\n",
         { env: process.env },
       );
       const vars = readStateDirDotEnvVars(process.env);
       expect(vars.NODE_OPTIONS).toBeUndefined();
-      expect(vars.OPENCLAW_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS).toBeUndefined();
+      expect(vars.NODOASSIST_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS).toBeUndefined();
       expect(vars.EMPTY).toBeUndefined();
       expect(vars.VALID).toBe("ok");
     });
   });
 
-  it("respects OPENCLAW_STATE_DIR when reading state-dir .env vars", async () => {
+  it("respects NODOASSIST_STATE_DIR when reading state-dir .env vars", async () => {
     await withTempHome(async (_home) => {
-      const customStateDir = path.join(process.env.OPENCLAW_STATE_DIR ?? "", "custom-state");
+      const customStateDir = path.join(process.env.NODOASSIST_STATE_DIR ?? "", "custom-state");
       await writeStateDirDotEnv("CUSTOM_KEY=from-override\n", {
         stateDir: customStateDir,
       });
       expect(
         readStateDirDotEnvVars({
-          OPENCLAW_STATE_DIR: customStateDir,
+          NODOASSIST_STATE_DIR: customStateDir,
         }).CUSTOM_KEY,
       ).toBe("from-override");
     });
@@ -353,7 +357,7 @@ describe("config env vars", () => {
                 MY_KEY: "from-config",
               },
             },
-          } as OpenClawConfig,
+          } as NodoAssistConfig,
         }).MY_KEY,
       ).toBe("from-config");
     });

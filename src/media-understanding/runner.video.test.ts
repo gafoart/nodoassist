@@ -1,7 +1,7 @@
 // Video runner tests cover provider request wiring, auth/config precedence, and
 // provider output handling for video attachments.
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/types.js";
+import type { NodoAssistConfig } from "../config/types.js";
 import { withTempDir } from "../test-helpers/temp-dir.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import { runCapability } from "./runner.js";
@@ -42,7 +42,7 @@ function requireCapabilityOutput(result: CapabilityResult, index: number) {
 
 describe("runCapability video provider wiring", () => {
   it("truncates provider output without splitting a boundary emoji", async () => {
-    await withVideoFixture("openclaw-video-utf16-output", async ({ ctx, media, cache }) => {
+    await withVideoFixture("nodoassist-video-utf16-output", async ({ ctx, media, cache }) => {
       const prefix = "v".repeat(79);
       const result = await runCapability({
         capability: "video",
@@ -63,7 +63,7 @@ describe("runCapability video provider wiring", () => {
               },
             },
           },
-        } as unknown as OpenClawConfig,
+        } as unknown as NodoAssistConfig,
         ctx,
         attachments: cache,
         media,
@@ -92,8 +92,8 @@ describe("runCapability video provider wiring", () => {
     let seenBaseUrl: string | undefined;
     let seenHeaders: Record<string, string> | undefined;
 
-    await withTempDir({ prefix: "openclaw-video-auth-" }, async (isolatedAgentDir) => {
-      await withVideoFixture("openclaw-video-merge", async ({ ctx, media, cache }) => {
+    await withTempDir({ prefix: "nodoassist-video-auth-" }, async (isolatedAgentDir) => {
+      await withVideoFixture("nodoassist-video-merge", async ({ ctx, media, cache }) => {
         const cfg = {
           models: {
             providers: {
@@ -123,7 +123,7 @@ describe("runCapability video provider wiring", () => {
               },
             },
           },
-        } as unknown as OpenClawConfig;
+        } as unknown as NodoAssistConfig;
 
         const result = await runCapability({
           capability: "video",
@@ -162,68 +162,71 @@ describe("runCapability video provider wiring", () => {
   });
 
   it("auto-selects moonshot for video when google is unavailable", async () => {
-    await withTempDir({ prefix: "openclaw-video-agent-" }, async (isolatedAgentDir) => {
+    await withTempDir({ prefix: "nodoassist-video-agent-" }, async (isolatedAgentDir) => {
       await withEnvAsync(
         {
           GEMINI_API_KEY: undefined,
           GOOGLE_API_KEY: undefined,
           MOONSHOT_API_KEY: undefined,
-          OPENCLAW_AGENT_DIR: isolatedAgentDir,
+          NODOASSIST_AGENT_DIR: isolatedAgentDir,
         },
         async () => {
-          await withVideoFixture("openclaw-video-auto-moonshot", async ({ ctx, media, cache }) => {
-            const cfg = {
-              models: {
-                providers: {
-                  moonshot: {
-                    auth: "api-key",
-                    apiKey: "moonshot-key", // pragma: allowlist secret
-                    models: [],
+          await withVideoFixture(
+            "nodoassist-video-auto-moonshot",
+            async ({ ctx, media, cache }) => {
+              const cfg = {
+                models: {
+                  providers: {
+                    moonshot: {
+                      auth: "api-key",
+                      apiKey: "moonshot-key", // pragma: allowlist secret
+                      models: [],
+                    },
                   },
                 },
-              },
-              tools: {
-                media: {
-                  video: {
-                    enabled: true,
+                tools: {
+                  media: {
+                    video: {
+                      enabled: true,
+                    },
                   },
                 },
-              },
-            } as unknown as OpenClawConfig;
+              } as unknown as NodoAssistConfig;
 
-            const result = await runCapability({
-              capability: "video",
-              cfg,
-              ctx,
-              agentDir: isolatedAgentDir,
-              attachments: cache,
-              media,
-              providerRegistry: new Map<string, MediaUnderstandingProvider>([
-                [
-                  "google",
-                  {
-                    id: "google",
-                    capabilities: ["video"],
-                    describeVideo: async () => ({ text: "google" }),
-                  },
-                ],
-                [
-                  "moonshot",
-                  {
-                    id: "moonshot",
-                    capabilities: ["video"],
-                    defaultModels: { video: "kimi-k2.5" },
-                    describeVideo: async (req) => ({ text: "moonshot", model: req.model }),
-                  },
-                ],
-              ]),
-            });
+              const result = await runCapability({
+                capability: "video",
+                cfg,
+                ctx,
+                agentDir: isolatedAgentDir,
+                attachments: cache,
+                media,
+                providerRegistry: new Map<string, MediaUnderstandingProvider>([
+                  [
+                    "google",
+                    {
+                      id: "google",
+                      capabilities: ["video"],
+                      describeVideo: async () => ({ text: "google" }),
+                    },
+                  ],
+                  [
+                    "moonshot",
+                    {
+                      id: "moonshot",
+                      capabilities: ["video"],
+                      defaultModels: { video: "kimi-k2.5" },
+                      describeVideo: async (req) => ({ text: "moonshot", model: req.model }),
+                    },
+                  ],
+                ]),
+              });
 
-            expect(result.decision.outcome).toBe("success");
-            const output = requireCapabilityOutput(result, 0);
-            expect(output.provider).toBe("moonshot");
-            expect(output.text).toBe("moonshot");
-          });
+              expect(result.decision.outcome).toBe("success");
+              const output = requireCapabilityOutput(result, 0);
+              expect(output.provider).toBe("moonshot");
+              expect(output.text).toBe("moonshot");
+            },
+          );
         },
       );
     });
@@ -232,8 +235,8 @@ describe("runCapability video provider wiring", () => {
   it("uses the provider video default when the active provider has no model", async () => {
     let seenModel: string | undefined;
 
-    await withTempDir({ prefix: "openclaw-video-active-provider-" }, async (isolatedAgentDir) => {
-      await withVideoFixture("openclaw-video-active-default", async ({ ctx, media, cache }) => {
+    await withTempDir({ prefix: "nodoassist-video-active-provider-" }, async (isolatedAgentDir) => {
+      await withVideoFixture("nodoassist-video-active-default", async ({ ctx, media, cache }) => {
         const cfg = {
           models: {
             providers: {
@@ -251,7 +254,7 @@ describe("runCapability video provider wiring", () => {
               },
             },
           },
-        } as unknown as OpenClawConfig;
+        } as unknown as NodoAssistConfig;
 
         const result = await runCapability({
           capability: "video",
@@ -290,9 +293,9 @@ describe("runCapability video provider wiring", () => {
     let seenModel: string | undefined;
 
     await withTempDir(
-      { prefix: "openclaw-video-no-default-provider-" },
+      { prefix: "nodoassist-video-no-default-provider-" },
       async (isolatedAgentDir) => {
-        await withVideoFixture("openclaw-video-no-default", async ({ ctx, media, cache }) => {
+        await withVideoFixture("nodoassist-video-no-default", async ({ ctx, media, cache }) => {
           const cfg = {
             models: {
               providers: {
@@ -310,7 +313,7 @@ describe("runCapability video provider wiring", () => {
                 },
               },
             },
-          } as unknown as OpenClawConfig;
+          } as unknown as NodoAssistConfig;
 
           const result = await runCapability({
             capability: "video",
@@ -350,8 +353,8 @@ describe("runCapability video provider wiring", () => {
     const resolveApiKeyForProvider = vi.mocked(modelAuth.resolveApiKeyForProvider);
     resolveApiKeyForProvider.mockClear();
 
-    await withTempDir({ prefix: "openclaw-video-provider-api-" }, async (isolatedAgentDir) => {
-      await withVideoFixture("openclaw-video-provider-api", async ({ ctx, media, cache }) => {
+    await withTempDir({ prefix: "nodoassist-video-provider-api-" }, async (isolatedAgentDir) => {
+      await withVideoFixture("nodoassist-video-provider-api", async ({ ctx, media, cache }) => {
         let seenApiKey: string | undefined;
         const cfg = {
           models: {
@@ -370,7 +373,7 @@ describe("runCapability video provider wiring", () => {
               },
             },
           },
-        } as unknown as OpenClawConfig;
+        } as unknown as NodoAssistConfig;
 
         const result = await runCapability({
           capability: "video",

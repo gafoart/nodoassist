@@ -1,26 +1,26 @@
 {
-  "name": "@openclaw/qa-matrix",
+  "name": "@nodoassist/qa-matrix",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw Matrix QA runner plugin",
+  "description": "NodoAssist Matrix QA runner plugin",
   "type": "module",
   "dependencies": {
     "undici": "8.5.0"
   },
   "devDependencies": {
-    "@openclaw/matrix": "workspace:*",
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/matrix": "workspace:*",
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],

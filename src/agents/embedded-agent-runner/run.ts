@@ -6,8 +6,8 @@ import fs from "node:fs/promises";
 import {
   addTimerTimeoutGraceMs,
   MAX_TIMER_TIMEOUT_MS,
-} from "@openclaw/normalization-core/number-coercion";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/normalization-core/number-coercion";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
 import { sanitizeForLog } from "../../../packages/terminal-core/src/ansi.js";
 import { FAST_MODE_AUTO_PROGRESS_KIND, type ReplyPayload } from "../../auto-reply/reply-payload.js";
 import type { ThinkLevel } from "../../auto-reply/thinking.js";
@@ -15,7 +15,7 @@ import { SILENT_REPLY_TOKEN } from "../../auto-reply/tokens.js";
 import { getRuntimeConfigSnapshot } from "../../config/config.js";
 import { resolveStorePath } from "../../config/sessions.js";
 import { updateSessionEntry } from "../../config/sessions/session-accessor.js";
-import { OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST } from "../../context-engine/host-compat.js";
+import { NODOASSIST_EMBEDDED_CONTEXT_ENGINE_HOST } from "../../context-engine/host-compat.js";
 import { ensureContextEnginesInitialized } from "../../context-engine/init.js";
 import {
   resolveContextEngine,
@@ -103,7 +103,7 @@ import {
   resolveFastModeForElapsed,
 } from "../fast-mode.js";
 import { ensureSelectedAgentHarnessPlugin } from "../harness/runtime-plugin.js";
-import { agentHarnessBuildsOpenClawTools, selectAgentHarness } from "../harness/selection.js";
+import { agentHarnessBuildsNodoAssistTools, selectAgentHarness } from "../harness/selection.js";
 import { LiveSessionModelSwitchError } from "../live-model-switch-error.js";
 import { shouldSwitchToLiveModel, clearLiveModelSwitchPending } from "../live-model-switch.js";
 import {
@@ -121,7 +121,7 @@ import {
   resolveModelRefFromString,
 } from "../model-selection.js";
 import { resolveThinkingDefault } from "../model-thinking-default.js";
-import { ensureOpenClawModelsJson } from "../models-config.js";
+import { ensureNodoAssistModelsJson } from "../models-config.js";
 import {
   OPENAI_PROVIDER_ID,
   listOpenAIAuthProfileProvidersForAgentRuntime,
@@ -880,7 +880,7 @@ async function runEmbeddedAgentInternal(
         try {
           await params.onToolResult?.({
             text: summary,
-            channelData: { openclawProgressKind: FAST_MODE_AUTO_PROGRESS_KIND },
+            channelData: { nodoassistProgressKind: FAST_MODE_AUTO_PROGRESS_KIND },
           });
         } catch (error) {
           log.debug(`embedded run fast mode auto progress failed: ${formatErrorMessage(error)}`);
@@ -1078,7 +1078,7 @@ async function runEmbeddedAgentInternal(
         agentHarnessId: params.agentHarnessId,
         agentHarnessRuntimeOverride: params.agentHarnessRuntimeOverride,
       });
-      const pluginHarnessOwnsTransport = agentHarness.id !== "openclaw";
+      const pluginHarnessOwnsTransport = agentHarness.id !== "nodoassist";
       const modelConfigProvider = provider;
       const selectedRuntimeProvider = resolveSelectedOpenAIRuntimeProvider({
         provider,
@@ -1102,7 +1102,7 @@ async function runEmbeddedAgentInternal(
           params.config,
           {
             // Plugin dynamic model hooks can resolve explicit model refs without
-            // first generating OpenClaw models.json. This keeps one-shot model runs from
+            // first generating NodoAssist models.json. This keeps one-shot model runs from
             // blocking on unrelated provider discovery.
             skipAgentDiscovery: true,
             allowBundledStaticCatalogFallback: pluginHarnessOwnsTransport,
@@ -1122,7 +1122,7 @@ async function runEmbeddedAgentInternal(
         modelResolution ??= firstModelResolution;
       }
       if (!modelResolution) {
-        await ensureOpenClawModelsJson(params.config, agentDir, {
+        await ensureNodoAssistModelsJson(params.config, agentDir, {
           workspaceDir: resolvedWorkspace,
         });
         for (const candidateProvider of modelResolutionProviders) {
@@ -1187,17 +1187,17 @@ async function runEmbeddedAgentInternal(
       startupStages.mark("model-resolution");
       notifyExecutionPhase("model_resolution", { provider, model: modelId });
 
-      const pluginHarnessNeedsOpenClawAuthBootstrap =
+      const pluginHarnessNeedsNodoAssistAuthBootstrap =
         pluginHarnessOwnsTransport &&
         provider === OPENAI_PROVIDER_ID &&
         effectiveModel.api === "openai-chatgpt-responses";
-      const openClawNativeCodexResponsesNeedsAuthBootstrap =
+      const nodoAssistNativeCodexResponsesNeedsAuthBootstrap =
         !pluginHarnessOwnsTransport &&
         provider === OPENAI_PROVIDER_ID &&
         effectiveModel.api === "openai-chatgpt-responses";
       let piExternalCliAuthScope = pluginHarnessOwnsTransport
         ? { ignoreAutoPreferredProfile: false }
-        : openClawNativeCodexResponsesNeedsAuthBootstrap
+        : nodoAssistNativeCodexResponsesNeedsAuthBootstrap
           ? {
               providerIds: [OPENAI_PROVIDER_ID],
               ignoreAutoPreferredProfile: false,
@@ -1214,7 +1214,7 @@ async function runEmbeddedAgentInternal(
       let noExternalAuthStore: AuthProfileStore | undefined;
       if (
         !pluginHarnessOwnsTransport &&
-        !pluginHarnessNeedsOpenClawAuthBootstrap &&
+        !pluginHarnessNeedsNodoAssistAuthBootstrap &&
         !piExternalCliAuthScope.providerIds
       ) {
         noExternalAuthStore = ensureAuthProfileStoreWithoutExternalProfiles(agentDir, {
@@ -1232,9 +1232,9 @@ async function runEmbeddedAgentInternal(
         });
       }
       const authStore =
-        pluginHarnessOwnsTransport && !pluginHarnessNeedsOpenClawAuthBootstrap
+        pluginHarnessOwnsTransport && !pluginHarnessNeedsNodoAssistAuthBootstrap
           ? createEmptyAuthProfileStore()
-          : pluginHarnessNeedsOpenClawAuthBootstrap
+          : pluginHarnessNeedsNodoAssistAuthBootstrap
             ? ensureAuthProfileStore(agentDir, {
                 externalCliProviderIds: [OPENAI_PROVIDER_ID],
                 allowKeychainPrompt: false,
@@ -1249,7 +1249,7 @@ async function runEmbeddedAgentInternal(
                   allowKeychainPrompt: false,
                 }));
       const attemptAuthProfileStore =
-        pluginHarnessOwnsTransport && !pluginHarnessNeedsOpenClawAuthBootstrap
+        pluginHarnessOwnsTransport && !pluginHarnessNeedsNodoAssistAuthBootstrap
           ? ensureAuthProfileStoreWithoutExternalProfiles(agentDir, {
               allowKeychainPrompt: false,
             })
@@ -1436,7 +1436,7 @@ async function runEmbeddedAgentInternal(
       }) => {
         const fallbackReason = resolveRuntimeFallbackReason();
         return buildContextEngineRuntimeSettings({
-          contextEngineHost: OPENCLAW_EMBEDDED_CONTEXT_ENGINE_HOST,
+          contextEngineHost: NODOASSIST_EMBEDDED_CONTEXT_ENGINE_HOST,
           provider,
           requestedModel: requestedModelId,
           resolvedModel: modelId,
@@ -1539,14 +1539,14 @@ async function runEmbeddedAgentInternal(
         return false;
       };
       const advanceAttemptAuthProfile =
-        pluginHarnessOwnsTransport && !pluginHarnessNeedsOpenClawAuthBootstrap
+        pluginHarnessOwnsTransport && !pluginHarnessNeedsNodoAssistAuthBootstrap
           ? advancePluginHarnessAuthProfile
           : advanceAuthProfile;
 
-      // Plugin harnesses own their model transport/auth. Running OpenClaw's generic
+      // Plugin harnesses own their model transport/auth. Running NodoAssist's generic
       // auth bootstrap here can turn synthetic provider markers into real
       // vendor-token refresh attempts before the plugin gets control.
-      if (!pluginHarnessOwnsTransport || pluginHarnessNeedsOpenClawAuthBootstrap) {
+      if (!pluginHarnessOwnsTransport || pluginHarnessNeedsNodoAssistAuthBootstrap) {
         await initializeAuthProfile();
       } else if (lockedProfileId) {
         lastProfileId = lockedProfileId;
@@ -1563,7 +1563,7 @@ async function runEmbeddedAgentInternal(
               : lastProfileId,
           )
         : attemptAuthProfileStore;
-      const harnessBuildsOpenClawTools = agentHarnessBuildsOpenClawTools(agentHarness.id);
+      const harnessBuildsNodoAssistTools = agentHarnessBuildsNodoAssistTools(agentHarness.id);
       const { sessionAgentId } = resolveSessionAgentIds({
         sessionKey: params.sessionKey,
         config: params.config,
@@ -1743,7 +1743,7 @@ async function runEmbeddedAgentInternal(
         }
         if (pluginHarnessOwnsTransport && reason === "timeout") {
           // Harness-owned transport timeouts are lifecycle failures, not
-          // credential evidence. Do not poison OpenClaw auth cooldowns.
+          // credential evidence. Do not poison NodoAssist auth cooldowns.
           return;
         }
         await markAuthProfileFailure({
@@ -2179,8 +2179,8 @@ async function runEmbeddedAgentInternal(
             fallbackReason: resolveRuntimeFallbackReason(),
             isFinalFallbackAttempt: params.isFinalFallbackAttempt,
             // Use the harness selected before model/auth setup for the actual
-            // attempt too. Otherwise plugin-owned transports can skip OpenClaw auth
-            // bootstrap but drift back to OpenClaw when the attempt is created.
+            // attempt too. Otherwise plugin-owned transports can skip NodoAssist auth
+            // bootstrap but drift back to NodoAssist when the attempt is created.
             agentHarnessId: agentHarness.id,
             ...(params.sessionKey
               ? {
@@ -2205,9 +2205,11 @@ async function runEmbeddedAgentInternal(
             initialReplayState: accumulatedReplayState,
             authStorage,
             authProfileStore: runAttemptAuthProfileStore,
-            // These harnesses build OpenClaw tools internally. Keep transport auth
+            // These harnesses build NodoAssist tools internally. Keep transport auth
             // scoped while letting tool construction see plugin/provider creds.
-            toolAuthProfileStore: harnessBuildsOpenClawTools ? attemptAuthProfileStore : undefined,
+            toolAuthProfileStore: harnessBuildsNodoAssistTools
+              ? attemptAuthProfileStore
+              : undefined,
             modelRegistry,
             agentId: workspaceResolution.agentId,
             beforeAgentStartResult,

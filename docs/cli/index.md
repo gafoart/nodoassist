@@ -1,21 +1,21 @@
 ---
-summary: "OpenClaw CLI index: command list, global flags, and links to per-command pages"
+summary: "NodoAssist CLI index: command list, global flags, and links to per-command pages"
 read_when:
-  - Finding the right `openclaw` subcommand
+  - Finding the right `nodoassist` subcommand
   - Looking up global flags or output styling rules
 title: "CLI reference"
 ---
 
-`openclaw` is the main CLI entry point. Each core command has a dedicated
+`nodoassist` is the main CLI entry point. Each core command has a dedicated
 reference page or is documented with the command it aliases; this index lists
 the commands, global flags, and output styling rules that apply across the CLI.
 
 Setup commands by intent:
 
-- `openclaw setup` and `openclaw onboard` run the full guided first-run path for gateway, model auth, workspace, channels, skills, and health.
-- `openclaw setup --baseline` creates the baseline config and workspace without walking the guided onboarding flow.
-- `openclaw configure` changes targeted parts of an existing setup: model auth, gateway, channels, plugins, or skills.
-- `openclaw channels add` configures channel accounts after the baseline exists; run without flags for guided setup, or with channel-specific flags for scripts.
+- `nodoassist setup` and `nodoassist onboard` run the full guided first-run path for gateway, model auth, workspace, channels, skills, and health.
+- `nodoassist setup --baseline` creates the baseline config and workspace without walking the guided onboarding flow.
+- `nodoassist configure` changes targeted parts of an existing setup: model auth, gateway, channels, plugins, or skills.
+- `nodoassist channels add` configures channel accounts after the baseline exists; run without flags for guided setup, or with channel-specific flags for scripts.
 
 ## Command pages
 
@@ -38,15 +38,15 @@ Setup commands by intent:
 
 ## Global flags
 
-| Flag                    | Purpose                                                                                                 |
-| ----------------------- | ------------------------------------------------------------------------------------------------------- |
-| `--dev`                 | Isolate state under `~/.openclaw-dev`, default gateway port 19001, and shift derived ports              |
-| `--profile <name>`      | Isolate state under `~/.openclaw-<name>` (`OPENCLAW_STATE_DIR`/`OPENCLAW_CONFIG_PATH`)                  |
-| `--container <name>`    | Run the CLI inside a running Podman/Docker container named `<name>` (default: env `OPENCLAW_CONTAINER`) |
-| `--log-level <level>`   | Override the global log level for file + console output                                                 |
-| `--no-color`            | Disable ANSI colors (`NO_COLOR=1` is also respected)                                                    |
-| `--update`              | Shorthand for [`openclaw update`](/cli/update); works for both source checkouts and package installs    |
-| `-V`, `--version`, `-v` | Print version and exit                                                                                  |
+| Flag                    | Purpose                                                                                                   |
+| ----------------------- | --------------------------------------------------------------------------------------------------------- |
+| `--dev`                 | Isolate state under `~/.nodoassist-dev`, default gateway port 19001, and shift derived ports              |
+| `--profile <name>`      | Isolate state under `~/.nodoassist-<name>` (`NODOASSIST_STATE_DIR`/`NODOASSIST_CONFIG_PATH`)              |
+| `--container <name>`    | Run the CLI inside a running Podman/Docker container named `<name>` (default: env `NODOASSIST_CONTAINER`) |
+| `--log-level <level>`   | Override the global log level for file + console output                                                   |
+| `--no-color`            | Disable ANSI colors (`NO_COLOR=1` is also respected)                                                      |
+| `--update`              | Shorthand for [`nodoassist update`](/cli/update); works for both source checkouts and package installs    |
+| `-V`, `--version`, `-v` | Print version and exit                                                                                    |
 
 ## Output modes
 
@@ -58,7 +58,7 @@ Setup commands by intent:
 
 ## Color palette
 
-OpenClaw uses a lobster palette for CLI output:
+NodoAssist uses a lobster palette for CLI output:
 
 | Token          | Hex       | Used for                             |
 | -------------- | --------- | ------------------------------------ |
@@ -82,7 +82,7 @@ subcommands (for example under `skills`, `plugins`, and `wiki`) evolve
 independently; run `<command> --help` for the authoritative, current list.
 
 ```
-openclaw [--dev] [--profile <name>] <command>
+nodoassist [--dev] [--profile <name>] <command>
   crestodian
   setup
   onboard
@@ -414,7 +414,7 @@ openclaw [--dev] [--profile <name>] <command>
 ```
 
 Plugins can add additional top-level commands, such as
-[`openclaw workboard`](/cli/workboard) or `openclaw voicecall`.
+[`nodoassist workboard`](/cli/workboard) or `nodoassist voicecall`.
 
 </Accordion>
 
@@ -431,7 +431,7 @@ Highlights:
 
 ## Usage tracking
 
-`openclaw status --usage` and the Control UI surface provider usage/quota when
+`nodoassist status --usage` and the Control UI surface provider usage/quota when
 OAuth/API credentials are available. Data comes directly from provider usage
 endpoints and is normalized to `X% left`. Providers with current usage
 windows: Anthropic, Gemini CLI, GitHub Copilot, MiniMax, OpenAI Codex,

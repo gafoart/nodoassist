@@ -12,7 +12,7 @@ export {
   type ChannelMessageActionAdapter,
   type ChannelMessageActionName,
   type ChannelStatusIssue,
-  type OpenClawConfig,
+  type NodoAssistConfig,
 } from "../runtime-api.js";
 export {
   type GoogleChatConfigAccessorAccount,

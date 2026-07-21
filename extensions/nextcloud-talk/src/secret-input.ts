@@ -2,4 +2,4 @@
 export {
   buildSecretInputSchema,
   normalizeResolvedSecretInputString,
-} from "openclaw/plugin-sdk/secret-input";
+} from "nodoassist/plugin-sdk/secret-input";

@@ -13,7 +13,7 @@ import {
 const tempDirs: string[] = [];
 
 async function createTempDir(): Promise<string> {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "openclaw-codex-spawn-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "nodoassist-codex-spawn-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -95,7 +95,7 @@ describe("resolveCodexAppServerSpawnInvocation", () => {
     expect(() =>
       resolveCodexAppServerSpawnInvocation(
         startOptions(
-          "node C:\\Users\\me\\.openclaw\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
+          "node C:\\Users\\me\\.nodoassist\\npm\\node_modules\\@openai\\codex\\bin\\codex.js",
         ),
         {
           platform: "win32",
@@ -193,7 +193,7 @@ describe("resolveCodexAppServerDetachedMode", () => {
   });
 
   it("keeps QA app-server processes in the gateway process group", () => {
-    expect(resolveCodexAppServerDetachedMode({ OPENCLAW_QA_PARENT_PID: "12345" }, "linux")).toBe(
+    expect(resolveCodexAppServerDetachedMode({ NODOASSIST_QA_PARENT_PID: "12345" }, "linux")).toBe(
       false,
     );
   });

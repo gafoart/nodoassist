@@ -104,7 +104,7 @@ describe("jsonl replay", () => {
         return {
           scenarioStatus: "pass",
           cell: makeCell(runtime, {
-            toolCalls: [makeToolCall(runtime === "openclaw" ? {} : { argsHash: "args-codex" })],
+            toolCalls: [makeToolCall(runtime === "nodoassist" ? {} : { argsHash: "args-codex" })],
           }),
         };
       }
@@ -112,7 +112,7 @@ describe("jsonl replay", () => {
         return {
           scenarioStatus: "pass",
           cell: makeCell(runtime, {
-            finalText: runtime === "openclaw" ? "openclaw wording" : "codex wording",
+            finalText: runtime === "nodoassist" ? "nodoassist wording" : "codex wording",
           }),
         };
       }
@@ -125,7 +125,7 @@ describe("jsonl replay", () => {
     const result = await runJsonlReplay(
       {
         directory: transcriptDir,
-        runtimePair: ["openclaw", "codex"],
+        runtimePair: ["nodoassist", "codex"],
         providerMode: "mock-openai",
       },
       { runCell },
@@ -139,7 +139,7 @@ describe("jsonl replay", () => {
         firstDriftAtTurn: 2,
       }),
     );
-    expect(result.transcripts[0]?.cells.openclaw).toHaveLength(3);
+    expect(result.transcripts[0]?.cells.nodoassist).toHaveLength(3);
     expect(result.transcripts[0]?.cells.codex).toHaveLength(3);
   });
 
@@ -149,7 +149,7 @@ describe("jsonl replay", () => {
     const result = await runJsonlReplay(
       {
         directory: fixtureDir,
-        runtimePair: ["openclaw", "codex"],
+        runtimePair: ["nodoassist", "codex"],
         providerMode: "mock-openai",
       },
       { runCell: createMockJsonlReplayCellRunner() },
@@ -162,7 +162,7 @@ describe("jsonl replay", () => {
       renderJsonlReplayMarkdownReport({
         generatedAt: "2026-05-10T00:00:00.000Z",
         providerMode: "mock-openai",
-        runtimePair: ["openclaw", "codex"],
+        runtimePair: ["nodoassist", "codex"],
         transcripts: result.transcripts,
       }),
     ).toContain("| plan-mode-boundaries.jsonl | 3 |  | none, none, none |");

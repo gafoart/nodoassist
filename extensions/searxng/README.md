@@ -1,13 +1,13 @@
-# SearXNG OpenClaw plugin
+# SearXNG NodoAssist plugin
 
-Official OpenClaw plugin for SearXNG.
+Official NodoAssist plugin for SearXNG.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/searxng-plugin
+nodoassist plugins install @nodoassist/searxng-plugin
 ```
 
 ## Docs
 
-See `docs/tools/searxng-search.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/tools/searxng-search`.
+See `docs/tools/searxng-search.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/tools/searxng-search`.

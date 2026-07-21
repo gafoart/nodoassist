@@ -52,13 +52,13 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("rejects oversized scheduler helper JSON artifacts without a Node stack trace", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-helper-`);
+    const root = mkdtempSync(`${tmpdir()}/nodoassist-docker-e2e-helper-`);
     try {
       const file = path.join(root, "summary.json");
       writeFileSync(file, `${JSON.stringify({ filler: "x".repeat(128) })}\n`, "utf8");
 
       const result = runHelper("scripts/docker-e2e.mjs", "failed-reruns", file, {
-        OPENCLAW_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
+        NODOASSIST_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
       });
 
       expect(result.status).toBe(1);
@@ -106,13 +106,13 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("rejects oversized timing JSON artifacts without a Node stack trace", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-timings-`);
+    const root = mkdtempSync(`${tmpdir()}/nodoassist-docker-e2e-timings-`);
     try {
       const file = path.join(root, "summary.json");
       writeFileSync(file, `${JSON.stringify({ filler: "x".repeat(128) })}\n`, "utf8");
 
       const result = runHelper("scripts/docker-e2e-timings.mjs", file, {
-        OPENCLAW_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
+        NODOASSIST_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
       });
 
       expect(result.status).toBe(1);
@@ -149,13 +149,13 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("rejects oversized rerun JSON artifacts without a Node stack trace", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-rerun-`);
+    const root = mkdtempSync(`${tmpdir()}/nodoassist-docker-e2e-rerun-`);
     try {
       const file = path.join(root, "summary.json");
       writeFileSync(file, `${JSON.stringify({ filler: "x".repeat(128) })}\n`, "utf8");
 
       const result = runHelper("scripts/docker-e2e-rerun.mjs", file, "--ref", "abc123", {
-        OPENCLAW_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
+        NODOASSIST_DOCKER_E2E_JSON_ARTIFACT_MAX_BYTES: "64",
       });
 
       expect(result.status).toBe(1);
@@ -171,7 +171,7 @@ describe("Docker E2E helper CLIs", () => {
   it.each(["summary.json", "failures.json"])(
     "prints local cleanup reruns without synthesizing Docker lane reruns from %s",
     (fileName) => {
-      const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-rerun-`);
+      const root = mkdtempSync(`${tmpdir()}/nodoassist-docker-e2e-rerun-`);
       try {
         const cleanupFailure = {
           lane: "cleanup-smoke",
@@ -215,7 +215,7 @@ describe("Docker E2E helper CLIs", () => {
   );
 
   it("ignores artifact-provided GitHub rerun commands", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-rerun-command-`);
+    const root = mkdtempSync(`${tmpdir()}/nodoassist-docker-e2e-rerun-command-`);
     try {
       const file = path.join(root, "failures.json");
       writeFileSync(
@@ -249,7 +249,7 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("preserves whitelisted rerun inputs from artifact commands", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-rerun-inputs-`);
+    const root = mkdtempSync(`${tmpdir()}/nodoassist-docker-e2e-rerun-inputs-`);
     try {
       const file = path.join(root, "failures.json");
       writeFileSync(
@@ -259,8 +259,8 @@ describe("Docker E2E helper CLIs", () => {
             lanes: [
               {
                 ghWorkflowCommand:
-                  "gh workflow run 'openclaw-live-and-e2e-checks-reusable.yml' --ref 'release/2026.6' -f package_artifact_run_id='12345' -f package_artifact_name='docker-e2e-package' -f docker_e2e_bare_image='ghcr.io/openclaw/openclaw-bare:test' -f published_upgrade_survivor_baselines='openclaw@2026.5.3' -f published_upgrade_survivor_scenarios='plugin-dependency-cleanup' -f unsafe_input='do-not-copy'",
-                name: "published-upgrade-survivor-openclaw-2026-5-3",
+                  "gh workflow run 'nodoassist-live-and-e2e-checks-reusable.yml' --ref 'release/2026.6' -f package_artifact_run_id='12345' -f package_artifact_name='docker-e2e-package' -f docker_e2e_bare_image='ghcr.io/nodoassist/nodoassist-bare:test' -f published_upgrade_survivor_baselines='nodoassist@2026.5.3' -f published_upgrade_survivor_scenarios='plugin-dependency-cleanup' -f unsafe_input='do-not-copy'",
+                name: "published-upgrade-survivor-nodoassist-2026-5-3",
                 status: 1,
               },
             ],
@@ -280,10 +280,10 @@ describe("Docker E2E helper CLIs", () => {
       expect(combinedCommand).toContain("--ref 'release/2026.6'");
       expect(combinedCommand).toContain("package_artifact_run_id='12345'");
       expect(combinedCommand).toContain(
-        "docker_e2e_bare_image='ghcr.io/openclaw/openclaw-bare:test'",
+        "docker_e2e_bare_image='ghcr.io/nodoassist/nodoassist-bare:test'",
       );
       expect(combinedCommand).toContain(
-        "published_upgrade_survivor_baselines='openclaw@2026.5.3'",
+        "published_upgrade_survivor_baselines='nodoassist@2026.5.3'",
       );
       expect(combinedCommand).toContain(
         "published_upgrade_survivor_scenarios='plugin-dependency-cleanup'",
@@ -291,11 +291,9 @@ describe("Docker E2E helper CLIs", () => {
       expect(combinedCommand).not.toContain("unsafe_input");
       expect(result.stdout).toContain("package_artifact_run_id='12345'");
       expect(result.stdout).toContain(
-        "docker_e2e_bare_image='ghcr.io/openclaw/openclaw-bare:test'",
+        "docker_e2e_bare_image='ghcr.io/nodoassist/nodoassist-bare:test'",
       );
-      expect(result.stdout).toContain(
-        "published_upgrade_survivor_baselines='openclaw@2026.5.3'",
-      );
+      expect(result.stdout).toContain("published_upgrade_survivor_baselines='nodoassist@2026.5.3'");
       expect(result.stdout).toContain(
         "published_upgrade_survivor_scenarios='plugin-dependency-cleanup'",
       );
@@ -307,7 +305,7 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("groups combined reruns by recovered workflow inputs", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-rerun-groups-`);
+    const root = mkdtempSync(`${tmpdir()}/nodoassist-docker-e2e-rerun-groups-`);
     try {
       const file = path.join(root, "failures.json");
       writeFileSync(
@@ -317,14 +315,14 @@ describe("Docker E2E helper CLIs", () => {
             lanes: [
               {
                 ghWorkflowCommand:
-                  "gh workflow run 'openclaw-live-and-e2e-checks-reusable.yml' --ref 'release/2026.6' -f published_upgrade_survivor_baselines='openclaw@2026.5.3'",
-                name: "published-upgrade-survivor-openclaw-2026-5-3",
+                  "gh workflow run 'nodoassist-live-and-e2e-checks-reusable.yml' --ref 'release/2026.6' -f published_upgrade_survivor_baselines='nodoassist@2026.5.3'",
+                name: "published-upgrade-survivor-nodoassist-2026-5-3",
                 status: 1,
               },
               {
                 ghWorkflowCommand:
-                  "gh workflow run 'openclaw-live-and-e2e-checks-reusable.yml' --ref 'release/2026.6' -f published_upgrade_survivor_baselines='openclaw@2026.5.2'",
-                name: "published-upgrade-survivor-openclaw-2026-5-2",
+                  "gh workflow run 'nodoassist-live-and-e2e-checks-reusable.yml' --ref 'release/2026.6' -f published_upgrade_survivor_baselines='nodoassist@2026.5.2'",
+                name: "published-upgrade-survivor-nodoassist-2026-5-2",
                 status: 1,
               },
             ],
@@ -342,19 +340,19 @@ describe("Docker E2E helper CLIs", () => {
       expect(result.stderr).toBe("");
       expect(result.stdout).toContain("Combined GitHub reruns:");
       expect(result.stdout).toContain(
-        "- published-upgrade-survivor-openclaw-2026-5-3: gh workflow run",
+        "- published-upgrade-survivor-nodoassist-2026-5-3: gh workflow run",
       );
       expect(result.stdout).toContain(
-        "- published-upgrade-survivor-openclaw-2026-5-2: gh workflow run",
+        "- published-upgrade-survivor-nodoassist-2026-5-2: gh workflow run",
       );
       expect(result.stdout).toContain(
-        "docker_lanes='published-upgrade-survivor-openclaw-2026-5-3'",
+        "docker_lanes='published-upgrade-survivor-nodoassist-2026-5-3'",
       );
       expect(result.stdout).toContain(
-        "docker_lanes='published-upgrade-survivor-openclaw-2026-5-2'",
+        "docker_lanes='published-upgrade-survivor-nodoassist-2026-5-2'",
       );
       expect(result.stdout).not.toContain(
-        "docker_lanes='published-upgrade-survivor-openclaw-2026-5-3 published-upgrade-survivor-openclaw-2026-5-2'",
+        "docker_lanes='published-upgrade-survivor-nodoassist-2026-5-3 published-upgrade-survivor-nodoassist-2026-5-2'",
       );
     } finally {
       rmSync(root, { force: true, recursive: true });
@@ -362,7 +360,7 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("merges duplicate lane entries before printing reruns", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-rerun-merge-`);
+    const root = mkdtempSync(`${tmpdir()}/nodoassist-docker-e2e-rerun-merge-`);
     try {
       const file = path.join(root, "failures.json");
       writeFileSync(
@@ -371,13 +369,13 @@ describe("Docker E2E helper CLIs", () => {
           {
             lanes: [
               {
-                name: "published-upgrade-survivor-openclaw-2026-5-3",
+                name: "published-upgrade-survivor-nodoassist-2026-5-3",
                 status: 1,
               },
               {
                 ghWorkflowCommand:
-                  "gh workflow run 'openclaw-live-and-e2e-checks-reusable.yml' --ref 'release/2026.6' -f published_upgrade_survivor_baselines='openclaw@2026.5.3'",
-                name: "published-upgrade-survivor-openclaw-2026-5-3",
+                  "gh workflow run 'nodoassist-live-and-e2e-checks-reusable.yml' --ref 'release/2026.6' -f published_upgrade_survivor_baselines='nodoassist@2026.5.3'",
+                name: "published-upgrade-survivor-nodoassist-2026-5-3",
                 status: 1,
               },
             ],
@@ -396,7 +394,7 @@ describe("Docker E2E helper CLIs", () => {
       const combinedCommand = result.stdout.match(/Combined GitHub rerun:\n([^\n]+)/u)?.[1] ?? "";
       expect(combinedCommand).toContain("--ref 'release/2026.6'");
       expect(combinedCommand).toContain(
-        "published_upgrade_survivor_baselines='openclaw@2026.5.3'",
+        "published_upgrade_survivor_baselines='nodoassist@2026.5.3'",
       );
     } finally {
       rmSync(root, { force: true, recursive: true });
@@ -404,7 +402,7 @@ describe("Docker E2E helper CLIs", () => {
   });
 
   it("downloads GitHub run artifacts into distinct default directories", () => {
-    const root = mkdtempSync(`${tmpdir()}/openclaw-docker-e2e-rerun-gh-`);
+    const root = mkdtempSync(`${tmpdir()}/nodoassist-docker-e2e-rerun-gh-`);
     const generatedDirs: string[] = [];
     try {
       const binDir = path.join(root, "bin");
@@ -425,7 +423,7 @@ describe("Docker E2E helper CLIs", () => {
           "    headSha: 'abc123',",
           "    status: 'completed',",
           "    url: 'https://github.com/openclaw/openclaw/actions/runs/12345',",
-          "    workflowName: 'OpenClaw Live and E2E Checks',",
+          "    workflowName: 'NodoAssist Live and E2E Checks',",
           "  }));",
           "  process.exit(0);",
           "}",
@@ -457,14 +455,14 @@ describe("Docker E2E helper CLIs", () => {
         "scripts/docker-e2e-rerun.mjs",
         "12345",
         "--repo",
-        "openclaw/openclaw",
+        "nodoassist/nodoassist",
         env,
       );
       const second = runHelper(
         "scripts/docker-e2e-rerun.mjs",
         "12345",
         "--repo",
-        "openclaw/openclaw",
+        "nodoassist/nodoassist",
         env,
       );
 
@@ -474,8 +472,8 @@ describe("Docker E2E helper CLIs", () => {
       const secondDir = downloadedDir(second.stdout);
       generatedDirs.push(firstDir, secondDir);
       expect(firstDir).not.toBe(secondDir);
-      expect(path.basename(firstDir)).toMatch(/^openclaw-docker-e2e-rerun-12345-/u);
-      expect(path.basename(secondDir)).toMatch(/^openclaw-docker-e2e-rerun-12345-/u);
+      expect(path.basename(firstDir)).toMatch(/^nodoassist-docker-e2e-rerun-12345-/u);
+      expect(path.basename(secondDir)).toMatch(/^nodoassist-docker-e2e-rerun-12345-/u);
       expect(existsSync(path.join(firstDir, "artifact", "failures.json"))).toBe(true);
       expect(existsSync(path.join(secondDir, "artifact", "failures.json"))).toBe(true);
     } finally {

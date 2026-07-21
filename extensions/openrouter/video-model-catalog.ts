@@ -2,23 +2,23 @@
 import type {
   UnifiedModelCatalogEntry,
   UnifiedModelCatalogProviderContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
-import { getCachedLiveCatalogValue } from "openclaw/plugin-sdk/provider-catalog-shared";
+} from "nodoassist/plugin-sdk/plugin-entry";
+import { resolveApiKeyForProvider } from "nodoassist/plugin-sdk/provider-auth-runtime";
+import { getCachedLiveCatalogValue } from "nodoassist/plugin-sdk/provider-catalog-shared";
 import {
   assertOkOrThrowHttpError,
   readProviderJsonResponse,
   resolveProviderHttpRequestConfig,
-} from "openclaw/plugin-sdk/provider-http";
+} from "nodoassist/plugin-sdk/provider-http";
 import {
   normalizeOptionalString,
   normalizeTrimmedStringList,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import type {
   VideoGenerationModelCapabilitiesContext,
   VideoGenerationProviderCapabilities,
   VideoGenerationResolution,
-} from "openclaw/plugin-sdk/video-generation";
+} from "nodoassist/plugin-sdk/video-generation";
 import { OPENROUTER_BASE_URL } from "./provider-catalog.js";
 import { fetchOpenRouterVideoGet, type OpenRouterVideoDispatcherPolicy } from "./video-http.js";
 
@@ -222,7 +222,7 @@ async function fetchOpenRouterVideoModels(params: {
       const headers = new Headers({
         Authorization: `Bearer ${params.apiKey}`,
         "HTTP-Referer": "https://openclaw.ai",
-        "X-OpenRouter-Title": "OpenClaw",
+        "X-OpenRouter-Title": "NodoAssist",
       });
       const { response, release } = await fetchOpenRouterVideoGet({
         url: "videos/models",

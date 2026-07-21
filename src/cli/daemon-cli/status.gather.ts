@@ -1,6 +1,6 @@
 // Collects daemon status from service files, config snapshots, ports, probes, and plugin drift.
 import fs from "node:fs/promises";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { uniqueStrings } from "@nodoassist/normalization-core/string-normalization";
 import JSON5 from "json5";
 import {
   createConfigIO,
@@ -9,7 +9,7 @@ import {
   resolveStateDir,
 } from "../../config/config.js";
 import type {
-  OpenClawConfig,
+  NodoAssistConfig,
   ConfigFileSnapshot,
   GatewayBindMode,
   GatewayControlUiConfig,
@@ -17,7 +17,7 @@ import type {
 import { resolveSecretInputRef } from "../../config/types.secrets.js";
 import { readLastGatewayErrorLine } from "../../daemon/diagnostics.js";
 import type { FindExtraGatewayServicesOptions } from "../../daemon/inspect.js";
-import type { StaleOpenClawUpdateLaunchdJob } from "../../daemon/launchd.js";
+import type { StaleNodoAssistUpdateLaunchdJob } from "../../daemon/launchd.js";
 import type { ServiceConfigAudit } from "../../daemon/service-audit.js";
 import type { GatewayServiceRuntime } from "../../daemon/service-runtime.js";
 import { resolveGatewayService } from "../../daemon/service.js";
@@ -93,8 +93,8 @@ type PortStatusSummary = {
 
 type DaemonConfigContext = {
   mergedDaemonEnv: Record<string, string | undefined>;
-  cliCfg: OpenClawConfig;
-  daemonCfg: OpenClawConfig;
+  cliCfg: NodoAssistConfig;
+  daemonCfg: NodoAssistConfig;
   cliConfigSummary: ConfigSummary;
   daemonConfigSummary: ConfigSummary;
   configMismatch: boolean;
@@ -102,7 +102,7 @@ type DaemonConfigContext = {
 
 type StatusConfigRead = {
   summary: ConfigSummary;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   mode: "fast" | "full";
 };
 
@@ -158,18 +158,20 @@ function loadRestartHealthModule() {
   return restartHealthModuleLoader.load();
 }
 
-function resolveSnapshotRuntimeConfig(snapshot: ConfigFileSnapshot | null): OpenClawConfig | null {
+function resolveSnapshotRuntimeConfig(
+  snapshot: ConfigFileSnapshot | null,
+): NodoAssistConfig | null {
   if (!snapshot?.valid || !snapshot.runtimeConfig) {
     return null;
   }
   return snapshot.runtimeConfig;
 }
 
-function coerceStatusConfig(value: unknown): OpenClawConfig {
+function coerceStatusConfig(value: unknown): NodoAssistConfig {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return {};
   }
-  return value as OpenClawConfig;
+  return value as NodoAssistConfig;
 }
 
 function hasOwnKey(value: unknown, key: string): boolean {
@@ -296,7 +298,7 @@ export type DaemonStatus = {
     runtime?: GatewayServiceRuntime;
     configAudit?: ServiceConfigAudit;
     restartHandoff?: GatewayRestartHandoff;
-    staleUpdateLaunchdJobs?: StaleOpenClawUpdateLaunchdJob[];
+    staleUpdateLaunchdJobs?: StaleNodoAssistUpdateLaunchdJob[];
   };
   config?: {
     cli: ConfigSummary;
@@ -347,8 +349,8 @@ export type DaemonStatus = {
   /**
    * Plugin version drift report. Surfaces active official external plugins
    * whose installed version does not match the running gateway version, which
-   * can happen after `npm install -g openclaw@<v>` updates the gateway binary
-   * without a corresponding `openclaw plugins update`.
+   * can happen after `npm install -g nodoassist@<v>` updates the gateway binary
+   * without a corresponding `nodoassist plugins update`.
    */
   pluginVersionDrift?: PluginVersionDriftReport;
 };
@@ -412,8 +414,8 @@ async function loadDaemonConfigContext(
 }
 
 async function resolveGatewayStatusSummary(params: {
-  daemonCfg: OpenClawConfig;
-  cliCfg: OpenClawConfig;
+  daemonCfg: NodoAssistConfig;
+  cliCfg: NodoAssistConfig;
   mergedDaemonEnv: Record<string, string | undefined>;
   commandProgramArguments?: string[];
   rpcUrlOverride?: string;
@@ -527,7 +529,7 @@ async function inspectEstablishedGatewayClients(params: {
 }
 
 function hasActiveGatewayExecProbeCredential(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
   explicitAuth: { token?: string; password?: string };
   mode: "local" | "remote";
@@ -636,8 +638,8 @@ export async function gatherDaemonStatus(
   const staleUpdateLaunchdJobs =
     opts.deep && process.platform === "darwin"
       ? await loadLaunchdModule()
-          .then(({ findStaleOpenClawUpdateLaunchdJobs }) =>
-            findStaleOpenClawUpdateLaunchdJobs(serviceEnv),
+          .then(({ findStaleNodoAssistUpdateLaunchdJobs }) =>
+            findStaleNodoAssistUpdateLaunchdJobs(serviceEnv),
           )
           .catch(() => [])
       : [];

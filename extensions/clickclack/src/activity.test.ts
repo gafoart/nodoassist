@@ -227,22 +227,22 @@ describe("createClickClackActivityPublisher", () => {
     expect(createActivityMessage).toHaveBeenCalledTimes(3);
     expect(createActivityMessage.mock.calls.map((call) => call[0])).toEqual([
       expect.objectContaining({
-        body: "**Thinking**\n\nChecking the runtime",
+        body: "**.nodoassist**\n\nChecking the runtime",
         kind: "agent_commentary",
       }),
       expect.objectContaining({
-        body: "**Thinking**\n\nComparing provider lanes",
+        body: "**.nodoassist**\n\nComparing provider lanes",
         kind: "agent_commentary",
       }),
       expect.objectContaining({
-        body: "**Thinking**\n\nMapping this to ClickClack",
+        body: "**.nodoassist**\n\nMapping this to ClickClack",
         kind: "agent_commentary",
       }),
     ]);
     expect(updateMessageBody).toHaveBeenCalledTimes(1);
     expect(updateMessageBody).toHaveBeenCalledWith(
       "msg_1",
-      "**Thinking**\n\nChecking the runtime and recent rows",
+      "**.nodoassist**\n\nChecking the runtime and recent rows",
     );
   });
 

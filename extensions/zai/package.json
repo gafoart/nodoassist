@@ -1,18 +1,18 @@
 {
-  "name": "@openclaw/zai-provider",
+  "name": "@nodoassist/zai-provider",
   "version": "2026.6.11",
-  "description": "OpenClaw Z.AI provider plugin",
+  "description": "NodoAssist Z.AI provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/zai-provider",
-      "npmSpec": "@openclaw/zai-provider",
+      "clawhubSpec": "clawhub:@nodoassist/zai-provider",
+      "npmSpec": "@nodoassist/zai-provider",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.9"
     },
@@ -20,7 +20,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

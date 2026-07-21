@@ -1,6 +1,6 @@
 // Xai plugin module implements code execution shared behavior.
-import { readProviderJsonObjectResponse } from "openclaw/plugin-sdk/provider-http";
-import { postTrustedWebToolsJson } from "openclaw/plugin-sdk/provider-web-search";
+import { readProviderJsonObjectResponse } from "nodoassist/plugin-sdk/provider-http";
+import { postTrustedWebToolsJson } from "nodoassist/plugin-sdk/provider-web-search";
 import {
   buildXaiResponsesToolBody,
   requireXaiResponseTextAndCitations,

@@ -16,7 +16,7 @@ async function createLingeringPluginFixture(): Promise<{
   markerPath: string;
   stateDir: string;
 }> {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-hooks-cli-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-hooks-cli-"));
   tempDirs.push(root);
   const stateDir = path.join(root, "state");
   const pluginDir = path.join(root, "linger-plugin");
@@ -29,11 +29,11 @@ async function createLingeringPluginFixture(): Promise<{
       name: "linger-plugin",
       version: "1.0.0",
       type: "module",
-      openclaw: { extensions: ["./index.js"] },
+      nodoassist: { extensions: ["./index.js"] },
     }),
   );
   await fs.writeFile(
-    path.join(pluginDir, "openclaw.plugin.json"),
+    path.join(pluginDir, "nodoassist.plugin.json"),
     JSON.stringify({
       id: "linger",
       name: "Linger",
@@ -55,7 +55,7 @@ async function createLingeringPluginFixture(): Promise<{
       "",
     ].join("\n"),
   );
-  const configPath = path.join(stateDir, "openclaw.json");
+  const configPath = path.join(stateDir, "nodoassist.json");
   await fs.writeFile(
     configPath,
     JSON.stringify({
@@ -77,9 +77,9 @@ async function runHooksList(fixture: Awaited<ReturnType<typeof createLingeringPl
       env: {
         ...process.env,
         LINGER_MARKER: fixture.markerPath,
-        OPENCLAW_CONFIG_PATH: fixture.configPath,
-        OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
-        OPENCLAW_STATE_DIR: fixture.stateDir,
+        NODOASSIST_CONFIG_PATH: fixture.configPath,
+        NODOASSIST_DISABLE_BUNDLED_PLUGINS: "1",
+        NODOASSIST_STATE_DIR: fixture.stateDir,
         NODE_ENV: undefined,
         VITEST: undefined,
       },

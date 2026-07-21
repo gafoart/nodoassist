@@ -1,18 +1,18 @@
 {
-  "name": "@openclaw/venice-provider",
+  "name": "@nodoassist/venice-provider",
   "version": "2026.6.11",
-  "description": "OpenClaw Venice provider plugin",
+  "description": "NodoAssist Venice provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/venice-provider",
-      "npmSpec": "@openclaw/venice-provider",
+      "clawhubSpec": "clawhub:@nodoassist/venice-provider",
+      "npmSpec": "@nodoassist/venice-provider",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.9"
     },
@@ -20,7 +20,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

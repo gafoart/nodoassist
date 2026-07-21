@@ -1,12 +1,12 @@
 ---
-summary: "CLI reference for `openclaw wiki` (memory-wiki vault status, search, compile, lint, apply, bridge, ChatGPT import, and Obsidian helpers)"
+summary: "CLI reference for `nodoassist wiki` (memory-wiki vault status, search, compile, lint, apply, bridge, ChatGPT import, and Obsidian helpers)"
 read_when:
   - You want to use the memory-wiki CLI
-  - You are documenting or changing `openclaw wiki`
+  - You are documenting or changing `nodoassist wiki`
 title: "Wiki"
 ---
 
-# `openclaw wiki`
+# `nodoassist wiki`
 
 Inspect and maintain the `memory-wiki` vault. Provided by the bundled `memory-wiki` plugin.
 
@@ -15,36 +15,36 @@ Related: [Memory Wiki plugin](/plugins/memory-wiki), [Memory Overview](/concepts
 ## Common commands
 
 ```bash
-openclaw wiki status
-openclaw wiki doctor
-openclaw wiki init
-openclaw wiki ingest ./notes/alpha.md
-openclaw wiki okf import ./knowledge-catalog/okf/bundles/ga4
-openclaw wiki compile
-openclaw wiki lint
-openclaw wiki search "alpha"
-openclaw wiki search "who should I ask about Teams?" --mode route-question
-openclaw wiki get entity.alpha --from 1 --lines 80
+nodoassist wiki status
+nodoassist wiki doctor
+nodoassist wiki init
+nodoassist wiki ingest ./notes/alpha.md
+nodoassist wiki okf import ./knowledge-catalog/okf/bundles/ga4
+nodoassist wiki compile
+nodoassist wiki lint
+nodoassist wiki search "alpha"
+nodoassist wiki search "who should I ask about Teams?" --mode route-question
+nodoassist wiki get entity.alpha --from 1 --lines 80
 
-openclaw wiki apply synthesis "Alpha Summary" \
+nodoassist wiki apply synthesis "Alpha Summary" \
   --body "Short synthesis body" \
   --source-id source.alpha
 
-openclaw wiki apply metadata entity.alpha \
+nodoassist wiki apply metadata entity.alpha \
   --source-id source.alpha \
   --status review \
   --question "Still active?"
 
-openclaw wiki bridge import
-openclaw wiki unsafe-local import
-openclaw wiki chatgpt import --export ./chatgpt-export --dry-run
-openclaw wiki chatgpt rollback <run-id>
+nodoassist wiki bridge import
+nodoassist wiki unsafe-local import
+nodoassist wiki chatgpt import --export ./chatgpt-export --dry-run
+nodoassist wiki chatgpt rollback <run-id>
 
-openclaw wiki obsidian status
-openclaw wiki obsidian search "alpha"
-openclaw wiki obsidian open syntheses/alpha-summary.md
-openclaw wiki obsidian command workspace:quick-switcher
-openclaw wiki obsidian daily
+nodoassist wiki obsidian status
+nodoassist wiki obsidian search "alpha"
+nodoassist wiki obsidian open syntheses/alpha-summary.md
+nodoassist wiki obsidian command workspace:quick-switcher
+nodoassist wiki obsidian daily
 ```
 
 ## Commands
@@ -90,18 +90,18 @@ Imported pages are flattened under `concepts/` so existing wiki compile, search,
 Examples:
 
 ```bash
-openclaw wiki okf import ./bundles/ga4
-openclaw wiki okf import ./bundles/ga4 --json
-openclaw wiki search "BigQuery Table" --mode source-evidence --json
-openclaw wiki get <path-from-json-result>
+nodoassist wiki okf import ./bundles/ga4
+nodoassist wiki okf import ./bundles/ga4 --json
+nodoassist wiki search "BigQuery Table" --mode source-evidence --json
+nodoassist wiki get <path-from-json-result>
 ```
 
 ### `wiki compile`
 
 Rebuild indexes, related blocks, dashboards, and compiled digests. Writes stable machine-facing artifacts under:
 
-- `.openclaw-wiki/cache/agent-digest.json`
-- `.openclaw-wiki/cache/claims.jsonl`
+- `.nodoassist-wiki/cache/agent-digest.json`
+- `.nodoassist-wiki/cache/claims.jsonl`
 
 If `render.createDashboards` is enabled, compile also refreshes report pages.
 
@@ -126,7 +126,7 @@ Search wiki content. Behavior depends on config:
 - `search.corpus`: `wiki`, `memory`, or `all`
 - `--mode`: `auto`, `find-person`, `route-question`, `source-evidence`, or `raw-claim`
 
-Use `wiki search` for wiki-specific ranking and provenance. For one broad shared recall pass, prefer `openclaw memory search` when the active memory plugin exposes shared search.
+Use `wiki search` for wiki-specific ranking and provenance. For one broad shared recall pass, prefer `nodoassist memory search` when the active memory plugin exposes shared search.
 
 Search modes:
 
@@ -138,10 +138,10 @@ Search modes:
 Examples:
 
 ```bash
-openclaw wiki search "bgroux" --mode find-person
-openclaw wiki search "who knows Teams rollout?" --mode route-question
-openclaw wiki search "maintainer-whois" --mode source-evidence
-openclaw wiki search "strong route Teams" --mode raw-claim --json
+nodoassist wiki search "bgroux" --mode find-person
+nodoassist wiki search "who knows Teams rollout?" --mode route-question
+nodoassist wiki search "maintainer-whois" --mode source-evidence
+nodoassist wiki search "strong route Teams" --mode raw-claim --json
 ```
 
 Text output includes `Claim:` and `Evidence:` lines when a result matches a structured claim. JSON output additionally exposes `matchedClaimId`, `matchedClaimStatus`, `matchedClaimConfidence`, `evidenceKinds`, and `evidenceSourceIds` for agent-side drilldown.
@@ -151,8 +151,8 @@ Text output includes `Claim:` and `Evidence:` lines when a result matches a stru
 Read a wiki page by id or relative path.
 
 ```bash
-openclaw wiki get entity.alpha
-openclaw wiki get syntheses/alpha-summary.md --from 1 --lines 80
+nodoassist wiki get entity.alpha
+nodoassist wiki get syntheses/alpha-summary.md --from 1 --lines 80
 ```
 
 ### `wiki apply`
@@ -179,8 +179,8 @@ Import from explicitly configured local paths (`unsafeLocal.paths`) in `unsafe-l
 Import a ChatGPT export into draft wiki source pages.
 
 ```bash
-openclaw wiki chatgpt import --export ./chatgpt-export
-openclaw wiki chatgpt import --export ./conversations.json --dry-run
+nodoassist wiki chatgpt import --export ./chatgpt-export
+nodoassist wiki chatgpt import --export ./conversations.json --dry-run
 ```
 
 | Flag              | Default    | Description                                                   |
@@ -209,7 +209,7 @@ Obsidian helper commands for vaults running in Obsidian-friendly mode: `status`,
 
 ## Configuration tie-ins
 
-`openclaw wiki` behavior is shaped by:
+`nodoassist wiki` behavior is shaped by:
 
 - `plugins.entries.memory-wiki.config.vaultMode`
 - `plugins.entries.memory-wiki.config.search.backend`

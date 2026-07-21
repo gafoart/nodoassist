@@ -5,20 +5,20 @@ const recordChannelActivityMock = vi.hoisted(() => vi.fn());
 const loadConfigMock = vi.hoisted(() => vi.fn(() => ({ channels: { discord: {} } })));
 let dateNowSpy: ReturnType<typeof vi.spyOn>;
 
-vi.mock("openclaw/plugin-sdk/plugin-config-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/plugin-config-runtime")>(
-    "openclaw/plugin-sdk/plugin-config-runtime",
-  );
+vi.mock("nodoassist/plugin-sdk/plugin-config-runtime", async () => {
+  const actual = await vi.importActual<
+    typeof import("nodoassist/plugin-sdk/plugin-config-runtime")
+  >("nodoassist/plugin-sdk/plugin-config-runtime");
   return {
     ...actual,
     requireRuntimeConfig: (cfg: unknown) => cfg ?? loadConfigMock(),
   };
 });
 
-vi.mock("openclaw/plugin-sdk/channel-activity-runtime", async () => {
+vi.mock("nodoassist/plugin-sdk/channel-activity-runtime", async () => {
   const actual = await vi.importActual<
-    typeof import("openclaw/plugin-sdk/channel-activity-runtime")
-  >("openclaw/plugin-sdk/channel-activity-runtime");
+    typeof import("nodoassist/plugin-sdk/channel-activity-runtime")
+  >("nodoassist/plugin-sdk/channel-activity-runtime");
   return {
     ...actual,
     recordChannelActivity: (...args: unknown[]) => recordChannelActivityMock(...args),

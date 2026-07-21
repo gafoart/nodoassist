@@ -1,9 +1,9 @@
-// Kimi Coding plugin entrypoint registers its OpenClaw integration.
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
-import { normalizeProviderId } from "openclaw/plugin-sdk/provider-model-shared";
-import type { SecretInput } from "openclaw/plugin-sdk/secret-input";
-import { isRecord, normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+// Kimi Coding plugin entrypoint registers its NodoAssist integration.
+import { definePluginEntry } from "nodoassist/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "nodoassist/plugin-sdk/provider-auth-api-key";
+import { normalizeProviderId } from "nodoassist/plugin-sdk/provider-model-shared";
+import type { SecretInput } from "nodoassist/plugin-sdk/secret-input";
+import { isRecord, normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { applyKimiCodeConfig, KIMI_CODING_MODEL_REF } from "./onboard.js";
 import { buildKimiCodingProvider, normalizeKimiCodingModelId } from "./provider-catalog.js";
 import { KIMI_REPLAY_POLICY } from "./replay-policy.js";

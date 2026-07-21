@@ -290,7 +290,7 @@ function renderFileSidebarContent(
       <div class="sidebar-file-view__path-bar">
         <div class="sidebar-file-view__path-field">
           <span class="sidebar-file-view__path" title=${content.path}>${content.path}</span>
-          <openclaw-tooltip content="Copy path">
+          <nodoassist-tooltip content="Copy path">
             <button
               class="btn btn--sm sidebar-file-view__action"
               type="button"
@@ -299,12 +299,12 @@ function renderFileSidebarContent(
             >
               ${icons.copy}
             </button>
-          </openclaw-tooltip>
+          </nodoassist-tooltip>
         </div>
         ${controls
           ? html`
               <div class="sidebar-file-view__actions">
-                <openclaw-tooltip content="Search in file">
+                <nodoassist-tooltip content="Search in file">
                   <button
                     class="btn btn--sm sidebar-file-view__action"
                     type="button"
@@ -314,10 +314,10 @@ function renderFileSidebarContent(
                   >
                     ${icons.search}
                   </button>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
                 ${controls.onReveal
                   ? html`
-                      <openclaw-tooltip content="Show in Files">
+                      <nodoassist-tooltip content="Show in Files">
                         <button
                           class="btn btn--sm sidebar-file-view__action"
                           type="button"
@@ -326,11 +326,11 @@ function renderFileSidebarContent(
                         >
                           ${icons.folder}
                         </button>
-                      </openclaw-tooltip>
+                      </nodoassist-tooltip>
                     `
                   : nothing}
                 <div class="sidebar-file-view__editor">
-                  <openclaw-tooltip
+                  <nodoassist-tooltip
                     .content=${absolutePath ? "Open in editor" : "Workspace root unknown"}
                   >
                     <button
@@ -344,7 +344,7 @@ function renderFileSidebarContent(
                     >
                       ${icons.externalLink}
                     </button>
-                  </openclaw-tooltip>
+                  </nodoassist-tooltip>
                   ${controls.editorMenuOpen && absolutePath
                     ? html`
                         <div class="sidebar-file-view__editor-menu" role="menu">
@@ -369,7 +369,7 @@ function renderFileSidebarContent(
                       `
                     : nothing}
                 </div>
-                <openclaw-tooltip content="Copy file contents">
+                <nodoassist-tooltip content="Copy file contents">
                   <button
                     class="btn btn--sm sidebar-file-view__action ${controls.copied ? "copied" : ""}"
                     type="button"
@@ -378,7 +378,7 @@ function renderFileSidebarContent(
                   >
                     ${controls.copied ? icons.check : icons.copy}
                   </button>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
               </div>
             `
           : nothing}
@@ -479,11 +479,11 @@ export function renderMarkdownSidebar(props: MarkdownSidebarProps) {
     <div class="sidebar-panel">
       <div class="sidebar-header">
         <div class="sidebar-title">${title}</div>
-        <openclaw-tooltip content="Close sidebar">
+        <nodoassist-tooltip content="Close sidebar">
           <button @click=${props.onClose} class="btn" type="button" aria-label="Close sidebar">
             ${icons.x}
           </button>
-        </openclaw-tooltip>
+        </nodoassist-tooltip>
       </div>
       <div class="sidebar-content">
         ${props.error
@@ -893,6 +893,6 @@ class ChatDetailPanel extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-chat-detail-panel")) {
-  customElements.define("openclaw-chat-detail-panel", ChatDetailPanel);
+if (!customElements.get("nodoassist-chat-detail-panel")) {
+  customElements.define("nodoassist-chat-detail-panel", ChatDetailPanel);
 }

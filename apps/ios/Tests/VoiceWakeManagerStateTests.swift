@@ -1,7 +1,7 @@
 import Foundation
 import SwabbleKit
 import Testing
-@testable import OpenClaw
+@testable import NodoAssist
 
 @Suite(.serialized) struct VoiceWakeManagerStateTests {
     @Test @MainActor func `suspend and resume cycle updates state`() async {
@@ -35,7 +35,7 @@ import Testing
 
     @Test @MainActor func `handle recognition callback dispatches command`() async throws {
         let manager = VoiceWakeManager()
-        manager.triggerWords = ["openclaw"]
+        manager.triggerWords = ["nodoassist"]
         manager.isEnabled = true
 
         actor CaptureBox {
@@ -49,11 +49,11 @@ import Testing
             await capture.set(cmd)
         }
 
-        let transcript = "openclaw hello"
-        let triggerRange = try #require(transcript.range(of: "openclaw"))
+        let transcript = "nodoassist hello"
+        let triggerRange = try #require(transcript.range(of: "nodoassist"))
         let helloRange = try #require(transcript.range(of: "hello"))
         let segments = [
-            WakeWordSegment(text: "openclaw", start: 0.0, duration: 0.2, range: triggerRange),
+            WakeWordSegment(text: "nodoassist", start: 0.0, duration: 0.2, range: triggerRange),
             WakeWordSegment(text: "hello", start: 0.8, duration: 0.2, range: helloRange),
         ]
 

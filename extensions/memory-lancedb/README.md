@@ -1,13 +1,13 @@
-# @openclaw/memory-lancedb
+# @nodoassist/memory-lancedb
 
-Official LanceDB-backed long-term memory plugin for OpenClaw.
+Official LanceDB-backed long-term memory plugin for NodoAssist.
 
 This plugin adds persistent memory tools backed by LanceDB, vector search, auto-recall, and auto-capture.
 
 ## Install
 
 ```bash
-openclaw plugins install @openclaw/memory-lancedb
+nodoassist plugins install @nodoassist/memory-lancedb
 ```
 
 Restart the Gateway after installing or updating the plugin.
@@ -28,5 +28,5 @@ Use the memory plugin docs for embedding provider setup, storage paths, indexing
 ## Package
 
 - Plugin id: `memory-lancedb`
-- Package: `@openclaw/memory-lancedb`
-- Minimum OpenClaw host: `2026.4.10`
+- Package: `@nodoassist/memory-lancedb`
+- Minimum NodoAssist host: `2026.4.10`

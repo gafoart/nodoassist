@@ -1,10 +1,10 @@
 // Imported CLI history merge helpers.
-// Deduplicates external history messages against local OpenClaw transcripts.
-import { asFiniteNumber } from "@openclaw/normalization-core/number-coercion";
+// Deduplicates external history messages against local NodoAssist transcripts.
+import { asFiniteNumber } from "@nodoassist/normalization-core/number-coercion";
 import {
   normalizeOptionalString,
   readStringValue,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/normalization-core/string-coerce";
 import { stripInboundMetadata } from "../auto-reply/reply/strip-inbound-meta.js";
 
 const DEDUPE_TIMESTAMP_WINDOW_MS = 5 * 60 * 1000;
@@ -72,10 +72,10 @@ function resolveImportedExternalIdentity(message: unknown): ImportedExternalIden
     return undefined;
   }
   const meta =
-    "__openclaw" in message &&
-    (message as { __openclaw?: unknown })["__openclaw"] &&
-    typeof (message as { __openclaw?: unknown })["__openclaw"] === "object"
-      ? ((message as { __openclaw?: Record<string, unknown> })["__openclaw"] ?? {})
+    "__nodoassist" in message &&
+    (message as { __nodoassist?: unknown })["__nodoassist"] &&
+    typeof (message as { __nodoassist?: unknown })["__nodoassist"] === "object"
+      ? ((message as { __nodoassist?: Record<string, unknown> })["__nodoassist"] ?? {})
       : undefined;
   const externalId = normalizeOptionalString(meta?.externalId);
   return externalId

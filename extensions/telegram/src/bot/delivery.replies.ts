@@ -3,8 +3,8 @@ import { type Bot, GrammyError, InputFile } from "grammy";
 import {
   createOutboundPayloadPlan,
   projectOutboundPayloadPlanForDelivery,
-} from "openclaw/plugin-sdk/channel-outbound";
-import type { MarkdownTableMode, ReplyToMode } from "openclaw/plugin-sdk/config-contracts";
+} from "nodoassist/plugin-sdk/channel-outbound";
+import type { MarkdownTableMode, ReplyToMode } from "nodoassist/plugin-sdk/config-contracts";
 import {
   buildCanonicalSentMessageHookContext,
   createInternalHookEvent,
@@ -13,22 +13,22 @@ import {
   toPluginMessageContext,
   toPluginMessageSentEvent,
   triggerInternalHook,
-} from "openclaw/plugin-sdk/hook-runtime";
-import type { ReplyPayloadDelivery } from "openclaw/plugin-sdk/interactive-runtime";
-import { normalizeMessagePresentation } from "openclaw/plugin-sdk/interactive-runtime";
+} from "nodoassist/plugin-sdk/hook-runtime";
+import type { ReplyPayloadDelivery } from "nodoassist/plugin-sdk/interactive-runtime";
+import { normalizeMessagePresentation } from "nodoassist/plugin-sdk/interactive-runtime";
 import {
   buildOutboundMediaLoadOptions,
   isGifMedia,
   kindFromMime,
   probeVideoDimensions,
-} from "openclaw/plugin-sdk/media-runtime";
-import { getGlobalHookRunner } from "openclaw/plugin-sdk/plugin-runtime";
-import { chunkMarkdownTextWithMode, type ChunkMode } from "openclaw/plugin-sdk/reply-chunking";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-payload";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { danger, logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
-import { loadWebMedia } from "openclaw/plugin-sdk/web-media";
+} from "nodoassist/plugin-sdk/media-runtime";
+import { getGlobalHookRunner } from "nodoassist/plugin-sdk/plugin-runtime";
+import { chunkMarkdownTextWithMode, type ChunkMode } from "nodoassist/plugin-sdk/reply-chunking";
+import type { ReplyPayload } from "nodoassist/plugin-sdk/reply-payload";
+import type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime-env";
+import { danger, logVerbose } from "nodoassist/plugin-sdk/runtime-env";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/ssrf-runtime";
+import { loadWebMedia } from "nodoassist/plugin-sdk/web-media";
 import { resolveTelegramInlineButtons, type TelegramInlineButtons } from "../button-types.js";
 import { splitTelegramCaption } from "../caption.js";
 import {
@@ -795,7 +795,7 @@ export function emitTelegramMessageSentHooks(params: EmitMessageSentHookParams):
 
 export async function deliverReplies(params: {
   replies: ReplyPayload[];
-  cfg?: import("openclaw/plugin-sdk/config-contracts").OpenClawConfig;
+  cfg?: import("nodoassist/plugin-sdk/config-contracts").NodoAssistConfig;
   chatId: string;
   accountId?: string;
   sessionKeyForInternalHooks?: string;

@@ -10,7 +10,7 @@ export {
   zalouserSetupWizard,
 } from "./api.js";
 export { setZalouserRuntime } from "./src/runtime.js";
-export type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+export type { ReplyPayload } from "nodoassist/plugin-sdk/reply-runtime";
 export type {
   BaseProbeResult,
   ChannelAccountSnapshot,
@@ -18,46 +18,46 @@ export type {
   ChannelGroupContext,
   ChannelMessageActionAdapter,
   ChannelStatusIssue,
-} from "openclaw/plugin-sdk/channel-contract";
+} from "nodoassist/plugin-sdk/channel-contract";
 export type {
-  OpenClawConfig,
+  NodoAssistConfig,
   GroupToolPolicyConfig,
   MarkdownTableMode,
-} from "openclaw/plugin-sdk/config-contracts";
+} from "nodoassist/plugin-sdk/config-contracts";
 export type {
   PluginRuntime,
   AnyAgentTool,
   ChannelPlugin,
-  OpenClawPluginToolContext,
-} from "openclaw/plugin-sdk/core";
-export type { RuntimeEnv } from "openclaw/plugin-sdk/runtime";
+  NodoAssistPluginToolContext,
+} from "nodoassist/plugin-sdk/core";
+export type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime";
 export {
   DEFAULT_ACCOUNT_ID,
   buildChannelConfigSchema,
   normalizeAccountId,
-} from "openclaw/plugin-sdk/core";
-export { chunkTextForOutbound } from "openclaw/plugin-sdk/text-chunking";
-export { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/dangerous-name-runtime";
+} from "nodoassist/plugin-sdk/core";
+export { chunkTextForOutbound } from "nodoassist/plugin-sdk/text-chunking";
+export { isDangerousNameMatchingEnabled } from "nodoassist/plugin-sdk/dangerous-name-runtime";
 export {
   resolveDefaultGroupPolicy,
   resolveOpenProviderRuntimeGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/runtime-group-policy";
+} from "nodoassist/plugin-sdk/runtime-group-policy";
 export {
   mergeAllowlist,
   summarizeMapping,
   formatAllowFromLowercase,
-} from "openclaw/plugin-sdk/allow-from";
-export { resolveInboundMentionDecision } from "openclaw/plugin-sdk/channel-inbound";
-export { createChannelPairingController } from "openclaw/plugin-sdk/channel-pairing";
-export { createChannelMessageReplyPipeline } from "openclaw/plugin-sdk/channel-outbound";
-export { buildBaseAccountStatusSnapshot } from "openclaw/plugin-sdk/status-helpers";
-export { loadOutboundMediaFromUrl } from "openclaw/plugin-sdk/outbound-media";
+} from "nodoassist/plugin-sdk/allow-from";
+export { resolveInboundMentionDecision } from "nodoassist/plugin-sdk/channel-inbound";
+export { createChannelPairingController } from "nodoassist/plugin-sdk/channel-pairing";
+export { createChannelMessageReplyPipeline } from "nodoassist/plugin-sdk/channel-outbound";
+export { buildBaseAccountStatusSnapshot } from "nodoassist/plugin-sdk/status-helpers";
+export { loadOutboundMediaFromUrl } from "nodoassist/plugin-sdk/outbound-media";
 export {
   deliverTextOrMediaReply,
   isNumericTargetId,
   resolveSendableOutboundReplyParts,
   sendPayloadWithChunkedTextAndMedia,
   type OutboundReplyPayload,
-} from "openclaw/plugin-sdk/reply-payload";
-export { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+} from "nodoassist/plugin-sdk/reply-payload";
+export { resolvePreferredNodoAssistTmpDir } from "nodoassist/plugin-sdk/temp-path";

@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/admin-http-rpc",
+  "name": "@nodoassist/admin-http-rpc",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw admin HTTP RPC endpoint",
+  "description": "NodoAssist admin HTTP RPC endpoint",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

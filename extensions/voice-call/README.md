@@ -1,6 +1,6 @@
-# @openclaw/voice-call
+# @nodoassist/voice-call
 
-Official Voice Call plugin for **OpenClaw**.
+Official Voice Call plugin for **NodoAssist**.
 
 Providers:
 
@@ -15,7 +15,7 @@ Plugin system: `https://docs.openclaw.ai/tools/plugin`
 ## Install
 
 ```bash
-openclaw plugins install @openclaw/voice-call
+nodoassist plugins install @nodoassist/voice-call
 ```
 
 Restart the Gateway afterwards.
@@ -23,7 +23,7 @@ Restart the Gateway afterwards.
 ## Local dev install
 
 ```bash
-PLUGIN_HOME=~/.openclaw/extensions
+PLUGIN_HOME=~/.nodoassist/extensions
 mkdir -p "$PLUGIN_HOME"
 cp -R <local-plugin-checkout> "$PLUGIN_HOME/voice-call"
 cd "$PLUGIN_HOME/voice-call" && pnpm install
@@ -101,12 +101,12 @@ Notes:
 - Twilio defaults to US1. For a non-US Region, set `twilio.region` to `ie1` or `au1` and use credentials created in that Region; see [Twilio's regional REST API guide](https://www.twilio.com/docs/global-infrastructure/using-the-twilio-rest-api-in-a-non-us-region).
 - `mock` is a local dev provider (no network calls).
 - Telnyx requires `telnyx.publicKey` (or `TELNYX_PUBLIC_KEY`) unless `skipSignatureVerification` is true.
-- If older configs still use `provider: "log"`, `twilio.from`, or legacy `streaming.*` OpenAI keys, run `openclaw doctor --fix` to rewrite them.
+- If older configs still use `provider: "log"`, `twilio.from`, or legacy `streaming.*` OpenAI keys, run `nodoassist doctor --fix` to rewrite them.
 - advanced webhook, streaming, and tunnel notes: `https://docs.openclaw.ai/plugins/voice-call`
 - `responseModel` is optional. When unset, voice responses use the runtime default model.
 - `sessionScope` defaults to `per-phone`, preserving caller memory across calls. Use `per-call` for reception, booking, IVR, and bridge flows where each carrier call should start fresh.
-- `realtime.consultThinkingLevel` is optional. When set, it overrides the thinking level used by the model behind realtime `openclaw_agent_consult` calls.
-- `realtime.consultFastMode` is optional. When set, it toggles fast mode for realtime `openclaw_agent_consult` calls.
+- `realtime.consultThinkingLevel` is optional. When set, it overrides the thinking level used by the model behind realtime `nodoassist_agent_consult` calls.
+- `realtime.consultFastMode` is optional. When set, it toggles fast mode for realtime `nodoassist_agent_consult` calls.
 
 ## Stale call reaper
 
@@ -122,14 +122,14 @@ streaming speech on calls. Override examples and provider caveats live here:
 ## CLI
 
 ```bash
-openclaw voicecall call --to "+15555550123" --message "Hello from OpenClaw"
-openclaw voicecall continue --call-id <id> --message "Any questions?"
-openclaw voicecall speak --call-id <id> --message "One moment"
-openclaw voicecall end --call-id <id>
-openclaw voicecall status --json
-openclaw voicecall status --call-id <id>
-openclaw voicecall tail
-openclaw voicecall expose --mode funnel
+nodoassist voicecall call --to "+15555550123" --message "Hello from NodoAssist"
+nodoassist voicecall continue --call-id <id> --message "Any questions?"
+nodoassist voicecall speak --call-id <id> --message "One moment"
+nodoassist voicecall end --call-id <id>
+nodoassist voicecall status --json
+nodoassist voicecall status --call-id <id>
+nodoassist voicecall tail
+nodoassist voicecall expose --mode funnel
 ```
 
 ## Tool

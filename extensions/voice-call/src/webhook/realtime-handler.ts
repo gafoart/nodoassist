@@ -2,12 +2,12 @@
 import { randomUUID } from "node:crypto";
 import http from "node:http";
 import type { Duplex } from "node:stream";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
 import {
   isFutureDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "nodoassist/plugin-sdk/number-runtime";
 import {
   buildRealtimeVoiceAgentConsultWorkingResponse,
   createRealtimeVoiceForcedConsultCoordinator,
@@ -25,10 +25,10 @@ import {
   type TalkEvent,
   type TalkEventInput,
   type TalkSessionController,
-} from "openclaw/plugin-sdk/realtime-voice";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { sliceUtf16Safe, truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
-import { normalizeWebhookPath } from "openclaw/plugin-sdk/webhook-ingress";
+} from "nodoassist/plugin-sdk/realtime-voice";
+import { createSubsystemLogger } from "nodoassist/plugin-sdk/runtime-env";
+import { sliceUtf16Safe, truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
+import { normalizeWebhookPath } from "nodoassist/plugin-sdk/webhook-ingress";
 import WebSocket, { WebSocketServer } from "ws";
 import type { VoiceCallRealtimeConfig } from "../config.js";
 import type { CallManager } from "../manager.js";
@@ -58,7 +58,7 @@ const MAX_REALTIME_WS_BUFFERED_BYTES = 1024 * 1024;
 const FORCED_CONSULT_FALLBACK_DELAY_MS = 200;
 const FORCED_CONSULT_NATIVE_DEDUPE_MS = 2_000;
 const FORCED_CONSULT_RESULT_MAX_CHARS = 1800;
-const FORCED_CONSULT_REASON = "provider_final_transcript_without_openclaw_agent_consult";
+const FORCED_CONSULT_REASON = "provider_final_transcript_without_nodoassist_agent_consult";
 const CONSULT_TRANSCRIPT_SETTLE_MS = 350;
 const CONSULT_TRANSCRIPT_SETTLE_MAX_MS = 1_000;
 const MAX_PARTIAL_USER_TRANSCRIPT_CHARS = 1_200;
@@ -227,7 +227,7 @@ function buildForcedConsultSpeechPrompt(result: string): string {
       ? trimmed
       : `${truncateUtf16Safe(trimmed, FORCED_CONSULT_RESULT_MAX_CHARS - 16).trimEnd()} [truncated]`;
   return [
-    "Internal OpenClaw consult result is ready.",
+    "Internal NodoAssist consult result is ready.",
     "Do not call tools for this internal result.",
     "Speak the following answer to the caller now, briefly and naturally:",
     bounded,
@@ -345,7 +345,7 @@ export class RealtimeCallHandler {
     private readonly realtimeProvider: RealtimeVoiceProviderPlugin,
     private readonly providerConfig: RealtimeVoiceProviderConfig,
     private readonly servePath: string,
-    private readonly coreConfig?: OpenClawConfig,
+    private readonly coreConfig?: NodoAssistConfig,
     private readonly resolveInstructions?: (call: CallRecord) => string,
   ) {}
 
@@ -1385,7 +1385,8 @@ export class RealtimeCallHandler {
         if (forcedConsult.completedAt || forcedMatch.kind === "already_delivered") {
           submitFinalToolResult({
             status: "already_delivered",
-            message: "OpenClaw already delivered this consult result internally. Do not repeat it.",
+            message:
+              "NodoAssist already delivered this consult result internally. Do not repeat it.",
           });
           return;
         }

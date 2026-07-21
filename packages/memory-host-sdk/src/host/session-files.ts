@@ -4,7 +4,7 @@ import path from "node:path";
 import { normalizeAgentId } from "./config-utils.js";
 import { readRegularFile, statRegularFile } from "./fs-utils.js";
 import { hashText } from "./hash.js";
-import { createSubsystemLogger, redactSensitiveText } from "./openclaw-runtime-io.js";
+import { createSubsystemLogger, redactSensitiveText } from "./nodoassist-runtime-io.js";
 import {
   DREAMING_NARRATIVE_RUN_PREFIX,
   isDreamingNarrativeSessionStoreKey,
@@ -23,7 +23,7 @@ import {
   resolveSessionTranscriptsDirForAgent,
   stripInboundMetadata,
   stripInternalRuntimeContext,
-} from "./openclaw-runtime-session.js";
+} from "./nodoassist-runtime-session.js";
 import { retryTransientMemoryRead } from "./read-retry.js";
 import {
   listSessionTranscriptCorpusEntriesForAgent,
@@ -135,7 +135,7 @@ function isDreamingNarrativeBootstrapRecord(record: unknown): boolean {
   };
   if (
     candidate.type !== "custom" ||
-    candidate.customType !== "openclaw:bootstrap-context:full" ||
+    candidate.customType !== "nodoassist:bootstrap-context:full" ||
     !candidate.data ||
     typeof candidate.data !== "object" ||
     Array.isArray(candidate.data)
@@ -375,7 +375,7 @@ export function sessionPathForFile(absPath: string): string {
 
 /**
  * Parses a deprecated path-shaped memory sync hint only when it points at an
- * OpenClaw-owned usage-counted transcript in the canonical agent sessions dir.
+ * NodoAssist-owned usage-counted transcript in the canonical agent sessions dir.
  */
 export function parseCanonicalSessionSyncTargetFromPath(
   sessionFile: string,
@@ -606,7 +606,7 @@ function renderSessionExportLines(label: string, text: string): string[] {
 }
 
 /**
- * Strip OpenClaw-injected inbound metadata envelopes from a raw text block.
+ * Strip NodoAssist-injected inbound metadata envelopes from a raw text block.
  *
  * User-role messages arriving from external channels (Telegram, Discord,
  * Slack, …) are stored with a multi-line prefix containing Conversation info,

@@ -125,8 +125,8 @@ describe("irc monitor reconnect", () => {
           tls: false,
           nick: "bot",
           username: "bot",
-          realname: "OpenClaw",
-          channels: ["#openclaw"],
+          realname: "NodoAssist",
+          channels: ["#nodoassist"],
         },
       },
     } as CoreConfig;
@@ -137,7 +137,7 @@ describe("irc monitor reconnect", () => {
       await waitForIrcCondition(
         () =>
           server.connectionCount >= 2 &&
-          server.lines.filter((line) => line === "USER bot 0 * :OpenClaw").length >= 2,
+          server.lines.filter((line) => line === "USER bot 0 * :NodoAssist").length >= 2,
         "expected IRC monitor to reconnect after the first socket closed",
       );
 
@@ -153,39 +153,39 @@ describe("irc monitor inbound target", () => {
   it("keeps channel target for group messages", () => {
     expect(
       resolveIrcInboundTarget({
-        target: "#openclaw",
+        target: "#nodoassist",
         senderNick: "alice",
       }),
     ).toEqual({
       isGroup: true,
-      target: "#openclaw",
-      rawTarget: "#openclaw",
+      target: "#nodoassist",
+      rawTarget: "#nodoassist",
     });
   });
 
   it("maps DM target to sender nick and preserves raw target", () => {
     expect(
       resolveIrcInboundTarget({
-        target: "openclaw-bot",
+        target: "nodoassist-bot",
         senderNick: "alice",
       }),
     ).toEqual({
       isGroup: false,
       target: "alice",
-      rawTarget: "openclaw-bot",
+      rawTarget: "nodoassist-bot",
     });
   });
 
   it("falls back to raw target when sender nick is empty", () => {
     expect(
       resolveIrcInboundTarget({
-        target: "openclaw-bot",
+        target: "nodoassist-bot",
         senderNick: " ",
       }),
     ).toEqual({
       isGroup: false,
-      target: "openclaw-bot",
-      rawTarget: "openclaw-bot",
+      target: "nodoassist-bot",
+      rawTarget: "nodoassist-bot",
     });
   });
 });

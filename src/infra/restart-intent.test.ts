@@ -3,11 +3,11 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as NodoAssistStateKyselyDatabase } from "../state/nodoassist-state-db.generated.js";
 import {
-  closeOpenClawStateDatabaseForTest,
-  openOpenClawStateDatabase,
-} from "../state/openclaw-state-db.js";
+  closeNodoAssistStateDatabaseForTest,
+  openNodoAssistStateDatabase,
+} from "../state/nodoassist-state-db.js";
 import {
   executeSqliteQuerySync,
   executeSqliteQueryTakeFirstSync,
@@ -20,23 +20,23 @@ import {
 } from "./restart.js";
 
 const tempDirs: string[] = [];
-type GatewayRestartIntentDatabase = Pick<OpenClawStateKyselyDatabase, "gateway_restart_intent">;
+type GatewayRestartIntentDatabase = Pick<NodoAssistStateKyselyDatabase, "gateway_restart_intent">;
 
 function createIntentEnv(): NodeJS.ProcessEnv {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-restart-intent-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "nodoassist-restart-intent-"));
   tempDirs.push(dir);
   return {
     ...process.env,
-    OPENCLAW_STATE_DIR: dir,
+    NODOASSIST_STATE_DIR: dir,
   };
 }
 
 function legacyIntentPath(env: NodeJS.ProcessEnv): string {
-  return path.join(env.OPENCLAW_STATE_DIR ?? "", "gateway-restart-intent.json");
+  return path.join(env.NODOASSIST_STATE_DIR ?? "", "gateway-restart-intent.json");
 }
 
 function readIntentRow(env: NodeJS.ProcessEnv) {
-  const { db } = openOpenClawStateDatabase({ env });
+  const { db } = openNodoAssistStateDatabase({ env });
   const stateDb = getNodeSqliteKysely<GatewayRestartIntentDatabase>(db);
   return executeSqliteQueryTakeFirstSync(
     db,
@@ -58,7 +58,7 @@ function insertIntentRow(
     waitMs?: number | null;
   },
 ) {
-  const { db } = openOpenClawStateDatabase({ env });
+  const { db } = openNodoAssistStateDatabase({ env });
   const stateDb = getNodeSqliteKysely<GatewayRestartIntentDatabase>(db);
   const now = Date.now();
   executeSqliteQuerySync(
@@ -78,7 +78,7 @@ function insertIntentRow(
 
 describe("gateway restart intent", () => {
   afterEach(() => {
-    closeOpenClawStateDatabaseForTest();
+    closeNodoAssistStateDatabaseForTest();
     for (const dir of tempDirs.splice(0)) {
       fs.rmSync(dir, { force: true, recursive: true });
     }

@@ -1,4 +1,4 @@
-// Control Ui Mock Dev script supports OpenClaw repository automation.
+// Control Ui Mock Dev script supports NodoAssist repository automation.
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import qrcode from "qrcode";
@@ -243,7 +243,7 @@ async function createChatPickerScenario(): Promise<ControlUiMockGatewayScenario>
       updatedAtMs: baseTime - 30_000,
     },
   ];
-  const workspaceListCases = ["main", "alpha", "openclaw-mock"].map((agentId) => ({
+  const workspaceListCases = ["main", "alpha", "nodoassist-mock"].map((agentId) => ({
     match: { agentId },
     response: {
       agentId,
@@ -265,7 +265,7 @@ async function createChatPickerScenario(): Promise<ControlUiMockGatewayScenario>
       "# Context notes\n\nThe right rail should feel like workspace context, not a modal pasted beside the chat.\n\n## Current focus\n\n- Markdown previews need readable dark-mode chrome.\n- Empty or unavailable content should show a quiet state instead of an empty card.\n- File previews should load from the same mock scenario as the file list.\n",
     ],
   ]);
-  const workspaceFileCases = ["main", "alpha", "openclaw-mock"].flatMap((agentId) =>
+  const workspaceFileCases = ["main", "alpha", "nodoassist-mock"].flatMap((agentId) =>
     workspaceFiles.map((file) => ({
       match: { agentId, name: file.name },
       response: {
@@ -332,7 +332,7 @@ async function createChatPickerScenario(): Promise<ControlUiMockGatewayScenario>
     ],
     [
       "package.json",
-      '{\n  "name": "openclaw",\n  "scripts": { "dev:ui:mock": "tsx scripts/control-ui-mock-dev.ts" }\n}\n',
+      '{\n  "name": "nodoassist",\n  "scripts": { "dev:ui:mock": "tsx scripts/control-ui-mock-dev.ts" }\n}\n',
     ],
     [
       "ui/vite.config.ts",
@@ -407,12 +407,12 @@ async function createChatPickerScenario(): Promise<ControlUiMockGatewayScenario>
   <path d="M232 114c-72-44-135-22-146 35 52 9 91-4 125-39" fill="none" stroke="#f06b5f" stroke-width="28" stroke-linecap="round"/>
   <path d="M408 114c72-44 135-22 146 35-52 9-91-4-125-39" fill="none" stroke="#f06b5f" stroke-width="28" stroke-linecap="round"/>
   <path d="M232 246c-45 28-91 35-142 23M408 246c45 28 91 35 142 23" fill="none" stroke="#e14b47" stroke-width="16" stroke-linecap="round"/>
-  <text x="320" y="326" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="24" fill="#f6f7f9">openclaw session artifact</text>
+  <text x="320" y="326" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="24" fill="#f6f7f9">nodoassist session artifact</text>
 </svg>`;
   const lobsterArtifact = {
-    id: "artifact-openclaw-lobster",
+    id: "artifact-nodoassist-lobster",
     type: "image",
-    title: "openclaw-lobster-preview.svg",
+    title: "nodoassist-lobster-preview.svg",
     mimeType: "image/svg+xml",
     sizeBytes: Buffer.byteLength(lobsterSvg, "utf8"),
     source: "session-transcript",
@@ -442,9 +442,9 @@ async function createChatPickerScenario(): Promise<ControlUiMockGatewayScenario>
     modelProvider: "anthropic",
   });
   return {
-    assistantAgentId: "openclaw-mock",
-    assistantName: "OpenClaw mock",
-    defaultAgentId: "openclaw-mock",
+    assistantAgentId: "nodoassist-mock",
+    assistantName: "NodoAssist mock",
+    defaultAgentId: "nodoassist-mock",
     historyMessages: buildScrollableChatHistory(baseTime),
     methodResponses: {
       "device.pair.list": { paired: [], pending: [] },
@@ -582,11 +582,11 @@ function createMockGatewayPlugin(scenario: ControlUiMockGatewayScenario): Plugin
         res.end(bootstrapBody);
       });
     },
-    name: "openclaw-control-ui-mock-gateway",
+    name: "nodoassist-control-ui-mock-gateway",
     transformIndexHtml(html) {
       return html.replace(
         "</head>",
-        `    <script data-openclaw-control-ui-mock-gateway>\n${initScript}\n    </script>\n  </head>`,
+        `    <script data-nodoassist-control-ui-mock-gateway>\n${initScript}\n    </script>\n  </head>`,
       );
     },
   };
@@ -621,7 +621,7 @@ const server = await createServer({
   clearScreen: false,
   configFile: path.join(uiRoot, "vite.config.ts"),
   define: {
-    OPENCLAW_CONTROL_UI_BUILD_ID: JSON.stringify("mock"),
+    NODOASSIST_CONTROL_UI_BUILD_ID: JSON.stringify("mock"),
   },
   logLevel: "error",
   optimizeDeps: {

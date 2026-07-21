@@ -1,13 +1,13 @@
 // Mattermost plugin module implements target resolution behavior.
-import { isPrivateNetworkOptInEnabled } from "openclaw/plugin-sdk/ssrf-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { isPrivateNetworkOptInEnabled } from "nodoassist/plugin-sdk/ssrf-runtime";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { resolveMattermostAccount } from "./accounts.js";
 import {
   createMattermostClient,
   fetchMattermostUser,
   normalizeMattermostBaseUrl,
 } from "./client.js";
-import type { OpenClawConfig } from "./runtime-api.js";
+import type { NodoAssistConfig } from "./runtime-api.js";
 
 type MattermostOpaqueTargetResolution = {
   kind: "user" | "channel";
@@ -53,7 +53,7 @@ export function parseMattermostApiStatus(err: unknown): number | undefined {
 
 export async function resolveMattermostOpaqueTarget(params: {
   input: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   accountId?: string | null;
   token?: string;
   baseUrl?: string;

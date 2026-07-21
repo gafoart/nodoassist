@@ -1,12 +1,12 @@
-# OpenClaw Cerebras Provider
+# NodoAssist Cerebras Provider
 
-Official OpenClaw provider plugin for Cerebras.
+Official NodoAssist provider plugin for Cerebras.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/cerebras-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/cerebras-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/cerebras> for setup and configuration.

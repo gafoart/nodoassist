@@ -1,9 +1,9 @@
 // Xai provider module implements model/runtime integration.
 import {
   isProviderAuthProfileConfigured,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-auth";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
+  type NodoAssistConfig,
+} from "nodoassist/plugin-sdk/provider-auth";
+import { resolveApiKeyForProvider } from "nodoassist/plugin-sdk/provider-auth-runtime";
 import {
   createRealtimeTranscriptionWebSocketSession,
   type RealtimeTranscriptionProviderConfig,
@@ -11,13 +11,13 @@ import {
   type RealtimeTranscriptionSession,
   type RealtimeTranscriptionSessionCreateRequest,
   type RealtimeTranscriptionWebSocketTransport,
-} from "openclaw/plugin-sdk/realtime-transcription";
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
+} from "nodoassist/plugin-sdk/realtime-transcription";
+import { normalizeResolvedSecretInputString } from "nodoassist/plugin-sdk/secret-input";
 import {
   normalizeOptionalString,
   parseBooleanValue as readBoolean,
   parseFiniteNumber as readFiniteNumber,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { XAI_BASE_URL } from "./model-definitions.js";
 import { xaiUserAgentHeaderFor } from "./src/xai-user-agent.js";
 
@@ -265,7 +265,7 @@ export function buildXaiRealtimeTranscriptionProvider(): RealtimeTranscriptionPr
 // 3. xAI OAuth auth profile (cfg-scoped)
 async function resolveXaiRealtimeApiKey(
   configApiKey: string | undefined,
-  cfg: OpenClawConfig | undefined,
+  cfg: NodoAssistConfig | undefined,
 ): Promise<string> {
   const direct =
     normalizeOptionalString(configApiKey) ?? normalizeOptionalString(process.env.XAI_API_KEY);
@@ -278,6 +278,6 @@ async function resolveXaiRealtimeApiKey(
     return oauthKey;
   }
   throw new Error(
-    "xAI credentials missing for realtime STT. Sign in with `openclaw onboard --auth-choice xai-oauth`, or run `openclaw onboard --auth-choice xai-api-key`, or set XAI_API_KEY.",
+    "xAI credentials missing for realtime STT. Sign in with `nodoassist onboard --auth-choice xai-oauth`, or run `nodoassist onboard --auth-choice xai-api-key`, or set XAI_API_KEY.",
   );
 }

@@ -1,13 +1,13 @@
 // Install download test utilities provide isolated state and workspace paths.
 import {
-  createOpenClawTestState,
-  type OpenClawTestState,
-} from "../../test-utils/openclaw-test-state.js";
+  createNodoAssistTestState,
+  type NodoAssistTestState,
+} from "../../test-utils/nodoassist-test-state.js";
 
-/** Creates isolated OpenClaw state for install download tests. */
-export async function createInstallDownloadTestState(): Promise<OpenClawTestState> {
-  return await createOpenClawTestState({
+/** Creates isolated NodoAssist state for install download tests. */
+export async function createInstallDownloadTestState(): Promise<NodoAssistTestState> {
+  return await createNodoAssistTestState({
     layout: "state-only",
-    prefix: "openclaw-skills-install-",
+    prefix: "nodoassist-skills-install-",
   });
 }

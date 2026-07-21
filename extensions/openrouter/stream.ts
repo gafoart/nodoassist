@@ -1,9 +1,9 @@
 // Openrouter plugin module implements stream behavior.
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
-import type { ProviderWrapStreamFnContext } from "openclaw/plugin-sdk/plugin-entry";
-import { OPENROUTER_THINKING_STREAM_HOOKS } from "openclaw/plugin-sdk/provider-stream-family";
-import { createPayloadPatchStreamWrapper } from "openclaw/plugin-sdk/provider-stream-shared";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
+import type { StreamFn } from "nodoassist/plugin-sdk/agent-core";
+import type { ProviderWrapStreamFnContext } from "nodoassist/plugin-sdk/plugin-entry";
+import { OPENROUTER_THINKING_STREAM_HOOKS } from "nodoassist/plugin-sdk/provider-stream-family";
+import { createPayloadPatchStreamWrapper } from "nodoassist/plugin-sdk/provider-stream-shared";
+import { createSubsystemLogger } from "nodoassist/plugin-sdk/runtime-env";
 import { isOpenRouterDeepSeekV4ModelId } from "./models.js";
 import {
   isOpenRouterProxyReasoningUnsupportedModel,
@@ -70,7 +70,7 @@ function mergeOpenRouterAuthHeaders(options: Parameters<StreamFn>[2]): Parameter
     headers.set("HTTP-Referer", "https://openclaw.ai");
   }
   if (!headers.has("x-openrouter-title")) {
-    headers.set("X-OpenRouter-Title", "OpenClaw");
+    headers.set("X-OpenRouter-Title", "NodoAssist");
   }
   return {
     ...options,

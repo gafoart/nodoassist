@@ -3,12 +3,12 @@ import path from "node:path";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import { uniqueValues } from "@openclaw/normalization-core/string-normalization";
+} from "@nodoassist/normalization-core/string-coerce";
+import { uniqueValues } from "@nodoassist/normalization-core/string-normalization";
 import {
   normalizeStringEntries,
   normalizeUniqueStringEntries,
-} from "@openclaw/normalization-core/string-normalization";
+} from "@nodoassist/normalization-core/string-normalization";
 import { clearCodeModeNamespacesForPlugin } from "../agents/code-mode-namespaces.js";
 import {
   getRegisteredAgentHarness,
@@ -22,7 +22,7 @@ import {
   normalizeCommandDescriptorName,
   sanitizeCommandDescriptorDescription,
 } from "../cli/program/command-descriptor-utils.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import {
   clearContextEnginesForOwner,
   registerContextEngineForOwner,
@@ -167,27 +167,27 @@ import type {
   CliBackendPlugin,
   ImageGenerationProviderPlugin,
   MusicGenerationProviderPlugin,
-  OpenClawPluginApi,
-  OpenClawPluginChannelRegistration,
-  OpenClawPluginCliCommandDescriptor,
-  OpenClawPluginCliRegistrar,
-  OpenClawPluginCommandDefinition,
+  NodoAssistPluginApi,
+  NodoAssistPluginChannelRegistration,
+  NodoAssistPluginCliCommandDescriptor,
+  NodoAssistPluginCliRegistrar,
+  NodoAssistPluginCommandDefinition,
   PluginConversationBindingResolvedEvent,
-  OpenClawPluginGatewayRuntimeScopeSurface,
-  OpenClawGatewayDiscoveryService,
-  OpenClawPluginHostedMediaResolver,
-  OpenClawPluginHttpRouteParams,
-  OpenClawPluginHookOptions,
-  OpenClawPluginNodeHostCommand,
-  OpenClawPluginNodeInvokePolicy,
-  OpenClawPluginReloadRegistration,
-  OpenClawPluginSecurityAuditCollector,
+  NodoAssistPluginGatewayRuntimeScopeSurface,
+  NodoAssistGatewayDiscoveryService,
+  NodoAssistPluginHostedMediaResolver,
+  NodoAssistPluginHttpRouteParams,
+  NodoAssistPluginHookOptions,
+  NodoAssistPluginNodeHostCommand,
+  NodoAssistPluginNodeInvokePolicy,
+  NodoAssistPluginReloadRegistration,
+  NodoAssistPluginSecurityAuditCollector,
   MediaUnderstandingProviderPlugin,
   TranscriptSourceProvider,
   MigrationProviderPlugin,
-  OpenClawPluginService,
-  OpenClawPluginToolContext,
-  OpenClawPluginToolFactory,
+  NodoAssistPluginService,
+  NodoAssistPluginToolContext,
+  NodoAssistPluginToolFactory,
   PluginHookHandlerMap,
   PluginHookName,
   PluginHookRegistration as TypedPluginHookRegistration,
@@ -203,7 +203,7 @@ import type {
 } from "./types.js";
 
 export type PluginHttpRouteRegistration = RegistryTypesPluginHttpRouteRegistration & {
-  gatewayRuntimeScopeSurface?: OpenClawPluginGatewayRuntimeScopeSurface;
+  gatewayRuntimeScopeSurface?: NodoAssistPluginGatewayRuntimeScopeSurface;
 };
 
 const GATEWAY_METHOD_DISPATCH_CONTRACT = "authenticated-request";
@@ -338,14 +338,14 @@ function isOfficialCodexPluginRecord(
   if (record.origin !== "global") {
     return false;
   }
-  if (record.packageName === "@openclaw/codex") {
+  if (record.packageName === "@nodoassist/codex") {
     return true;
   }
   const sourcePath = path
     .normalize(record.rootDir ?? record.source)
     .split(path.sep)
     .join("/");
-  return sourcePath.includes("/node_modules/@openclaw/codex");
+  return sourcePath.includes("/node_modules/@nodoassist/codex");
 }
 
 function canClaimReservedCommandOwnership(
@@ -354,7 +354,7 @@ function canClaimReservedCommandOwnership(
   return record.origin === "bundled" || isOfficialCodexPluginRecord(record);
 }
 
-const ACTIVE_PLUGIN_HOOK_REGISTRATIONS_KEY = Symbol.for("openclaw.activePluginHookRegistrations");
+const ACTIVE_PLUGIN_HOOK_REGISTRATIONS_KEY = Symbol.for("nodoassist.activePluginHookRegistrations");
 const activePluginHookRegistrations = resolveGlobalSingleton<
   Map<string, Array<{ event: string; handler: Parameters<typeof registerInternalHook>[1] }>>
 >(ACTIVE_PLUGIN_HOOK_REGISTRATIONS_KEY, () => new Map());
@@ -464,7 +464,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerCodexAppServerExtensionFactory = (
     record: PluginRecord,
-    factory: Parameters<OpenClawPluginApi["registerCodexAppServerExtensionFactory"]>[0],
+    factory: Parameters<NodoAssistPluginApi["registerCodexAppServerExtensionFactory"]>[0],
   ) => {
     if (record.origin !== "bundled") {
       pushDiagnostic({
@@ -527,8 +527,8 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerAgentToolResultMiddleware = (
     record: PluginRecord,
-    handler: Parameters<OpenClawPluginApi["registerAgentToolResultMiddleware"]>[0],
-    options: Parameters<OpenClawPluginApi["registerAgentToolResultMiddleware"]>[1],
+    handler: Parameters<NodoAssistPluginApi["registerAgentToolResultMiddleware"]>[0],
+    options: Parameters<NodoAssistPluginApi["registerAgentToolResultMiddleware"]>[1],
   ) => {
     if (typeof (handler as unknown) !== "function") {
       pushDiagnostic({
@@ -601,7 +601,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerTool = (
     record: PluginRecord,
-    tool: AnyAgentTool | OpenClawPluginToolFactory,
+    tool: AnyAgentTool | NodoAssistPluginToolFactory,
     opts?: { name?: string; names?: string[]; optional?: boolean },
   ) => {
     if (pluginsWithChannelRegistrationConflict.has(record.id)) {
@@ -619,8 +619,8 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     }
     const names = [...(opts?.names ?? []), ...(opts?.name ? [opts.name] : [])];
     const optional = opts?.optional === true;
-    const factory: OpenClawPluginToolFactory =
-      typeof tool === "function" ? tool : (_ctx: OpenClawPluginToolContext) => tool;
+    const factory: NodoAssistPluginToolFactory =
+      typeof tool === "function" ? tool : (_ctx: NodoAssistPluginToolContext) => tool;
 
     if (typeof tool !== "function") {
       names.push(tool.name);
@@ -659,8 +659,8 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     record: PluginRecord,
     events: string | string[],
     handler: Parameters<typeof registerInternalHook>[1],
-    opts: OpenClawPluginHookOptions | undefined,
-    config: OpenClawPluginApi["config"],
+    opts: NodoAssistPluginHookOptions | undefined,
+    config: NodoAssistPluginApi["config"],
     pluginConfig: unknown,
   ) => {
     const normalizedEvents = normalizeStringEntries(Array.isArray(events) ? events : [events]);
@@ -690,7 +690,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
             ...entry.hook,
             name: hookName,
             description,
-            source: "openclaw-plugin",
+            source: "nodoassist-plugin",
             pluginId: record.id,
           },
           metadata: {
@@ -702,7 +702,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
           hook: {
             name: hookName,
             description,
-            source: "openclaw-plugin",
+            source: "nodoassist-plugin",
             pluginId: record.id,
             filePath: record.source,
             baseDir: path.dirname(record.source),
@@ -818,7 +818,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
   const canDispatchGatewayMethodsFromHttpRoute = (record: PluginRecord): boolean =>
     (record.contracts?.gatewayMethodDispatch ?? []).includes(GATEWAY_METHOD_DISPATCH_CONTRACT);
 
-  const registerHttpRoute = (record: PluginRecord, params: OpenClawPluginHttpRouteParams) => {
+  const registerHttpRoute = (record: PluginRecord, params: NodoAssistPluginHttpRouteParams) => {
     const normalizedPath = normalizePluginHttpPath(params.path);
     if (!normalizedPath) {
       pushDiagnostic({
@@ -920,7 +920,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerHostedMediaResolver = (
     record: PluginRecord,
-    resolver: OpenClawPluginHostedMediaResolver,
+    resolver: NodoAssistPluginHostedMediaResolver,
   ) => {
     if (typeof resolver !== "function") {
       pushDiagnostic({
@@ -942,7 +942,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerChannel = (
     record: PluginRecord,
-    registration: OpenClawPluginChannelRegistration | ChannelPlugin,
+    registration: NodoAssistPluginChannelRegistration | ChannelPlugin,
     mode: PluginRegistrationMode = "full",
   ) => {
     if (record.origin === "workspace" && !record.enabled) {
@@ -956,8 +956,8 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     }
     const registrationCapabilities = resolvePluginRegistrationCapabilities(mode);
     const normalized =
-      typeof (registration as OpenClawPluginChannelRegistration).plugin === "object"
-        ? (registration as OpenClawPluginChannelRegistration)
+      typeof (registration as NodoAssistPluginChannelRegistration).plugin === "object"
+        ? (registration as NodoAssistPluginChannelRegistration)
         : { plugin: registration as ChannelPlugin };
     const plugin = normalizeRegisteredChannelPlugin({
       pluginId: record.id,
@@ -1472,11 +1472,11 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerCli = (
     record: PluginRecord,
-    registrar: OpenClawPluginCliRegistrar,
+    registrar: NodoAssistPluginCliRegistrar,
     opts?: {
       parentPath?: string[];
       commands?: string[];
-      descriptors?: OpenClawPluginCliCommandDescriptor[];
+      descriptors?: NodoAssistPluginCliCommandDescriptor[];
     },
   ) => {
     const normalizeCommandRoot = (raw: string, source: "command" | "descriptor") => {
@@ -1511,7 +1511,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
           : null;
       })
       .filter(
-        (descriptor): descriptor is OpenClawPluginCliCommandDescriptor => descriptor !== null,
+        (descriptor): descriptor is NodoAssistPluginCliCommandDescriptor => descriptor !== null,
       );
     const commands = [
       ...(opts?.commands ?? []),
@@ -1568,8 +1568,11 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     NODE_SYSTEM_NOTIFY_COMMAND,
   ]);
 
-  const registerReload = (record: PluginRecord, registration: OpenClawPluginReloadRegistration) => {
-    const normalized: OpenClawPluginReloadRegistration = {
+  const registerReload = (
+    record: PluginRecord,
+    registration: NodoAssistPluginReloadRegistration,
+  ) => {
+    const normalized: NodoAssistPluginReloadRegistration = {
       restartPrefixes: normalizeStringEntries(registration.restartPrefixes),
       hotPrefixes: normalizeStringEntries(registration.hotPrefixes),
       noopPrefixes: normalizeStringEntries(registration.noopPrefixes),
@@ -1598,7 +1601,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerNodeHostCommand = (
     record: PluginRecord,
-    nodeCommand: OpenClawPluginNodeHostCommand,
+    nodeCommand: NodoAssistPluginNodeHostCommand,
   ) => {
     const command = nodeCommand.command.trim();
     if (!command) {
@@ -1644,7 +1647,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerNodeInvokePolicy = (
     record: PluginRecord,
-    policy: OpenClawPluginNodeInvokePolicy,
+    policy: NodoAssistPluginNodeInvokePolicy,
     pluginConfig?: Record<string, unknown>,
   ) => {
     const commands = normalizeUniqueStringEntries(
@@ -1694,7 +1697,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerSecurityAuditCollector = (
     record: PluginRecord,
-    collector: OpenClawPluginSecurityAuditCollector,
+    collector: NodoAssistPluginSecurityAuditCollector,
   ) => {
     registry.securityAuditCollectors.push({
       pluginId: record.id,
@@ -1705,7 +1708,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     });
   };
 
-  const registerService = (record: PluginRecord, service: OpenClawPluginService) => {
+  const registerService = (record: PluginRecord, service: NodoAssistPluginService) => {
     const id = service.id.trim();
     if (!id) {
       return;
@@ -1739,7 +1742,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
 
   const registerGatewayDiscoveryService = (
     record: PluginRecord,
-    service: OpenClawGatewayDiscoveryService,
+    service: NodoAssistGatewayDiscoveryService,
   ) => {
     const id = service.id.trim();
     if (!id) {
@@ -1768,7 +1771,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     });
   };
 
-  const registerCommand = (record: PluginRecord, command: OpenClawPluginCommandDefinition) => {
+  const registerCommand = (record: PluginRecord, command: NodoAssistPluginCommandDefinition) => {
     const name = command.name.trim();
     if (!name) {
       pushDiagnostic({
@@ -2796,12 +2799,12 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
   const createApi = (
     record: PluginRecord,
     params: {
-      config: OpenClawPluginApi["config"];
+      config: NodoAssistPluginApi["config"];
       pluginConfig?: Record<string, unknown>;
       hookPolicy?: PluginTypedHookPolicy;
       registrationMode?: PluginRegistrationMode;
     },
-  ): OpenClawPluginApi => {
+  ): NodoAssistPluginApi => {
     const registrationMode = params.registrationMode ?? "full";
     const registrationCapabilities = resolvePluginRegistrationCapabilities(registrationMode);
     pluginRuntimeRecordById.set(record.id, record);
@@ -2968,12 +2971,12 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
                 }
               },
               registerCompactionProvider: (
-                provider: Parameters<OpenClawPluginApi["registerCompactionProvider"]>[0],
+                provider: Parameters<NodoAssistPluginApi["registerCompactionProvider"]>[0],
               ) => {
                 const id = normalizeOptionalString(
                   (
                     provider as Partial<
-                      Parameters<OpenClawPluginApi["registerCompactionProvider"]>[0]
+                      Parameters<NodoAssistPluginApi["registerCompactionProvider"]>[0]
                     > | null
                   )?.id,
                 );
@@ -3032,7 +3035,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
                   });
                 }
                 return enqueuePluginNextTurnInjection({
-                  cfg: registryParams.runtime.config.current() as OpenClawConfig,
+                  cfg: registryParams.runtime.config.current() as NodoAssistConfig,
                   pluginId: record.id,
                   pluginName: record.name,
                   injection,
@@ -3089,7 +3092,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
                     return { ok: false, error: "plugin is not loaded" };
                   }
                   const runtimeConfig =
-                    (registryParams.runtime.config?.current?.() as OpenClawConfig | undefined) ??
+                    (registryParams.runtime.config?.current?.() as NodoAssistConfig | undefined) ??
                     params.config;
                   return await sendPluginSessionAttachment({
                     ...attachment,

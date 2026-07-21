@@ -11,25 +11,29 @@ import {
   resolveEnvelopeFormatOptions,
   resolveInboundMentionDecision,
   toInboundMediaFacts,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "nodoassist/plugin-sdk/channel-inbound";
 import {
   createChannelIngressResolver,
   defineStableChannelIngressIdentity,
   type ChannelIngressIdentityDescriptor,
-} from "openclaw/plugin-sdk/channel-ingress-runtime";
+} from "nodoassist/plugin-sdk/channel-ingress-runtime";
 import {
   resolveChannelGroupPolicy,
   resolveChannelGroupRequireMention,
-} from "openclaw/plugin-sdk/channel-policy";
-import { hasControlCommand } from "openclaw/plugin-sdk/command-auth-native";
-import type { DmPolicy, GroupPolicy, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveChannelContextVisibilityMode } from "openclaw/plugin-sdk/context-visibility-runtime";
-import { createChannelHistoryWindow, type HistoryEntry } from "openclaw/plugin-sdk/reply-history";
-import type { FinalizedMsgContext } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { sanitizeTerminalText } from "openclaw/plugin-sdk/text-chunking";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "nodoassist/plugin-sdk/channel-policy";
+import { hasControlCommand } from "nodoassist/plugin-sdk/command-auth-native";
+import type {
+  DmPolicy,
+  GroupPolicy,
+  NodoAssistConfig,
+} from "nodoassist/plugin-sdk/config-contracts";
+import { resolveChannelContextVisibilityMode } from "nodoassist/plugin-sdk/context-visibility-runtime";
+import { createChannelHistoryWindow, type HistoryEntry } from "nodoassist/plugin-sdk/reply-history";
+import type { FinalizedMsgContext } from "nodoassist/plugin-sdk/reply-runtime";
+import { resolveAgentRoute } from "nodoassist/plugin-sdk/routing";
+import { uniqueStrings } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { sanitizeTerminalText } from "nodoassist/plugin-sdk/text-chunking";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import { resolveIMessageAccount } from "../accounts.js";
 import { resolveIMessageConversationRoute } from "../conversation-route.js";
 import {
@@ -388,7 +392,7 @@ type IMessageInboundDecision =
   | IMessageInboundDispatchDecision;
 
 export async function resolveIMessageInboundDecision(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId: string;
   message: IMessagePayload;
   opts?: Pick<MonitorIMessageOpts, "requireMention">;
@@ -868,7 +872,7 @@ export async function resolveIMessageInboundDecision(params: {
 }
 
 export async function buildIMessageInboundContext(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   decision: IMessageInboundDispatchDecision;
   message: IMessagePayload;
   envelopeOptions?: EnvelopeFormatOptions;
@@ -1095,7 +1099,7 @@ function buildIMessageEchoScope(params: {
 }
 
 export function buildDirectIMessageReplyTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   sender: string;
 }): string {

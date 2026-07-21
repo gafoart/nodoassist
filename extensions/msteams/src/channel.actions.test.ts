@@ -1,5 +1,5 @@
 // Msteams tests cover channel.actions plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { msteamsPlugin } from "./channel.js";
 
@@ -269,7 +269,7 @@ describe("msteamsPlugin message actions", () => {
               tenantId: "tenant-id",
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
       })?.actions,
     ).toContain("upload-file");
   });
@@ -617,7 +617,7 @@ describe("msteamsPlugin message actions", () => {
             tenantId: "tenant-id",
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
     });
     const schema = discovery?.schema;
     if (!schema) {
@@ -914,7 +914,7 @@ describe("msteamsPlugin.threading.buildToolContext", () => {
       throw new Error("msteams threading.buildToolContext unavailable");
     }
     return build({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as NodoAssistConfig,
       accountId: undefined,
       context,
     });

@@ -1,11 +1,11 @@
-# OpenClaw Nextcloud Talk
+# NodoAssist Nextcloud Talk
 
-Official OpenClaw channel plugin for Nextcloud Talk conversations.
+Official NodoAssist channel plugin for Nextcloud Talk conversations.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugin add @openclaw/nextcloud-talk
+nodoassist plugin add @nodoassist/nextcloud-talk
 ```
 
-Configure the Nextcloud server and Talk credentials in OpenClaw, then enable the conversations where agents should receive and send messages.
+Configure the Nextcloud server and Talk credentials in NodoAssist, then enable the conversations where agents should receive and send messages.

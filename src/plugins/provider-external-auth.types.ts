@@ -1,11 +1,11 @@
 // Defines external auth contracts for provider plugins.
 import type { AuthProfileStore, OAuthCredential } from "../agents/auth-profiles/types.js";
 import type { ModelProviderAuthMode, ModelProviderConfig } from "../config/types.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 
 /** Context for resolving synthetic provider credentials from config. */
 export type ProviderResolveSyntheticAuthContext = {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   provider: string;
   providerConfig?: ModelProviderConfig;
 };
@@ -20,7 +20,7 @@ export type ProviderSyntheticAuthResult = {
 
 /** Context for resolving external provider auth profiles. */
 export type ProviderResolveExternalAuthProfilesContext = {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;

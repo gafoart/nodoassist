@@ -1,36 +1,36 @@
 ---
 summary: "PeekabooBridge integration for macOS UI automation"
 read_when:
-  - Hosting PeekabooBridge in OpenClaw.app
+  - Hosting PeekabooBridge in NodoAssist.app
   - Integrating Peekaboo via Swift Package Manager
   - Changing PeekabooBridge protocol/paths
   - Deciding between PeekabooBridge, Codex Computer Use, and cua-driver MCP
 title: "Peekaboo bridge"
 ---
 
-OpenClaw can host **PeekabooBridge** as a local, permission-aware UI automation broker (`PeekabooBridgeHostCoordinator`, backed by the `steipete/Peekaboo` Swift package). This lets the `peekaboo` CLI drive UI automation while reusing the macOS app's TCC permissions.
+NodoAssist can host **PeekabooBridge** as a local, permission-aware UI automation broker (`PeekabooBridgeHostCoordinator`, backed by the `steipete/Peekaboo` Swift package). This lets the `peekaboo` CLI drive UI automation while reusing the macOS app's TCC permissions.
 
 ## What this is (and is not)
 
-- **Host**: OpenClaw.app can act as a PeekabooBridge host.
-- **Client**: the `peekaboo` CLI (there is no separate `openclaw ui ...` surface).
-- **UI**: visual overlays stay in Peekaboo.app; OpenClaw is a thin broker host.
+- **Host**: NodoAssist.app can act as a PeekabooBridge host.
+- **Client**: the `peekaboo` CLI (there is no separate `nodoassist ui ...` surface).
+- **UI**: visual overlays stay in Peekaboo.app; NodoAssist is a thin broker host.
 
 ## Relationship to other desktop-control paths
 
-OpenClaw has three desktop-control paths that intentionally stay separate:
+NodoAssist has three desktop-control paths that intentionally stay separate:
 
-- **PeekabooBridge host**: OpenClaw.app hosts the local PeekabooBridge socket. The `peekaboo` CLI is the client and uses OpenClaw.app's macOS permissions for screenshots, clicks, menus, dialogs, Dock actions, and window management.
-- **Codex Computer Use**: the bundled `codex` plugin checks and can install Codex's `computer-use` MCP plugin (`extensions/codex/src/app-server/computer-use.ts`), then lets Codex own native desktop-control tool calls during Codex-mode turns. OpenClaw does not proxy those actions through PeekabooBridge.
-- **Direct `cua-driver` MCP**: OpenClaw can register TryCua's upstream `cua-driver mcp` server as a normal MCP server, giving agents the CUA driver's own schemas and pid/window/element-index workflow without routing through the Codex marketplace or the PeekabooBridge socket.
+- **PeekabooBridge host**: NodoAssist.app hosts the local PeekabooBridge socket. The `peekaboo` CLI is the client and uses NodoAssist.app's macOS permissions for screenshots, clicks, menus, dialogs, Dock actions, and window management.
+- **Codex Computer Use**: the bundled `codex` plugin checks and can install Codex's `computer-use` MCP plugin (`extensions/codex/src/app-server/computer-use.ts`), then lets Codex own native desktop-control tool calls during Codex-mode turns. NodoAssist does not proxy those actions through PeekabooBridge.
+- **Direct `cua-driver` MCP**: NodoAssist can register TryCua's upstream `cua-driver mcp` server as a normal MCP server, giving agents the CUA driver's own schemas and pid/window/element-index workflow without routing through the Codex marketplace or the PeekabooBridge socket.
 
-Use Peekaboo for the broad macOS automation surface via OpenClaw.app's permission-aware bridge host. Use Codex Computer Use when a Codex-mode agent should rely on Codex's native plugin. Use direct `cua-driver mcp` to expose the CUA driver to any OpenClaw-managed runtime as a normal MCP server.
+Use Peekaboo for the broad macOS automation surface via NodoAssist.app's permission-aware bridge host. Use Codex Computer Use when a Codex-mode agent should rely on Codex's native plugin. Use direct `cua-driver mcp` to expose the CUA driver to any NodoAssist-managed runtime as a normal MCP server.
 
 ## Enable the bridge
 
 In the macOS app: **Settings -> Enable Peekaboo Bridge**.
 
-When enabled, OpenClaw starts a local UNIX socket server at `~/Library/Application Support/OpenClaw/<socket-name>`. If disabled, the host stops and `peekaboo` falls back to other available hosts. The coordinator also maintains legacy socket symlinks (`clawdbot`, `clawdis`, `moltbot` under Application Support) pointing at the current socket for older `peekaboo` installs.
+When enabled, NodoAssist starts a local UNIX socket server at `~/Library/Application Support/NodoAssist/<socket-name>`. If disabled, the host stops and `peekaboo` falls back to other available hosts. The coordinator also maintains legacy socket symlinks (`clawdbot`, `clawdis`, `moltbot` under Application Support) pointing at the current socket for older `peekaboo` installs.
 
 ## Client discovery order
 
@@ -38,7 +38,7 @@ Peekaboo clients typically try hosts in this order:
 
 1. Peekaboo.app (full UX)
 2. Claude.app (if installed)
-3. OpenClaw.app (thin broker)
+3. NodoAssist.app (thin broker)
 
 Use `peekaboo bridge status --verbose` to see which host is active and which socket path is in use. Override with:
 
@@ -60,7 +60,7 @@ Snapshots are stored in memory with a 10-minute validity window and a cap of 50 
 ## Troubleshooting
 
 - If `peekaboo` reports "bridge client is not authorized", ensure the client is properly signed or run the host with `PEEKABOO_ALLOW_UNSIGNED_SOCKET_CLIENTS=1` in **debug** mode only.
-- If no hosts are found, open one of the host apps (Peekaboo.app or OpenClaw.app) and confirm permissions are granted.
+- If no hosts are found, open one of the host apps (Peekaboo.app or NodoAssist.app) and confirm permissions are granted.
 
 ## Related
 

@@ -7,7 +7,7 @@ import { randomUUID } from "node:crypto";
 import * as net from "node:net";
 import * as os from "node:os";
 import * as path from "node:path";
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { isRecord } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import WebSocket from "ws";
 import type { CodexJsonRpcConnection, CodexSupervisorEndpoint } from "./types.js";
 
@@ -39,7 +39,7 @@ export function resolveSafeApprovalResult(method: string): Record<string, unknow
       contentItems: [
         {
           type: "inputText",
-          text: "OpenClaw Codex supervisor did not register a handler for this app-server tool call.",
+          text: "NodoAssist Codex supervisor did not register a handler for this app-server tool call.",
         },
       ],
       success: false,
@@ -57,7 +57,7 @@ export function resolveSafeApprovalResult(method: string): Record<string, unknow
   if (method.endsWith("/requestApproval")) {
     return {
       decision: "decline",
-      reason: "OpenClaw Codex supervisor does not grant native approvals.",
+      reason: "NodoAssist Codex supervisor does not grant native approvals.",
     };
   }
   if (method === "item/tool/requestUserInput") {
@@ -79,8 +79,8 @@ abstract class BaseCodexJsonRpcConnection implements CodexJsonRpcConnection {
   async initialize(): Promise<void> {
     await this.request("initialize", {
       clientInfo: {
-        name: "openclaw-codex-supervisor",
-        title: "OpenClaw Codex Supervisor",
+        name: "nodoassist-codex-supervisor",
+        title: "NodoAssist Codex Supervisor",
         version: "0.1.0",
       },
       capabilities: {
@@ -135,7 +135,7 @@ abstract class BaseCodexJsonRpcConnection implements CodexJsonRpcConnection {
                 id,
                 error: {
                   code: -32601,
-                  message: `OpenClaw Codex supervisor cannot handle app-server request: ${method}`,
+                  message: `NodoAssist Codex supervisor cannot handle app-server request: ${method}`,
                 },
               }
             : { id, result },

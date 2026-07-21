@@ -2,15 +2,15 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { RequestScopedSubagentRuntimeError } from "openclaw/plugin-sdk/error-runtime";
-import { resolveSessionTranscriptsDirForAgent } from "openclaw/plugin-sdk/memory-core-host-runtime-core";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { RequestScopedSubagentRuntimeError } from "nodoassist/plugin-sdk/error-runtime";
+import { resolveSessionTranscriptsDirForAgent } from "nodoassist/plugin-sdk/memory-core-host-runtime-core";
 import {
   resolveMemoryCorePluginConfig,
   resolveMemoryLightDreamingConfig,
   resolveMemoryRemDreamingConfig,
-} from "openclaw/plugin-sdk/memory-core-host-status";
-import { saveSessionStore } from "openclaw/plugin-sdk/session-store-runtime";
+} from "nodoassist/plugin-sdk/memory-core-host-status";
+import { saveSessionStore } from "nodoassist/plugin-sdk/session-store-runtime";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   testing,
@@ -30,11 +30,11 @@ import { createMemoryCoreTestHarness } from "./test-helpers.js";
 const { createTempWorkspace } = createMemoryCoreTestHarness();
 const DREAMING_TEST_BASE_TIME = new Date("2026-04-05T10:00:00.000Z");
 const DREAMING_TEST_DAY = "2026-04-05";
-const originalDreamingTestFast = process.env.OPENCLAW_TEST_FAST;
-const originalDreamingStateDir = process.env.OPENCLAW_STATE_DIR;
+const originalDreamingTestFast = process.env.NODOASSIST_TEST_FAST;
+const originalDreamingStateDir = process.env.NODOASSIST_STATE_DIR;
 const EMPTY_SESSION_CONTENT_HASH =
   "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070";
-const LIGHT_DREAMING_TEST_CONFIG: OpenClawConfig = {
+const LIGHT_DREAMING_TEST_CONFIG: NodoAssistConfig = {
   plugins: {
     entries: {
       "memory-core": {
@@ -62,20 +62,20 @@ const LIGHT_DREAMING_TEST_CONFIG: OpenClawConfig = {
 };
 
 function setDreamingTestEnv(stateDir: string): void {
-  Reflect.set(process.env, "OPENCLAW_TEST_FAST", "1");
-  Reflect.set(process.env, "OPENCLAW_STATE_DIR", stateDir);
+  Reflect.set(process.env, "NODOASSIST_TEST_FAST", "1");
+  Reflect.set(process.env, "NODOASSIST_STATE_DIR", stateDir);
 }
 
 function restoreDreamingTestEnv(): void {
   if (originalDreamingTestFast === undefined) {
-    Reflect.deleteProperty(process.env, "OPENCLAW_TEST_FAST");
+    Reflect.deleteProperty(process.env, "NODOASSIST_TEST_FAST");
   } else {
-    Reflect.set(process.env, "OPENCLAW_TEST_FAST", originalDreamingTestFast);
+    Reflect.set(process.env, "NODOASSIST_TEST_FAST", originalDreamingTestFast);
   }
   if (originalDreamingStateDir === undefined) {
-    Reflect.deleteProperty(process.env, "OPENCLAW_STATE_DIR");
+    Reflect.deleteProperty(process.env, "NODOASSIST_STATE_DIR");
   } else {
-    Reflect.set(process.env, "OPENCLAW_STATE_DIR", originalDreamingStateDir);
+    Reflect.set(process.env, "NODOASSIST_STATE_DIR", originalDreamingStateDir);
   }
 }
 
@@ -142,7 +142,7 @@ function requireFirstIngestionEntry(sessionIngestion: {
 }
 
 function createHarness(
-  config: OpenClawConfig,
+  config: NodoAssistConfig,
   workspaceDir?: string,
   subagent?: Parameters<typeof testing.runPhaseIfTriggered>[0]["subagent"],
 ) {
@@ -264,7 +264,7 @@ function dailyCapStressLines(label: string): string[] {
 }
 
 async function createDreamingWorkspace(): Promise<string> {
-  const workspaceDir = await createTempWorkspace("openclaw-dreaming-phases-");
+  const workspaceDir = await createTempWorkspace("nodoassist-dreaming-phases-");
   await fs.mkdir(path.join(workspaceDir, "memory"), { recursive: true });
   return workspaceDir;
 }
@@ -280,7 +280,7 @@ async function triggerLightDreaming(
 ): Promise<void> {
   setDreamingTestTime(offsetMinutes);
   await beforeAgentReply(
-    { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+    { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
     { trigger: "heartbeat", workspaceDir },
   );
 }
@@ -305,7 +305,7 @@ describe("memory-core dreaming phases", () => {
       "- Move backups to S3 Glacier.",
       "- Keep retention at 365 days.",
     ]);
-    const testConfig: OpenClawConfig = {
+    const testConfig: NodoAssistConfig = {
       ...LIGHT_DREAMING_TEST_CONFIG,
       agents: {
         defaults: {
@@ -370,7 +370,7 @@ describe("memory-core dreaming phases", () => {
       "- Move backups to S3 Glacier.",
       "- Keep retention at 365 days.",
     ]);
-    const testConfig: OpenClawConfig = {
+    const testConfig: NodoAssistConfig = {
       ...LIGHT_DREAMING_TEST_CONFIG,
       agents: {
         defaults: {
@@ -597,7 +597,7 @@ describe("memory-core dreaming phases", () => {
       [
         "# Dream Diary",
         "",
-        "<!-- openclaw:dreaming:diary:start -->",
+        "<!-- nodoassist:dreaming:diary:start -->",
         ...staleSnippets.flatMap((snippet, index) => [
           "---",
           "",
@@ -606,13 +606,13 @@ describe("memory-core dreaming phases", () => {
           snippet,
           "",
         ]),
-        "<!-- openclaw:dreaming:diary:end -->",
+        "<!-- nodoassist:dreaming:diary:end -->",
         "",
       ].join("\n"),
       "utf-8",
     );
     const subagent = createMockNarrativeSubagent("A later routing note finally took the page.");
-    const testConfig: OpenClawConfig = {
+    const testConfig: NodoAssistConfig = {
       agents: {
         defaults: {
           workspace: workspaceDir,
@@ -682,12 +682,12 @@ describe("memory-core dreaming phases", () => {
         {
           cleanedBody: [
             "System: rotate logs",
-            "System: __openclaw_memory_core_light_sleep__",
+            "System: __nodoassist_memory_core_light_sleep__",
             "",
             "A scheduled reminder has been triggered. The reminder content is:",
             "",
             "rotate logs",
-            "__openclaw_memory_core_light_sleep__",
+            "__nodoassist_memory_core_light_sleep__",
             "",
             "Handle this reminder internally. Do not relay it to the user unless explicitly requested.",
           ].join("\n"),
@@ -713,16 +713,16 @@ describe("memory-core dreaming phases", () => {
         "- Move backups to S3 Glacier.",
         "",
         "## Light Sleep",
-        "<!-- openclaw:dreaming:light:start -->",
+        "<!-- nodoassist:dreaming:light:start -->",
         "- Candidate: Old staged summary.",
         "",
         "## Ops",
         "- Rotate access keys.",
         "",
         "## Light Sleep",
-        "<!-- openclaw:dreaming:light:start -->",
+        "<!-- nodoassist:dreaming:light:start -->",
         "- Candidate: Fresh staged summary.",
-        "<!-- openclaw:dreaming:light:end -->",
+        "<!-- nodoassist:dreaming:light:end -->",
       ]);
 
       const { beforeAgentReply } = createLightDreamingHarness(workspaceDir);
@@ -774,11 +774,11 @@ describe("memory-core dreaming phases", () => {
     const readSpy = vi.spyOn(fs, "readFile");
     try {
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     } finally {
@@ -1319,7 +1319,7 @@ describe("memory-core dreaming phases", () => {
       [
         JSON.stringify({
           type: "custom",
-          customType: "openclaw:bootstrap-context:full",
+          customType: "nodoassist:bootstrap-context:full",
           data: {
             runId: "dreaming-narrative-light-1775894400455",
             sessionId: "dream-session-1",
@@ -1381,7 +1381,7 @@ describe("memory-core dreaming phases", () => {
 
     try {
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     } finally {
@@ -1476,7 +1476,7 @@ describe("memory-core dreaming phases", () => {
 
     try {
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     } finally {
@@ -1568,7 +1568,7 @@ describe("memory-core dreaming phases", () => {
 
     try {
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     } finally {
@@ -1666,7 +1666,7 @@ describe("memory-core dreaming phases", () => {
     vi.setSystemTime(new Date("2026-04-16T19:00:00.000Z"));
     try {
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     } finally {
@@ -1814,7 +1814,7 @@ describe("memory-core dreaming phases", () => {
     vi.setSystemTime(new Date("2026-04-16T19:00:00.000Z"));
     try {
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     } finally {
@@ -1880,7 +1880,7 @@ describe("memory-core dreaming phases", () => {
       [
         JSON.stringify({
           type: "custom",
-          customType: "openclaw:bootstrap-context:full",
+          customType: "nodoassist:bootstrap-context:full",
           data: {
             runId: "dreaming-narrative-light-1775894400455",
             sessionId: "dream-session-1",
@@ -1934,13 +1934,13 @@ describe("memory-core dreaming phases", () => {
 
     try {
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
 
       const readFileSpy = vi.spyOn(fs, "readFile");
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
 
@@ -2733,7 +2733,7 @@ describe("memory-core dreaming phases", () => {
     await withDreamingTestClock(async () => {
       setDreamingTestTime(10);
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_rem_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_rem_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     });
@@ -2948,7 +2948,7 @@ describe("memory-core dreaming phases", () => {
 
       setDreamingTestTime(5);
       await beforeAgentReply(
-        { cleanedBody: "__openclaw_memory_core_rem_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_rem_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     });
@@ -2977,7 +2977,7 @@ describe("memory-core dreaming phases", () => {
       "utf-8",
     );
 
-    const configForTest: OpenClawConfig = {
+    const configForTest: NodoAssistConfig = {
       plugins: {
         entries: {
           "memory-core": {
@@ -3004,7 +3004,7 @@ describe("memory-core dreaming phases", () => {
     await withDreamingTestClock(async () => {
       vi.setSystemTime(new Date(day1Ms));
       await reply1(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     });
@@ -3025,7 +3025,7 @@ describe("memory-core dreaming phases", () => {
     await withDreamingTestClock(async () => {
       vi.setSystemTime(new Date(day2Ms));
       await reply2(
-        { cleanedBody: "__openclaw_memory_core_light_sleep__" },
+        { cleanedBody: "__nodoassist_memory_core_light_sleep__" },
         { trigger: "heartbeat", workspaceDir },
       );
     });

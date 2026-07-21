@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/tts-local-cli",
+  "name": "@nodoassist/tts-local-cli",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw local CLI TTS plugin",
+  "description": "NodoAssist local CLI TTS plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

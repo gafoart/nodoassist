@@ -2,9 +2,9 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveStorePath } from "openclaw/plugin-sdk/session-store-runtime";
-import { captureEnv } from "openclaw/plugin-sdk/test-env";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { resolveStorePath } from "nodoassist/plugin-sdk/session-store-runtime";
+import { captureEnv } from "nodoassist/plugin-sdk/test-env";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { handleTelegramAction, telegramActionRuntime } from "./action-runtime.js";
 import { beginTelegramInboundEventDeliveryCorrelation } from "./inbound-event-delivery.js";
@@ -25,7 +25,7 @@ const sendMessageTelegram = vi.fn(
 );
 const sendDurableMessageBatch = vi.fn(
   async (params: {
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     to: string;
     accountId?: string;
     payloads: Array<{
@@ -243,13 +243,15 @@ describe("handleTelegramAction", () => {
     emoji: "✅",
   } as const;
 
-  function reactionConfig(reactionLevel: "minimal" | "extensive" | "off" | "ack"): OpenClawConfig {
+  function reactionConfig(
+    reactionLevel: "minimal" | "extensive" | "off" | "ack",
+  ): NodoAssistConfig {
     return {
       channels: { telegram: { botToken: "tok", reactionLevel } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
   }
 
-  function telegramConfig(overrides?: Record<string, unknown>): OpenClawConfig {
+  function telegramConfig(overrides?: Record<string, unknown>): NodoAssistConfig {
     return {
       channels: {
         telegram: {
@@ -257,10 +259,10 @@ describe("handleTelegramAction", () => {
           ...overrides,
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
   }
 
-  function topicCacheScopeFor(cfg: OpenClawConfig, accountId: string): string {
+  function topicCacheScopeFor(cfg: NodoAssistConfig, accountId: string): string {
     return resolveTopicNameCacheScope(resolveStorePath(cfg.session?.store, { agentId: accountId }));
   }
 
@@ -301,7 +303,7 @@ describe("handleTelegramAction", () => {
   }
 
   beforeEach(() => {
-    envSnapshot = captureEnv(["OPENCLAW_STATE_DIR", "TELEGRAM_BOT_TOKEN"]);
+    envSnapshot = captureEnv(["NODOASSIST_STATE_DIR", "TELEGRAM_BOT_TOKEN"]);
     resetTopicNameCacheForTest();
     installTopicNameStoreForTest();
     Object.assign(telegramActionRuntime, originalTelegramActionRuntime, {
@@ -353,7 +355,7 @@ describe("handleTelegramAction", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await handleTelegramAction(defaultReactionAction, cfg);
     const call = mockCall(reactMessageTelegram, 0, "reaction add");
     const options = requireRecord(call[3], "reaction add options");
@@ -404,7 +406,7 @@ describe("handleTelegramAction", () => {
   it("soft-fails when messageId is missing", async () => {
     const cfg = {
       channels: { telegram: { botToken: "tok", reactionLevel: "minimal" } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     const result = await handleTelegramAction(
       {
         action: "react",
@@ -457,7 +459,7 @@ describe("handleTelegramAction", () => {
   });
 
   it("rejects sticker actions when disabled by default", async () => {
-    const cfg = { channels: { telegram: { botToken: "tok" } } } as OpenClawConfig;
+    const cfg = { channels: { telegram: { botToken: "tok" } } } as NodoAssistConfig;
     await expect(
       handleTelegramAction(
         {
@@ -474,7 +476,7 @@ describe("handleTelegramAction", () => {
   it("sends stickers when enabled", async () => {
     const cfg = {
       channels: { telegram: { botToken: "tok", actions: { sticker: true } } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await handleTelegramAction(
       {
         action: "sendSticker",
@@ -492,7 +494,7 @@ describe("handleTelegramAction", () => {
   it("accepts shared sticker action aliases", async () => {
     const cfg = {
       channels: { telegram: { botToken: "tok", actions: { sticker: true } } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await handleTelegramAction(
       {
         action: "sticker",
@@ -606,7 +608,7 @@ describe("handleTelegramAction", () => {
           actions: { reactions: false },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     const result = await handleTelegramAction(
       {
         action: "react",
@@ -663,13 +665,13 @@ describe("handleTelegramAction", () => {
   });
 
   it("persists sendMessage action deliveries before Telegram platform send", async () => {
-    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-telegram-action-durable-"));
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), "nodoassist-telegram-action-durable-"));
     const {
       createOutboundTestPlugin,
       createTestRegistry,
       readQueuedDeliveryEntriesForTest,
       setActivePluginRegistry,
-    } = await import("openclaw/plugin-sdk/plugin-test-runtime");
+    } = await import("nodoassist/plugin-sdk/plugin-test-runtime");
     const readDurableQueueEntries = () => readQueuedDeliveryEntriesForTest(stateDir);
     const sendText = vi
       .fn()
@@ -705,7 +707,7 @@ describe("handleTelegramAction", () => {
         return { channel: "telegram", messageId: "tg-ok" };
       });
 
-    process.env.OPENCLAW_STATE_DIR = stateDir;
+    process.env.NODOASSIST_STATE_DIR = stateDir;
     telegramActionRuntime.sendDurableMessageBatch =
       originalTelegramActionRuntime.sendDurableMessageBatch;
     setActivePluginRegistry(
@@ -1297,8 +1299,8 @@ describe("handleTelegramAction", () => {
     });
     const cfg = {
       ...telegramConfig({ actions: { createForumTopic: true } }),
-      session: { store: path.join(os.tmpdir(), "openclaw-telegram-action-sessions.json") },
-    } as OpenClawConfig;
+      session: { store: path.join(os.tmpdir(), "nodoassist-telegram-action-sessions.json") },
+    } as NodoAssistConfig;
 
     await handleTelegramAction(
       { action: "createForumTopic", accountId: "work", chatId: "alias-chat", name: "Topic" },
@@ -1319,8 +1321,8 @@ describe("handleTelegramAction", () => {
     });
     const cfg = {
       ...telegramConfig({ actions: { editForumTopic: true } }),
-      session: { store: path.join(os.tmpdir(), "openclaw-telegram-action-sessions.json") },
-    } as OpenClawConfig;
+      session: { store: path.join(os.tmpdir(), "nodoassist-telegram-action-sessions.json") },
+    } as NodoAssistConfig;
 
     await handleTelegramAction(
       {
@@ -1558,7 +1560,7 @@ describe("handleTelegramAction", () => {
       channels: {
         telegram: { botToken: "tok", actions: { sendMessage: false } },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await expect(
       handleTelegramAction(
         {
@@ -1576,7 +1578,7 @@ describe("handleTelegramAction", () => {
       channels: {
         telegram: { botToken: "tok", actions: { poll: false } },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await expect(
       handleTelegramAction(
         {
@@ -1593,7 +1595,7 @@ describe("handleTelegramAction", () => {
   it("deletes a message", async () => {
     const cfg = {
       channels: { telegram: { botToken: "tok" } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await handleTelegramAction(
       {
         action: "deleteMessage",
@@ -1611,7 +1613,7 @@ describe("handleTelegramAction", () => {
   it("rejects fractional message ids before mutating messages", async () => {
     const cfg = {
       channels: { telegram: { botToken: "tok" } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await expect(
       handleTelegramAction(
@@ -1645,7 +1647,7 @@ describe("handleTelegramAction", () => {
     } as unknown as Awaited<ReturnType<typeof deleteMessageTelegram>>);
     const cfg = {
       channels: { telegram: { botToken: "tok" } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     const result = await handleTelegramAction(
       {
@@ -1675,7 +1677,7 @@ describe("handleTelegramAction", () => {
       channels: {
         telegram: { botToken: "tok", actions: { deleteMessage: false } },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await expect(
       handleTelegramAction(
         {
@@ -1690,7 +1692,7 @@ describe("handleTelegramAction", () => {
 
   it("throws on missing bot token for sendMessage", async () => {
     delete process.env.TELEGRAM_BOT_TOKEN;
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as NodoAssistConfig;
     await expect(
       handleTelegramAction(
         {
@@ -1706,7 +1708,7 @@ describe("handleTelegramAction", () => {
   it("allows inline buttons by default (allowlist)", async () => {
     const cfg = {
       channels: { telegram: { botToken: "tok" } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await handleTelegramAction(
       {
         action: "sendMessage",
@@ -1894,7 +1896,7 @@ describe("handleTelegramAction per-account gating", () => {
     >;
     topLevelBotToken?: string;
     topLevelActions?: { reactions?: boolean };
-  }): OpenClawConfig {
+  }): NodoAssistConfig {
     return {
       channels: {
         telegram: {
@@ -1903,10 +1905,10 @@ describe("handleTelegramAction per-account gating", () => {
           accounts: params.accounts,
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
   }
 
-  async function expectAccountStickerSend(cfg: OpenClawConfig, accountId = "media") {
+  async function expectAccountStickerSend(cfg: NodoAssistConfig, accountId = "media") {
     await handleTelegramAction(
       { action: "sendSticker", to: "123", fileId: "sticker-id", accountId },
       cfg,
@@ -1935,7 +1937,7 @@ describe("handleTelegramAction per-account gating", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await expect(
       handleTelegramAction(

@@ -1,14 +1,14 @@
 // Voice Call API module exposes the plugin public contract.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/plugin-entry";
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/plugin-entry";
+import { definePluginEntry } from "nodoassist/plugin-sdk/plugin-entry";
+import { isRecord } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { migrateVoiceCallLegacyConfigInput } from "./config-api.js";
 
 // Setup-time entrypoint for voice-call config migrations.
 
-/** Migrate voice-call plugin config inside the full OpenClaw config object. */
-function migrateVoiceCallPluginConfig(config: OpenClawConfig): {
-  config: OpenClawConfig;
+/** Migrate voice-call plugin config inside the full NodoAssist config object. */
+function migrateVoiceCallPluginConfig(config: NodoAssistConfig): {
+  config: NodoAssistConfig;
   changes: string[];
 } | null {
   const rawVoiceCallConfig = config.plugins?.entries?.["voice-call"]?.config;

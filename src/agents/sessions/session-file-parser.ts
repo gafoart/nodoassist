@@ -1,4 +1,4 @@
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord } from "@nodoassist/normalization-core/record-coerce";
 import type { FileEntry } from "./session-manager.js";
 
 export type SessionFileParseWarning = {

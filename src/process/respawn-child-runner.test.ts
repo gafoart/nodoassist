@@ -31,8 +31,8 @@ describe("runRespawnChildWithSignalBridge", () => {
 
     runRespawnChildWithSignalBridge({
       command: "/usr/bin/node",
-      args: ["/repo/openclaw/dist/entry.js"],
-      env: { OPENCLAW_NODE_OPTIONS_READY: "1" },
+      args: ["/repo/nodoassist/dist/entry.js"],
+      env: { NODOASSIST_NODE_OPTIONS_READY: "1" },
       detachForProcessTree: true,
       stdioIsTerminal: false,
       runtime: {
@@ -43,15 +43,11 @@ describe("runRespawnChildWithSignalBridge", () => {
       onError: vi.fn(),
     });
 
-    expect(spawnChild).toHaveBeenCalledWith(
-      "/usr/bin/node",
-      ["/repo/openclaw/dist/entry.js"],
-      {
-        stdio: "inherit",
-        env: { OPENCLAW_NODE_OPTIONS_READY: "1" },
-        detached: process.platform !== "win32",
-      },
-    );
+    expect(spawnChild).toHaveBeenCalledWith("/usr/bin/node", ["/repo/nodoassist/dist/entry.js"], {
+      stdio: "inherit",
+      env: { NODOASSIST_NODE_OPTIONS_READY: "1" },
+      detached: process.platform !== "win32",
+    });
   });
 
   it("signals detached respawn process groups after forwarded signal grace", () => {
@@ -63,7 +59,7 @@ describe("runRespawnChildWithSignalBridge", () => {
     try {
       runRespawnChildWithSignalBridge({
         command: "/usr/bin/node",
-        args: ["/repo/openclaw/dist/entry.js"],
+        args: ["/repo/nodoassist/dist/entry.js"],
         env: {},
         detachForProcessTree: true,
         stdioIsTerminal: false,
@@ -117,7 +113,7 @@ describe("runRespawnChildWithSignalBridge", () => {
     try {
       runRespawnChildWithSignalBridge({
         command: "/usr/bin/node",
-        args: ["/repo/openclaw/dist/entry.js"],
+        args: ["/repo/nodoassist/dist/entry.js"],
         env: {},
         detachForProcessTree: true,
         stdioIsTerminal: false,
@@ -155,7 +151,7 @@ describe("runRespawnChildWithSignalBridge", () => {
 
     runRespawnChildWithSignalBridge({
       command: "/usr/bin/node",
-      args: ["/repo/openclaw/dist/entry.js", "configure"],
+      args: ["/repo/nodoassist/dist/entry.js", "configure"],
       env: {},
       detachForProcessTree: true,
       stdioIsTerminal: true,
@@ -169,7 +165,7 @@ describe("runRespawnChildWithSignalBridge", () => {
 
     expect(spawnChild).toHaveBeenCalledWith(
       "/usr/bin/node",
-      ["/repo/openclaw/dist/entry.js", "configure"],
+      ["/repo/nodoassist/dist/entry.js", "configure"],
       {
         stdio: "inherit",
         env: {},

@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { openOpenClawStateDatabase } from "../state/openclaw-state-db.js";
+import { openNodoAssistStateDatabase } from "../state/nodoassist-state-db.js";
 import {
   countFailedDeliveryQueueEntries,
   deleteDeliveryQueueEntry,
@@ -12,7 +12,7 @@ import {
   updateDeliveryQueueEntry,
   upsertDeliveryQueueEntry,
 } from "./delivery-queue-sqlite.js";
-import { resolvePreferredOpenClawTmpDir } from "./tmp-openclaw-dir.js";
+import { resolvePreferredNodoAssistTmpDir } from "./tmp-nodoassist-dir.js";
 
 describe("delivery-queue-sqlite corrupt JSON resilience", () => {
   let stateDir: string;
@@ -20,7 +20,7 @@ describe("delivery-queue-sqlite corrupt JSON resilience", () => {
   const QUEUE = "test-q";
 
   beforeEach(() => {
-    tmpDir = fs.mkdtempSync(path.join(resolvePreferredOpenClawTmpDir(), "openclaw-dq-case-"));
+    tmpDir = fs.mkdtempSync(path.join(resolvePreferredNodoAssistTmpDir(), "nodoassist-dq-case-"));
     stateDir = path.join(tmpDir, "state");
     fs.mkdirSync(stateDir, { recursive: true });
   });
@@ -30,8 +30,8 @@ describe("delivery-queue-sqlite corrupt JSON resilience", () => {
   });
 
   function insertCorruptRow(id: string, json: string) {
-    const { db } = openOpenClawStateDatabase({
-      env: { ...process.env, OPENCLAW_STATE_DIR: stateDir },
+    const { db } = openNodoAssistStateDatabase({
+      env: { ...process.env, NODOASSIST_STATE_DIR: stateDir },
     });
     db.prepare(
       `INSERT INTO delivery_queue_entries
@@ -167,7 +167,7 @@ describe("countFailedDeliveryQueueEntries", () => {
   let stateDir: string;
 
   beforeEach(() => {
-    tmpDir = fs.mkdtempSync(path.join(resolvePreferredOpenClawTmpDir(), "openclaw-dq-count-"));
+    tmpDir = fs.mkdtempSync(path.join(resolvePreferredNodoAssistTmpDir(), "nodoassist-dq-count-"));
     stateDir = path.join(tmpDir, "state");
     fs.mkdirSync(stateDir, { recursive: true });
   });

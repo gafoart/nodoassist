@@ -5,7 +5,7 @@ import path from "node:path";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/normalization-core/string-coerce";
 import type {
   ConfigFileSnapshot,
   GatewayAuthMode,
@@ -21,7 +21,7 @@ import {
   resolveGatewayPort,
   resolveStateDir,
 } from "../../config/paths.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { hasConfiguredSecretInput } from "../../config/types.secrets.js";
 import { GATEWAY_SERVICE_RUNTIME_PID_ENV } from "../../daemon/constants.js";
 import {
@@ -119,7 +119,7 @@ function extractGatewayMiskeys(parsed: unknown): {
 }
 
 function createGatewayCliStartupTrace() {
-  const enabled = isTruthyEnvValue(process.env.OPENCLAW_GATEWAY_STARTUP_TRACE);
+  const enabled = isTruthyEnvValue(process.env.NODOASSIST_GATEWAY_STARTUP_TRACE);
   const started = performance.now();
   let last = started;
   const emit = (name: string, durationMs: number, totalMs: number) => {
@@ -150,7 +150,7 @@ function createGatewayCliStartupTrace() {
 
 function warnInlinePasswordFlag() {
   defaultRuntime.error(
-    "Warning: --password can be exposed via process listings. Prefer --password-file or OPENCLAW_GATEWAY_PASSWORD.",
+    "Warning: --password can be exposed via process listings. Prefer --password-file or NODOASSIST_GATEWAY_PASSWORD.",
   );
 }
 
@@ -203,7 +203,7 @@ function shouldBlockGatewayBindWithoutExplicitAuth(params: {
   );
 }
 
-async function maybeLogPendingControlUiBuild(cfg: OpenClawConfig): Promise<void> {
+async function maybeLogPendingControlUiBuild(cfg: NodoAssistConfig): Promise<void> {
   if (cfg.gateway?.controlUi?.enabled === false) {
     return;
   }
@@ -236,7 +236,7 @@ function getGatewayStartGuardErrors(params: {
   }
   if (!params.configExists) {
     return [
-      `Missing config. Run \`${formatCliCommand("openclaw setup")}\` or set gateway.mode=local (or pass --allow-unconfigured).`,
+      `Missing config. Run \`${formatCliCommand("nodoassist setup")}\` or set gateway.mode=local (or pass --allow-unconfigured).`,
     ];
   }
   if (params.mode === undefined) {
@@ -244,7 +244,7 @@ function getGatewayStartGuardErrors(params: {
       [
         "Gateway start blocked: existing config is missing gateway.mode.",
         "Treat this as suspicious or clobbered config.",
-        `Re-run \`${formatCliCommand("openclaw onboard --mode local")}\` or \`${formatCliCommand("openclaw setup")}\`, set gateway.mode=local manually, or pass --allow-unconfigured.`,
+        `Re-run \`${formatCliCommand("nodoassist onboard --mode local")}\` or \`${formatCliCommand("nodoassist setup")}\`, set gateway.mode=local manually, or pass --allow-unconfigured.`,
       ].join(" "),
       `Config write audit: ${params.configAuditPath}`,
     ];
@@ -260,12 +260,12 @@ async function readGatewayStartupConfig(params: {
   opts: GatewayRunOpts;
   startupTrace: ReturnType<typeof createGatewayCliStartupTrace>;
 }): Promise<{
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   snapshot: ConfigFileSnapshot | null;
   startupConfigSnapshotRead?: ReadConfigFileSnapshotWithPluginMetadataResult;
 }> {
   const { readConfigFileSnapshotWithPluginMetadata } = await import("../../config/config.js");
-  let blockedRecoveryConfig: OpenClawConfig | null = null;
+  let blockedRecoveryConfig: NodoAssistConfig | null = null;
   const snapshotRead: ReadConfigFileSnapshotWithPluginMetadataResult | null =
     await params.startupTrace.measure("cli.config-snapshot", () =>
       readConfigFileSnapshotWithPluginMetadata({
@@ -312,7 +312,7 @@ type GatewayRunShellEnvFallbackPlan =
     };
 
 async function resolveGatewayRunShellEnvFallbackPlan(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
 ): Promise<GatewayRunShellEnvFallbackPlan> {
   const { createConfigRuntimeEnv } = await import("../../config/env-vars.js");
   const {
@@ -588,7 +588,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
   const { clearGatewayRunConfigEnvironment } = await import("./pre-bootstrap.js");
   clearGatewayRunConfigEnvironment();
   installQaParentWatchdog();
-  const isDevProfile = normalizeOptionalLowercaseString(process.env.OPENCLAW_PROFILE) === "dev";
+  const isDevProfile = normalizeOptionalLowercaseString(process.env.NODOASSIST_PROFILE) === "dev";
   const devMode = Boolean(opts.dev) || isDevProfile;
   if (opts.reset && !devMode) {
     defaultRuntime.error("Use --reset with --dev.");
@@ -598,7 +598,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
   setVerbose(Boolean(opts.verbose));
   if (opts.cliBackendLogs || opts.claudeCliLogs) {
     setConsoleSubsystemFilter(["agent/cli-backend"]);
-    process.env.OPENCLAW_CLI_BACKEND_LOG_OUTPUT = "1";
+    process.env.NODOASSIST_CLI_BACKEND_LOG_OUTPUT = "1";
   }
   const wsLogRaw = (opts.compact ? "compact" : opts.wsLog) as string | undefined;
   const wsLogStyle: GatewayWsLogStyle =
@@ -615,11 +615,11 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
   setGatewayWsLogStyle(wsLogStyle);
 
   if (opts.rawStream) {
-    process.env.OPENCLAW_RAW_STREAM = "1";
+    process.env.NODOASSIST_RAW_STREAM = "1";
   }
   const rawStreamPath = toOptionString(opts.rawStreamPath);
   if (rawStreamPath) {
-    process.env.OPENCLAW_RAW_STREAM_PATH = rawStreamPath;
+    process.env.NODOASSIST_RAW_STREAM_PATH = rawStreamPath;
   }
 
   const startupTrace = createGatewayCliStartupTrace();
@@ -682,7 +682,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
     ) {
       return;
     }
-    const finalConfigEnteredServiceMode = Boolean(process.env.OPENCLAW_SERVICE_MARKER?.trim());
+    const finalConfigEnteredServiceMode = Boolean(process.env.NODOASSIST_SERVICE_MARKER?.trim());
     const clearRejectedFinalConfigEnv = () => {
       clearGatewayRunConfigEnvironment();
       if (finalConfigEnteredServiceMode) {
@@ -705,7 +705,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
       return;
     }
   }
-  if (process.env.OPENCLAW_SERVICE_MARKER?.trim()) {
+  if (process.env.NODOASSIST_SERVICE_MARKER?.trim()) {
     process.env[GATEWAY_SERVICE_RUNTIME_PID_ENV] = String(process.pid);
   }
   await hooks.refreshManagedProxy?.(cfg.proxy);
@@ -737,7 +737,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
     return;
   }
   const bindExplicitRaw = bindExplicitRawStr as GatewayBindMode | undefined;
-  if (process.env.OPENCLAW_SERVICE_MARKER?.trim()) {
+  if (process.env.NODOASSIST_SERVICE_MARKER?.trim()) {
     const { cleanStaleGatewayProcessesSync } = await import("../../infra/restart-stale-pids.js");
     const stale = cleanStaleGatewayProcessesSync(port, {
       protectedPid: inheritedGatewayServicePid,
@@ -790,7 +790,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
       }
     } catch (err) {
       defaultRuntime.error(
-        `Could not free port ${port}: ${formatErrorMessage(err)}. Run ${formatCliCommand("openclaw gateway status --deep")} to inspect the listener.`,
+        `Could not free port ${port}: ${formatErrorMessage(err)}. Run ${formatCliCommand("nodoassist gateway status --deep")} to inspect the listener.`,
       );
       defaultRuntime.exit(1);
       return;
@@ -799,7 +799,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
   if (opts.token) {
     const token = toOptionString(opts.token);
     if (token) {
-      process.env.OPENCLAW_GATEWAY_TOKEN = token;
+      process.env.NODOASSIST_GATEWAY_TOKEN = token;
     }
   }
   const authModeRaw = toOptionString(opts.auth);
@@ -909,7 +909,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
     defaultRuntime.error(
       [
         "Gateway auth is set to password, but no password is configured.",
-        "Set gateway.auth.password (or OPENCLAW_GATEWAY_PASSWORD), or pass --password.",
+        "Set gateway.auth.password (or NODOASSIST_GATEWAY_PASSWORD), or pass --password.",
         ...authHints,
       ]
         .filter(Boolean)
@@ -937,10 +937,10 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
         ...(isContainerEnvironment()
           ? [
               "Container environment detected \u2014 the gateway defaults to bind=auto (0.0.0.0) for port-forwarding compatibility.",
-              "Set OPENCLAW_GATEWAY_TOKEN or OPENCLAW_GATEWAY_PASSWORD, or pass --token/--password to start with auth.",
+              "Set NODOASSIST_GATEWAY_TOKEN or NODOASSIST_GATEWAY_PASSWORD, or pass --token/--password to start with auth.",
             ]
           : [
-              "Set gateway.auth.token/password (or OPENCLAW_GATEWAY_TOKEN/OPENCLAW_GATEWAY_PASSWORD) or pass --token/--password.",
+              "Set gateway.auth.token/password (or NODOASSIST_GATEWAY_TOKEN/NODOASSIST_GATEWAY_PASSWORD) or pass --token/--password.",
             ]),
         ...authHints,
       ]
@@ -962,8 +962,8 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
   startupTrace.mark("cli.gateway-loop");
   let startupConfigSnapshotReadForNextStart = startupConfigSnapshotRead;
   const envSidecarStartupMode =
-    isTruthyEnvValue(process.env.OPENCLAW_SKIP_CHANNELS) ||
-    isTruthyEnvValue(process.env.OPENCLAW_SKIP_PROVIDERS)
+    isTruthyEnvValue(process.env.NODOASSIST_SKIP_CHANNELS) ||
+    isTruthyEnvValue(process.env.NODOASSIST_SKIP_PROVIDERS)
       ? "defer"
       : "start";
   let crashLoopDecision: GatewayCrashLoopBreakerDecision | undefined;
@@ -1042,7 +1042,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
     if (isGatewayLockError(err)) {
       const errMessage = formatErrorMessage(err);
       defaultRuntime.error(
-        `Gateway failed to start: ${errMessage}\nIf the gateway is supervised, stop it with: ${formatCliCommand("openclaw gateway stop")}`,
+        `Gateway failed to start: ${errMessage}\nIf the gateway is supervised, stop it with: ${formatCliCommand("nodoassist gateway stop")}`,
       );
       try {
         const { formatPortDiagnostics, inspectPortUsage } = await import("../../infra/ports.js");
@@ -1062,7 +1062,7 @@ export async function runGatewayCommand(opts: GatewayRunOpts, hooks: GatewayRunR
     }
     await maybeWriteGatewayStartupFailureBundle(err);
     defaultRuntime.error(
-      `Gateway failed to start: ${formatErrorMessage(err)}. Run ${formatCliCommand("openclaw gateway status --deep")} for diagnostics.`,
+      `Gateway failed to start: ${formatErrorMessage(err)}. Run ${formatCliCommand("nodoassist gateway status --deep")} for diagnostics.`,
     );
     defaultRuntime.exit(resolveGatewayStartupFailureExitCode(err));
   }

@@ -3,10 +3,10 @@ import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import type {
-  OpenClawConfig,
-  OpenClawPluginApi,
+  NodoAssistConfig,
+  NodoAssistPluginApi,
   PluginLogger,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "nodoassist/plugin-sdk/plugin-entry";
 import {
   CARD_LOOKBACK_MS,
   MAX_FRAMES_PER_CALL,
@@ -114,8 +114,8 @@ export class LogbookService {
   constructor(
     private readonly config: LogbookConfig,
     private readonly deps: {
-      runtime: NonNullable<OpenClawPluginApi["runtime"]>;
-      fullConfig: OpenClawConfig;
+      runtime: NonNullable<NodoAssistPluginApi["runtime"]>;
+      fullConfig: NodoAssistConfig;
       logger: PluginLogger;
       dataDir: string;
     },

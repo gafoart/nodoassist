@@ -272,7 +272,7 @@ describe("resolveCopilotProvider", () => {
     }
   });
 
-  it("rejects BYOK endpoints blocked by OpenClaw SSRF policy", () => {
+  it("rejects BYOK endpoints blocked by NodoAssist SSRF policy", () => {
     for (const baseUrl of [
       "file://public.example/v1",
       "ftp://public.example/v1",

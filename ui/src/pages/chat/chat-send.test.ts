@@ -786,7 +786,7 @@ describe("refreshChatAvatar", () => {
     );
     const fetchMock = vi.fn((input: string | URL | Request) => {
       const url = requestUrl(input);
-      if (url === "/openclaw/avatar/main?meta=1") {
+      if (url === "/nodoassist/avatar/main?meta=1") {
         return Promise.resolve({
           ok: true,
           json: async () => ({ avatarUrl: "/avatar/main" }),
@@ -803,7 +803,7 @@ describe("refreshChatAvatar", () => {
     vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
 
     const host = makeHost({
-      basePath: "/openclaw/",
+      basePath: "/nodoassist/",
       sessionKey: "agent:main",
       settings: { token: "session-token" },
       password: "shared-password",
@@ -812,7 +812,7 @@ describe("refreshChatAvatar", () => {
     await refreshChatAvatar(host);
 
     expect(fetchUrl(fetchMock as unknown as MockCallSource, 0)).toBe(
-      "/openclaw/avatar/main?meta=1",
+      "/nodoassist/avatar/main?meta=1",
     );
     expect(fetchInit(fetchMock as unknown as MockCallSource, 0).method).toBe("GET");
     expect(fetchInit(fetchMock as unknown as MockCallSource, 0).headers).toEqual({
@@ -840,7 +840,7 @@ describe("refreshChatAvatar", () => {
     );
     const fetchMock = vi.fn((input: string | URL | Request) => {
       const url = requestUrl(input);
-      if (url === "/openclaw/avatar/main?meta=1") {
+      if (url === "/nodoassist/avatar/main?meta=1") {
         return Promise.resolve({
           ok: true,
           json: async () => ({ avatarUrl: "/avatar/main" }),
@@ -857,14 +857,14 @@ describe("refreshChatAvatar", () => {
     vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
 
     const host = makeHost({
-      basePath: "/openclaw/",
+      basePath: "/nodoassist/",
       sessionKey: "agent:main",
       settings: { token: "session-token" },
     });
     await refreshChatAvatar(host);
 
     expect(fetchUrl(fetchMock as unknown as MockCallSource, 0)).toBe(
-      "/openclaw/avatar/main?meta=1",
+      "/nodoassist/avatar/main?meta=1",
     );
     expect(fetchInit(fetchMock as unknown as MockCallSource, 0).method).toBe("GET");
     expect(fetchInit(fetchMock as unknown as MockCallSource, 0).headers).toEqual({
@@ -887,10 +887,12 @@ describe("refreshChatAvatar", () => {
     });
     vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
 
-    const host = makeHost({ basePath: "/openclaw/", sessionKey: "agent:ops:main" });
+    const host = makeHost({ basePath: "/nodoassist/", sessionKey: "agent:ops:main" });
     await refreshChatAvatar(host);
 
-    expect(fetchUrl(fetchMock as unknown as MockCallSource, 0)).toBe("/openclaw/avatar/ops?meta=1");
+    expect(fetchUrl(fetchMock as unknown as MockCallSource, 0)).toBe(
+      "/nodoassist/avatar/ops?meta=1",
+    );
     expect(fetchInit(fetchMock as unknown as MockCallSource, 0).method).toBe("GET");
     expect(host.chatAvatarUrl).toBeNull();
   });
@@ -1574,7 +1576,7 @@ describe("handleSendChat", () => {
       ),
     );
     expect(warn).toHaveBeenCalledWith(
-      "[openclaw] control-ui.chat.send",
+      "[nodoassist] control-ui.chat.send",
       expect.objectContaining({
         phase: "first-assistant-visible",
         runId,

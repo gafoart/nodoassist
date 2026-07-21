@@ -1,5 +1,5 @@
 ---
-summary: "How to contribute to the OpenClaw threat model"
+summary: "How to contribute to the NodoAssist threat model"
 title: "Contributing to the threat model"
 read_when:
   - You want to contribute security findings or threat scenarios
@@ -14,7 +14,7 @@ This is for adding to the threat model, not reporting live vulnerabilities. If y
 
 ## Ways to contribute
 
-**Add a threat.** Open an issue on [openclaw/trust](https://github.com/openclaw/trust/issues) describing the attack scenario in your own words. Helpful but not required:
+**Add a threat.** Open an issue on [nodoassist/trust](https://github.com/openclaw/trust/issues) describing the attack scenario in your own words. Helpful but not required:
 
 - The attack scenario and how it could be exploited.
 - Which components are affected (CLI, gateway, channels, ClawHub, MCP servers, etc.).
@@ -71,12 +71,12 @@ Threats are mapped to [MITRE ATLAS](https://atlas.mitre.org/) (Adversarial Threa
 ## Contact
 
 - **Security vulnerabilities:** [Trust page](https://trust.openclaw.ai) for reporting instructions, or `security@openclaw.ai`.
-- **Threat model questions:** open an issue on [openclaw/trust](https://github.com/openclaw/trust/issues).
+- **Threat model questions:** open an issue on [nodoassist/trust](https://github.com/openclaw/trust/issues).
 - **General chat:** Discord `#security` channel.
 
 ## Recognition
 
-Contributors to the threat model are recognized in the threat model acknowledgments, release notes, and the OpenClaw security hall of fame for significant contributions.
+Contributors to the threat model are recognized in the threat model acknowledgments, release notes, and the NodoAssist security hall of fame for significant contributions.
 
 ## Related
 

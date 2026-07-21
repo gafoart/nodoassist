@@ -202,7 +202,7 @@ export async function recoverOrphanedSubagentSessions(params: {
     failedRuns: [] as Array<{ runId: string; childSessionKey: string; error?: string }>,
   };
   const resumedSessionKeys = params.resumedSessionKeys ?? new Set<string>();
-  const configChangePattern = /openclaw\.json|openclaw gateway restart|config\.patch/i;
+  const configChangePattern = /nodoassist\.json|nodoassist gateway restart|config\.patch/i;
 
   try {
     const activeRuns = params.getActiveRuns();
@@ -332,7 +332,7 @@ export async function recoverOrphanedSubagentSessions(params: {
           task: runRecord.task,
           lastHumanMessage: extractMessageText(lastHumanMessage),
           configChangeHint: configChangeDetected
-            ? "\n\n[config changes from your previous run were already applied — do not re-modify openclaw.json or restart the gateway]"
+            ? "\n\n[config changes from your previous run were already applied — do not re-modify nodoassist.json or restart the gateway]"
             : undefined,
           originalRunId: runId,
           originalRun: runRecord,

@@ -340,6 +340,6 @@ class SkillsPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-skills-page")) {
-  customElements.define("openclaw-skills-page", SkillsPage);
+if (!customElements.get("nodoassist-skills-page")) {
+  customElements.define("nodoassist-skills-page", SkillsPage);
 }

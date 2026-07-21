@@ -1,10 +1,10 @@
 // Mattermost tests cover thread participation cache plugin behavior.
-import type { OpenKeyedStoreOptions } from "openclaw/plugin-sdk/plugin-state-runtime";
+import type { OpenKeyedStoreOptions } from "nodoassist/plugin-sdk/plugin-state-runtime";
 import {
   createPluginStateKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
-import type { PluginRuntime } from "openclaw/plugin-sdk/runtime-store";
+} from "nodoassist/plugin-sdk/plugin-state-test-runtime";
+import type { PluginRuntime } from "nodoassist/plugin-sdk/runtime-store";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { setMattermostRuntime } from "../runtime.js";
 import {

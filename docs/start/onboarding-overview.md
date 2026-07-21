@@ -1,5 +1,5 @@
 ---
-summary: "Overview of OpenClaw onboarding options and flows"
+summary: "Overview of NodoAssist onboarding options and flows"
 read_when:
   - Choosing an onboarding path
   - Setting up a new environment
@@ -7,7 +7,7 @@ title: "Onboarding overview"
 sidebarTitle: "Onboarding Overview"
 ---
 
-OpenClaw has two onboarding paths. Both configure auth, the Gateway, and
+NodoAssist has two onboarding paths. Both configure auth, the Gateway, and
 optional chat channels — they just differ in how you interact with the setup.
 
 ## Which path should I use?
@@ -18,7 +18,7 @@ optional chat channels — they just differ in how you interact with the setup.
 | **Interface**  | Terminal wizard                        | Guided UI + Crestodian chat |
 | **Best for**   | Servers, headless, full control        | Desktop Mac, visual setup   |
 | **Automation** | `--non-interactive` for scripts        | Manual only                 |
-| **Command**    | `openclaw onboard`                     | Launch the app              |
+| **Command**    | `nodoassist onboard`                   | Launch the app              |
 
 Most users should start with **CLI onboarding** — it works everywhere and gives
 you the most control.
@@ -40,17 +40,17 @@ Regardless of which path you choose, onboarding sets up:
 Run in any terminal:
 
 ```bash
-openclaw onboard
+nodoassist onboard
 ```
 
 Add `--install-daemon` to also install the background service in one step.
 
 Full reference: [Onboarding (CLI)](/start/wizard)
-CLI command docs: [`openclaw onboard`](/cli/onboard)
+CLI command docs: [`nodoassist onboard`](/cli/onboard)
 
 ## macOS app onboarding
 
-Open the OpenClaw app. For local setup, the first-run flow starts the Gateway,
+Open the NodoAssist app. For local setup, the first-run flow starts the Gateway,
 detects existing AI access (Claude Code, Codex, Gemini CLI, or API keys),
 live-tests the best option, and saves it only after a real reply — falling
 back automatically and offering a verified manual API-key step when nothing is

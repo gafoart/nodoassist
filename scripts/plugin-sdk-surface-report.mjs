@@ -189,33 +189,33 @@ const defaultPublicDeprecatedExportsByEntrypointBudget = Object.freeze({
 export function readPluginSdkSurfaceBudgets(env = process.env) {
   const budgets = {
     publicEntrypoints: readPluginSdkSurfaceBudgetEnv(
-      "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_ENTRYPOINTS",
+      "NODOASSIST_PLUGIN_SDK_MAX_PUBLIC_ENTRYPOINTS",
       324,
       env,
     ),
     publicExports: readPluginSdkSurfaceBudgetEnv(
-      "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_EXPORTS",
+      "NODOASSIST_PLUGIN_SDK_MAX_PUBLIC_EXPORTS",
       10465,
       env,
     ),
     publicFunctionExports: readPluginSdkSurfaceBudgetEnv(
-      "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_FUNCTION_EXPORTS",
+      "NODOASSIST_PLUGIN_SDK_MAX_PUBLIC_FUNCTION_EXPORTS",
       5222,
       env,
     ),
     publicDeprecatedExports: readPluginSdkSurfaceBudgetEnv(
-      "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS",
+      "NODOASSIST_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS",
       3263,
       env,
     ),
     publicWildcardReexports: readPluginSdkSurfaceBudgetEnv(
-      "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_WILDCARD_REEXPORTS",
+      "NODOASSIST_PLUGIN_SDK_MAX_PUBLIC_WILDCARD_REEXPORTS",
       212,
       env,
     ),
   };
   const publicDeprecatedExportsByEntrypointBudget = readPluginSdkEntrypointBudgetEnv(
-    "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS_BY_ENTRYPOINT",
+    "NODOASSIST_PLUGIN_SDK_MAX_PUBLIC_DEPRECATED_EXPORTS_BY_ENTRYPOINT",
     defaultPublicDeprecatedExportsByEntrypointBudget,
     env,
   );

@@ -55,31 +55,33 @@ describe("scripts/ios-release-signing.mjs", () => {
   it("emits manual App Store profile settings for every signed target", () => {
     const output = runSigning("xcconfig");
 
-    expect(output).toContain("OPENCLAW_CODE_SIGN_STYLE = Manual");
-    expect(output).toContain("OPENCLAW_CODE_SIGN_IDENTITY = Apple Distribution");
-    expect(output).toContain("OPENCLAW_APP_GROUP_ID = group.ai.openclawfoundation.app.shared");
-    expect(output).toContain("OPENCLAW_APP_PROFILE = OpenClaw App Store ai.openclawfoundation.app");
+    expect(output).toContain("NODOASSIST_CODE_SIGN_STYLE = Manual");
+    expect(output).toContain("NODOASSIST_CODE_SIGN_IDENTITY = Apple Distribution");
+    expect(output).toContain("NODOASSIST_APP_GROUP_ID = group.ai.nodoassistfoundation.app.shared");
     expect(output).toContain(
-      "OPENCLAW_SHARE_PROFILE = OpenClaw App Store ai.openclawfoundation.app.share",
+      "NODOASSIST_APP_PROFILE = NodoAssist App Store ai.nodoassistfoundation.app",
     );
     expect(output).toContain(
-      "OPENCLAW_ACTIVITY_WIDGET_PROFILE = OpenClaw App Store ai.openclawfoundation.app.activitywidget",
+      "NODOASSIST_SHARE_PROFILE = NodoAssist App Store ai.nodoassistfoundation.app.share",
     );
     expect(output).toContain(
-      "OPENCLAW_WATCH_APP_PROFILE = OpenClaw App Store ai.openclawfoundation.app.watchkitapp",
+      "NODOASSIST_ACTIVITY_WIDGET_PROFILE = NodoAssist App Store ai.nodoassistfoundation.app.activitywidget",
     );
-    expect(output).not.toContain("OPENCLAW_WATCH_EXTENSION_PROFILE");
+    expect(output).toContain(
+      "NODOASSIST_WATCH_APP_PROFILE = NodoAssist App Store ai.nodoassistfoundation.app.watchkitapp",
+    );
+    expect(output).not.toContain("NODOASSIST_WATCH_EXTENSION_PROFILE");
   });
 
   it("documents the canonical release signing plan", () => {
     const output = runSigning("plan");
 
     expect(output).toContain("Team ID: FWJYW4S8P8");
-    expect(output).toContain("Signing repo: git@github.com:openclaw/apps-signing.git");
+    expect(output).toContain("Signing repo: git@github.com:nodoassist/apps-signing.git");
     expect(output).toContain("Signing branch: main");
     expect(output).toContain("Signing setup and sync: Fastlane match");
-    expect(output).not.toContain("OpenClawWatchExtension");
+    expect(output).not.toContain("NodoAssistWatchExtension");
     expect(output).toContain("capabilities: PUSH_NOTIFICATIONS, APP_GROUPS, APP_ATTEST");
-    expect(output).toContain("app groups: group.ai.openclawfoundation.app.shared");
+    expect(output).toContain("app groups: group.ai.nodoassistfoundation.app.shared");
   });
 });

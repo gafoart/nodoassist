@@ -1,12 +1,12 @@
-# OpenClaw DeepInfra Provider
+# NodoAssist DeepInfra Provider
 
-Official OpenClaw provider plugin for DeepInfra.
+Official NodoAssist provider plugin for DeepInfra.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/deepinfra-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/deepinfra-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/deepinfra> for setup and configuration.

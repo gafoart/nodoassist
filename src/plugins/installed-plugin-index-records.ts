@@ -1,5 +1,5 @@
 /** Builds and compares installed plugin index records for refresh decisions. */
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type { PluginInstallRecord } from "../config/types.plugins.js";
 import {
   clearLoadInstalledPluginIndexInstallRecordsCache,
@@ -74,9 +74,9 @@ export function writePersistedInstalledPluginIndexInstallRecordsSync(
 
 /** Returns config with plugin install records attached at the canonical config path. */
 export function withPluginInstallRecords(
-  config: OpenClawConfig,
+  config: NodoAssistConfig,
   records: Record<string, PluginInstallRecord>,
-): OpenClawConfig {
+): NodoAssistConfig {
   return {
     ...config,
     plugins: {
@@ -88,9 +88,9 @@ export function withPluginInstallRecords(
 
 /** Returns config with legacy plugin install records removed. */
 export function withoutPluginInstallRecords(
-  config: OpenClawConfig,
+  config: NodoAssistConfig,
   options: { preserveEmptyPlugins?: boolean } = {},
-): OpenClawConfig {
+): NodoAssistConfig {
   if (!config.plugins?.installs) {
     return config;
   }

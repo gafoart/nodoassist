@@ -3,7 +3,7 @@
    ============================================= */
 
 /* Main chat card - flex column layout, transparent background */
-openclaw-chat-page {
+nodoassist-chat-page {
   display: flex;
   flex: 1 1 0;
   min-width: 0;
@@ -1004,7 +1004,7 @@ openclaw-chat-page {
   order: 3;
 }
 
-/* openclaw-tooltip renders as display: contents, so this button participates
+/* nodoassist-tooltip renders as display: contents, so this button participates
    directly in the parent flex layout. */
 .agent-chat__composer-controls .chat-open-split-view {
   order: 1;

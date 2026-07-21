@@ -62,7 +62,7 @@ describe("plugin npm extended-stable workflow", () => {
           parsed.jobs?.[name === "Publish" ? "publish_plugins_npm" : "preview_plugin_pack"],
           name,
         ).env,
-      ).toMatchObject({ OPENCLAW_PLUGIN_NPM_PUBLISH_TAG: expectedOverride });
+      ).toMatchObject({ NODOASSIST_PLUGIN_NPM_PUBLISH_TAG: expectedOverride });
     }
   });
 
@@ -89,7 +89,7 @@ describe("plugin npm extended-stable workflow", () => {
     expect(publish.env).toMatchObject({
       NODE_AUTH_TOKEN: tokenExpression,
       NPM_TOKEN: tokenExpression,
-      OPENCLAW_NPM_PUBLISH_AUTH_MODE: "trusted-publisher",
+      NODOASSIST_NPM_PUBLISH_AUTH_MODE: "trusted-publisher",
     });
     expect(parsed.jobs?.reconcile_plugins_npm).toBeUndefined();
     expect(readFileSync(workflowPath, "utf8")).not.toContain(

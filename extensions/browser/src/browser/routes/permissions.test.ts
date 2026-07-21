@@ -43,11 +43,11 @@ const { registerBrowserPermissionRoutes, testing } = await import("./permissions
 function createProfileContext(overrides: Record<string, unknown> = {}) {
   return {
     profile: {
-      name: "openclaw",
+      name: "nodoassist",
       cdpUrl: "http://127.0.0.1:18800",
       cdpHost: "127.0.0.1",
       cdpIsLoopback: true,
-      driver: "openclaw",
+      driver: "nodoassist",
       ...overrides,
     },
     ensureBrowserAvailable: vi.fn(async () => {}),

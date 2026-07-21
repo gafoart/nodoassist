@@ -28,8 +28,8 @@ export const DEFAULT_VITEST_NO_OUTPUT_HEARTBEAT_MS = 30_000;
 export const DEFAULT_LONG_RUNNING_VITEST_NO_OUTPUT_TIMEOUT_MS = 300_000;
 /** Extra-long watchdog timeout for broad configs that can stay silent on macOS. */
 export const DEFAULT_EXTRA_LONG_RUNNING_VITEST_NO_OUTPUT_TIMEOUT_MS = 2_400_000;
-const VITEST_NO_OUTPUT_TIMEOUT_ENV_KEY = "OPENCLAW_VITEST_NO_OUTPUT_TIMEOUT_MS";
-const VITEST_NO_OUTPUT_HEARTBEAT_ENV_KEY = "OPENCLAW_VITEST_NO_OUTPUT_HEARTBEAT_MS";
+const VITEST_NO_OUTPUT_TIMEOUT_ENV_KEY = "NODOASSIST_VITEST_NO_OUTPUT_TIMEOUT_MS";
+const VITEST_NO_OUTPUT_HEARTBEAT_ENV_KEY = "NODOASSIST_VITEST_NO_OUTPUT_HEARTBEAT_MS";
 const UI_VITEST_CONFIG = "test/vitest/vitest.ui.config.ts";
 const TOOLING_DOCKER_VITEST_CONFIG = "test/vitest/vitest.tooling-docker.config.ts";
 const TOOLING_VITEST_CONFIG = "test/vitest/vitest.tooling.config.ts";
@@ -54,7 +54,7 @@ const VITEST_CONFIG_NO_OUTPUT_TIMEOUT_MS = new Map([
 const TOOLING_EXCLUDED_TESTS = new Set([
   ...boundaryTestFiles,
   "test/scripts/docker-build-helper.test.ts",
-  "test/scripts/openclaw-e2e-instance.test.ts",
+  "test/scripts/nodoassist-e2e-instance.test.ts",
 ]);
 const EXPLICIT_FILE_TARGET_RE = /\.(?:[cm]?[jt]sx?)$/u;
 const EXPLICIT_TEST_FILE_RE = /\.(?:test|e2e|live)\.(?:[cm]?[jt]sx?)$/u;
@@ -134,7 +134,7 @@ function parsePositiveInt(value) {
  * Resolves default Node flags for Vitest, including the local Maglev opt-in.
  */
 export function resolveVitestNodeArgs(env = process.env) {
-  if (isTruthyEnvValue(env.OPENCLAW_VITEST_ENABLE_MAGLEV)) {
+  if (isTruthyEnvValue(env.NODOASSIST_VITEST_ENABLE_MAGLEV)) {
     return [];
   }
 
@@ -254,7 +254,7 @@ export function resolveVitestCliEntry({
   } catch (error) {
     if (isMissingVitestResolveError(error)) {
       const wrappedError = new Error(resolveMissingVitestDependencyMessage(baseDir, fsImpl));
-      wrappedError.code = "OPENCLAW_MISSING_VITEST";
+      wrappedError.code = "NODOASSIST_MISSING_VITEST";
       throw wrappedError;
     }
     throw error;
@@ -442,7 +442,7 @@ function shouldApplyNativeWorkerBudget(env) {
     return false;
   }
   return (
-    env.OPENCLAW_TEST_PROJECTS_SERIAL === "1" || resolveExplicitVitestWorkerBudget(env) !== null
+    env.NODOASSIST_TEST_PROJECTS_SERIAL === "1" || resolveExplicitVitestWorkerBudget(env) !== null
   );
 }
 
@@ -451,7 +451,7 @@ function resolveNativeWorkerCount(env) {
 }
 
 function resolveExplicitVitestWorkerBudget(env) {
-  return parsePositiveInt(env.OPENCLAW_VITEST_MAX_WORKERS ?? env.OPENCLAW_TEST_WORKERS);
+  return parsePositiveInt(env.NODOASSIST_VITEST_MAX_WORKERS ?? env.NODOASSIST_TEST_WORKERS);
 }
 
 /**
@@ -1068,7 +1068,7 @@ function main(argv = process.argv.slice(2), env = process.env) {
   try {
     vitestCliEntry = resolveVitestCliEntry();
   } catch (error) {
-    if (error instanceof Error && error.code === "OPENCLAW_MISSING_VITEST") {
+    if (error instanceof Error && error.code === "NODOASSIST_MISSING_VITEST") {
       console.error(error.message);
       process.exit(1);
     }

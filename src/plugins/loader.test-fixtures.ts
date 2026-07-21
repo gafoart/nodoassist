@@ -4,12 +4,12 @@ import os from "node:os";
 import path from "node:path";
 import { resetDiagnosticEventsForTest } from "../infra/diagnostic-events.js";
 import { withEnv } from "../test-utils/env.js";
-import { clearPluginLoaderCache, loadOpenClawPlugins } from "./loader.js";
+import { clearPluginLoaderCache, loadNodoAssistPlugins } from "./loader.js";
 import { resetPluginRuntimeStateForTest } from "./runtime.js";
 
 export type TempPlugin = { dir: string; file: string; id: string };
-export type PluginLoadConfig = NonNullable<Parameters<typeof loadOpenClawPlugins>[0]>["config"];
-export type PluginRegistry = ReturnType<typeof loadOpenClawPlugins>;
+export type PluginLoadConfig = NonNullable<Parameters<typeof loadNodoAssistPlugins>[0]>["config"];
+export type PluginRegistry = ReturnType<typeof loadNodoAssistPlugins>;
 
 function chmodSafeDir(dir: string) {
   if (process.platform === "win32") {
@@ -29,10 +29,10 @@ export function mkdirSafe(dir: string) {
   chmodSafeDir(dir);
 }
 
-const fixtureRoot = mkdtempSafe(path.join(os.tmpdir(), "openclaw-plugin-"));
+const fixtureRoot = mkdtempSafe(path.join(os.tmpdir(), "nodoassist-plugin-"));
 let tempDirIndex = 0;
-const prevBundledDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
-const prevDisableBundledPlugins = process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS;
+const prevBundledDir = process.env.NODOASSIST_BUNDLED_PLUGINS_DIR;
+const prevDisableBundledPlugins = process.env.NODOASSIST_DISABLE_BUNDLED_PLUGINS;
 
 export const EMPTY_PLUGIN_SCHEMA = {
   type: "object",
@@ -90,7 +90,7 @@ export function writePlugin(params: {
   const file = path.join(dir, filename);
   fs.writeFileSync(file, params.body, "utf-8");
   fs.writeFileSync(
-    path.join(dir, "openclaw.plugin.json"),
+    path.join(dir, "nodoassist.plugin.json"),
     JSON.stringify(
       {
         id: params.id,
@@ -105,8 +105,8 @@ export function writePlugin(params: {
 }
 
 export function useNoBundledPlugins() {
-  process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS = "1";
-  delete process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+  process.env.NODOASSIST_DISABLE_BUNDLED_PLUGINS = "1";
+  delete process.env.NODOASSIST_BUNDLED_PLUGINS_DIR;
 }
 
 export function loadBundleFixture(params: {
@@ -118,10 +118,10 @@ export function loadBundleFixture(params: {
   useNoBundledPlugins();
   const workspaceDir = makeTempDir();
   const stateDir = makeTempDir();
-  const bundleRoot = path.join(workspaceDir, ".openclaw", "extensions", params.pluginId);
+  const bundleRoot = path.join(workspaceDir, ".nodoassist", "extensions", params.pluginId);
   params.build(bundleRoot);
-  return withEnv({ OPENCLAW_STATE_DIR: stateDir, ...params.env }, () =>
-    loadOpenClawPlugins({
+  return withEnv({ NODOASSIST_STATE_DIR: stateDir, ...params.env }, () =>
+    loadNodoAssistPlugins({
       workspaceDir,
       onlyPluginIds: params.onlyPluginIds ?? [params.pluginId],
       config: {
@@ -143,14 +143,14 @@ export function resetPluginLoaderTestStateForTest() {
   resetPluginRuntimeStateForTest();
   resetDiagnosticEventsForTest();
   if (prevBundledDir === undefined) {
-    delete process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
+    delete process.env.NODOASSIST_BUNDLED_PLUGINS_DIR;
   } else {
-    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = prevBundledDir;
+    process.env.NODOASSIST_BUNDLED_PLUGINS_DIR = prevBundledDir;
   }
   if (prevDisableBundledPlugins === undefined) {
-    delete process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS;
+    delete process.env.NODOASSIST_DISABLE_BUNDLED_PLUGINS;
   } else {
-    process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS = prevDisableBundledPlugins;
+    process.env.NODOASSIST_DISABLE_BUNDLED_PLUGINS = prevDisableBundledPlugins;
   }
 }
 
@@ -161,8 +161,8 @@ export function cleanupPluginLoaderFixturesForTest() {
     // ignore cleanup failures in tests
   }
   if (prevDisableBundledPlugins === undefined) {
-    delete process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS;
+    delete process.env.NODOASSIST_DISABLE_BUNDLED_PLUGINS;
   } else {
-    process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS = prevDisableBundledPlugins;
+    process.env.NODOASSIST_DISABLE_BUNDLED_PLUGINS = prevDisableBundledPlugins;
   }
 }

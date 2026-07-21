@@ -8,8 +8,8 @@ read_when:
 ---
 
 Channel plugins expose outbound message behavior from
-`openclaw/plugin-sdk/channel-outbound`. Use
-`openclaw/plugin-sdk/channel-inbound` for receive/context/dispatch
+`nodoassist/plugin-sdk/channel-outbound`. Use
+`nodoassist/plugin-sdk/channel-inbound` for receive/context/dispatch
 orchestration.
 
 Core owns queueing, durability, generic retry policy, hooks, receipts, and
@@ -25,7 +25,7 @@ Most plugins define one `message` adapter:
 import {
   defineChannelMessageAdapter,
   createMessageReceiptFromOutboundResults,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "nodoassist/plugin-sdk/channel-outbound";
 
 export const demoMessageAdapter = defineChannelMessageAdapter({
   id: "demo",
@@ -81,7 +81,7 @@ If the channel already has a compatible `outbound` adapter, derive the
 message adapter instead of duplicating send code:
 
 ```ts
-import { createChannelMessageAdapterFromOutbound } from "openclaw/plugin-sdk/channel-outbound";
+import { createChannelMessageAdapterFromOutbound } from "nodoassist/plugin-sdk/channel-outbound";
 
 export const messageAdapter = createChannelMessageAdapterFromOutbound({
   id: "demo",

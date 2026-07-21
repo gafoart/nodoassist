@@ -1,10 +1,10 @@
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
 import { resolveStorePath } from "../config/sessions/paths.js";
 import {
   resolveSessionTranscriptRuntimeTarget,
   type SessionTranscriptRuntimeTarget,
 } from "../config/sessions/session-accessor.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import { resolveAgentIdFromSessionKey } from "../routing/session-key.js";
 
 /** Identifies a run transcript target without naming the current storage artifact. */
@@ -22,7 +22,7 @@ type ResolvedAgentRunSessionTarget = SessionTranscriptRuntimeTarget;
 /** Resolves the active file-backed target used by current run/session internals. */
 export async function resolveAgentRunSessionTarget(params: {
   agentId?: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   sessionFile?: string;
   sessionId: string;
   sessionKey?: string;

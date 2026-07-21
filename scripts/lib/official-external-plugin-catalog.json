@@ -1,33 +1,33 @@
 {
   "schemaVersion": 1,
-  "id": "openclaw-official-external-plugins",
+  "id": "nodoassist-official-external-plugins",
   "generatedAt": "2026-06-22T00:00:00.000Z",
   "sequence": 1,
-  "description": "Bundled fallback feed for official external OpenClaw plugins.",
+  "description": "Bundled fallback feed for official external NodoAssist plugins.",
   "entries": [
     {
-      "name": "@openclaw/acpx",
-      "description": "OpenClaw ACP runtime backend",
+      "name": "@nodoassist/acpx",
+      "description": "NodoAssist ACP runtime backend",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "acpx",
           "label": "ACPX Runtime"
         },
         "install": {
-          "npmSpec": "@openclaw/acpx",
+          "npmSpec": "@nodoassist/acpx",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.25"
         }
       }
     },
     {
-      "name": "@openclaw/brave-plugin",
-      "description": "OpenClaw Brave plugin",
+      "name": "@nodoassist/brave-plugin",
+      "description": "NodoAssist Brave plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "brave",
           "label": "Brave"
@@ -48,7 +48,7 @@
           }
         ],
         "install": {
-          "npmSpec": "@openclaw/brave-plugin",
+          "npmSpec": "@nodoassist/brave-plugin",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10",
           "allowInvalidConfigRecovery": true
@@ -56,100 +56,100 @@
       }
     },
     {
-      "name": "@openclaw/copilot",
-      "description": "OpenClaw GitHub Copilot agent runtime plugin",
+      "name": "@nodoassist/copilot",
+      "description": "NodoAssist GitHub Copilot agent runtime plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "copilot",
           "label": "GitHub Copilot agent runtime"
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/copilot",
-          "npmSpec": "@openclaw/copilot",
+          "clawhubSpec": "clawhub:@nodoassist/copilot",
+          "npmSpec": "@nodoassist/copilot",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.28"
         }
       }
     },
     {
-      "name": "@openclaw/diagnostics-otel",
-      "description": "OpenClaw diagnostics OpenTelemetry exporter",
+      "name": "@nodoassist/diagnostics-otel",
+      "description": "NodoAssist diagnostics OpenTelemetry exporter",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "diagnostics-otel",
           "label": "Diagnostics OpenTelemetry"
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/diagnostics-otel",
-          "npmSpec": "@openclaw/diagnostics-otel",
+          "clawhubSpec": "clawhub:@nodoassist/diagnostics-otel",
+          "npmSpec": "@nodoassist/diagnostics-otel",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.25"
         }
       }
     },
     {
-      "name": "@openclaw/diagnostics-prometheus",
-      "description": "OpenClaw diagnostics Prometheus exporter",
+      "name": "@nodoassist/diagnostics-prometheus",
+      "description": "NodoAssist diagnostics Prometheus exporter",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "diagnostics-prometheus",
           "label": "Diagnostics Prometheus"
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/diagnostics-prometheus",
-          "npmSpec": "@openclaw/diagnostics-prometheus",
+          "clawhubSpec": "clawhub:@nodoassist/diagnostics-prometheus",
+          "npmSpec": "@nodoassist/diagnostics-prometheus",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.25"
         }
       }
     },
     {
-      "name": "@openclaw/diffs",
-      "description": "OpenClaw diff viewer plugin",
+      "name": "@nodoassist/diffs",
+      "description": "NodoAssist diff viewer plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "diffs",
           "label": "Diffs"
         },
         "install": {
-          "npmSpec": "@openclaw/diffs",
+          "npmSpec": "@nodoassist/diffs",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.30"
         }
       }
     },
     {
-      "name": "@openclaw/diffs-language-pack",
-      "description": "OpenClaw diffs viewer syntax highlighting language pack",
+      "name": "@nodoassist/diffs-language-pack",
+      "description": "NodoAssist diffs viewer syntax highlighting language pack",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "diffs-language-pack",
           "label": "Diff Viewer Language Pack"
         },
         "install": {
-          "npmSpec": "@openclaw/diffs-language-pack",
-          "clawhubSpec": "clawhub:@openclaw/diffs-language-pack",
+          "npmSpec": "@nodoassist/diffs-language-pack",
+          "clawhubSpec": "clawhub:@nodoassist/diffs-language-pack",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.27"
         }
       }
     },
     {
-      "name": "@openclaw/exa-plugin",
-      "description": "OpenClaw Exa plugin.",
+      "name": "@nodoassist/exa-plugin",
+      "description": "NodoAssist Exa plugin.",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "exa",
           "label": "Exa"
@@ -179,19 +179,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/exa-plugin",
-          "npmSpec": "@openclaw/exa-plugin",
+          "clawhubSpec": "clawhub:@nodoassist/exa-plugin",
+          "npmSpec": "@nodoassist/exa-plugin",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/firecrawl-plugin",
-      "description": "OpenClaw Firecrawl plugin.",
+      "name": "@nodoassist/firecrawl-plugin",
+      "description": "NodoAssist Firecrawl plugin.",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "firecrawl",
           "label": "Firecrawl"
@@ -228,36 +228,36 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/firecrawl-plugin",
-          "npmSpec": "@openclaw/firecrawl-plugin",
+          "clawhubSpec": "clawhub:@nodoassist/firecrawl-plugin",
+          "npmSpec": "@nodoassist/firecrawl-plugin",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/google-meet",
-      "description": "OpenClaw Google Meet participant plugin",
+      "name": "@nodoassist/google-meet",
+      "description": "NodoAssist Google Meet participant plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "google-meet",
           "label": "Google Meet"
         },
         "install": {
-          "npmSpec": "@openclaw/google-meet",
+          "npmSpec": "@nodoassist/google-meet",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.20"
         }
       }
     },
     {
-      "name": "@openclaw/gradium-speech",
-      "description": "OpenClaw Gradium speech plugin.",
+      "name": "@nodoassist/gradium-speech",
+      "description": "NodoAssist Gradium speech plugin.",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "gradium",
           "label": "Gradium"
@@ -268,19 +268,19 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/gradium-speech",
-          "npmSpec": "@openclaw/gradium-speech",
+          "clawhubSpec": "clawhub:@nodoassist/gradium-speech",
+          "npmSpec": "@nodoassist/gradium-speech",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/inworld-speech",
-      "description": "OpenClaw Inworld speech plugin.",
+      "name": "@nodoassist/inworld-speech",
+      "description": "NodoAssist Inworld speech plugin.",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "inworld",
           "label": "Inworld"
@@ -291,53 +291,53 @@
           ]
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/inworld-speech",
-          "npmSpec": "@openclaw/inworld-speech",
+          "clawhubSpec": "clawhub:@nodoassist/inworld-speech",
+          "npmSpec": "@nodoassist/inworld-speech",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/lobster",
+      "name": "@nodoassist/lobster",
       "description": "Lobster workflow tool plugin (typed pipelines + resumable approvals)",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "lobster",
           "label": "Lobster"
         },
         "install": {
-          "npmSpec": "@openclaw/lobster",
+          "npmSpec": "@nodoassist/lobster",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.25"
         }
       }
     },
     {
-      "name": "@openclaw/memory-lancedb",
-      "description": "OpenClaw LanceDB-backed long-term memory plugin with auto-recall/capture",
+      "name": "@nodoassist/memory-lancedb",
+      "description": "NodoAssist LanceDB-backed long-term memory plugin with auto-recall/capture",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "memory-lancedb",
           "label": "Memory LanceDB"
         },
         "install": {
-          "npmSpec": "@openclaw/memory-lancedb",
+          "npmSpec": "@nodoassist/memory-lancedb",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.31"
         }
       }
     },
     {
-      "name": "@openclaw/llama-cpp-provider",
-      "description": "OpenClaw llama.cpp embedding provider plugin",
+      "name": "@nodoassist/llama-cpp-provider",
+      "description": "NodoAssist llama.cpp embedding provider plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "llama-cpp",
           "label": "llama.cpp Provider"
@@ -346,35 +346,35 @@
           "embeddingProviders": ["local"]
         },
         "install": {
-          "npmSpec": "@openclaw/llama-cpp-provider",
+          "npmSpec": "@nodoassist/llama-cpp-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.2"
         }
       }
     },
     {
-      "name": "@openclaw/openshell-sandbox",
-      "description": "OpenClaw OpenShell sandbox backend",
+      "name": "@nodoassist/openshell-sandbox",
+      "description": "NodoAssist OpenShell sandbox backend",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "openshell",
           "label": "OpenShell Sandbox"
         },
         "install": {
-          "npmSpec": "@openclaw/openshell-sandbox",
+          "npmSpec": "@nodoassist/openshell-sandbox",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.12-beta.1"
         }
       }
     },
     {
-      "name": "@openclaw/parallel-plugin",
-      "description": "OpenClaw Parallel web search plugin.",
+      "name": "@nodoassist/parallel-plugin",
+      "description": "NodoAssist Parallel web search plugin.",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "parallel",
           "label": "Parallel"
@@ -419,19 +419,19 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/parallel-plugin",
-          "npmSpec": "@openclaw/parallel-plugin",
+          "clawhubSpec": "clawhub:@nodoassist/parallel-plugin",
+          "npmSpec": "@nodoassist/parallel-plugin",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/perplexity-plugin",
-      "description": "OpenClaw Perplexity plugin.",
+      "name": "@nodoassist/perplexity-plugin",
+      "description": "NodoAssist Perplexity plugin.",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "perplexity",
           "label": "Perplexity"
@@ -462,37 +462,37 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/perplexity-plugin",
-          "npmSpec": "@openclaw/perplexity-plugin",
+          "clawhubSpec": "clawhub:@nodoassist/perplexity-plugin",
+          "npmSpec": "@nodoassist/perplexity-plugin",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.8"
         }
       }
     },
     {
-      "name": "@openclaw/pixverse-provider",
-      "description": "OpenClaw PixVerse video generation provider plugin",
+      "name": "@nodoassist/pixverse-provider",
+      "description": "NodoAssist PixVerse video generation provider plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "pixverse",
           "label": "PixVerse"
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/pixverse-provider",
-          "npmSpec": "@openclaw/pixverse-provider",
+          "clawhubSpec": "clawhub:@nodoassist/pixverse-provider",
+          "npmSpec": "@nodoassist/pixverse-provider",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.26"
         }
       }
     },
     {
-      "name": "@openclaw/searxng-plugin",
-      "description": "OpenClaw SearXNG plugin",
+      "name": "@nodoassist/searxng-plugin",
+      "description": "NodoAssist SearXNG plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "searxng",
           "label": "SearXNG"
@@ -523,8 +523,8 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/searxng-plugin",
-          "npmSpec": "@openclaw/searxng-plugin",
+          "clawhubSpec": "clawhub:@nodoassist/searxng-plugin",
+          "npmSpec": "@nodoassist/searxng-plugin",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.9",
           "allowInvalidConfigRecovery": true
@@ -532,11 +532,11 @@
       }
     },
     {
-      "name": "@openclaw/tavily-plugin",
-      "description": "OpenClaw Tavily plugin",
+      "name": "@nodoassist/tavily-plugin",
+      "description": "NodoAssist Tavily plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "tavily",
           "label": "Tavily"
@@ -570,8 +570,8 @@
           }
         ],
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/tavily-plugin",
-          "npmSpec": "@openclaw/tavily-plugin",
+          "clawhubSpec": "clawhub:@nodoassist/tavily-plugin",
+          "npmSpec": "@nodoassist/tavily-plugin",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.6.9",
           "allowInvalidConfigRecovery": true
@@ -579,35 +579,35 @@
       }
     },
     {
-      "name": "@openclaw/tokenjuice",
-      "description": "OpenClaw tokenjuice exec output compaction plugin",
+      "name": "@nodoassist/tokenjuice",
+      "description": "NodoAssist tokenjuice exec output compaction plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "tokenjuice",
           "label": "Tokenjuice"
         },
         "install": {
-          "clawhubSpec": "clawhub:@openclaw/tokenjuice",
-          "npmSpec": "@openclaw/tokenjuice",
+          "clawhubSpec": "clawhub:@nodoassist/tokenjuice",
+          "npmSpec": "@nodoassist/tokenjuice",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.5.28"
         }
       }
     },
     {
-      "name": "@openclaw/voice-call",
-      "description": "OpenClaw voice-call plugin",
+      "name": "@nodoassist/voice-call",
+      "description": "NodoAssist voice-call plugin",
       "source": "official",
       "kind": "plugin",
-      "openclaw": {
+      "nodoassist": {
         "plugin": {
           "id": "voice-call",
           "label": "Voice Call"
         },
         "install": {
-          "npmSpec": "@openclaw/voice-call",
+          "npmSpec": "@nodoassist/voice-call",
           "defaultChoice": "npm",
           "minHostVersion": ">=2026.4.10"
         }

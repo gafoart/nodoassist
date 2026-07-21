@@ -2,9 +2,9 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { resolveAuthStorePathForDisplay } from "openclaw/plugin-sdk/agent-runtime";
-import type { MigrationProviderContext } from "openclaw/plugin-sdk/plugin-entry";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/provider-auth";
+import { resolveAuthStorePathForDisplay } from "nodoassist/plugin-sdk/agent-runtime";
+import type { MigrationProviderContext } from "nodoassist/plugin-sdk/plugin-entry";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/provider-auth";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HERMES_REASON_AUTH_PROFILE_WRITE_FAILED } from "./items.js";
 
@@ -12,8 +12,8 @@ const mocks = vi.hoisted(() => ({
   updateAuthProfileStoreWithLock: vi.fn(async () => null),
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-auth", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("openclaw/plugin-sdk/provider-auth")>()),
+vi.mock("nodoassist/plugin-sdk/provider-auth", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("nodoassist/plugin-sdk/provider-auth")>()),
   updateAuthProfileStoreWithLock: mocks.updateAuthProfileStoreWithLock,
 }));
 
@@ -28,7 +28,7 @@ const logger = {
 };
 
 async function makeTempRoot() {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-hermes-secret-failure-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-hermes-secret-failure-"));
   tempRoots.add(root);
   return root;
 }
@@ -51,7 +51,7 @@ function makeContext(params: {
           workspace: params.workspaceDir,
         },
       },
-    } as OpenClawConfig,
+    } as NodoAssistConfig,
     stateDir: params.stateDir,
     source: params.source,
     includeSecrets: true,

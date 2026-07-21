@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
-        <title>OpenClaw</title>
+        <title>NodoAssist</title>
         <item>
             <title>2026.6.11</title>
             <pubDate>Tue, 30 Jun 2026 17:39:25 +0000</pubDate>
@@ -9,11 +9,11 @@
             <sparkle:version>2606001190</sparkle:version>
             <sparkle:shortVersionString>2026.6.11</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>OpenClaw 2026.6.11</h2>
+            <description><![CDATA[<h2>NodoAssist 2026.6.11</h2>
 <h3>Highlights</h3>
 <ul>
 <li><strong>More capable channel control:</strong> Slack relay mode, native Mattermost <code>/oc_queue</code>, and per-DM model overrides make channel operations easier to automate and tune. (#94707, #95546, #95120) Thanks @sjf-oa, @amknight, @xydigit-zt, @thomaszta, and @gandalf-at-lerian.</li>
-<li><strong>Richer operator workflows:</strong> <code>openclaw agent --message-file</code> and the RAFT CLI wake bridge add practical file-driven and remote wake-up paths. (#93351, #95497) Thanks @ooiuuii and @vincentkoc.</li>
+<li><strong>Richer operator workflows:</strong> <code>nodoassist agent --message-file</code> and the RAFT CLI wake bridge add practical file-driven and remote wake-up paths. (#93351, #95497) Thanks @ooiuuii and @vincentkoc.</li>
 <li><strong>Safer plugin distribution:</strong> additional official plugins are externalized cleanly, with bundled plugin icon metadata available to installed clients. (#95683, #95845) Thanks @vincentkoc and @Patrick-Erichsen.</li>
 <li><strong>Stronger mobile operations:</strong> Android settings detail panels improve configuration visibility and control on mobile. (#95148) Thanks @Tosko4.</li>
 <li><strong>More reliable agent turns:</strong> Codex partial deltas, harness activation, and long-context prompt-cache stability reduce lost progress and inconsistent runs. (#95404, #95652, #95624) Thanks @agonza1 and @vincentkoc.</li>
@@ -75,7 +75,7 @@ This audited record covers the complete v2026.6.10..0a4d0daa8cc99e9b2c6bc78c2e67
 <li><strong>PR #95102</strong> fix(config): add stdio to McpServerSchema transport union. Related #95082. Thanks @lzyyzznl and @ken-jo.</li>
 <li><strong>PR #95465</strong> fix(sdk): type-narrow manifest.files in pack staging root helper. Thanks @wangmiao0668000666.</li>
 <li><strong>PR #95664</strong> refactor(plugins): move owner skills into plugins. Thanks @vincentkoc.</li>
-<li><strong>PR #95299</strong> fix #95248: OpenClaw release_lane is a no-op when claim is held by a live worker; stuck Telegram inbound events block agent response until gateway restart. Thanks @mikasa0818 and @kriegerbangerz-ship-it.</li>
+<li><strong>PR #95299</strong> fix #95248: NodoAssist release_lane is a no-op when claim is held by a live worker; stuck Telegram inbound events block agent response until gateway restart. Thanks @mikasa0818 and @kriegerbangerz-ship-it.</li>
 <li><strong>PR #94687</strong> fix(gateway): accept port for health and probe. Related #79100. Thanks @BryanTegomoh and @ozthedivine.</li>
 <li><strong>PR #95649</strong> fix(ci): bundle test shards and right-size runners. Thanks @vincentkoc.</li>
 <li><strong>PR #95243</strong> fix(docs): show inline read_when hints in docs:list. Thanks @hugenshen and @vincentkoc.</li>
@@ -108,7 +108,7 @@ This audited record covers the complete v2026.6.10..0a4d0daa8cc99e9b2c6bc78c2e67
 <li><strong>PR #92178</strong> fix(gateway): normalize malformed paired access lists. Related #90654. Thanks @wangmiao0668000666 and @ly-wang19 and @EmilioNicolas.</li>
 <li><strong>PR #83041</strong> Fix config patch restart-required notices. Related #46797. Thanks @xuruiray and @Stache73.</li>
 <li><strong>PR #95754</strong> fix(cron): preserve no-config delivery validation. Thanks @vincentkoc.</li>
-<li><strong>PR #93351</strong> feat(cli): add --message-file to openclaw agent. Thanks @ooiuuii.</li>
+<li><strong>PR #93351</strong> feat(cli): add --message-file to nodoassist agent. Thanks @ooiuuii.</li>
 <li><strong>PR #95485</strong> fix(ui): roll values near 1M over from k to M in compact token format. Thanks @NarahariRaghava and @vincentkoc.</li>
 <li><strong>PR #94622</strong> fix(build): allow tsdown heap override. Thanks @tayoun.</li>
 <li><strong>PR #76668</strong> meta(issue-template): add dedicated docs bug report form. Related #76664. Thanks @WadydX.</li>
@@ -143,7 +143,7 @@ This audited record covers the complete v2026.6.10..0a4d0daa8cc99e9b2c6bc78c2e67
 <li><strong>PR #91049</strong> fix: handle terminal chat send acknowledgements. Related #91048. Thanks @nxmxbbd.</li>
 <li><strong>PR #95081</strong> fix: keep text transform runtime imports hashed. Related #95057. Thanks @849261680 and @YvesLaRose.</li>
 <li><strong>PR #93356</strong> fix(plugins): cache plugin setup registry to kill the /models CPU storm. Thanks @obuchowski.</li>
-<li><strong>PR #85341</strong> refactor: internalize OpenClaw agent runtime.</li>
+<li><strong>PR #85341</strong> refactor: internalize NodoAssist agent runtime.</li>
 <li><strong>PR #94233</strong> fix(model-fallback): coalesce auth decision logs. Related #56979. Thanks @goutamadwant and @yanan1991.</li>
 <li><strong>PR #92399</strong> fix(llm): collapse cumulative openai-responses message snapshots instead of concatenating [AI-assisted]. Related #91959. Thanks @amersheeny and @phoenixyy.</li>
 <li><strong>PR #94811</strong> fix(ollama): honor memory embedding output dimensionality. Thanks @mushuiyu886.</li>
@@ -308,7 +308,7 @@ This audited record covers the complete v2026.6.10..0a4d0daa8cc99e9b2c6bc78c2e67
 <li><strong>PR #95475</strong> test(cli): isolate service env in run and update suites. Thanks @kklouzal.</li>
 <li><strong>PR #95226</strong> fix(infra): bound ClawHub fetchJson and error response bodies. Thanks @Alix-007.</li>
 <li><strong>PR #95240</strong> fix(matrix): bound non-raw JSON response body in transport. Thanks @Alix-007.</li>
-<li><strong>PR #91742</strong> fix(memory): abort orphaned embedding work when memory_search times out. Related #91718. Thanks @dreamhunter2333 and @NOVA-Openclaw.</li>
+<li><strong>PR #91742</strong> fix(memory): abort orphaned embedding work when memory_search times out. Related #91718. Thanks @dreamhunter2333 and @NOVA-NodoAssist.</li>
 <li><strong>PR #93394</strong> fix(memory): abort orphaned qmd search subprocess when memory_search times out. Thanks @Alix-007.</li>
 <li><strong>PR #89911</strong> refactor: migrate bundled transcript target lookups. Thanks @jalehman.</li>
 <li><strong>PR #96191</strong> refactor: route plugin host hook state through accessor. Thanks @jalehman.</li>
@@ -357,10 +357,10 @@ This audited record covers the complete v2026.6.10..0a4d0daa8cc99e9b2c6bc78c2e67
             <sparkle:version>2606001090</sparkle:version>
             <sparkle:shortVersionString>2026.6.10</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>OpenClaw 2026.6.10</h2>
+            <description><![CDATA[<h2>NodoAssist 2026.6.10</h2>
 <h3>Highlights</h3>
 <ul>
-<li><strong>Automatic fast mode for talks:</strong> OpenClaw can enable fast mode for short conversational turns, then return to normal mode for longer runs with bounded fallback and delivery behavior. (#85104) Thanks @alexph-dev and @vincentkoc.</li>
+<li><strong>Automatic fast mode for talks:</strong> NodoAssist can enable fast mode for short conversational turns, then return to normal mode for longer runs with bounded fallback and delivery behavior. (#85104) Thanks @alexph-dev and @vincentkoc.</li>
 <li><strong>More reliable model routing:</strong> Zai model synthesis, GLM overload failover, and native reasoning-level selection now follow the active model catalog more consistently. (#94461, #93241, #94067, #94136) Thanks @Pandah97, @chrysb, @0xghost42, @zhengli0922, @openperf, @civiltox, and @BorClaw.</li>
 <li><strong>Safer session and channel state:</strong> channel switches reset stale origin fields, and cron delivery awareness stays attached to the target session. (#95328, #93580) Thanks @ZengWen-DT, @jalehman, @gorkem2020, and @scotthuang.</li>
 <li><strong>Trusted policies survive hook composition:</strong> composed hook registries keep the trusted tool policies required by approval-sensitive flows. (#94545) Thanks @jesse-merhi.</li>
@@ -404,7 +404,7 @@ This audited record covers the complete v2026.6.9..HEAD history: 12 merged PRs. 
             <sparkle:version>2606000890</sparkle:version>
             <sparkle:shortVersionString>2026.6.8</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>OpenClaw 2026.6.8</h2>
+            <description><![CDATA[<h2>NodoAssist 2026.6.8</h2>
 <h3>Highlights</h3>
 <ul>
 <li>Telegram and WhatsApp channel delivery are richer and less brittle: Telegram can send structured rich text with tables, lists, expandable blockquotes, preserved intentional line breaks, prompt-preserving CLI backend delivery, retired native draft migration, and safer rich-media boundaries, while WhatsApp now honors configured ACP bindings. (#92679, #93164, #84082, #89421, #92513) Thanks @obviyus, @jzakirov, @spacegeologist, and @TurboTheTurtle.</li>
@@ -432,7 +432,7 @@ This audited record covers the complete v2026.6.9..HEAD history: 12 merged PRs. 
 <li>Memory, state, diagnostics, and config: split header-too-large embedding batches, keep QMD memory search enabled in transient mode, avoid SQLite WAL on NFS volumes, preserve recovery scheduling outside stuck-session warning backoff, preserve full-reindex rollback/cache recovery, treat raw Memory Wiki source pages as source evidence, and keep shell environment fallbacks contained in config write tests. (#92650, #92618, #92639, #91247, #92752, #92881, #59137, #92876, #69700) Thanks @mushuiyu886, @TurboTheTurtle, @849261680, @gnanam1990, @TSHOGX, and @arlen8411.</li>
 <li>UI/mobile/TUI: preserve dashboard session parent lineage, WebChat backscroll, reset soft command args, sidebar session picker interactivity, collapsed workspace files, resolved <code>/model</code> confirmation refs, stale foreground iOS Gateway reconnects, and paused setup-parent stdin after inherited-stdio child exit. (#90658, #92622, #91353, #92705, #92779, #92773, #92552, #93159) Thanks @luoyanglang, @TurboTheTurtle, @zhouhe-xydt, @NianJiuZst, @shakkernerd, @NarahariRaghava, @Solvely-Colin, and @fuller-stack-dev.</li>
 <li>Plugins and updates: repair missing required platform packages during managed plugin installs and updates, including omitted Codex platform binaries.</li>
-<li>Dependencies: update Hono to 4.12.25 so published OpenClaw and ACPX packages use the patched runtime.</li>
+<li>Dependencies: update Hono to 4.12.25 so published NodoAssist and ACPX packages use the patched runtime.</li>
 <li>Release and test reliability: extend slow Gateway/full-suite watchdogs, split local full-suite shards when throttled, stabilize plugin auth marker fixtures, avoid brittle provider-ref error text, fold Telegram RTT sampling into live QA evidence, simplify QA scorecard mappings around canonical coverage IDs, keep QA Lab bootstrap selection assertions aligned with flow-only scenarios, skip QA coverage artifact consumers when runtime parity producer status is not green, keep Feishu lifecycle release checks pointed at the active fixture config, isolate trajectory-export live seed turns from Codex-native shell approvals, preserve release-check child refs while pinning expected SHAs, widen live OpenAI TTS budgets for slower provider responses, and avoid false downgrade prompts for unresolved latest-tag updates. (#92652, #92550, #92558, #92911) Thanks @RomneyDa and @Andy312432.</li>
 </ul>
 <p><a href="https://github.com/openclaw/openclaw/blob/main/CHANGELOG.md">View full changelog</a></p>

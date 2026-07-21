@@ -11,10 +11,10 @@ import {
 import { delimiter, join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
-  buildOpenClawReleaseClawHubPlan,
-  buildOpenClawReleaseClawHubRuntimeState,
-  parseOpenClawReleaseClawHubPlanArgs,
-} from "../scripts/lib/openclaw-release-clawhub-plan.ts";
+  buildNodoAssistReleaseClawHubPlan,
+  buildNodoAssistReleaseClawHubRuntimeState,
+  parseNodoAssistReleaseClawHubPlanArgs,
+} from "../scripts/lib/nodoassist-release-clawhub-plan.ts";
 import {
   collectClawHubPublishablePluginPackages,
   collectClawHubVersionGateErrors,
@@ -26,7 +26,7 @@ import {
 } from "../scripts/lib/plugin-clawhub-release.ts";
 import {
   collectPublishablePluginPackages,
-  OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+  NODOASSIST_PLUGIN_NPM_REPOSITORY_URL,
 } from "../scripts/lib/plugin-npm-release.ts";
 import { runPluginClawHubReleaseCheck } from "../scripts/plugin-clawhub-release-check.ts";
 import { cleanupTempDirs, makeTempRepoRoot } from "./helpers/temp-repo.js";
@@ -42,7 +42,7 @@ describe("resolveChangedClawHubPublishablePluginPackages", () => {
     {
       extensionId: "feishu",
       packageDir: "extensions/feishu",
-      packageName: "@openclaw/feishu",
+      packageName: "@nodoassist/feishu",
       version: "2026.4.1",
       channel: "stable",
       publishTag: "latest",
@@ -50,7 +50,7 @@ describe("resolveChangedClawHubPublishablePluginPackages", () => {
     {
       extensionId: "zalo",
       packageDir: "extensions/zalo",
-      packageName: "@openclaw/zalo",
+      packageName: "@nodoassist/zalo",
       version: "2026.4.1-beta.1",
       channel: "beta",
       publishTag: "beta",
@@ -74,7 +74,7 @@ describe("collectClawHubPublishablePluginPackages", () => {
     });
 
     expect(() => collectClawHubPublishablePluginPackages(repoDir)).toThrow(
-      "openclaw.compat.pluginApi is required for external code plugin packages.",
+      "nodoassist.compat.pluginApi is required for external code plugin packages.",
     );
   });
 
@@ -96,9 +96,9 @@ describe("collectClawHubPublishablePluginPackages", () => {
       join(repoDir, "extensions", "broken-plugin", "package.json"),
       JSON.stringify(
         {
-          name: "@openclaw/broken-plugin",
+          name: "@nodoassist/broken-plugin",
           version: "2026.4.1",
-          openclaw: {
+          nodoassist: {
             extensions: ["./index.ts"],
             release: {
               publishToClawHub: true,
@@ -112,9 +112,9 @@ describe("collectClawHubPublishablePluginPackages", () => {
 
     expect(
       collectClawHubPublishablePluginPackages(repoDir, {
-        packageNames: ["@openclaw/demo-plugin"],
+        packageNames: ["@nodoassist/demo-plugin"],
       }).map((plugin) => plugin.packageName),
-    ).toEqual(["@openclaw/demo-plugin"]);
+    ).toEqual(["@nodoassist/demo-plugin"]);
   });
 
   it("collects exact release dependencies that must match npm latest", () => {
@@ -124,7 +124,7 @@ describe("collectClawHubPublishablePluginPackages", () => {
 
     expect(collectClawHubPublishablePluginPackages(repoDir)).toEqual([
       expect.objectContaining({
-        packageName: "@openclaw/demo-plugin",
+        packageName: "@nodoassist/demo-plugin",
         requiredLatestDependencies: [
           {
             packageName: "demo-runtime",
@@ -136,46 +136,46 @@ describe("collectClawHubPublishablePluginPackages", () => {
   });
 });
 
-describe("OpenClaw dual-published plugin metadata", () => {
+describe("NodoAssist dual-published plugin metadata", () => {
   const dualPublishedPlugins = [
     {
       extensionId: "cohere",
-      packageName: "@openclaw/cohere-provider",
+      packageName: "@nodoassist/cohere-provider",
       install: {
-        clawhubSpec: "clawhub:@openclaw/cohere-provider",
+        clawhubSpec: "clawhub:@nodoassist/cohere-provider",
         defaultChoice: "npm",
         minHostVersion: ">=2026.6.8",
-        npmSpec: "@openclaw/cohere-provider",
+        npmSpec: "@nodoassist/cohere-provider",
       },
     },
     {
       extensionId: "diagnostics-otel",
-      packageName: "@openclaw/diagnostics-otel",
+      packageName: "@nodoassist/diagnostics-otel",
       install: {
-        clawhubSpec: "clawhub:@openclaw/diagnostics-otel",
+        clawhubSpec: "clawhub:@nodoassist/diagnostics-otel",
         defaultChoice: "npm",
         minHostVersion: ">=2026.4.25",
-        npmSpec: "@openclaw/diagnostics-otel",
+        npmSpec: "@nodoassist/diagnostics-otel",
       },
     },
     {
       extensionId: "diagnostics-prometheus",
-      packageName: "@openclaw/diagnostics-prometheus",
+      packageName: "@nodoassist/diagnostics-prometheus",
       install: {
-        clawhubSpec: "clawhub:@openclaw/diagnostics-prometheus",
+        clawhubSpec: "clawhub:@nodoassist/diagnostics-prometheus",
         defaultChoice: "npm",
         minHostVersion: ">=2026.4.25",
-        npmSpec: "@openclaw/diagnostics-prometheus",
+        npmSpec: "@nodoassist/diagnostics-prometheus",
       },
     },
     {
       extensionId: "gmi",
-      packageName: "@openclaw/gmi-provider",
+      packageName: "@nodoassist/gmi-provider",
       install: {
-        clawhubSpec: "clawhub:@openclaw/gmi-provider",
+        clawhubSpec: "clawhub:@nodoassist/gmi-provider",
         defaultChoice: "npm",
         minHostVersion: ">=2026.6.8",
-        npmSpec: "@openclaw/gmi-provider",
+        npmSpec: "@nodoassist/gmi-provider",
       },
     },
   ] as const;
@@ -196,7 +196,7 @@ describe("OpenClaw dual-published plugin metadata", () => {
       const packageJson = JSON.parse(
         readFileSync(`extensions/${plugin.extensionId}/package.json`, "utf8"),
       ) as {
-        openclaw?: {
+        nodoassist?: {
           install?: {
             clawhubSpec?: string;
             defaultChoice?: string;
@@ -210,8 +210,8 @@ describe("OpenClaw dual-published plugin metadata", () => {
         };
       };
 
-      expect(packageJson.openclaw?.install).toEqual(plugin.install);
-      expect(packageJson.openclaw?.release).toEqual({
+      expect(packageJson.nodoassist?.install).toEqual(plugin.install);
+      expect(packageJson.nodoassist?.release).toEqual({
         publishToClawHub: true,
         publishToNpm: true,
       });
@@ -247,7 +247,7 @@ describe("collectClawHubVersionGateErrors", () => {
     });
 
     expect(errors).toEqual([
-      "@openclaw/demo-plugin@2026.4.1: changed publishable plugin still has the same version in package.json.",
+      "@nodoassist/demo-plugin@2026.4.1: changed publishable plugin still has the same version in package.json.",
     ]);
   });
 
@@ -261,23 +261,23 @@ describe("collectClawHubVersionGateErrors", () => {
       join(repoDir, "extensions", "demo-plugin", "package.json"),
       JSON.stringify(
         {
-          name: "@openclaw/demo-plugin",
+          name: "@nodoassist/demo-plugin",
           version: "2026.4.1",
           type: "module",
           repository: {
             type: "git",
-            url: OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+            url: NODOASSIST_PLUGIN_NPM_REPOSITORY_URL,
           },
-          openclaw: {
+          nodoassist: {
             extensions: ["./index.ts"],
             compat: {
               pluginApi: ">=2026.4.1",
             },
             install: {
-              npmSpec: "@openclaw/demo-plugin",
+              npmSpec: "@nodoassist/demo-plugin",
             },
             build: {
-              openclawVersion: "2026.4.1",
+              nodoassistVersion: "2026.4.1",
             },
             release: {
               publishToClawHub: true,
@@ -381,14 +381,14 @@ describe("collectPluginClawHubReleasePlan", () => {
     await expect(
       collectPluginClawHubReleasePlan({
         rootDir: repoDir,
-        selection: ["@openclaw/demo-plugin"],
+        selection: ["@nodoassist/demo-plugin"],
         resolveLatestVersion: () => "1.2.4",
         fetchImpl: async () => {
           throw new Error("ClawHub should not be queried for a stale dependency.");
         },
       }),
     ).rejects.toThrow(
-      '@openclaw/demo-plugin@2026.4.1: demo-runtime must match npm latest for release; found "1.2.3", latest is "1.2.4".',
+      '@nodoassist/demo-plugin@2026.4.1: demo-runtime must match npm latest for release; found "1.2.3", latest is "1.2.4".',
     );
   });
 
@@ -398,36 +398,36 @@ describe("collectPluginClawHubReleasePlan", () => {
     });
     const { fetchImpl } = createClawHubPlanFetch({
       packages: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
         },
       },
       trustedPublishers: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             trustedPublisher: {
-              repository: "openclaw/openclaw",
+              repository: "nodoassist/nodoassist",
               workflowFilename: "plugin-clawhub-release.yml",
             },
           },
         },
       },
       versions: {
-        "@openclaw/demo-plugin@2026.4.1": 404,
+        "@nodoassist/demo-plugin@2026.4.1": 404,
       },
     });
 
     const plan = await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       resolveLatestVersion: () => "1.2.3",
       fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
     });
 
     expect(plan.candidates.map((plugin) => plugin.packageName)).toEqual([
-      "@openclaw/demo-plugin",
+      "@nodoassist/demo-plugin",
     ]);
   });
 
@@ -439,7 +439,7 @@ describe("collectPluginClawHubReleasePlan", () => {
     await expect(
       collectPluginClawHubReleasePlan({
         rootDir: repoDir,
-        selection: ["@openclaw/demo-plugin"],
+        selection: ["@nodoassist/demo-plugin"],
         resolveLatestVersion: () => {
           throw new Error("registry unavailable");
         },
@@ -448,7 +448,7 @@ describe("collectPluginClawHubReleasePlan", () => {
         },
       }),
     ).rejects.toThrow(
-      "@openclaw/demo-plugin@2026.4.1: could not resolve npm latest for demo-runtime: registry unavailable",
+      "@nodoassist/demo-plugin@2026.4.1: could not resolve npm latest for demo-runtime: registry unavailable",
     );
   });
 
@@ -456,7 +456,7 @@ describe("collectPluginClawHubReleasePlan", () => {
     const repoDir = createTempPluginRepo();
     const { fetchImpl, requests } = createClawHubPlanFetch({
       packages: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             package: {},
@@ -465,35 +465,37 @@ describe("collectPluginClawHubReleasePlan", () => {
         },
       },
       trustedPublishers: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             trustedPublisher: {
-              repository: "openclaw/openclaw",
+              repository: "nodoassist/nodoassist",
               workflowFilename: "plugin-clawhub-release.yml",
             },
           },
         },
       },
       versions: {
-        "@openclaw/demo-plugin@2026.4.1": 404,
+        "@nodoassist/demo-plugin@2026.4.1": 404,
       },
     });
 
     const plan = await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
     });
 
-    expect(plan.candidates.map((plugin) => plugin.packageName)).toEqual(["@openclaw/demo-plugin"]);
+    expect(plan.candidates.map((plugin) => plugin.packageName)).toEqual([
+      "@nodoassist/demo-plugin",
+    ]);
     expect(plan.bootstrapCandidates).toStrictEqual([]);
     expect(plan.missingTrustedPublisher).toStrictEqual([]);
     expect(requests).toEqual([
-      "/api/v1/packages/%40openclaw%2Fdemo-plugin",
-      "/api/v1/packages/%40openclaw%2Fdemo-plugin/trusted-publisher",
-      "/api/v1/packages/%40openclaw%2Fdemo-plugin/versions/2026.4.1",
+      "/api/v1/packages/%40nodoassist%2Fdemo-plugin",
+      "/api/v1/packages/%40nodoassist%2Fdemo-plugin/trusted-publisher",
+      "/api/v1/packages/%40nodoassist%2Fdemo-plugin/versions/2026.4.1",
     ]);
   });
 
@@ -505,7 +507,7 @@ describe("collectPluginClawHubReleasePlan", () => {
         typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
       const url = new URL(requestUrl);
 
-      if (url.pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin") {
+      if (url.pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin") {
         return new Response(
           new ReadableStream<Uint8Array>({
             cancel() {
@@ -515,18 +517,18 @@ describe("collectPluginClawHubReleasePlan", () => {
           { status: 200 },
         );
       }
-      if (url.pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin/trusted-publisher") {
+      if (url.pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin/trusted-publisher") {
         return new Response(
           JSON.stringify({
             trustedPublisher: {
-              repository: "openclaw/openclaw",
+              repository: "nodoassist/nodoassist",
               workflowFilename: "plugin-clawhub-release.yml",
             },
           }),
           { status: 200 },
         );
       }
-      if (url.pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin/versions/2026.4.1") {
+      if (url.pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin/versions/2026.4.1") {
         return new Response(
           new ReadableStream<Uint8Array>({
             cancel() {
@@ -542,7 +544,7 @@ describe("collectPluginClawHubReleasePlan", () => {
 
     await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
     });
@@ -559,10 +561,10 @@ describe("collectPluginClawHubReleasePlan", () => {
       const requestUrl =
         typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
       const pathname = new URL(requestUrl).pathname;
-      if (pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin") {
+      if (pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin") {
         return new Response("{}", { status: 200 });
       }
-      if (pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin/trusted-publisher") {
+      if (pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin/trusted-publisher") {
         trustedPublisherRequests += 1;
         if (trustedPublisherRequests === 1) {
           return new Response(
@@ -577,14 +579,14 @@ describe("collectPluginClawHubReleasePlan", () => {
         return new Response(
           JSON.stringify({
             trustedPublisher: {
-              repository: "openclaw/openclaw",
+              repository: "nodoassist/nodoassist",
               workflowFilename: "plugin-clawhub-release.yml",
             },
           }),
           { status: 200 },
         );
       }
-      if (pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin/versions/2026.4.1") {
+      if (pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin/versions/2026.4.1") {
         return new Response("", { status: 404 });
       }
       throw new Error(`Unexpected ClawHub request to ${pathname}`);
@@ -592,7 +594,7 @@ describe("collectPluginClawHubReleasePlan", () => {
 
     const plan = await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
       sleep: async (ms) => {
@@ -603,7 +605,9 @@ describe("collectPluginClawHubReleasePlan", () => {
     expect(trustedPublisherRequests).toBe(2);
     expect(rateLimitedBodyCanceled).toBe(true);
     expect(retryDelays).toEqual([1_000]);
-    expect(plan.candidates.map((plugin) => plugin.packageName)).toEqual(["@openclaw/demo-plugin"]);
+    expect(plan.candidates.map((plugin) => plugin.packageName)).toEqual([
+      "@nodoassist/demo-plugin",
+    ]);
   });
 
   it("honors an HTTP-date Retry-After header", async () => {
@@ -616,10 +620,10 @@ describe("collectPluginClawHubReleasePlan", () => {
       const requestUrl =
         typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
       const pathname = new URL(requestUrl).pathname;
-      if (pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin") {
+      if (pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin") {
         return new Response("{}", { status: 200 });
       }
-      if (pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin/trusted-publisher") {
+      if (pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin/trusted-publisher") {
         trustedPublisherRequests += 1;
         if (trustedPublisherRequests === 1) {
           return new Response("", { status: 429, headers: { "retry-after": retryAfter } });
@@ -627,14 +631,14 @@ describe("collectPluginClawHubReleasePlan", () => {
         return new Response(
           JSON.stringify({
             trustedPublisher: {
-              repository: "openclaw/openclaw",
+              repository: "nodoassist/nodoassist",
               workflowFilename: "plugin-clawhub-release.yml",
             },
           }),
           { status: 200 },
         );
       }
-      if (pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin/versions/2026.4.1") {
+      if (pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin/versions/2026.4.1") {
         return new Response("", { status: 404 });
       }
       throw new Error(`Unexpected ClawHub request to ${pathname}`);
@@ -643,7 +647,7 @@ describe("collectPluginClawHubReleasePlan", () => {
     try {
       await collectPluginClawHubReleasePlan({
         rootDir: repoDir,
-        selection: ["@openclaw/demo-plugin"],
+        selection: ["@nodoassist/demo-plugin"],
         fetchImpl,
         registryBaseUrl: "https://clawhub.ai",
         sleep: async (ms) => {
@@ -666,10 +670,10 @@ describe("collectPluginClawHubReleasePlan", () => {
       const requestUrl =
         typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
       const pathname = new URL(requestUrl).pathname;
-      if (pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin") {
+      if (pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin") {
         return new Response("{}", { status: 200 });
       }
-      if (pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin/trusted-publisher") {
+      if (pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin/trusted-publisher") {
         trustedPublisherRequests += 1;
         if (trustedPublisherRequests === 1) {
           return new Response("", { status: 429, headers: { "retry-after": "999999999999" } });
@@ -677,14 +681,14 @@ describe("collectPluginClawHubReleasePlan", () => {
         return new Response(
           JSON.stringify({
             trustedPublisher: {
-              repository: "openclaw/openclaw",
+              repository: "nodoassist/nodoassist",
               workflowFilename: "plugin-clawhub-release.yml",
             },
           }),
           { status: 200 },
         );
       }
-      if (pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin/versions/2026.4.1") {
+      if (pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin/versions/2026.4.1") {
         return new Response("", { status: 404 });
       }
       throw new Error(`Unexpected ClawHub request to ${pathname}`);
@@ -692,7 +696,7 @@ describe("collectPluginClawHubReleasePlan", () => {
 
     await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
       sleep: async (ms) => {
@@ -708,7 +712,7 @@ describe("collectPluginClawHubReleasePlan", () => {
     const repoDir = createTempPluginRepo();
     const { fetchImpl } = createClawHubPlanFetch({
       packages: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 404,
         },
       },
@@ -716,19 +720,19 @@ describe("collectPluginClawHubReleasePlan", () => {
 
     const plan = await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
     });
 
     expect(plan.candidates).toStrictEqual([]);
     expect(plan.bootstrapCandidates.map((plugin) => plugin.packageName)).toEqual([
-      "@openclaw/demo-plugin",
+      "@nodoassist/demo-plugin",
     ]);
     expect(plan.bootstrapCandidates[0]).toMatchObject({
       alreadyPublished: false,
-      artifactName: "clawhub-package-openclaw-demo-plugin-2026.4.1",
-      packageName: "@openclaw/demo-plugin",
+      artifactName: "clawhub-package-nodoassist-demo-plugin-2026.4.1",
+      packageName: "@nodoassist/demo-plugin",
       version: "2026.4.1",
     });
     expect(plan.missingTrustedPublisher).toStrictEqual([]);
@@ -738,7 +742,7 @@ describe("collectPluginClawHubReleasePlan", () => {
     const repoDir = createTempPluginRepo();
     const { fetchImpl } = createClawHubPlanFetch({
       packages: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             package: {},
@@ -747,7 +751,7 @@ describe("collectPluginClawHubReleasePlan", () => {
         },
       },
       trustedPublishers: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             trustedPublisher: null,
@@ -755,13 +759,13 @@ describe("collectPluginClawHubReleasePlan", () => {
         },
       },
       versions: {
-        "@openclaw/demo-plugin@2026.4.1": 404,
+        "@nodoassist/demo-plugin@2026.4.1": 404,
       },
     });
 
     const plan = await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
     });
@@ -769,12 +773,12 @@ describe("collectPluginClawHubReleasePlan", () => {
     expect(plan.candidates).toStrictEqual([]);
     expect(plan.bootstrapCandidates).toStrictEqual([]);
     expect(plan.missingTrustedPublisher.map((plugin) => plugin.packageName)).toEqual([
-      "@openclaw/demo-plugin",
+      "@nodoassist/demo-plugin",
     ]);
     expect(plan.missingTrustedPublisher[0]).toMatchObject({
       alreadyPublished: false,
-      artifactName: "clawhub-package-openclaw-demo-plugin-2026.4.1",
-      packageName: "@openclaw/demo-plugin",
+      artifactName: "clawhub-package-nodoassist-demo-plugin-2026.4.1",
+      packageName: "@nodoassist/demo-plugin",
       version: "2026.4.1",
     });
   });
@@ -785,10 +789,10 @@ describe("collectPluginClawHubReleasePlan", () => {
       const requestUrl =
         typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
       const url = new URL(requestUrl);
-      if (url.pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin") {
+      if (url.pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin") {
         return new Response("{}", { status: 200 });
       }
-      if (url.pathname === "/api/v1/packages/%40openclaw%2Fdemo-plugin/trusted-publisher") {
+      if (url.pathname === "/api/v1/packages/%40nodoassist%2Fdemo-plugin/trusted-publisher") {
         return new Response(new ReadableStream<Uint8Array>({ start() {} }), { status: 200 });
       }
       throw new Error(`Unexpected ClawHub request to ${url.pathname}`);
@@ -797,7 +801,7 @@ describe("collectPluginClawHubReleasePlan", () => {
     await expect(
       collectPluginClawHubReleasePlan({
         rootDir: repoDir,
-        selection: ["@openclaw/demo-plugin"],
+        selection: ["@nodoassist/demo-plugin"],
         fetchImpl,
         registryBaseUrl: "https://clawhub.ai",
         requestTimeoutMs: 5,
@@ -809,7 +813,7 @@ describe("collectPluginClawHubReleasePlan", () => {
     const repoDir = createTempPluginRepo();
     const { fetchImpl } = createClawHubPlanFetch({
       packages: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             package: {},
@@ -818,11 +822,11 @@ describe("collectPluginClawHubReleasePlan", () => {
         },
       },
       trustedPublishers: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             trustedPublisher: {
-              repository: "openclaw/openclaw",
+              repository: "nodoassist/nodoassist",
               workflowFilename: "plugin-clawhub-release.yml",
               environment: "clawhub-plugin-release",
             },
@@ -830,13 +834,13 @@ describe("collectPluginClawHubReleasePlan", () => {
         },
       },
       versions: {
-        "@openclaw/demo-plugin@2026.4.1": 404,
+        "@nodoassist/demo-plugin@2026.4.1": 404,
       },
     });
 
     const plan = await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
     });
@@ -844,7 +848,7 @@ describe("collectPluginClawHubReleasePlan", () => {
     expect(plan.candidates).toStrictEqual([]);
     expect(plan.bootstrapCandidates).toStrictEqual([]);
     expect(plan.missingTrustedPublisher.map((plugin) => plugin.packageName)).toEqual([
-      "@openclaw/demo-plugin",
+      "@nodoassist/demo-plugin",
     ]);
   });
 
@@ -852,7 +856,7 @@ describe("collectPluginClawHubReleasePlan", () => {
     const repoDir = createTempPluginRepo();
     const { fetchImpl } = createClawHubPlanFetch({
       packages: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             package: {},
@@ -861,7 +865,7 @@ describe("collectPluginClawHubReleasePlan", () => {
         },
       },
       trustedPublishers: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             trustedPublisher: null,
@@ -869,13 +873,13 @@ describe("collectPluginClawHubReleasePlan", () => {
         },
       },
       versions: {
-        "@openclaw/demo-plugin@2026.4.1": 200,
+        "@nodoassist/demo-plugin@2026.4.1": 200,
       },
     });
 
     const plan = await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
     });
@@ -883,22 +887,22 @@ describe("collectPluginClawHubReleasePlan", () => {
     expect(plan.candidates).toStrictEqual([]);
     expect(plan.bootstrapCandidates).toStrictEqual([]);
     expect(plan.missingTrustedPublisher.map((plugin) => plugin.packageName)).toEqual([
-      "@openclaw/demo-plugin",
+      "@nodoassist/demo-plugin",
     ]);
     expect(plan.missingTrustedPublisher[0]).toMatchObject({
       alreadyPublished: true,
-      artifactName: "clawhub-package-openclaw-demo-plugin-2026.4.1",
-      packageName: "@openclaw/demo-plugin",
+      artifactName: "clawhub-package-nodoassist-demo-plugin-2026.4.1",
+      packageName: "@nodoassist/demo-plugin",
       version: "2026.4.1",
     });
     expect(plan.skippedPublished).toHaveLength(1);
     expect(plan.skippedPublished[0]).toEqual({
       alreadyPublished: true,
-      artifactName: "clawhub-package-openclaw-demo-plugin-2026.4.1",
+      artifactName: "clawhub-package-nodoassist-demo-plugin-2026.4.1",
       channel: "stable",
       extensionId: "demo-plugin",
       packageDir: "extensions/demo-plugin",
-      packageName: "@openclaw/demo-plugin",
+      packageName: "@nodoassist/demo-plugin",
       publishTag: "latest",
       version: "2026.4.1",
     });
@@ -912,9 +916,9 @@ describe("collectPluginClawHubReleasePlan", () => {
       join(repoDir, "extensions", "broken-plugin", "package.json"),
       JSON.stringify(
         {
-          name: "@openclaw/broken-plugin",
+          name: "@nodoassist/broken-plugin",
           version: "2026.4.1",
-          openclaw: {
+          nodoassist: {
             extensions: ["./index.ts"],
             release: {
               publishToClawHub: true,
@@ -928,10 +932,10 @@ describe("collectPluginClawHubReleasePlan", () => {
 
     const plan = await collectPluginClawHubReleasePlan({
       rootDir: repoDir,
-      selection: ["@openclaw/demo-plugin"],
+      selection: ["@nodoassist/demo-plugin"],
       fetchImpl: createClawHubPlanFetch({
         packages: {
-          "@openclaw/demo-plugin": {
+          "@nodoassist/demo-plugin": {
             status: 200,
             body: {
               package: {},
@@ -940,48 +944,50 @@ describe("collectPluginClawHubReleasePlan", () => {
           },
         },
         trustedPublishers: {
-          "@openclaw/demo-plugin": {
+          "@nodoassist/demo-plugin": {
             status: 200,
             body: {
               trustedPublisher: {
-                repository: "openclaw/openclaw",
+                repository: "nodoassist/nodoassist",
                 workflowFilename: "plugin-clawhub-release.yml",
               },
             },
           },
         },
         versions: {
-          "@openclaw/demo-plugin@2026.4.1": 404,
+          "@nodoassist/demo-plugin@2026.4.1": 404,
         },
       }).fetchImpl,
       registryBaseUrl: "https://clawhub.ai",
     });
 
-    expect(plan.candidates.map((plugin) => plugin.packageName)).toEqual(["@openclaw/demo-plugin"]);
+    expect(plan.candidates.map((plugin) => plugin.packageName)).toEqual([
+      "@nodoassist/demo-plugin",
+    ]);
     expect(plan.candidates.map((plugin) => plugin.artifactName)).toEqual([
-      "clawhub-package-openclaw-demo-plugin-2026.4.1",
+      "clawhub-package-nodoassist-demo-plugin-2026.4.1",
     ]);
   });
 });
 
-describe("buildOpenClawReleaseClawHubPlan", () => {
+describe("buildNodoAssistReleaseClawHubPlan", () => {
   it("emits a dispatch plan that keeps ClawHub children on the release tag", async () => {
     const repoDir = createTempPluginRepo({
       extraExtensionIds: ["demo-two", "demo-three"],
     });
     const { fetchImpl } = createClawHubPlanFetch({
       packages: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             package: {},
             owner: {},
           },
         },
-        "@openclaw/demo-two": {
+        "@nodoassist/demo-two": {
           status: 404,
         },
-        "@openclaw/demo-three": {
+        "@nodoassist/demo-three": {
           status: 200,
           body: {
             package: {},
@@ -990,16 +996,16 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
         },
       },
       trustedPublishers: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             trustedPublisher: {
-              repository: "openclaw/openclaw",
+              repository: "nodoassist/nodoassist",
               workflowFilename: "plugin-clawhub-release.yml",
             },
           },
         },
-        "@openclaw/demo-three": {
+        "@nodoassist/demo-three": {
           status: 200,
           body: {
             trustedPublisher: null,
@@ -1007,12 +1013,12 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
         },
       },
       versions: {
-        "@openclaw/demo-plugin@2026.4.1": 404,
-        "@openclaw/demo-three@2026.4.1": 404,
+        "@nodoassist/demo-plugin@2026.4.1": 404,
+        "@nodoassist/demo-three@2026.4.1": 404,
       },
     });
 
-    const plan = await buildOpenClawReleaseClawHubPlan(
+    const plan = await buildNodoAssistReleaseClawHubPlan(
       {
         releaseTag: "v2026.4.1-beta.1",
         releasePublishBranch: "main",
@@ -1033,10 +1039,10 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
       workflow: "plugin-clawhub-release.yml",
       ref: "v2026.4.1-beta.1",
       shouldDispatch: true,
-      packages: ["@openclaw/demo-plugin"],
+      packages: ["@nodoassist/demo-plugin"],
       inputs: {
         publish_scope: "selected",
-        plugins: "@openclaw/demo-plugin",
+        plugins: "@nodoassist/demo-plugin",
         release_publish_run_id: "12345",
         release_publish_branch: "main",
       },
@@ -1045,9 +1051,9 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
       workflow: "plugin-clawhub-new.yml",
       ref: "v2026.4.1-beta.1",
       shouldDispatch: true,
-      packages: ["@openclaw/demo-two", "@openclaw/demo-three"],
+      packages: ["@nodoassist/demo-two", "@nodoassist/demo-three"],
       inputs: {
-        plugins: "@openclaw/demo-two,@openclaw/demo-three",
+        plugins: "@nodoassist/demo-two,@nodoassist/demo-three",
         release_publish_run_id: "12345",
         release_publish_branch: "main",
       },
@@ -1057,9 +1063,9 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
       normalCount: 1,
       bootstrapCount: 2,
       missingTrustedPublisherCount: 1,
-      normalPlugins: "@openclaw/demo-plugin",
-      bootstrapPlugins: "@openclaw/demo-two,@openclaw/demo-three",
-      missingTrustedPlugins: "@openclaw/demo-three",
+      normalPlugins: "@nodoassist/demo-plugin",
+      bootstrapPlugins: "@nodoassist/demo-two,@nodoassist/demo-three",
+      missingTrustedPlugins: "@nodoassist/demo-three",
     });
     expect(plan.verifier).toEqual({
       clawHubWorkflowRef: "v2026.4.1-beta.1",
@@ -1070,7 +1076,7 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
     const repoDir = createTempPluginRepo();
     const { fetchImpl } = createClawHubPlanFetch({
       packages: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             package: {},
@@ -1079,7 +1085,7 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
         },
       },
       trustedPublishers: {
-        "@openclaw/demo-plugin": {
+        "@nodoassist/demo-plugin": {
           status: 200,
           body: {
             trustedPublisher: null,
@@ -1087,17 +1093,17 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
         },
       },
       versions: {
-        "@openclaw/demo-plugin@2026.4.1": 200,
+        "@nodoassist/demo-plugin@2026.4.1": 200,
       },
     });
 
-    const plan = await buildOpenClawReleaseClawHubPlan(
+    const plan = await buildNodoAssistReleaseClawHubPlan(
       {
         releaseTag: "v2026.4.1-beta.1",
         releasePublishBranch: "release/2026.4.1",
         releasePublishRunId: "12345",
         pluginPublishScope: "selected",
-        plugins: ["@openclaw/demo-plugin"],
+        plugins: ["@nodoassist/demo-plugin"],
       },
       {
         rootDir: repoDir,
@@ -1111,9 +1117,9 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
       workflow: "plugin-clawhub-new.yml",
       ref: "v2026.4.1-beta.1",
       shouldDispatch: true,
-      packages: ["@openclaw/demo-plugin"],
+      packages: ["@nodoassist/demo-plugin"],
       inputs: {
-        plugins: "@openclaw/demo-plugin",
+        plugins: "@nodoassist/demo-plugin",
         release_publish_run_id: "12345",
         release_publish_branch: "release/2026.4.1",
       },
@@ -1122,14 +1128,14 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
       normalCount: 0,
       bootstrapCount: 1,
       missingTrustedPublisherCount: 1,
-      bootstrapPlugins: "@openclaw/demo-plugin",
-      missingTrustedPlugins: "@openclaw/demo-plugin",
+      bootstrapPlugins: "@nodoassist/demo-plugin",
+      missingTrustedPlugins: "@nodoassist/demo-plugin",
     });
   });
 
   it("rejects incompatible all-publishable plugin selection args", () => {
     expect(() =>
-      parseOpenClawReleaseClawHubPlanArgs([
+      parseNodoAssistReleaseClawHubPlanArgs([
         "--release-tag",
         "v2026.4.1-beta.1",
         "--release-publish-branch",
@@ -1139,7 +1145,7 @@ describe("buildOpenClawReleaseClawHubPlan", () => {
         "--plugin-publish-scope",
         "all-publishable",
         "--plugins",
-        "@openclaw/demo-plugin",
+        "@nodoassist/demo-plugin",
       ]),
     ).toThrow("plugin-publish-scope=all-publishable must not be combined with --plugins.");
   });
@@ -1152,12 +1158,12 @@ describe("runPluginClawHubReleaseCheck", () => {
     });
 
     await expect(
-      runPluginClawHubReleaseCheck(["--plugins", "@openclaw/demo-plugin"], {
+      runPluginClawHubReleaseCheck(["--plugins", "@nodoassist/demo-plugin"], {
         rootDir: repoDir,
         resolveLatestVersion: () => "1.2.4",
       }),
     ).rejects.toThrow(
-      '@openclaw/demo-plugin@2026.4.1: demo-runtime must match npm latest for release; found "1.2.3", latest is "1.2.4".',
+      '@nodoassist/demo-plugin@2026.4.1: demo-runtime must match npm latest for release; found "1.2.3", latest is "1.2.4".',
     );
   });
 
@@ -1169,7 +1175,7 @@ describe("runPluginClawHubReleaseCheck", () => {
 
     try {
       await expect(
-        runPluginClawHubReleaseCheck(["--plugins", "@openclaw/demo-plugin"], {
+        runPluginClawHubReleaseCheck(["--plugins", "@nodoassist/demo-plugin"], {
           rootDir: repoDir,
           resolveLatestVersion: () => "1.2.3",
         }),
@@ -1185,22 +1191,22 @@ describe("runPluginClawHubReleaseCheck", () => {
     });
 
     await expect(
-      runPluginClawHubReleaseCheck(["--plugins", "@openclaw/demo-plugin"], {
+      runPluginClawHubReleaseCheck(["--plugins", "@nodoassist/demo-plugin"], {
         rootDir: repoDir,
         resolveLatestVersion: () => {
           throw new Error("registry unavailable");
         },
       }),
     ).rejects.toThrow(
-      "@openclaw/demo-plugin@2026.4.1: could not resolve npm latest for demo-runtime: registry unavailable",
+      "@nodoassist/demo-plugin@2026.4.1: could not resolve npm latest for demo-runtime: registry unavailable",
     );
   });
 });
 
-describe("buildOpenClawReleaseClawHubRuntimeState", () => {
+describe("buildNodoAssistReleaseClawHubRuntimeState", () => {
   it("includes the normal ClawHub run in verifier args when the release waits for it", () => {
-    const state = buildOpenClawReleaseClawHubRuntimeState({
-      repository: "openclaw/openclaw",
+    const state = buildNodoAssistReleaseClawHubRuntimeState({
+      repository: "nodoassist/nodoassist",
       waitForClawHub: true,
       forceSkipClawHub: false,
       normalRunId: "111",
@@ -1216,8 +1222,8 @@ describe("buildOpenClawReleaseClawHubRuntimeState", () => {
   });
 
   it("includes a completed bootstrap run even when there is no normal ClawHub run", () => {
-    const state = buildOpenClawReleaseClawHubRuntimeState({
-      repository: "openclaw/openclaw",
+    const state = buildNodoAssistReleaseClawHubRuntimeState({
+      repository: "nodoassist/nodoassist",
       waitForClawHub: false,
       forceSkipClawHub: false,
       normalRunId: "",
@@ -1233,8 +1239,8 @@ describe("buildOpenClawReleaseClawHubRuntimeState", () => {
   });
 
   it("skips ClawHub verification for non-awaited incomplete runs while keeping proof links", () => {
-    const state = buildOpenClawReleaseClawHubRuntimeState({
-      repository: "openclaw/openclaw",
+    const state = buildNodoAssistReleaseClawHubRuntimeState({
+      repository: "nodoassist/nodoassist",
       waitForClawHub: false,
       forceSkipClawHub: false,
       normalRunId: "111",
@@ -1252,8 +1258,8 @@ describe("buildOpenClawReleaseClawHubRuntimeState", () => {
   });
 
   it("keeps completed bootstrap run evidence when the normal ClawHub run is not awaited", () => {
-    const state = buildOpenClawReleaseClawHubRuntimeState({
-      repository: "openclaw/openclaw",
+    const state = buildNodoAssistReleaseClawHubRuntimeState({
+      repository: "nodoassist/nodoassist",
       waitForClawHub: false,
       forceSkipClawHub: false,
       normalRunId: "111",
@@ -1271,8 +1277,8 @@ describe("buildOpenClawReleaseClawHubRuntimeState", () => {
   });
 
   it("forces skip-clawhub after a failed child run even if ClawHub runs completed", () => {
-    const state = buildOpenClawReleaseClawHubRuntimeState({
-      repository: "openclaw/openclaw",
+    const state = buildNodoAssistReleaseClawHubRuntimeState({
+      repository: "nodoassist/nodoassist",
       waitForClawHub: true,
       forceSkipClawHub: true,
       normalRunId: "111",
@@ -1362,9 +1368,9 @@ if [[ "\${1:-}" == "package" && "\${2:-}" == "pack" ]]; then
     esac
   done
   mkdir -p "$pack_destination"
-  pack_path="$pack_destination/openclaw-demo-plugin-2026.4.1.tgz"
+  pack_path="$pack_destination/nodoassist-demo-plugin-2026.4.1.tgz"
   printf 'fake tgz\\n' > "$pack_path"
-  printf '{"path":"%s","name":"@openclaw/demo-plugin","version":"2026.4.1"}\\n' "$pack_path"
+  printf '{"path":"%s","name":"@nodoassist/demo-plugin","version":"2026.4.1"}\\n' "$pack_path"
 fi
 exit 0
 `,
@@ -1429,9 +1435,9 @@ if [[ "\${1:-}" == "package" && "\${2:-}" == "pack" ]]; then
     esac
   done
   mkdir -p "$pack_destination"
-  pack_path="$pack_destination/openclaw-demo-plugin-2026.4.1.tgz"
+  pack_path="$pack_destination/nodoassist-demo-plugin-2026.4.1.tgz"
   printf 'fake tgz\\n' > "$pack_path"
-  printf '{"path":"%s","name":"@openclaw/demo-plugin","version":"2026.4.1"}\\n' "$pack_path"
+  printf '{"path":"%s","name":"@nodoassist/demo-plugin","version":"2026.4.1"}\\n' "$pack_path"
 fi
 exit 0
 `,
@@ -1450,7 +1456,7 @@ exit 0
         encoding: "utf8",
         env: {
           ...process.env,
-          OPENCLAW_CLAWHUB_MANUAL_OVERRIDE_REASON:
+          NODOASSIST_CLAWHUB_MANUAL_OVERRIDE_REASON:
             "GitHub Actions trusted publisher repair before OIDC migration",
           PATH: `${binDir}${delimiter}${process.env.PATH ?? ""}`,
         },
@@ -1493,9 +1499,9 @@ if [[ "\${1:-}" == "package" && "\${2:-}" == "pack" ]]; then
     esac
   done
   mkdir -p "$pack_destination"
-  pack_path="$pack_destination/openclaw-demo-plugin-2026.4.1.tgz"
+  pack_path="$pack_destination/nodoassist-demo-plugin-2026.4.1.tgz"
   printf 'fake tgz\\n' > "$pack_path"
-  printf '{"path":"%s","name":"@openclaw/demo-plugin","version":"2026.4.1"}\\n' "$pack_path"
+  printf '{"path":"%s","name":"@nodoassist/demo-plugin","version":"2026.4.1"}\\n' "$pack_path"
 fi
 exit 0
 `,
@@ -1514,14 +1520,14 @@ exit 0
         encoding: "utf8",
         env: {
           ...process.env,
-          OPENCLAW_CLAWHUB_PACK_OUTPUT_DIR: outputDir,
+          NODOASSIST_CLAWHUB_PACK_OUTPUT_DIR: outputDir,
           PATH: `${binDir}${delimiter}${process.env.PATH ?? ""}`,
         },
       },
     );
 
     expect(output).toContain("Packed ClawPack:");
-    expect(existsSync(join(outputDir, "openclaw-demo-plugin-2026.4.1.tgz"))).toBe(true);
+    expect(existsSync(join(outputDir, "nodoassist-demo-plugin-2026.4.1.tgz"))).toBe(true);
     const invocations = readFileSync(markerPath, "utf8");
     expect(invocations).toContain("package pack ");
     expect(invocations).not.toContain("package publish ");
@@ -1554,13 +1560,13 @@ function createTempPluginRepo(
     requiredLatestDependencyVersion?: string;
   } = {},
 ) {
-  const repoDir = makeTempRepoRoot(tempDirs, "openclaw-clawhub-release-");
+  const repoDir = makeTempRepoRoot(tempDirs, "nodoassist-clawhub-release-");
   const extensionId = options.extensionId ?? "demo-plugin";
   const extensionIds = [extensionId, ...(options.extraExtensionIds ?? [])];
 
   writeFileSync(
     join(repoDir, "package.json"),
-    JSON.stringify({ name: "openclaw-test-root", type: "module" }, null, 2),
+    JSON.stringify({ name: "nodoassist-test-root", type: "module" }, null, 2),
   );
   writeFileSync(join(repoDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'\n");
   for (const currentExtensionId of extensionIds) {
@@ -1569,12 +1575,12 @@ function createTempPluginRepo(
       join(repoDir, "extensions", currentExtensionId, "package.json"),
       JSON.stringify(
         {
-          name: `@openclaw/${currentExtensionId}`,
+          name: `@nodoassist/${currentExtensionId}`,
           version: "2026.4.1",
           type: "module",
           repository: {
             type: "git",
-            url: OPENCLAW_PLUGIN_NPM_REPOSITORY_URL,
+            url: NODOASSIST_PLUGIN_NPM_REPOSITORY_URL,
           },
           ...(options.requiredLatestDependencyVersion
             ? {
@@ -1583,7 +1589,7 @@ function createTempPluginRepo(
                 },
               }
             : {}),
-          openclaw: {
+          nodoassist: {
             extensions: ["./index.ts"],
             ...(options.includeClawHubContract === false
               ? {}
@@ -1592,11 +1598,11 @@ function createTempPluginRepo(
                     pluginApi: ">=2026.4.1",
                   },
                   build: {
-                    openclawVersion: "2026.4.1",
+                    nodoassistVersion: "2026.4.1",
                   },
                 }),
             install: {
-              npmSpec: `@openclaw/${currentExtensionId}`,
+              npmSpec: `@nodoassist/${currentExtensionId}`,
             },
             release: {
               publishToClawHub: options.publishToClawHub ?? true,

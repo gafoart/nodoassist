@@ -2,10 +2,10 @@
  * Synchronous Amazon Bedrock Mantle provider registration. It wires discovery,
  * runtime bearer-token preparation, stream wrappers, and failover classifiers.
  */
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolvePluginConfigObject } from "openclaw/plugin-sdk/plugin-config-runtime";
-import type { OpenClawPluginApi, ProviderRuntimeModel } from "openclaw/plugin-sdk/plugin-entry";
-import { resolveClaudeSonnet5ModelIdentity } from "openclaw/plugin-sdk/provider-model-shared";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { resolvePluginConfigObject } from "nodoassist/plugin-sdk/plugin-config-runtime";
+import type { NodoAssistPluginApi, ProviderRuntimeModel } from "nodoassist/plugin-sdk/plugin-entry";
+import { resolveClaudeSonnet5ModelIdentity } from "nodoassist/plugin-sdk/provider-model-shared";
 import {
   mergeImplicitMantleProvider,
   resolveImplicitMantleProvider,
@@ -43,13 +43,13 @@ function normalizeMantleResolvedModel(params: {
   return { ...params.model, cost };
 }
 
-/** Register the Amazon Bedrock Mantle provider with OpenClaw. */
-export function registerBedrockMantlePlugin(api: OpenClawPluginApi): void {
+/** Register the Amazon Bedrock Mantle provider with NodoAssist. */
+export function registerBedrockMantlePlugin(api: NodoAssistPluginApi): void {
   const providerId = "amazon-bedrock-mantle";
   const startupPluginConfig = (api.pluginConfig ?? {}) as BedrockMantlePluginConfig;
 
   function resolveCurrentPluginConfig(
-    config: OpenClawConfig | undefined,
+    config: NodoAssistConfig | undefined,
   ): BedrockMantlePluginConfig | undefined {
     const runtimePluginConfig = resolvePluginConfigObject(config, providerId);
     return (

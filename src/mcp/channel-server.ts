@@ -1,31 +1,31 @@
 // Channel MCP server wires channel bridge tools into an MCP server instance.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import { VERSION } from "../version.js";
-import { OpenClawChannelBridge } from "./channel-bridge.js";
+import { NodoAssistChannelBridge } from "./channel-bridge.js";
 import { ClaudePermissionRequestSchema, type ClaudeChannelMode } from "./channel-shared.js";
 import { getChannelMcpCapabilities, registerChannelMcpTools } from "./channel-tools.js";
 
 /**
- * MCP stdio server assembly for OpenClaw channel conversations.
+ * MCP stdio server assembly for NodoAssist channel conversations.
  *
  * This module wires config, the Gateway bridge, protocol notifications, and
  * registered tools into a lifecycle that callers can either embed or serve.
  */
-export { OpenClawChannelBridge } from "./channel-bridge.js";
+export { NodoAssistChannelBridge } from "./channel-bridge.js";
 
 /** Options accepted by the channel MCP server factory and stdio entry point. */
-type OpenClawMcpServeOptions = {
+type NodoAssistMcpServeOptions = {
   gatewayUrl?: string;
   gatewayToken?: string;
   gatewayPassword?: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   claudeChannelMode?: ClaudeChannelMode;
   verbose?: boolean;
 };
 
-async function resolveMcpConfig(config: OpenClawConfig | undefined): Promise<OpenClawConfig> {
+async function resolveMcpConfig(config: NodoAssistConfig | undefined): Promise<NodoAssistConfig> {
   if (config) {
     return config;
   }
@@ -34,9 +34,11 @@ async function resolveMcpConfig(config: OpenClawConfig | undefined): Promise<Ope
 }
 
 /** Create an in-process channel MCP server plus explicit start and close hooks. */
-export async function createOpenClawChannelMcpServer(opts: OpenClawMcpServeOptions = {}): Promise<{
+export async function createNodoAssistChannelMcpServer(
+  opts: NodoAssistMcpServeOptions = {},
+): Promise<{
   server: McpServer;
-  bridge: OpenClawChannelBridge;
+  bridge: NodoAssistChannelBridge;
   start: () => Promise<void>;
   close: () => Promise<void>;
 }> {
@@ -44,10 +46,10 @@ export async function createOpenClawChannelMcpServer(opts: OpenClawMcpServeOptio
   const claudeChannelMode = opts.claudeChannelMode ?? "auto";
   const capabilities = getChannelMcpCapabilities(claudeChannelMode);
   const server = new McpServer(
-    { name: "openclaw", version: VERSION },
+    { name: "nodoassist", version: VERSION },
     capabilities ? { capabilities } : undefined,
   );
-  const bridge = new OpenClawChannelBridge(cfg, {
+  const bridge = new NodoAssistChannelBridge(cfg, {
     gatewayUrl: opts.gatewayUrl,
     gatewayToken: opts.gatewayToken,
     gatewayPassword: opts.gatewayPassword,
@@ -80,8 +82,10 @@ export async function createOpenClawChannelMcpServer(opts: OpenClawMcpServeOptio
 }
 
 /** Serve the channel MCP server over stdio until transport or process shutdown. */
-export async function serveOpenClawChannelMcp(opts: OpenClawMcpServeOptions = {}): Promise<void> {
-  const { server, start, close } = await createOpenClawChannelMcpServer(opts);
+export async function serveNodoAssistChannelMcp(
+  opts: NodoAssistMcpServeOptions = {},
+): Promise<void> {
+  const { server, start, close } = await createNodoAssistChannelMcpServer(opts);
   const transport = new StdioServerTransport();
 
   let shuttingDown = false;

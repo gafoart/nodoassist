@@ -10,7 +10,7 @@ const HOME_ENV_KEYS = [
   "USERPROFILE",
   "HOMEDRIVE",
   "HOMEPATH",
-  "OPENCLAW_STATE_DIR",
+  "NODOASSIST_STATE_DIR",
 ] as const;
 
 export type TempHomeEnv = {
@@ -43,18 +43,18 @@ async function ensurePrefixRoot(prefix: string): Promise<string> {
   }
 }
 
-/** Creates a temporary OpenClaw home and process env override for stateful tests. */
+/** Creates a temporary NodoAssist home and process env override for stateful tests. */
 export async function createTempHomeEnv(prefix: string): Promise<TempHomeEnv> {
   const prefixRoot = await ensurePrefixRoot(prefix);
   const home = path.join(prefixRoot, `home-${String(nextHomeIndex)}`);
   nextHomeIndex += 1;
   await fs.rm(home, { recursive: true, force: true });
-  await fs.mkdir(path.join(home, ".openclaw"), { recursive: true });
+  await fs.mkdir(path.join(home, ".nodoassist"), { recursive: true });
 
   const snapshot = captureEnv([...HOME_ENV_KEYS]);
   setTestEnvValue("HOME", home);
   setTestEnvValue("USERPROFILE", home);
-  setTestEnvValue("OPENCLAW_STATE_DIR", path.join(home, ".openclaw"));
+  setTestEnvValue("NODOASSIST_STATE_DIR", path.join(home, ".nodoassist"));
 
   if (process.platform === "win32") {
     const match = home.match(/^([A-Za-z]:)(.*)$/);

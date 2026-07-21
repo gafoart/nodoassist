@@ -1,12 +1,12 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <capability
-        android:name="custom.actions.intent.ASK_OPENCLAW"
-        app:queryPatterns="@array/ask_openclaw_query_patterns">
+        android:name="custom.actions.intent.ASK_NODOASSIST"
+        app:queryPatterns="@array/ask_nodoassist_query_patterns">
         <intent
-            android:action="ai.openclaw.app.action.ASK_OPENCLAW"
-            android:targetPackage="ai.openclaw.app"
-            android:targetClass="ai.openclaw.app.MainActivity">
+            android:action="ai.nodoassist.app.action.ASK_NODOASSIST"
+            android:targetPackage="ai.nodoassist.app"
+            android:targetClass="ai.nodoassist.app.MainActivity">
             <parameter
                 android:name="prompt"
                 android:key="prompt"

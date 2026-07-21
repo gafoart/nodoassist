@@ -88,7 +88,7 @@ function renderChatAutoScrollToggle(props: {
   const label = `${t("chat.autoScrollMode")}: ${chatAutoScrollLabel(mode)}`;
   const active = mode !== "off";
   return html`
-    <openclaw-tooltip .content=${label}>
+    <nodoassist-tooltip .content=${label}>
       <button
         class="btn btn--sm btn--icon chat-settings-action ${active ? "active" : ""}"
         data-chat-auto-scroll-toggle="true"
@@ -105,7 +105,7 @@ function renderChatAutoScrollToggle(props: {
         ${icons.scrollText}
         <span class="chat-settings-action__text">${t("chat.autoScrollMode")}</span>
       </button>
-    </openclaw-tooltip>
+    </nodoassist-tooltip>
   `;
 }
 
@@ -215,7 +215,7 @@ export function renderChatControls(props: ChatControlsProps) {
 
   return html`
     <div class="chat-settings-popover-wrapper">
-      <openclaw-tooltip .content=${settingsTitle}>
+      <nodoassist-tooltip .content=${settingsTitle}>
         <button
           class="chat-settings-chip ${settingsOpen ? "chat-settings-chip--open" : ""}"
           type="button"
@@ -235,7 +235,7 @@ export function renderChatControls(props: ChatControlsProps) {
         >
           <span class="chat-settings-chip__icon">${icons.settings}</span>
         </button>
-      </openclaw-tooltip>
+      </nodoassist-tooltip>
       <div
         id=${settingsPopoverId}
         class="chat-settings-popover ${settingsOpen ? "chat-settings-popover--open" : ""}"
@@ -245,7 +245,7 @@ export function renderChatControls(props: ChatControlsProps) {
         <div class="chat-settings-popover__section">
           <span class="chat-settings-popover__label">${t("nav.chat")}</span>
           <div class="chat-settings-popover__toggles">
-            <openclaw-tooltip .content=${t("common.refresh")}>
+            <nodoassist-tooltip .content=${t("common.refresh")}>
               <button
                 class="btn btn--sm btn--icon chat-settings-action"
                 ?disabled=${refreshDisabled}
@@ -259,9 +259,9 @@ export function renderChatControls(props: ChatControlsProps) {
                 ${icons.refresh}
                 <span class="chat-settings-action__text">${t("common.refresh")}</span>
               </button>
-            </openclaw-tooltip>
+            </nodoassist-tooltip>
             ${renderChatAutoScrollToggle(props)}
-            <openclaw-tooltip .content=${thinkingLabel}>
+            <nodoassist-tooltip .content=${thinkingLabel}>
               <button
                 class="btn btn--sm btn--icon chat-settings-action ${showThinking ? "active" : ""}"
                 ?disabled=${disableThinkingToggle}
@@ -280,8 +280,8 @@ export function renderChatControls(props: ChatControlsProps) {
                 ${icons.brain}
                 <span class="chat-settings-action__text">${t("cron.form.thinking")}</span>
               </button>
-            </openclaw-tooltip>
-            <openclaw-tooltip .content=${toolCallsLabel}>
+            </nodoassist-tooltip>
+            <nodoassist-tooltip .content=${toolCallsLabel}>
               <button
                 class="btn btn--sm btn--icon chat-settings-action ${showToolCalls ? "active" : ""}"
                 ?disabled=${disableThinkingToggle}
@@ -300,8 +300,8 @@ export function renderChatControls(props: ChatControlsProps) {
                 ${icons.wrench}
                 <span class="chat-settings-action__text">${t("agents.tabs.tools")}</span>
               </button>
-            </openclaw-tooltip>
-            <openclaw-tooltip .content=${commentaryLabel}>
+            </nodoassist-tooltip>
+            <nodoassist-tooltip .content=${commentaryLabel}>
               <button
                 class="btn btn--sm btn--icon chat-settings-action ${persistCommentary
                   ? "active"
@@ -322,8 +322,8 @@ export function renderChatControls(props: ChatControlsProps) {
                 ${persistCommentary ? icons.pin : icons.pinOff}
                 <span class="chat-settings-action__text">${t("chat.commentaryLabel")}</span>
               </button>
-            </openclaw-tooltip>
-            <openclaw-tooltip .content=${cronLabel}>
+            </nodoassist-tooltip>
+            <nodoassist-tooltip .content=${cronLabel}>
               <button
                 class="btn btn--sm btn--icon chat-settings-action ${hideCron ? "active" : ""}"
                 @click=${() => {
@@ -335,7 +335,7 @@ export function renderChatControls(props: ChatControlsProps) {
                 ${renderCronFilterIcon(hiddenCronCount)}
                 <span class="chat-settings-action__text">${t("cron.jobList.history")}</span>
               </button>
-            </openclaw-tooltip>
+            </nodoassist-tooltip>
           </div>
           ${renderChatSendShortcutPreference(props)}
         </div>
@@ -373,7 +373,7 @@ export function renderChatControls(props: ChatControlsProps) {
     </div>
     ${props.onOpenSplitView
       ? html`
-          <openclaw-tooltip .content=${t("chat.splitView.open")}>
+          <nodoassist-tooltip .content=${t("chat.splitView.open")}>
             <button
               class="btn btn--sm btn--icon chat-open-split-view"
               type="button"
@@ -382,7 +382,7 @@ export function renderChatControls(props: ChatControlsProps) {
             >
               ${icons.panelRightOpen}
             </button>
-          </openclaw-tooltip>
+          </nodoassist-tooltip>
         `
       : ""}
   `;

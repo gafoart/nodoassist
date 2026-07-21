@@ -56,9 +56,9 @@ struct PrivacyAccessSectionView: View {
                 action: self.handleRemindersAction)
         } label: {
             Text("Privacy & Access")
-                .font(OpenClawType.subheadSemiBold)
+                .font(NodoAssistType.subheadSemiBold)
         }
-        .font(OpenClawType.body)
+        .font(NodoAssistType.body)
         .onAppear { self.refreshAll() }
         .onChange(of: self.scenePhase) { _, phase in
             if phase == .active {
@@ -78,18 +78,18 @@ struct PrivacyAccessSectionView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Label(title, systemImage: icon)
-                    .font(OpenClawType.subheadSemiBold)
+                    .font(NodoAssistType.subheadSemiBold)
                 Spacer()
-                OpenClawStatusBadge(label: status, tone: self.statusTone(for: status))
+                NodoAssistStatusBadge(label: status, tone: self.statusTone(for: status))
                     .accessibilityIdentifier("privacy-access-\(title)-status")
             }
             Text(detail)
-                .font(OpenClawType.footnote)
+                .font(NodoAssistType.footnote)
                 .foregroundStyle(.secondary)
             if let actionTitle, let action {
                 Button(action: action) {
                     Text(actionTitle)
-                        .font(OpenClawType.footnoteSemiBold)
+                        .font(NodoAssistType.footnoteSemiBold)
                 }
                 .buttonStyle(.bordered)
                 .accessibilityIdentifier("privacy-access-\(title)-action")
@@ -98,7 +98,7 @@ struct PrivacyAccessSectionView: View {
         .padding(.vertical, 2)
     }
 
-    private func statusTone(for status: String) -> OpenClawStatusTone {
+    private func statusTone(for status: String) -> NodoAssistStatusTone {
         switch status {
         case "Allowed", "Limited":
             .ok

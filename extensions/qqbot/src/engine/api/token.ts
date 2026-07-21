@@ -11,9 +11,9 @@ import {
   parseStrictPositiveInteger,
   resolveExpiresAtMsFromDurationSeconds,
   resolveTimestampMsToIsoString,
-} from "openclaw/plugin-sdk/number-runtime";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { fetchWithSsrFGuard, type SsrFPolicy } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "nodoassist/plugin-sdk/number-runtime";
+import { readResponseTextLimited } from "nodoassist/plugin-sdk/provider-http";
+import { fetchWithSsrFGuard, type SsrFPolicy } from "nodoassist/plugin-sdk/ssrf-runtime";
 import type { EngineLogger } from "../types.js";
 import { formatErrorMessage } from "../utils/format.js";
 

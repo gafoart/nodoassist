@@ -5,20 +5,23 @@ import {
   markMigrationItemError,
   markMigrationItemSkipped,
   summarizeMigrationItems,
-} from "openclaw/plugin-sdk/migration";
+} from "nodoassist/plugin-sdk/migration";
 import {
   archiveMigrationItem,
   copyMigrationFileItem,
   withCachedMigrationConfigRuntime,
   writeMigrationReport,
-} from "openclaw/plugin-sdk/migration-runtime";
+} from "nodoassist/plugin-sdk/migration-runtime";
 import type {
   MigrationApplyResult,
   MigrationItem,
   MigrationPlan,
   MigrationProviderContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { resolvePreferredOpenClawTmpDir, withTempWorkspace } from "openclaw/plugin-sdk/temp-path";
+} from "nodoassist/plugin-sdk/plugin-entry";
+import {
+  resolvePreferredNodoAssistTmpDir,
+  withTempWorkspace,
+} from "nodoassist/plugin-sdk/temp-path";
 import { applyAuthItem } from "./auth.js";
 import { applyConfigItem, applyManualItem } from "./config.js";
 import { appendItem } from "./helpers.js";
@@ -29,7 +32,7 @@ import { resolveTargets } from "./targets.js";
 
 const HERMES_REASON_BLOCKED_BY_APPLY_CONFLICT = "blocked by earlier apply conflict";
 const HERMES_STATE_DB_ARCHIVE_ITEM_ID = "archive:state.db";
-const HERMES_STATE_DB_SNAPSHOT_PREFIX = "openclaw-migrate-hermes-state-";
+const HERMES_STATE_DB_SNAPSHOT_PREFIX = "nodoassist-migrate-hermes-state-";
 
 async function archiveHermesItem(item: MigrationItem, reportDir: string): Promise<MigrationItem> {
   if (item.id !== HERMES_STATE_DB_ARCHIVE_ITEM_ID || !item.source) {
@@ -51,7 +54,7 @@ async function archiveHermesItem(item: MigrationItem, reportDir: string): Promis
     // A raw state.db copy can omit committed rows that still live in state.db-wal.
     // Snapshot the live database into one self-contained archive artifact.
     return await withTempWorkspace(
-      { rootDir: resolvePreferredOpenClawTmpDir(), prefix: HERMES_STATE_DB_SNAPSHOT_PREFIX },
+      { rootDir: resolvePreferredNodoAssistTmpDir(), prefix: HERMES_STATE_DB_SNAPSHOT_PREFIX },
       async ({ dir: tempDir }) => {
         const snapshotPath = path.join(tempDir, "state.db");
         const { DatabaseSync } = await import("node:sqlite");

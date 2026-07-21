@@ -14,14 +14,14 @@ import { resetDiagnosticSessionStateForTest } from "../../logging/diagnostic-ses
 import { wrapToolWithBeforeToolCallHook } from "../agent-tools.before-tool-call.js";
 import { CRITICAL_THRESHOLD } from "../tool-loop-detection.js";
 type CreateMessageTool = typeof import("./message-tool.js").createMessageTool;
-type CreateOpenClawTools = typeof import("../openclaw-tools.js").createOpenClawTools;
+type CreateNodoAssistTools = typeof import("../nodoassist-tools.js").createNodoAssistTools;
 type ResetPluginRuntimeStateForTest =
   typeof import("../../plugins/runtime.js").resetPluginRuntimeStateForTest;
 type SetActivePluginRegistry = typeof import("../../plugins/runtime.js").setActivePluginRegistry;
 type CreateTestRegistry = typeof import("../../test-utils/channel-plugins.js").createTestRegistry;
 
 let createMessageTool: CreateMessageTool;
-let createOpenClawTools: CreateOpenClawTools;
+let createNodoAssistTools: CreateNodoAssistTools;
 let resetPluginRuntimeStateForTest: ResetPluginRuntimeStateForTest;
 let setActivePluginRegistry: SetActivePluginRegistry;
 let createTestRegistry: CreateTestRegistry;
@@ -176,7 +176,7 @@ function latestSecretResolveCall(): {
   };
 }
 
-const openClawToolsFactoryMocks = vi.hoisted(() => {
+const nodoAssistToolsFactoryMocks = vi.hoisted(() => {
   const tool = (name: string) => ({
     name,
     displaySummary: `${name} test stub`,
@@ -223,16 +223,16 @@ vi.mock("../../channels/plugins/message-tool-api.js", () => ({
 }));
 
 vi.mock("./agents-list-tool.js", () => ({
-  createAgentsListTool: () => openClawToolsFactoryMocks.tool("agents"),
+  createAgentsListTool: () => nodoAssistToolsFactoryMocks.tool("agents"),
 }));
 vi.mock("./cron-tool.js", () => ({
-  createCronTool: () => openClawToolsFactoryMocks.tool("cron"),
+  createCronTool: () => nodoAssistToolsFactoryMocks.tool("cron"),
 }));
 vi.mock("./gateway-tool.js", () => ({
-  createGatewayTool: () => openClawToolsFactoryMocks.tool("gateway"),
+  createGatewayTool: () => nodoAssistToolsFactoryMocks.tool("gateway"),
 }));
 vi.mock("./heartbeat-response-tool.js", () => ({
-  createHeartbeatResponseTool: () => openClawToolsFactoryMocks.tool("heartbeat_response"),
+  createHeartbeatResponseTool: () => nodoAssistToolsFactoryMocks.tool("heartbeat_response"),
 }));
 vi.mock("./image-generate-tool.js", () => ({
   createImageGenerateTool: () => null,
@@ -249,44 +249,44 @@ vi.mock("./music-generate-tool.js", () => ({
   createMusicGenerateTool: () => null,
 }));
 vi.mock("./nodes-tool.js", () => ({
-  createNodesTool: () => openClawToolsFactoryMocks.tool("nodes"),
+  createNodesTool: () => nodoAssistToolsFactoryMocks.tool("nodes"),
 }));
 vi.mock("./pdf-tool.js", () => ({
   createPdfTool: () => null,
 }));
 vi.mock("./session-status-tool.js", () => ({
-  createSessionStatusTool: () => openClawToolsFactoryMocks.tool("session_status"),
+  createSessionStatusTool: () => nodoAssistToolsFactoryMocks.tool("session_status"),
 }));
 vi.mock("./sessions-history-tool.js", () => ({
-  createSessionsHistoryTool: () => openClawToolsFactoryMocks.tool("sessions_history"),
+  createSessionsHistoryTool: () => nodoAssistToolsFactoryMocks.tool("sessions_history"),
 }));
 vi.mock("./sessions-list-tool.js", () => ({
-  createSessionsListTool: () => openClawToolsFactoryMocks.tool("sessions_list"),
+  createSessionsListTool: () => nodoAssistToolsFactoryMocks.tool("sessions_list"),
 }));
 vi.mock("./sessions-send-tool.js", () => ({
-  createSessionsSendTool: () => openClawToolsFactoryMocks.tool("sessions_send"),
+  createSessionsSendTool: () => nodoAssistToolsFactoryMocks.tool("sessions_send"),
 }));
 vi.mock("./sessions-spawn-tool.js", () => ({
-  createSessionsSpawnTool: () => openClawToolsFactoryMocks.tool("sessions_spawn"),
+  createSessionsSpawnTool: () => nodoAssistToolsFactoryMocks.tool("sessions_spawn"),
 }));
 vi.mock("./sessions-yield-tool.js", () => ({
-  createSessionsYieldTool: () => openClawToolsFactoryMocks.tool("sessions_yield"),
+  createSessionsYieldTool: () => nodoAssistToolsFactoryMocks.tool("sessions_yield"),
 }));
 vi.mock("./subagents-tool.js", () => ({
-  createSubagentsTool: () => openClawToolsFactoryMocks.tool("subagents"),
+  createSubagentsTool: () => nodoAssistToolsFactoryMocks.tool("subagents"),
 }));
 vi.mock("./tts-tool.js", () => ({
-  createTtsTool: () => openClawToolsFactoryMocks.tool("tts"),
+  createTtsTool: () => nodoAssistToolsFactoryMocks.tool("tts"),
 }));
 vi.mock("./update-plan-tool.js", () => ({
-  createUpdatePlanTool: () => openClawToolsFactoryMocks.tool("update_plan"),
+  createUpdatePlanTool: () => nodoAssistToolsFactoryMocks.tool("update_plan"),
 }));
 vi.mock("./video-generate-tool.js", () => ({
   createVideoGenerateTool: () => null,
 }));
 vi.mock("./web-tools.js", () => ({
-  createWebFetchTool: () => openClawToolsFactoryMocks.tool("web_fetch"),
-  createWebSearchTool: () => openClawToolsFactoryMocks.tool("web_search"),
+  createWebFetchTool: () => nodoAssistToolsFactoryMocks.tool("web_fetch"),
+  createWebSearchTool: () => nodoAssistToolsFactoryMocks.tool("web_search"),
 }));
 
 function mockSendResult(overrides: { channel?: string; to?: string } = {}) {
@@ -331,7 +331,7 @@ beforeAll(async () => {
     await import("../../plugins/runtime.js"));
   ({ createTestRegistry } = await import("../../test-utils/channel-plugins.js"));
   ({ createMessageTool } = await import("./message-tool.js"));
-  ({ createOpenClawTools } = await import("../openclaw-tools.js"));
+  ({ createNodoAssistTools } = await import("../nodoassist-tools.js"));
 });
 
 beforeEach(() => {
@@ -723,8 +723,8 @@ describe("message tool secret scoping", () => {
     );
   });
 
-  it("forwards source reply delivery mode through createOpenClawTools", () => {
-    const tool = createOpenClawTools({
+  it("forwards source reply delivery mode through createNodoAssistTools", () => {
+    const tool = createNodoAssistTools({
       config: {} as never,
       sourceReplyDeliveryMode: "message_tool_only",
     }).find((candidate) => candidate.name === "message");
@@ -1506,7 +1506,7 @@ describe("message tool agent routing", () => {
     expect(call?.toolContext?.replyToMode).toBe("off");
   });
 
-  it("forwards agentThreadId through createOpenClawTools to the message tool", async () => {
+  it("forwards agentThreadId through createNodoAssistTools to the message tool", async () => {
     mockSendResult({ channel: "slack", to: "channel:C123" });
     const plugin = createChannelPlugin({
       id: "slack",
@@ -1517,7 +1517,7 @@ describe("message tool agent routing", () => {
     });
     setActivePluginRegistry(createTestRegistry([{ pluginId: "slack", source: "test", plugin }]));
 
-    const tool = createOpenClawTools({
+    const tool = createNodoAssistTools({
       agentSessionKey: "agent:main:slack:channel:c123:thread:111.222",
       config: {} as never,
       agentChannel: "slack",
@@ -1540,7 +1540,7 @@ describe("message tool agent routing", () => {
     expect(call?.toolContext?.replyToMode).toBe("all");
   });
 
-  it("forwards the routable target through createOpenClawTools to the message tool", async () => {
+  it("forwards the routable target through createNodoAssistTools to the message tool", async () => {
     mockSendResult({ channel: "slack", to: "user:U123" });
     const plugin = createChannelPlugin({
       id: "slack",
@@ -1551,7 +1551,7 @@ describe("message tool agent routing", () => {
     });
     setActivePluginRegistry(createTestRegistry([{ pluginId: "slack", source: "test", plugin }]));
 
-    const tool = createOpenClawTools({
+    const tool = createNodoAssistTools({
       config: {} as never,
       agentChannel: "slack",
       currentChannelId: "D123",
@@ -1677,7 +1677,7 @@ describe("message tool loop detection action runner proof", () => {
               id: "loop-room",
               chatType: "channel",
             },
-            senderId: "openclaw",
+            senderId: "nodoassist",
             text: "same visible reply",
             timestamp: 1_800_000_000_000 + callIndex,
           },
@@ -2662,7 +2662,7 @@ describe("message tool reasoning tag sanitization", () => {
     mockSendResult({ channel: "slack", to: "slack:C123" });
 
     const internalContext =
-      "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>";
+      "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>";
     const call = await executeSend({
       action: {
         target: "slack:C123",
@@ -2718,12 +2718,12 @@ describe("message tool reasoning tag sanitization", () => {
 describe("message tool boot-echo guard", () => {
   const longBootPrompt = [
     "You are running a boot check. Follow BOOT.md instructions exactly.",
-    "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+    "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>",
     "This context is runtime-generated, not user-authored. Keep internal details private.",
     "",
     "BOOT.md:",
     "When you wake up each morning, send a thoughtful greeting to the operator over the configured channel and report the active project status with three concrete bullet points.",
-    "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+    "<<<END_NODOASSIST_INTERNAL_CONTEXT>>>",
     "If BOOT.md asks you to send a message, use the message tool (action=send with channel + target).",
   ].join("\n");
 
@@ -2968,7 +2968,7 @@ describe("message tool internal-runtime-context sanitization", () => {
     {
       field: "text",
       input:
-        "Here is the boot info:\n<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\nThis context is runtime-generated, not user-authored. Keep internal details private.\n\nBOOT.md:\nWake up and report.\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>\nDone.",
+        "Here is the boot info:\n<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\nThis context is runtime-generated, not user-authored. Keep internal details private.\n\nBOOT.md:\nWake up and report.\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>\nDone.",
       expected: "Here is the boot info:\n\nDone.",
       target: "signal:+15551234567",
       channel: "signal",
@@ -2976,7 +2976,7 @@ describe("message tool internal-runtime-context sanitization", () => {
     {
       field: "content",
       input:
-        "Before\n<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\nleaked\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>\nAfter",
+        "Before\n<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\nleaked\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>\nAfter",
       expected: "Before\n\nAfter",
       target: "discord:123",
       channel: "discord",
@@ -2984,7 +2984,7 @@ describe("message tool internal-runtime-context sanitization", () => {
     {
       field: "message",
       input:
-        "Here is the boot info:\\n<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\\nBOOT.md:\\nWake up and report.\\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>\\nDone.",
+        "Here is the boot info:\\n<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\\nBOOT.md:\\nWake up and report.\\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>\\nDone.",
       expected: "Here is the boot info:\n\nDone.",
       target: "telegram:123",
       channel: "telegram",
@@ -2992,7 +2992,7 @@ describe("message tool internal-runtime-context sanitization", () => {
     {
       field: "SendMessage",
       input:
-        "Alias\n<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>\nDone.",
+        "Alias\n<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>\nDone.",
       expected: "Alias\n\nDone.",
       target: "telegram:123",
       channel: "telegram",
@@ -3100,7 +3100,7 @@ describe("message tool internal-runtime-context sanitization", () => {
     mockSendResult({ channel: "telegram", to: "telegram:123" });
 
     const internalContext =
-      "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>";
+      "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>";
     const call = await executeSend({
       action: {
         action: "poll",
@@ -3118,7 +3118,7 @@ describe("message tool internal-runtime-context sanitization", () => {
     mockSendResult({ channel: "telegram", to: "telegram:123" });
 
     const internalContext =
-      "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>";
+      "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>";
     const call = await executeSend({
       action: {
         target: "telegram:123",
@@ -3134,7 +3134,7 @@ describe("message tool internal-runtime-context sanitization", () => {
     mockSendResult({ channel: "slack", to: "slack:C123" });
 
     const internalContext =
-      "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>";
+      "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>";
     const call = await executeSend({
       action: {
         target: "slack:C123",
@@ -3163,7 +3163,7 @@ describe("message tool internal-runtime-context sanitization", () => {
       action: {
         target: "discord:123",
         content:
-          "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>",
       },
     });
 
@@ -3181,7 +3181,7 @@ describe("message tool internal-runtime-context sanitization", () => {
     mockSendResult({ channel: "telegram", to: "telegram:123" });
 
     const internalOnly =
-      "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_OPENCLAW_INTERNAL_CONTEXT>>>";
+      "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>\nBOOT.md:\nWake up and report.\n<<<END_NODOASSIST_INTERNAL_CONTEXT>>>";
     const call = await executeSend({
       action: {
         target: "telegram:123",

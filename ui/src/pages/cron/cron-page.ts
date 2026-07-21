@@ -441,4 +441,4 @@ class CronPage extends LitElement {
   }
 }
 
-customElements.define("openclaw-cron-page", CronPage);
+customElements.define("nodoassist-cron-page", CronPage);

@@ -143,7 +143,7 @@ describe("subtitleForRoute", () => {
       "skill-workshop": "Review, refine, and apply proposals before they become live skills.",
       nodes: "Paired devices and commands.",
       dreams: "Memory dreaming, consolidation, and reflection.",
-      config: "Edit openclaw.json.",
+      config: "Edit nodoassist.json.",
       communications: "Channels, messages, and audio settings.",
       appearance: "Theme, UI, and setup wizard settings.",
       automation: "Commands, hooks, cron, and plugins.",
@@ -179,7 +179,7 @@ describe("normalizeBasePath", () => {
   });
 
   it("handles nested paths", () => {
-    expect(normalizeBasePath("/apps/openclaw")).toBe("/apps/openclaw");
+    expect(normalizeBasePath("/apps/nodoassist")).toBe("/apps/nodoassist");
   });
 });
 
@@ -204,7 +204,7 @@ describe("pathForRoute", () => {
 
   it("prepends base path", () => {
     expect(pathForRoute("chat", "/ui")).toBe("/ui/chat");
-    expect(pathForRoute("sessions", "/apps/openclaw")).toBe("/apps/openclaw/sessions");
+    expect(pathForRoute("sessions", "/apps/nodoassist")).toBe("/apps/nodoassist/sessions");
   });
 });
 
@@ -226,12 +226,12 @@ describe("routeIdFromPath", () => {
 
   it("handles base paths", () => {
     expect(routeIdFromPath("/ui/chat", "/ui")).toBe("chat");
-    expect(routeIdFromPath("/apps/openclaw/sessions", "/apps/openclaw")).toBe("sessions");
+    expect(routeIdFromPath("/apps/nodoassist/sessions", "/apps/nodoassist")).toBe("sessions");
   });
 
   it("rejects route-shaped paths outside the configured base path", () => {
     expect(routeIdFromPath("/xx/chat", "/ui")).toBeNull();
-    expect(routeIdFromPath("/other/sessions", "/apps/openclaw")).toBeNull();
+    expect(routeIdFromPath("/other/sessions", "/apps/nodoassist")).toBeNull();
   });
 
   it("returns null for unknown path", () => {
@@ -289,14 +289,14 @@ describe("inferBasePathFromPathname", () => {
 
   it("infers base path from nested paths", () => {
     expect(inferBasePathFromPathname("/ui/chat")).toBe("/ui");
-    expect(inferBasePathFromPathname("/apps/openclaw/sessions")).toBe("/apps/openclaw");
+    expect(inferBasePathFromPathname("/apps/nodoassist/sessions")).toBe("/apps/nodoassist");
     expect(inferBasePathFromPathname("/ui/settings/general")).toBe("/ui");
     expect(inferBasePathFromPathname("/ui/appearance")).toBe("/ui");
   });
 
   it("preserves mount roots without a route suffix", () => {
-    expect(inferBasePathFromPathname("/__openclaw__/")).toBe("/__openclaw__");
-    expect(inferBasePathFromPathname("/apps/openclaw/")).toBe("/apps/openclaw");
+    expect(inferBasePathFromPathname("/__nodoassist__/")).toBe("/__nodoassist__");
+    expect(inferBasePathFromPathname("/apps/nodoassist/")).toBe("/apps/nodoassist");
     expect(inferBasePathFromPathname("/typo")).toBe("");
   });
 

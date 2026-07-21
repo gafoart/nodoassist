@@ -66,15 +66,15 @@ export function createDualFormatInstallFixtureFactory(makeTempDir: MakeTempDir) 
     fs.writeFileSync(
       path.join(pluginDir, "package.json"),
       JSON.stringify({
-        name: "@openclaw/native-dual",
+        name: "@nodoassist/native-dual",
         version: "0.0.1",
-        openclaw: { extensions: ["./dist/index.js"] },
+        nodoassist: { extensions: ["./dist/index.js"] },
         dependencies: { "left-pad": "1.3.0" },
       }),
       "utf-8",
     );
     fs.writeFileSync(
-      path.join(pluginDir, "openclaw.plugin.json"),
+      path.join(pluginDir, "nodoassist.plugin.json"),
       JSON.stringify({
         id: "native-dual",
         configSchema: { type: "object", properties: {} },
@@ -83,7 +83,10 @@ export function createDualFormatInstallFixtureFactory(makeTempDir: MakeTempDir) 
       "utf-8",
     );
     fs.writeFileSync(path.join(pluginDir, "dist", "index.js"), "export {};", "utf-8");
-    fs.writeFileSync(path.join(pluginDir, "skills", "SKILL.md"), "---\ndescription: fixture\n---\n");
+    fs.writeFileSync(
+      path.join(pluginDir, "skills", "SKILL.md"),
+      "---\ndescription: fixture\n---\n",
+    );
     fs.writeFileSync(
       path.join(manifestDir, "plugin.json"),
       JSON.stringify({

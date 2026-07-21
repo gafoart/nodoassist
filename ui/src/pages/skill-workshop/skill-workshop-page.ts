@@ -497,6 +497,6 @@ class SkillWorkshopPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-skill-workshop-page")) {
-  customElements.define("openclaw-skill-workshop-page", SkillWorkshopPage);
+if (!customElements.get("nodoassist-skill-workshop-page")) {
+  customElements.define("nodoassist-skill-workshop-page", SkillWorkshopPage);
 }

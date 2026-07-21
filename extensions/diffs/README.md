@@ -1,11 +1,11 @@
-# @openclaw/diffs
+# @nodoassist/diffs
 
-Read-only diff viewer plugin for **OpenClaw** agents.
+Read-only diff viewer plugin for **NodoAssist** agents.
 
 ## Install
 
 ```bash
-openclaw plugins install @openclaw/diffs
+nodoassist plugins install @nodoassist/diffs
 ```
 
 Restart the Gateway after installing or updating the plugin.
@@ -92,7 +92,7 @@ Input safety limits:
 
 ## Plugin Defaults
 
-Set plugin-wide defaults in `~/.openclaw/openclaw.json`:
+Set plugin-wide defaults in `~/.nodoassist/nodoassist.json`:
 
 ```json5
 {
@@ -134,8 +134,8 @@ Explicit tool parameters still win over these defaults.
 ## Package
 
 - Plugin id: `diffs`
-- Package: `@openclaw/diffs`
-- Minimum OpenClaw host: `2026.4.30`
+- Package: `@nodoassist/diffs`
+- Minimum NodoAssist host: `2026.4.30`
 
 Security options:
 
@@ -188,10 +188,10 @@ Use the `diffs` tool in `file` mode for this before and after input. After it re
 Path: README.md
 
 Before:
-OpenClaw supports plugins.
+NodoAssist supports plugins.
 
 After:
-OpenClaw supports plugins and hosted diff views.
+NodoAssist supports plugins and hosted diff views.
 ```
 
 Do both:
@@ -228,7 +228,7 @@ diff --git a/src/example.ts b/src/example.ts
 - Multi-file patches start with a changed-files summary card: totals, per-file `+N`/`-N` stats, change badges, and anchor links.
 - Rendered PNG/PDF files keep the per-file header counts but omit the interactive view toggles.
 - The viewer is hosted locally through the gateway under `/plugins/diffs/...`.
-- Artifacts are ephemeral and stored in the plugin temp subfolder (`$TMPDIR/openclaw-diffs`).
+- Artifacts are ephemeral and stored in the plugin temp subfolder (`$TMPDIR/nodoassist-diffs`).
 - Default viewer URLs use loopback (`127.0.0.1`) unless you set plugin `viewerBaseUrl`, pass `baseUrl`, or use `gateway.bind=custom` + `gateway.customBindHost`.
 - If `gateway.trustedProxies` includes loopback for a same-host proxy (for example Tailscale Serve), raw `127.0.0.1` viewer requests without forwarded client-IP headers fail closed by design.
 - In that topology, prefer `mode=file` / `mode=both` for attachments, or intentionally enable remote viewers and set plugin `viewerBaseUrl` (or pass a proxy/public `baseUrl`) when you need a shareable viewer URL.

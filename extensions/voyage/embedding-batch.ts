@@ -20,10 +20,10 @@ import {
   type ProviderBatchOutputLine,
   uploadBatchJsonlFile,
   withRemoteHttpResponse,
-} from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
-import { readProviderJsonResponse } from "openclaw/plugin-sdk/provider-http";
-import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/memory-core-host-engine-embeddings";
+import { readProviderJsonResponse } from "nodoassist/plugin-sdk/provider-http";
+import { readResponseWithLimit } from "nodoassist/plugin-sdk/response-limit-runtime";
+import { normalizeStringEntries } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import type { VoyageEmbeddingClient } from "./embedding-provider.js";
 
 /**

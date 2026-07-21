@@ -1,12 +1,12 @@
 // Imessage plugin module implements chat behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { requireRuntimeConfig } from "openclaw/plugin-sdk/plugin-config-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { requireRuntimeConfig } from "nodoassist/plugin-sdk/plugin-config-runtime";
 import { resolveIMessageAccount, type ResolvedIMessageAccount } from "./accounts.js";
 import { createIMessageRpcClient, type IMessageRpcClient } from "./client.js";
 import { formatIMessageChatTarget, type IMessageService, parseIMessageTarget } from "./targets.js";
 
 type ChatActionOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string;
   account?: ResolvedIMessageAccount;
   client?: IMessageRpcClient;

@@ -1,10 +1,10 @@
 // Slack tests cover channel plugin behavior.
-import { createRuntimeEnv } from "openclaw/plugin-sdk/plugin-test-runtime";
+import { createRuntimeEnv } from "nodoassist/plugin-sdk/plugin-test-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { slackPlugin } from "./channel.js";
 import { slackOutbound } from "./outbound-adapter.js";
 import * as probeModule from "./probe.js";
-import type { OpenClawConfig } from "./runtime-api.js";
+import type { NodoAssistConfig } from "./runtime-api.js";
 import { clearSlackRuntime, setSlackRuntime } from "./runtime.js";
 
 const { handleSlackActionMock } = vi.hoisted(() => ({
@@ -72,7 +72,7 @@ beforeEach(async () => {
   } as never);
 });
 
-async function getSlackConfiguredState(cfg: OpenClawConfig) {
+async function getSlackConfiguredState(cfg: NodoAssistConfig) {
   const account = slackPlugin.config.resolveAccount(cfg, "default");
   return {
     configured: slackPlugin.config.isConfigured?.(account, cfg),
@@ -228,7 +228,7 @@ describe("slackPlugin actions", () => {
   });
 
   it("honors the selected Slack account during message tool discovery", () => {
-    const cfg: OpenClawConfig = {
+    const cfg: NodoAssistConfig = {
       channels: {
         slack: {
           botToken: "xoxb-root",
@@ -316,7 +316,7 @@ describe("slackPlugin actions", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     setSlackRuntime({
       config: {
         loadConfig: () => cfg,
@@ -351,7 +351,7 @@ describe("slackPlugin actions", () => {
             appToken: "xapp-test",
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
     });
     const downloadFile = findSchemaEntry(discovery?.schema, ["download-file"], "Slack schema");
     const downloadProperties = requireRecord(downloadFile.properties, "download-file properties");
@@ -456,8 +456,8 @@ describe("slackPlugin status", () => {
     const probeSpy = vi.spyOn(probeModule, "probeSlack").mockResolvedValueOnce({
       ok: true,
       status: 200,
-      bot: { id: "B1", name: "openclaw-bot" },
-      team: { id: "T1", name: "OpenClaw" },
+      bot: { id: "B1", name: "nodoassist-bot" },
+      team: { id: "T1", name: "NodoAssist" },
     });
     clearSlackRuntime();
     const cfg = {
@@ -471,7 +471,7 @@ describe("slackPlugin status", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     const account = slackPlugin.config.resolveAccount(cfg, "work");
 
     const result = await slackPlugin.status!.probeAccount!({
@@ -484,8 +484,8 @@ describe("slackPlugin status", () => {
     expect(result).toEqual({
       ok: true,
       status: 200,
-      bot: { id: "B1", name: "openclaw-bot" },
-      team: { id: "T1", name: "OpenClaw" },
+      bot: { id: "B1", name: "nodoassist-bot" },
+      team: { id: "T1", name: "NodoAssist" },
     });
   });
 
@@ -495,7 +495,7 @@ describe("slackPlugin status", () => {
         ok: true,
         warning: "Slack bot token is a user token",
         bot: { id: "UUSER", name: "human-installer" },
-        team: { id: "T1", name: "OpenClaw" },
+        team: { id: "T1", name: "NodoAssist" },
       },
     });
 
@@ -505,7 +505,7 @@ describe("slackPlugin status", () => {
         tone: "warn",
       },
       { text: "Bot: @human-installer" },
-      { text: "Team: OpenClaw (T1)" },
+      { text: "Team: NodoAssist (T1)" },
     ]);
   });
 
@@ -516,7 +516,7 @@ describe("slackPlugin status", () => {
     }
 
     const route = await resolveRoute({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as NodoAssistConfig,
       agentId: "main",
       target: "channel:C1",
       currentSessionKey: "agent:main:slack:channel:C1:thread:1712345678.123456",
@@ -551,7 +551,7 @@ describe("slackPlugin status", () => {
             appToken: "xapp-test",
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       agentId: "main",
       target: "D0AEWSDHAQH",
       threadId: "1778110574.653649",
@@ -599,7 +599,7 @@ describe("slackPlugin status", () => {
             appToken: "xapp-test",
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       agentId: "main",
       target: "channel:D123",
     });
@@ -626,7 +626,7 @@ describe("slackPlugin status", () => {
 
     await expect(
       resolveRoute({
-        cfg: {} as OpenClawConfig,
+        cfg: {} as NodoAssistConfig,
         agentId: "main",
         target: "D0NOUSER001",
         threadId: "1778110574.653649",
@@ -642,7 +642,7 @@ describe("slackPlugin status", () => {
     conversationsInfoMock.mockResolvedValueOnce({ channel: { id: "G123", is_mpim: true } });
 
     const route = await resolveRoute({
-      cfg: { channels: { slack: { botToken: "xoxb-test" } } } as OpenClawConfig,
+      cfg: { channels: { slack: { botToken: "xoxb-test" } } } as NodoAssistConfig,
       agentId: "main",
       target: "G123",
     });
@@ -675,7 +675,7 @@ describe("slackPlugin security", () => {
             dm: { policy: "allowlist", allowFrom: ["  slack:U123  "] },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       account: slackPlugin.config.resolveAccount(
         {
           channels: {
@@ -685,7 +685,7 @@ describe("slackPlugin security", () => {
               dm: { policy: "allowlist", allowFrom: ["  slack:U123  "] },
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
         "default",
       ),
     });
@@ -1292,7 +1292,7 @@ describe("slackPlugin agentPrompt", () => {
       "- Slack interactive replies are disabled. If needed, ask to set `channels.slack.capabilities.interactiveReplies=true` (or the same under `channels.slack.accounts.<account>.capabilities`).",
     );
     expect(hints).toContain(
-      "- Slack plain text sends: write standard Markdown; OpenClaw converts it to Slack mrkdwn, including `**bold**`, headings, lists, and `[label](url)` links.",
+      "- Slack plain text sends: write standard Markdown; NodoAssist converts it to Slack mrkdwn, including `**bold**`, headings, lists, and `[label](url)` links.",
     );
     expect(hints).toContain(
       "- When mentioning Slack users, use the stable `<@USER_ID>` token from Slack context instead of plain `@name` text so Slack notifies and links the user.",
@@ -1325,7 +1325,7 @@ describe("slackPlugin agentPrompt", () => {
       "- Slack selects: use `[[slack_select: Placeholder | Label:value, Other:other]]` to add a static select menu that routes the chosen value back as a Slack interaction system event.",
     );
     expect(hints).toContain(
-      "- Slack plain text sends: write standard Markdown; OpenClaw converts it to Slack mrkdwn, including `**bold**`, headings, lists, and `[label](url)` links.",
+      "- Slack plain text sends: write standard Markdown; NodoAssist converts it to Slack mrkdwn, including `**bold**`, headings, lists, and `[label](url)` links.",
     );
     expect(hints).toContain(
       "- When mentioning Slack users, use the stable `<@USER_ID>` token from Slack context instead of plain `@name` text so Slack notifies and links the user.",
@@ -1467,7 +1467,7 @@ describe("slackPlugin configured bindings", () => {
 
 describe("slackPlugin config", () => {
   it("treats HTTP mode accounts with bot token + signing secret as configured", async () => {
-    const cfg: OpenClawConfig = {
+    const cfg: NodoAssistConfig = {
       channels: {
         slack: {
           mode: "http",
@@ -1484,7 +1484,7 @@ describe("slackPlugin config", () => {
   });
 
   it("keeps socket mode requiring app token", async () => {
-    const cfg: OpenClawConfig = {
+    const cfg: NodoAssistConfig = {
       channels: {
         slack: {
           mode: "socket",
@@ -1512,7 +1512,7 @@ describe("slackPlugin config", () => {
         appTokenSource: "none",
         config: {},
       } as never,
-      cfg: {} as OpenClawConfig,
+      cfg: {} as NodoAssistConfig,
       runtime: undefined,
     });
 
@@ -1539,7 +1539,7 @@ describe("slackPlugin config", () => {
           signingSecret: { source: "env", provider: "default", id: "SLACK_SIGNING_SECRET" },
         },
       } as never,
-      cfg: {} as OpenClawConfig,
+      cfg: {} as NodoAssistConfig,
       runtime: undefined,
     });
 

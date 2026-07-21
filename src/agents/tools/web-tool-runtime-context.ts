@@ -3,7 +3,7 @@
  *
  * Resolves active secrets/runtime provider metadata for long-lived tool instances.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { resolveManifestContractOwnerPluginId } from "../../plugins/plugin-registry.js";
 import { getActiveSecretsRuntimeConfigSnapshot } from "../../secrets/runtime-state.js";
 import { getActiveRuntimeWebToolsMetadata } from "../../secrets/runtime-web-tools-state.js";
@@ -17,13 +17,13 @@ type WebProviderKind = "fetch" | "search";
 type WebProviderRuntimeMetadata = RuntimeWebFetchMetadata | RuntimeWebSearchMetadata;
 
 type ResolvedWebToolRuntimeContext<TMetadata extends WebProviderRuntimeMetadata> = {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   preferRuntimeProviders: boolean;
   runtimeMetadata?: TMetadata;
 };
 
 function resolveConfiguredWebProviderId(
-  config: OpenClawConfig | undefined,
+  config: NodoAssistConfig | undefined,
   kind: WebProviderKind,
 ): string {
   const provider = config?.tools?.web?.[kind]?.provider;
@@ -35,7 +35,7 @@ function resolveRuntimeWebProviderId(metadata: WebProviderRuntimeMetadata | unde
 }
 
 function shouldPreferRuntimeProviders(params: {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   kind: WebProviderKind;
   providerSelectionId: string;
 }): boolean {
@@ -54,7 +54,7 @@ function shouldPreferRuntimeProviders(params: {
 }
 
 function resolveWebToolRuntimeContext<TMetadata extends WebProviderRuntimeMetadata>(params: {
-  capturedConfig?: OpenClawConfig;
+  capturedConfig?: NodoAssistConfig;
   capturedRuntimeMetadata?: TMetadata;
   kind: WebProviderKind;
   lateBindRuntimeConfig?: boolean;
@@ -85,7 +85,7 @@ function resolveWebToolRuntimeContext<TMetadata extends WebProviderRuntimeMetada
 
 /** Resolves runtime provider context for the web_search tool. */
 export function resolveWebSearchToolRuntimeContext(params: {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   lateBindRuntimeConfig?: boolean;
   runtimeWebSearch?: RuntimeWebSearchMetadata;
 }): ResolvedWebToolRuntimeContext<RuntimeWebSearchMetadata> & {
@@ -107,7 +107,7 @@ export function resolveWebSearchToolRuntimeContext(params: {
 
 /** Resolves runtime provider context for the web_fetch tool. */
 export function resolveWebFetchToolRuntimeContext(params: {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   lateBindRuntimeConfig?: boolean;
   runtimeWebFetch?: RuntimeWebFetchMetadata;
 }): ResolvedWebToolRuntimeContext<RuntimeWebFetchMetadata> & {

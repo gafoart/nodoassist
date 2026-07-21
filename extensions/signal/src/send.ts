@@ -4,16 +4,16 @@ import {
   type MessageReceipt,
   type MessageReceiptPartKind,
   type MessageReceiptSourceResult,
-} from "openclaw/plugin-sdk/channel-outbound";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-import { kindFromMime } from "openclaw/plugin-sdk/media-runtime";
-import { resolveOutboundAttachmentFromUrl } from "openclaw/plugin-sdk/media-runtime";
-import { requireRuntimeConfig } from "openclaw/plugin-sdk/plugin-config-runtime";
+} from "nodoassist/plugin-sdk/channel-outbound";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { resolveMarkdownTableMode } from "nodoassist/plugin-sdk/markdown-table-runtime";
+import { kindFromMime } from "nodoassist/plugin-sdk/media-runtime";
+import { resolveOutboundAttachmentFromUrl } from "nodoassist/plugin-sdk/media-runtime";
+import { requireRuntimeConfig } from "nodoassist/plugin-sdk/plugin-config-runtime";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { resolveSignalAccount } from "./accounts.js";
 import {
   appendSignalApprovalReactionHintForOutboundMessage,
@@ -24,7 +24,7 @@ import { markdownToSignalText, type SignalTextStyleRange } from "./format.js";
 import { resolveSignalRpcContext } from "./rpc-context.js";
 
 export type SignalSendOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   baseUrl?: string;
   account?: string;
   accountId?: string;

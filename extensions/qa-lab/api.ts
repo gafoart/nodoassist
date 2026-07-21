@@ -61,7 +61,7 @@ export {
   renderQaMarkdownReport,
   type QaReportCheck,
   type QaReportScenario,
-} from "openclaw/plugin-sdk/qa-runtime";
+} from "nodoassist/plugin-sdk/qa-runtime";
 export {
   type QaScenarioDefinition,
   type QaScenarioResult,

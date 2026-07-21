@@ -1,4 +1,4 @@
-// QA OTEL Smoke runtime supports OpenClaw repository automation.
+// QA OTEL Smoke runtime supports NodoAssist repository automation.
 
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
@@ -14,10 +14,10 @@ import {
   emitTrustedDiagnosticEvent,
   emitTrustedDiagnosticEventWithPrivateData,
   waitForDiagnosticEventsDrained,
-} from "openclaw/plugin-sdk/diagnostic-runtime";
+} from "nodoassist/plugin-sdk/diagnostic-runtime";
 import {
   createDiagnosticsOtelService,
-  type OpenClawPluginServiceContext,
+  type NodoAssistPluginServiceContext,
 } from "../../../../extensions/diagnostics-otel/runtime-api.js";
 import { onTrustedInternalDiagnosticEvent } from "../../../../src/infra/diagnostic-events.js";
 import { createQaScriptEvidenceWriter } from "./script-evidence.js";
@@ -98,7 +98,7 @@ type CapturedLogRecord = {
 };
 
 type StdoutDiagnosticLogRecord = {
-  signal: "openclaw.diagnostic.log";
+  signal: "nodoassist.diagnostic.log";
   ts?: unknown;
   "service.name"?: unknown;
   severityText?: unknown;
@@ -112,38 +112,38 @@ type StdoutDiagnosticLogRecord = {
 };
 
 const DEFAULT_DOCKER_COLLECTOR_IMAGE =
-  process.env.OPENCLAW_QA_OTEL_COLLECTOR_IMAGE || "otel/opentelemetry-collector:0.104.0";
+  process.env.NODOASSIST_QA_OTEL_COLLECTOR_IMAGE || "otel/opentelemetry-collector:0.104.0";
 const OTLP_SIGNAL_PATHS = new Map<string, OtlpSignal>([
   ["/v1/traces", "traces"],
   ["/v1/metrics", "metrics"],
   ["/v1/logs", "logs"],
 ]);
 const REQUIRED_SPAN_NAMES = [
-  "openclaw.run",
-  "openclaw.harness.run",
-  "openclaw.context.assembled",
-  "openclaw.message.delivery",
+  "nodoassist.run",
+  "nodoassist.harness.run",
+  "nodoassist.context.assembled",
+  "nodoassist.message.delivery",
 ] as const;
-const REQUIRED_METRIC_NAMES = ["openclaw.harness.duration_ms"] as const;
+const REQUIRED_METRIC_NAMES = ["nodoassist.harness.duration_ms"] as const;
 const DIRECT_RUN_ID = "qa-otel-direct-run";
 const DIRECT_CALL_ID = "qa-otel-direct-call";
 const DIRECT_ERROR_MESSAGE = "QA OTEL provider stream failed";
 const DIRECT_ERROR_SECRET = "sk-1234567890abcdef";
 const DISALLOWED_ATTRIBUTE_KEYS = new Set([
-  "openclaw.runId",
-  "openclaw.chatId",
-  "openclaw.messageId",
-  "openclaw.sessionKey",
-  "openclaw.sessionId",
-  "openclaw.callId",
-  "openclaw.toolCallId",
-  "openclaw.run_id",
-  "openclaw.chat_id",
-  "openclaw.message_id",
-  "openclaw.session_key",
-  "openclaw.session_id",
-  "openclaw.call_id",
-  "openclaw.tool_call_id",
+  "nodoassist.runId",
+  "nodoassist.chatId",
+  "nodoassist.messageId",
+  "nodoassist.sessionKey",
+  "nodoassist.sessionId",
+  "nodoassist.callId",
+  "nodoassist.toolCallId",
+  "nodoassist.run_id",
+  "nodoassist.chat_id",
+  "nodoassist.message_id",
+  "nodoassist.session_key",
+  "nodoassist.session_id",
+  "nodoassist.call_id",
+  "nodoassist.tool_call_id",
 ]);
 const DISALLOWED_BODY_NEEDLES = [
   "OTEL-QA-SECRET",
@@ -155,19 +155,19 @@ const DISALLOWED_BODY_NEEDLES = [
 const COLLECTOR_OUTPUT_TAIL_BYTES = 16_000;
 const POSITIVE_INTEGER_PATTERN = /^[1-9]\d*$/u;
 const MAX_OTLP_COMPRESSED_BODY_BYTES = readPositiveIntegerEnv(
-  "OPENCLAW_QA_OTEL_MAX_COMPRESSED_BODY_BYTES",
+  "NODOASSIST_QA_OTEL_MAX_COMPRESSED_BODY_BYTES",
   2 * 1024 * 1024,
 );
 const MAX_OTLP_DECODED_BODY_BYTES = readPositiveIntegerEnv(
-  "OPENCLAW_QA_OTEL_MAX_DECODED_BODY_BYTES",
+  "NODOASSIST_QA_OTEL_MAX_DECODED_BODY_BYTES",
   8 * 1024 * 1024,
 );
 const MAX_CAPTURED_BODY_TEXT_BYTES = readPositiveIntegerEnv(
-  "OPENCLAW_QA_OTEL_MAX_CAPTURED_BODY_TEXT_BYTES",
+  "NODOASSIST_QA_OTEL_MAX_CAPTURED_BODY_TEXT_BYTES",
   512 * 1024,
 );
 const MAX_STDOUT_DIAGNOSTIC_LINE_BYTES = readPositiveIntegerEnv(
-  "OPENCLAW_QA_OTEL_MAX_STDOUT_DIAGNOSTIC_LINE_BYTES",
+  "NODOASSIST_QA_OTEL_MAX_STDOUT_DIAGNOSTIC_LINE_BYTES",
   512 * 1024,
 );
 const QA_OTEL_ENV_TO_CLEAR = [
@@ -1025,7 +1025,7 @@ function isStdoutDiagnosticLogRecord(value: unknown): value is StdoutDiagnosticL
     typeof value === "object" &&
     value !== null &&
     !Array.isArray(value) &&
-    objectValue(value, "signal") === "openclaw.diagnostic.log"
+    objectValue(value, "signal") === "nodoassist.diagnostic.log"
   );
 }
 
@@ -1121,9 +1121,9 @@ async function startDockerOtelCollector(
   if (collectorTelemetryPort === collectorPort) {
     throw new Error("OpenTelemetry collector telemetry port matched receiver port after retries.");
   }
-  const tempDir = await makeTempDir(path.join(osTmpdir(), "openclaw-otel-collector-"));
+  const tempDir = await makeTempDir(path.join(osTmpdir(), "nodoassist-otel-collector-"));
   const configPath = path.join(tempDir, "collector.yaml");
-  const containerName = `openclaw-otel-smoke-${makeUuid()}`;
+  const containerName = `nodoassist-otel-smoke-${makeUuid()}`;
   const useHostNetwork = (deps.platform ?? process.platform) === "linux";
   const collectorEndpoint = useHostNetwork ? `127.0.0.1:${collectorPort}` : "0.0.0.0:4318";
   const receiverEndpoint = useHostNetwork
@@ -1135,7 +1135,7 @@ async function startDockerOtelCollector(
       http:
         endpoint: ${collectorEndpoint}
 exporters:
-  otlphttp/openclaw:
+  otlphttp/nodoassist:
     endpoint: ${receiverEndpoint}
 service:
   telemetry:
@@ -1144,13 +1144,13 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [otlphttp/openclaw]
+      exporters: [otlphttp/nodoassist]
     metrics:
       receivers: [otlp]
-      exporters: [otlphttp/openclaw]
+      exporters: [otlphttp/nodoassist]
     logs:
       receivers: [otlp]
-      exporters: [otlphttp/openclaw]
+      exporters: [otlphttp/nodoassist]
 `;
   await writeConfigFile(configPath, config, "utf8");
 
@@ -1252,8 +1252,8 @@ function isLatestGenAiModelCallSpan(span: CapturedSpan): boolean {
   }
   return (
     span.name === `${operationName} ${modelName}` &&
-    typeof span.attributes["openclaw.provider"] === "string" &&
-    typeof span.attributes["openclaw.model"] === "string"
+    typeof span.attributes["nodoassist.provider"] === "string" &&
+    typeof span.attributes["nodoassist.model"] === "string"
   );
 }
 
@@ -1268,7 +1268,7 @@ function createDirectProducerContext(params: {
   logsExporter: OtelLogsExporter;
   outputDir: string;
   writeLog: (line: string) => void;
-}): OpenClawPluginServiceContext {
+}): NodoAssistPluginServiceContext {
   return {
     config: {
       diagnostics: {
@@ -1313,7 +1313,7 @@ async function runDirectTelemetryProducer(params: {
   }
   previousEnv.set("OTEL_SERVICE_NAME", process.env.OTEL_SERVICE_NAME);
   previousEnv.set("OTEL_SEMCONV_STABILITY_OPT_IN", process.env.OTEL_SEMCONV_STABILITY_OPT_IN);
-  process.env.OTEL_SERVICE_NAME = "openclaw-qa-lab-otel-smoke";
+  process.env.OTEL_SERVICE_NAME = "nodoassist-qa-lab-otel-smoke";
   process.env.OTEL_SEMCONV_STABILITY_OPT_IN = "gen_ai_latest_experimental";
   const traceId = "4bf92f3577b34da6a3ce929d0e0e4736";
   const harnessTrace = createDiagnosticTraceContext({
@@ -1577,8 +1577,8 @@ function assertSmoke(params: {
   if (modelSpans.length === 0) {
     failures.push("missing required GenAI model-call span");
   }
-  if (spanNames.has("openclaw.model.call")) {
-    failures.push("legacy openclaw.model.call span exported with GenAI semconv opt-in");
+  if (spanNames.has("nodoassist.model.call")) {
+    failures.push("legacy nodoassist.model.call span exported with GenAI semconv opt-in");
   }
   const metricNames = new Set(params.metrics.map((metric) => metric.name));
   for (const name of REQUIRED_METRIC_NAMES) {
@@ -1619,7 +1619,7 @@ function assertSmoke(params: {
 
   const attributeKeys = collectAttributeKeys(params.spans);
   const disallowed = [...DISALLOWED_ATTRIBUTE_KEYS].filter((key) => attributeKeys.has(key));
-  const contentKeys = [...attributeKeys].filter((key) => key.startsWith("openclaw.content."));
+  const contentKeys = [...attributeKeys].filter((key) => key.startsWith("nodoassist.content."));
   if (disallowed.length > 0) {
     failures.push(`raw diagnostic id attributes exported: ${disallowed.join(", ")}`);
   }
@@ -1634,7 +1634,7 @@ function assertSmoke(params: {
     const serialized = JSON.stringify(span.attributes);
     return (
       Object.hasOwn(span.attributes, "error.type") ||
-      Object.hasOwn(span.attributes, "openclaw.errorCategory") ||
+      Object.hasOwn(span.attributes, "nodoassist.errorCategory") ||
       serialized.includes("StreamAbandoned")
     );
   });
@@ -1644,13 +1644,13 @@ function assertSmoke(params: {
 
   const failedRunSpans = params.spans.filter(
     (span) =>
-      (span.name === "openclaw.run" || span.name === "openclaw.harness.run") &&
-      span.attributes["openclaw.error"] === `${DIRECT_ERROR_MESSAGE} OPENAI_API_KEY=***`,
+      (span.name === "nodoassist.run" || span.name === "nodoassist.harness.run") &&
+      span.attributes["nodoassist.error"] === `${DIRECT_ERROR_MESSAGE} OPENAI_API_KEY=***`,
   );
   if (failedRunSpans.length !== 2) {
     const observed = params.spans
-      .filter((span) => span.name === "openclaw.run" || span.name === "openclaw.harness.run")
-      .map((span) => ({ name: span.name, error: span.attributes["openclaw.error"] }));
+      .filter((span) => span.name === "nodoassist.run" || span.name === "nodoassist.harness.run")
+      .map((span) => ({ name: span.name, error: span.attributes["nodoassist.error"] }));
     failures.push(
       `run and harness spans did not export the redacted failure message: ${JSON.stringify(observed)}`,
     );

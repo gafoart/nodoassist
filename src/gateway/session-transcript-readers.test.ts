@@ -20,10 +20,10 @@ describe("session transcript reader facade", () => {
   let envSnapshot: ReturnType<typeof captureEnv>;
 
   beforeEach(() => {
-    envSnapshot = captureEnv(["OPENCLAW_STATE_DIR"]);
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-transcript-readers-"));
+    envSnapshot = captureEnv(["NODOASSIST_STATE_DIR"]);
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "nodoassist-transcript-readers-"));
     storePath = path.join(tempDir, "sessions.json");
-    setTestEnvValue("OPENCLAW_STATE_DIR", tempDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", tempDir);
   });
 
   afterEach(() => {

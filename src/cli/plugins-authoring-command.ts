@@ -1,7 +1,7 @@
 // Plugin authoring commands for init/build/validate manifest generation.
 import fs from "node:fs";
 import path from "node:path";
-import { uniqueStrings } from "@openclaw/normalization-core/string-normalization";
+import { uniqueStrings } from "@nodoassist/normalization-core/string-normalization";
 import { getToolPluginMetadata, type ToolPluginMetadata } from "../plugin-sdk/tool-plugin.js";
 import {
   loadPluginManifest,
@@ -201,20 +201,20 @@ export function buildToolPluginPackageManifest(params: {
   packageManifest: JsonObject;
   entry: string;
 }): JsonObject {
-  const openclaw =
-    params.packageManifest.openclaw &&
-    typeof params.packageManifest.openclaw === "object" &&
-    !Array.isArray(params.packageManifest.openclaw)
-      ? { ...(params.packageManifest.openclaw as JsonObject) }
+  const nodoassist =
+    params.packageManifest.nodoassist &&
+    typeof params.packageManifest.nodoassist === "object" &&
+    !Array.isArray(params.packageManifest.nodoassist)
+      ? { ...(params.packageManifest.nodoassist as JsonObject) }
       : {};
-  const existingExtensions = Array.isArray(openclaw.extensions)
-    ? openclaw.extensions.filter((entry): entry is string => typeof entry === "string")
+  const existingExtensions = Array.isArray(nodoassist.extensions)
+    ? nodoassist.extensions.filter((entry): entry is string => typeof entry === "string")
     : [];
   const extensions = uniqueStrings([...existingExtensions, params.entry]);
   return {
     ...params.packageManifest,
-    openclaw: {
-      ...openclaw,
+    nodoassist: {
+      ...nodoassist,
       extensions,
     },
   };
@@ -233,15 +233,17 @@ export function validateToolPluginProject(params: {
     existingManifest: params.manifest,
   });
   if (JSON.stringify(params.manifest) !== JSON.stringify(expectedManifest)) {
-    errors.push("openclaw.plugin.json generated metadata is stale. Run openclaw plugins build.");
+    errors.push(
+      "nodoassist.plugin.json generated metadata is stale. Run nodoassist plugins build.",
+    );
   }
   if (params.manifest.id !== params.metadata.id) {
     errors.push(
-      `openclaw.plugin.json id (${String(params.manifest.id)}) must match entry id (${params.metadata.id})`,
+      `nodoassist.plugin.json id (${String(params.manifest.id)}) must match entry id (${params.metadata.id})`,
     );
   }
   if (!params.manifest.configSchema || typeof params.manifest.configSchema !== "object") {
-    errors.push("openclaw.plugin.json must include object configSchema");
+    errors.push("nodoassist.plugin.json must include object configSchema");
   }
   const manifestContracts = params.manifest.contracts as { tools?: unknown } | undefined;
   const manifestTools = Array.isArray(manifestContracts?.tools)
@@ -251,11 +253,11 @@ export function validateToolPluginProject(params: {
   const missing = metadataTools.filter((tool) => !manifestTools.includes(tool));
   const extra = manifestTools.filter((tool) => !metadataTools.includes(tool));
   if (missing.length > 0) {
-    errors.push(`openclaw.plugin.json contracts.tools is missing: ${missing.join(", ")}`);
+    errors.push(`nodoassist.plugin.json contracts.tools is missing: ${missing.join(", ")}`);
   }
   if (extra.length > 0) {
     errors.push(
-      `openclaw.plugin.json contracts.tools has no matching defineToolPlugin tool: ${extra.join(
+      `nodoassist.plugin.json contracts.tools has no matching defineToolPlugin tool: ${extra.join(
         ", ",
       )}`,
     );
@@ -264,11 +266,11 @@ export function validateToolPluginProject(params: {
   if (extensionResolution.status !== "ok") {
     errors.push(
       extensionResolution.status === "missing" || extensionResolution.status === "empty"
-        ? "package.json must include openclaw.extensions"
+        ? "package.json must include nodoassist.extensions"
         : extensionResolution.error,
     );
   } else if (!extensionResolution.entries.includes(params.entry)) {
-    errors.push(`package.json openclaw.extensions must include ${params.entry}`);
+    errors.push(`package.json nodoassist.extensions must include ${params.entry}`);
   }
   return errors;
 }
@@ -298,7 +300,9 @@ export async function runPluginsBuildCommand(opts: PluginsBuildOptions): Promise
       JSON.stringify(currentManifest) !== JSON.stringify(manifest) ||
       JSON.stringify(currentPackage) !== JSON.stringify(nextPackageManifest)
     ) {
-      defaultRuntime.error("Generated plugin metadata is out of date. Run openclaw plugins build.");
+      defaultRuntime.error(
+        "Generated plugin metadata is out of date. Run nodoassist plugins build.",
+      );
       return defaultRuntime.exit(1);
     }
     defaultRuntime.log("Plugin metadata is up to date.");
@@ -436,38 +440,38 @@ export default defineConfig({
 
 function writeToolPluginScaffold(params: { rootDir: string; id: string; name: string }): void {
   const packageManifest = {
-    name: `openclaw-plugin-${params.id}`,
+    name: `nodoassist-plugin-${params.id}`,
     version: "0.1.0",
     type: "module",
     private: true,
     scripts: {
       build: "tsc -p tsconfig.json",
-      "plugin:build": "npm run build && openclaw plugins build --entry ./dist/index.js",
-      "plugin:validate": "npm run build && openclaw plugins validate --entry ./dist/index.js",
+      "plugin:build": "npm run build && nodoassist plugins build --entry ./dist/index.js",
+      "plugin:validate": "npm run build && nodoassist plugins validate --entry ./dist/index.js",
       test: "vitest run --config ./vitest.config.ts",
     },
-    files: ["dist", "openclaw.plugin.json", "README.md"],
+    files: ["dist", "nodoassist.plugin.json", "README.md"],
     peerDependencies: {
-      openclaw: ">=2026.5.17",
+      nodoassist: ">=2026.5.17",
     },
     dependencies: {
       typebox: "^1.1.38",
     },
     devDependencies: {
-      openclaw: "latest",
+      nodoassist: "latest",
       typescript: "^5.9.0",
       vitest: "^3.2.0",
     },
-    openclaw: {
+    nodoassist: {
       extensions: ["./dist/index.js"],
     },
   };
   const idLiteral = jsStringLiteral(params.id);
   const nameLiteral = jsStringLiteral(params.name);
-  const description = `Add ${params.name} tools to OpenClaw.`;
+  const description = `Add ${params.name} tools to NodoAssist.`;
   const descriptionLiteral = jsStringLiteral(description);
   const indexSource = `import { Type } from "typebox";
-import { defineToolPlugin } from "openclaw/plugin-sdk/tool-plugin";
+import { defineToolPlugin } from "nodoassist/plugin-sdk/tool-plugin";
 
 export default defineToolPlugin({
   id: ${idLiteral},
@@ -487,7 +491,7 @@ export default defineToolPlugin({
 `;
   const testSource = `import { describe, expect, it } from "vitest";
 import entry from "./index.js";
-import { getToolPluginMetadata } from "openclaw/plugin-sdk/tool-plugin";
+import { getToolPluginMetadata } from "nodoassist/plugin-sdk/tool-plugin";
 
 describe(${idLiteral}, () => {
   it("declares tool metadata", () => {
@@ -497,7 +501,7 @@ describe(${idLiteral}, () => {
 `;
   const readmeSource = `# ${params.name}
 
-Simple OpenClaw tool plugin.
+Simple NodoAssist tool plugin.
 
 ## Build
 
@@ -525,39 +529,39 @@ npm test
 }
 
 function writeProviderPluginScaffold(params: { rootDir: string; id: string; name: string }): void {
-  const packageName = `openclaw-plugin-${params.id}`;
+  const packageName = `nodoassist-plugin-${params.id}`;
   const envVar = `${upperSnakeFromId(params.id)}_API_KEY`;
   const optionKey = `${lowerCamelFromId(params.id)}ApiKey`;
   const flagName = `--${params.id}-api-key`;
   const defaultModelId = "example-chat";
   const defaultModelRef = `${params.id}/${defaultModelId}`;
-  const description = `Add ${params.name} models to OpenClaw.`;
+  const description = `Add ${params.name} models to NodoAssist.`;
   const packageManifest = {
     name: packageName,
     version: "0.1.0",
-    description: `OpenClaw provider plugin for ${params.name}.`,
+    description: `NodoAssist provider plugin for ${params.name}.`,
     type: "module",
     scripts: {
       build: "tsc -p tsconfig.json",
       test: "vitest run --config ./vitest.config.ts",
       validate: "npm run build && clawhub package validate . --out .clawhub-validation",
     },
-    files: ["dist", "openclaw.plugin.json", "README.md"],
+    files: ["dist", "nodoassist.plugin.json", "README.md"],
     peerDependencies: {
-      openclaw: `>=${VERSION}`,
+      nodoassist: `>=${VERSION}`,
     },
     peerDependenciesMeta: {
-      openclaw: {
+      nodoassist: {
         optional: true,
       },
     },
     devDependencies: {
       clawhub: "latest",
-      openclaw: "latest",
+      nodoassist: "latest",
       typescript: "^5.9.0",
       vitest: "^3.2.0",
     },
-    openclaw: {
+    nodoassist: {
       extensions: ["./dist/index.js"],
       install: {
         clawhubSpec: `clawhub:${packageName}`,
@@ -568,7 +572,7 @@ function writeProviderPluginScaffold(params: { rootDir: string; id: string; name
         pluginApi: `>=${VERSION}`,
       },
       build: {
-        openclawVersion: VERSION,
+        nodoassistVersion: VERSION,
       },
       release: {
         publishToClawHub: true,
@@ -600,10 +604,10 @@ function writeProviderPluginScaffold(params: { rootDir: string; id: string; name
   const noteMessageLiteral = jsStringLiteral(
     `Replace https://api.example.com/v1 with your ${params.name} API base URL.`,
   );
-  const indexSource = `import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
-import { buildSingleProviderApiKeyCatalog } from "openclaw/plugin-sdk/provider-catalog-shared";
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-model-shared";
+  const indexSource = `import { definePluginEntry } from "nodoassist/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "nodoassist/plugin-sdk/provider-auth-api-key";
+import { buildSingleProviderApiKeyCatalog } from "nodoassist/plugin-sdk/provider-catalog-shared";
+import type { ModelProviderConfig } from "nodoassist/plugin-sdk/provider-model-shared";
 
 const PLUGIN_ID = ${idLiteral};
 const PROVIDER_ID = PLUGIN_ID;
@@ -674,7 +678,7 @@ export default definePluginEntry({
 });
 `;
   const testSource = `import { describe, expect, it } from "vitest";
-import type { OpenClawPluginApi, ProviderPlugin } from "openclaw/plugin-sdk/plugin-entry";
+import type { NodoAssistPluginApi, ProviderPlugin } from "nodoassist/plugin-sdk/plugin-entry";
 import entry from "./index.js";
 
 describe(${idLiteral}, () => {
@@ -684,9 +688,9 @@ describe(${idLiteral}, () => {
       registerProvider(provider: ProviderPlugin) {
         providers.push(provider);
       },
-    } as Partial<OpenClawPluginApi>;
+    } as Partial<NodoAssistPluginApi>;
 
-    entry.register(api as OpenClawPluginApi);
+    entry.register(api as NodoAssistPluginApi);
 
     expect(providers.map((provider) => provider.id)).toEqual([${idLiteral}]);
     expect(providers[0]?.label).toBe(${nameLiteral});
@@ -696,7 +700,7 @@ describe(${idLiteral}, () => {
 `;
   const readmeSource = `# ${params.name}
 
-OpenClaw provider plugin for ${params.name}.
+NodoAssist provider plugin for ${params.name}.
 
 ## Commands
 
@@ -755,7 +759,7 @@ jobs:
       actions: read
       contents: read
       id-token: write
-    uses: openclaw/clawhub/.github/workflows/package-publish.yml@${CLAWHUB_PACKAGE_PUBLISH_WORKFLOW_REF}
+    uses: nodoassist/clawhub/.github/workflows/package-publish.yml@${CLAWHUB_PACKAGE_PUBLISH_WORKFLOW_REF}
     with:
       dry_run: \${{ inputs.dry_run }}
 `;

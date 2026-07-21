@@ -482,7 +482,7 @@ private struct WatchControlSurfaceView: View {
         case "system":
             "System"
         default:
-            "OpenClaw"
+            "NodoAssist"
         }
     }
 
@@ -623,7 +623,7 @@ private struct WatchClawAvatar: View {
                 .minimumScaleFactor(0.6)
                 .lineLimit(1)
         } else {
-            Image("OpenClawIcon")
+            Image("NodoAssistIcon")
                 .resizable()
                 .scaledToFit()
         }
@@ -909,7 +909,7 @@ private struct WatchActionCard: View {
     var body: some View {
         Button(action: self.action) {
             WatchStackCard(
-                label: "OpenClaw",
+                label: "NodoAssist",
                 title: self.title,
                 subtitle: self.subtitle,
                 badge: nil)
@@ -1003,7 +1003,7 @@ private struct WatchChatBubble: View {
         case "system":
             "System"
         default:
-            "OpenClaw"
+            "NodoAssist"
         }
     }
 }
@@ -1195,7 +1195,7 @@ private struct WatchChatComposer: View {
                     onSubmit: self.onSendMessage)
             } label: {
                 HStack(spacing: 5) {
-                    Text("Message OpenClaw")
+                    Text("Message NodoAssist")
                         .font(WatchClawType.body(size: 12, weight: .semibold))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)

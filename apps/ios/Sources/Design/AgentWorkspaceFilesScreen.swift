@@ -1,30 +1,30 @@
-import OpenClawChatUI
-import OpenClawKit
-import OpenClawProtocol
+import NodoAssistChatUI
+import NodoAssistKit
+import NodoAssistProtocol
 import SwiftUI
 
 /// Read-only browser for the selected agent's workspace, backed by the
 /// `agents.workspace.list` / `agents.workspace.get` gateway RPCs.
 struct AgentWorkspaceFilesScreen: View {
     let agentId: String
-    let headerLeadingAction: OpenClawSidebarHeaderAction?
+    let headerLeadingAction: NodoAssistSidebarHeaderAction?
 
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            NodoAssistProBackground()
             VStack(alignment: .leading, spacing: 0) {
                 if let headerLeadingAction {
-                    OpenClawAdaptiveHeaderRow(
+                    NodoAssistAdaptiveHeaderRow(
                         title: "Files",
                         subtitle: self.agentId,
-                        titleFont: OpenClawType.title3SemiBold,
-                        subtitleFont: OpenClawType.subheadMedium)
+                        titleFont: NodoAssistType.title3SemiBold,
+                        subtitleFont: NodoAssistType.subheadMedium)
                     {
-                        OpenClawSidebarHeaderLeadingSlot(action: headerLeadingAction)
+                        NodoAssistSidebarHeaderLeadingSlot(action: headerLeadingAction)
                     } accessory: {
                         EmptyView()
                     }
-                    .padding(.horizontal, OpenClawProMetric.pagePadding)
+                    .padding(.horizontal, NodoAssistProMetric.pagePadding)
                 }
                 AgentWorkspaceDirectoryList(agentId: self.agentId, path: "")
             }
@@ -54,13 +54,13 @@ struct AgentWorkspaceDirectoryList: View {
             if let errorText {
                 Section {
                     Text(errorText)
-                        .font(OpenClawType.footnote)
-                        .foregroundStyle(OpenClawBrand.warn)
+                        .font(NodoAssistType.footnote)
+                        .foregroundStyle(NodoAssistBrand.warn)
                 }
             } else if self.entries.isEmpty, !self.loading {
                 Section {
                     Text("This folder is empty.")
-                        .font(OpenClawType.footnote)
+                        .font(NodoAssistType.footnote)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -75,7 +75,7 @@ struct AgentWorkspaceDirectoryList: View {
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
-        .font(OpenClawType.body)
+        .font(NodoAssistType.body)
         .overlay {
             if self.loading, self.entries.isEmpty {
                 ProgressView()
@@ -94,7 +94,7 @@ struct AgentWorkspaceDirectoryList: View {
         return NavigationLink {
             if isDirectory {
                 ZStack {
-                    OpenClawProBackground()
+                    NodoAssistProBackground()
                     AgentWorkspaceDirectoryList(agentId: self.agentId, path: entry.path)
                 }
                 .navigationTitle(AgentWorkspaceFilesScreen.displayName(forPath: entry.path))
@@ -107,17 +107,17 @@ struct AgentWorkspaceDirectoryList: View {
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: isDirectory ? "folder" : "doc.text")
-                    .font(OpenClawType.subhead)
-                    .foregroundStyle(isDirectory ? OpenClawBrand.accent : Color.secondary)
+                    .font(NodoAssistType.subhead)
+                    .foregroundStyle(isDirectory ? NodoAssistBrand.accent : Color.secondary)
                     .frame(width: 24)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(entry.name)
-                        .font(OpenClawType.subhead)
+                        .font(NodoAssistType.subhead)
                         .foregroundStyle(.primary)
                         .lineLimit(1)
                     if let detail = self.entryDetail(entry) {
                         Text(detail)
-                            .font(OpenClawType.caption)
+                            .font(NodoAssistType.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
@@ -132,13 +132,13 @@ struct AgentWorkspaceDirectoryList: View {
         } label: {
             HStack {
                 Text("Load More")
-                    .font(OpenClawType.subheadMedium)
+                    .font(NodoAssistType.subheadMedium)
                 Spacer()
                 if self.loadingMore {
                     ProgressView()
                 } else {
                     Text("\(self.entries.count) of \(self.totalEntries)")
-                        .font(OpenClawType.caption)
+                        .font(NodoAssistType.caption)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -229,7 +229,7 @@ struct AgentWorkspaceFilePreview: View {
 
     var body: some View {
         ZStack {
-            OpenClawProBackground()
+            NodoAssistProBackground()
             self.content
         }
         .navigationTitle(AgentWorkspaceFilesScreen.displayName(forPath: self.path))
@@ -253,7 +253,7 @@ struct AgentWorkspaceFilePreview: View {
                 self.showsShareError = false
             } label: {
                 Text("OK")
-                    .font(OpenClawType.subheadMedium)
+                    .font(NodoAssistType.subheadMedium)
             }
         }
         .task(id: "\(self.agentId)|\(self.path)") {
@@ -270,14 +270,14 @@ struct AgentWorkspaceFilePreview: View {
         } else if let errorText {
             VStack(spacing: 8) {
                 Image(systemName: "doc.questionmark")
-                    .font(OpenClawType.title3SemiBold)
+                    .font(NodoAssistType.title3SemiBold)
                     .foregroundStyle(.secondary)
                 Text(errorText)
-                    .font(OpenClawType.footnote)
+                    .font(NodoAssistType.footnote)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
-            .padding(OpenClawProMetric.pagePadding)
+            .padding(NodoAssistProMetric.pagePadding)
         }
     }
 
@@ -289,17 +289,17 @@ struct AgentWorkspaceFilePreview: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
-                    .padding(OpenClawProMetric.pagePadding)
+                    .padding(NodoAssistProMetric.pagePadding)
             }
         } else {
             ScrollView([.horizontal, .vertical]) {
                 Text(ChatCodeHighlightCache.highlighted(
                     code: file.content,
                     languageId: self.languageId))
-                    .font(OpenClawType.monoSmall)
+                    .font(NodoAssistType.monoSmall)
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(OpenClawProMetric.pagePadding)
+                    .padding(NodoAssistProMetric.pagePadding)
             }
         }
     }
@@ -354,7 +354,7 @@ struct AgentWorkspaceFilePreview: View {
         // Each share gets stable bytes at a unique URL; a later same-basename
         // export must not replace the item already handed to an extension.
         let directory = FileManager.default.temporaryDirectory
-            .appendingPathComponent("OpenClawWorkspaceFiles", isDirectory: true)
+            .appendingPathComponent("NodoAssistWorkspaceFiles", isDirectory: true)
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
         let fileURL = directory.appendingPathComponent(safeName, isDirectory: false)
         do {

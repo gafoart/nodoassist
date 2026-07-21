@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/google-meet",
+  "name": "@nodoassist/google-meet",
   "version": "2026.6.11",
-  "description": "OpenClaw Google Meet participant plugin for joining calls through Chrome or Twilio transports.",
+  "description": "NodoAssist Google Meet participant plugin for joining calls through Chrome or Twilio transports.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -12,23 +12,23 @@
     "typebox": "1.3.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "npmSpec": "@openclaw/google-meet",
+      "npmSpec": "@nodoassist/google-meet",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.20"
     },
@@ -36,7 +36,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11"
+      "nodoassistVersion": "2026.6.11"
     },
     "release": {
       "publishToClawHub": true,

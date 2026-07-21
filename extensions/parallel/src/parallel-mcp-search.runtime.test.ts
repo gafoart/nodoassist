@@ -12,8 +12,8 @@ const endpointMockState = vi.hoisted(() => ({
   responses: [] as Response[],
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-web-search", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/provider-web-search")>();
+vi.mock("nodoassist/plugin-sdk/provider-web-search", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("nodoassist/plugin-sdk/provider-web-search")>();
   const runEndpoint = async (
     params: EndpointCall,
     run: (response: Response) => Promise<unknown>,
@@ -224,9 +224,9 @@ describe("runParallelMcpSearch", () => {
     expect(headerOf(endpointMockState.calls[2], "MCP-Protocol-Version")).toBe("2025-06-18");
     // No bearer token on the anonymous free path.
     expect(headerOf(endpointMockState.calls[0], "Authorization")).toBeUndefined();
-    // Every call identifies OpenClaw at the HTTP layer (not just node).
+    // Every call identifies NodoAssist at the HTTP layer (not just node).
     for (const call of endpointMockState.calls) {
-      expect(headerOf(call, "User-Agent")).toMatch(/^openclaw-parallel\//);
+      expect(headerOf(call, "User-Agent")).toMatch(/^nodoassist-parallel\//);
     }
     // tools/call carries the documented web_search args.
     const callArgs = (readBody(endpointMockState.calls[2]).params as Record<string, unknown>)

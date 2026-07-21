@@ -11,10 +11,10 @@ import {
   basenameFromAnyPath,
   extnameFromAnyPath,
   nameFromAnyPath,
-} from "@openclaw/media-core/file-name";
-import { detectMime, extensionForMime } from "@openclaw/media-core/mime";
-import { hasHttpUrlPrefix } from "@openclaw/net-policy/url-protocol";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/media-core/file-name";
+import { detectMime, extensionForMime } from "@nodoassist/media-core/mime";
+import { hasHttpUrlPrefix } from "@nodoassist/net-policy/url-protocol";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
 import { toErrorObject } from "../infra/errors.js";
 import { fileStore } from "../infra/file-store.js";
 import { sanitizeUntrustedFileName } from "../infra/fs-safe-advanced.js";

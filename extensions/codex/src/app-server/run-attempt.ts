@@ -39,21 +39,21 @@ import {
   type EmbeddedRunAttemptResult,
   type NativeHookRelayEvent,
   type NativeHookRelayRegistrationHandle,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import { resolveAgentDir } from "openclaw/plugin-sdk/agent-runtime";
+} from "nodoassist/plugin-sdk/agent-harness-runtime";
+import { resolveAgentDir } from "nodoassist/plugin-sdk/agent-runtime";
 import {
   createDiagnosticTraceContextFromActiveScope,
   emitTrustedDiagnosticEvent,
   freezeDiagnosticTraceContext,
   onInternalDiagnosticEvent,
   resolveDiagnosticModelContentCapturePolicy,
-} from "openclaw/plugin-sdk/diagnostic-runtime";
-import { loadExecApprovals } from "openclaw/plugin-sdk/exec-approvals-runtime";
-import { pathExists } from "openclaw/plugin-sdk/security-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "nodoassist/plugin-sdk/diagnostic-runtime";
+import { loadExecApprovals } from "nodoassist/plugin-sdk/exec-approvals-runtime";
+import { pathExists } from "nodoassist/plugin-sdk/security-runtime";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import {
   resolveCodexAppServerForModelProvider,
-  resolveCodexAppServerForOpenClawToolPolicy,
+  resolveCodexAppServerForNodoAssistToolPolicy,
 } from "./app-server-policy.js";
 import { handleCodexAppServerApprovalRequest } from "./approval-bridge.js";
 import {
@@ -64,11 +64,11 @@ import {
   unsubscribeCodexThreadBestEffort,
 } from "./attempt-client-cleanup.js";
 import {
-  buildCodexOpenClawPromptContext,
+  buildCodexNodoAssistPromptContext,
   buildCodexSystemPromptReport,
   buildCodexWorkspaceBootstrapContext,
   getCodexWorkspaceMemoryToolNames,
-  prependCodexOpenClawPromptContext,
+  prependCodexNodoAssistPromptContext,
   readContextEngineThreadBootstrapProjection,
   readMirroredSessionHistoryMessages,
   renderCodexSkillsCollaborationInstructions,
@@ -133,10 +133,10 @@ import {
   resolveCodexComputerUseConfig,
   resolveCodexAppServerRuntimeOptions,
   resolveCodexModelBackedReviewerPolicyContext,
-  resolveOpenClawExecPolicyForCodexAppServer,
+  resolveNodoAssistExecPolicyForCodexAppServer,
   shouldAutoApproveCodexAppServerApprovals,
   type CodexAppServerRuntimeOptions,
-  type OpenClawExecPolicyForCodexAppServer,
+  type NodoAssistExecPolicyForCodexAppServer,
 } from "./config.js";
 import {
   type CodexProjectedContextRange,
@@ -153,9 +153,9 @@ import {
   includeForcedCodexDynamicToolAllow,
   resolveCodexAppServerHookChannelId,
   resolveCodexMessageToolProvider,
-  resolveOpenClawCodingToolsSessionKeys,
-  resetOpenClawCodingToolsFactoryForTests,
-  setOpenClawCodingToolsFactoryForTests,
+  resolveNodoAssistCodingToolsSessionKeys,
+  resetNodoAssistCodingToolsFactoryForTests,
+  setNodoAssistCodingToolsFactoryForTests,
   shouldEnableCodexAppServerNativeToolSurface,
   shouldForceMessageTool,
   shouldWarnCodexDynamicToolBuildStageSummary,
@@ -492,7 +492,7 @@ export async function runCodexAppServerAttempt(
     workspaceDir: resolvedWorkspace,
   });
   preDynamicStartupStages.mark("sandbox");
-  const execPolicy = resolveOpenClawExecPolicyForCodexAppServer({
+  const execPolicy = resolveNodoAssistExecPolicyForCodexAppServer({
     execOverrides: params.execOverrides,
     approvals: loadExecApprovals(),
     config: params.config,
@@ -553,7 +553,7 @@ export async function runCodexAppServerAttempt(
     model: reviewerPolicyContext.model,
     config: params.config,
     agentDir,
-    openClawSandboxActive: sandbox?.enabled === true,
+    nodoAssistSandboxActive: sandbox?.enabled === true,
   });
   const effectiveWorkspace = sandbox?.enabled
     ? sandbox.workspaceAccess === "rw"
@@ -569,7 +569,7 @@ export async function runCodexAppServerAttempt(
   const effectiveCwd = sandbox?.enabled ? effectiveWorkspace : (requestedCwd ?? effectiveWorkspace);
   await ensureCodexWorkspaceDirOnce(effectiveWorkspace);
   preDynamicStartupStages.mark("effective-workspace");
-  let policyAppServer = resolveCodexAppServerForOpenClawToolPolicy({
+  let policyAppServer = resolveCodexAppServerForNodoAssistToolPolicy({
     appServer: configuredAppServer,
     pluginConfig,
     env: process.env,
@@ -590,7 +590,7 @@ export async function runCodexAppServerAttempt(
     agentDir,
   });
   if (configuredAppServer.approvalPolicy === "never" && appServer.approvalPolicy === "untrusted") {
-    embeddedAgentLog.info("codex app-server approval policy promoted for OpenClaw tool policy", {
+    embeddedAgentLog.info("codex app-server approval policy promoted for NodoAssist tool policy", {
       from: "never",
       to: "untrusted",
       beforeToolCallHook: beforeToolCallPolicy.hasBeforeToolCallHook,
@@ -673,9 +673,9 @@ export async function runCodexAppServerAttempt(
     model: reviewerPolicyContext.model,
     config: params.config,
     agentDir,
-    openClawSandboxActive: sandbox?.enabled === true,
+    nodoAssistSandboxActive: sandbox?.enabled === true,
   });
-  policyAppServer = resolveCodexAppServerForOpenClawToolPolicy({
+  policyAppServer = resolveCodexAppServerForNodoAssistToolPolicy({
     appServer: configuredAppServer,
     pluginConfig,
     env: process.env,
@@ -994,7 +994,7 @@ export async function runCodexAppServerAttempt(
     }),
     workspaceBootstrapContext.developerInstructions,
   );
-  const openClawPromptContext = buildCodexOpenClawPromptContext({
+  const nodoAssistPromptContext = buildCodexNodoAssistPromptContext({
     params,
     workspacePromptContext: workspaceBootstrapContext.promptContext,
   });
@@ -1116,7 +1116,7 @@ export async function runCodexAppServerAttempt(
     }
   }
   // Codex app-server threads own conversation continuity. The mirrored
-  // OpenClaw transcript is persistence/search state. Context-engine output is
+  // NodoAssist transcript is persistence/search state. Context-engine output is
   // rendered into the prompt/developer instructions, not parallel history.
   const codexModelInputHistoryMessages: typeof historyMessages = [];
   const buildPromptFromCurrentInputs = () =>
@@ -1206,9 +1206,9 @@ export async function runCodexAppServerAttempt(
     prompt: string;
     promptInputRange?: { start: number; end: number };
   }) => {
-    const turnPromptText = prependCodexOpenClawPromptContext(
+    const turnPromptText = prependCodexNodoAssistPromptContext(
       promptBuildResult.prompt,
-      openClawPromptContext,
+      nodoAssistPromptContext,
       {
         preservePromptWithoutContext:
           params.bootstrapContextMode === "lightweight" &&
@@ -1279,7 +1279,7 @@ export async function runCodexAppServerAttempt(
       if (typeof idempotencyKey === "string" && idempotencyKey.startsWith("codex-app-server:")) {
         return false;
       }
-      const meta = record["__openclaw"];
+      const meta = record["__nodoassist"];
       const mirrorIdentity =
         meta && typeof meta === "object" && !Array.isArray(meta)
           ? (meta as Record<string, unknown>).mirrorIdentity
@@ -1655,7 +1655,7 @@ export async function runCodexAppServerAttempt(
         model: activeThreadReviewerPolicyContext.model,
         config: params.config,
         agentDir,
-        openClawSandboxActive: sandbox?.enabled === true,
+        nodoAssistSandboxActive: sandbox?.enabled === true,
       });
       const activeThreadAppServer = resolveCodexAppServerForModelProvider({
         appServer: activeThreadConfiguredAppServer,
@@ -1756,7 +1756,7 @@ export async function runCodexAppServerAttempt(
   const turnAttemptIdleTimeoutMs = Math.max(100, Math.floor(params.timeoutMs));
   let nativeHookRelayLastRenewedAt = 0;
   let activeAppServerTurnRequests = 0;
-  const pendingOpenClawDynamicToolCompletionIds = new Set<string>();
+  const pendingNodoAssistDynamicToolCompletionIds = new Set<string>();
   const activeTurnItemIds = new Set<string>();
   const activeCompletionBlockerItemIds = new Set<string>();
   const activeFinalizationHookRunIds = new Set<string>();
@@ -1872,7 +1872,8 @@ export async function runCodexAppServerAttempt(
         currentTurnHadNonTerminalDynamicToolResult,
         activeAppServerTurnRequests,
         activeTurnItemIdsCount: activeTurnItemIds.size,
-        pendingOpenClawDynamicToolCompletionIdsCount: pendingOpenClawDynamicToolCompletionIds.size,
+        pendingNodoAssistDynamicToolCompletionIdsCount:
+          pendingNodoAssistDynamicToolCompletionIds.size,
       })
     ) {
       return;
@@ -1918,7 +1919,8 @@ export async function runCodexAppServerAttempt(
       const action = resolveTerminalDynamicToolBatchAction({
         activeAppServerTurnRequests,
         activeTurnItemIdsCount: activeTurnItemIds.size,
-        pendingOpenClawDynamicToolCompletionIdsCount: pendingOpenClawDynamicToolCompletionIds.size,
+        pendingNodoAssistDynamicToolCompletionIdsCount:
+          pendingNodoAssistDynamicToolCompletionIds.size,
         currentTurnHadNonTerminalDynamicToolResult,
         hasPendingTerminalDynamicToolRelease: pendingTerminalDynamicToolRelease !== undefined,
       });
@@ -2024,7 +2026,7 @@ export async function runCodexAppServerAttempt(
     try {
       await params.onToolResult?.({
         text: summary,
-        channelData: { openclawProgressKind: FAST_MODE_AUTO_PROGRESS_KIND },
+        channelData: { nodoassistProgressKind: FAST_MODE_AUTO_PROGRESS_KIND },
       });
     } catch (error) {
       embeddedAgentLog.debug("codex app-server fast mode auto progress delivery failed", {
@@ -2110,7 +2112,7 @@ export async function runCodexAppServerAttempt(
       activeTurnItemIds,
       activeCompletionBlockerItemIds,
       activeAppServerTurnRequests,
-      pendingOpenClawDynamicToolCompletionIds,
+      pendingNodoAssistDynamicToolCompletionIds,
       turnCrossedToolHandoff,
       postToolRawAssistantCompletionIdleTimeoutMs,
       onScheduleTerminalDynamicToolReleaseCheck: scheduleTerminalDynamicToolReleaseCheck,
@@ -2135,7 +2137,7 @@ export async function runCodexAppServerAttempt(
     }
     // Determine terminal-turn status before invoking the projector so a throw
     // inside projector.handleNotification still releases the session lane.
-    // See openclaw/openclaw#67996.
+    // See nodoassist/nodoassist#67996.
     if (notificationState.isTurnTerminal) {
       terminalTurnNotificationQueued = true;
     }
@@ -2166,7 +2168,7 @@ export async function runCodexAppServerAttempt(
             activeAppServerTurnRequests === 0 &&
             activeTurnItemIds.size === 0 &&
             activeCompletionBlockerItemIds.size === 0 &&
-            pendingOpenClawDynamicToolCompletionIds.size === 0 &&
+            pendingNodoAssistDynamicToolCompletionIds.size === 0 &&
             projector.hasLatestTerminalAssistantCandidateText();
           if (canArmProjectedAssistantCompletion) {
             // Receive-time arming can expire while an earlier queued projection
@@ -2213,7 +2215,7 @@ export async function runCodexAppServerAttempt(
           activeAppServerTurnRequests === 0 &&
           activeTurnItemIds.size === 0 &&
           activeCompletionBlockerItemIds.size === 0 &&
-          pendingOpenClawDynamicToolCompletionIds.size === 0 &&
+          pendingNodoAssistDynamicToolCompletionIds.size === 0 &&
           projector.hasLatestTerminalAssistantCandidateText();
         if (canRearmAssistantCompletionWatch) {
           turnWatches.armAssistantCompletionIdleWatch({
@@ -2398,7 +2400,7 @@ export async function runCodexAppServerAttempt(
       armCompletionWatchOnResponse = true;
       markCurrentTurnRequestProgress();
       turnCrossedToolHandoff = true;
-      pendingOpenClawDynamicToolCompletionIds.add(call.callId);
+      pendingNodoAssistDynamicToolCompletionIds.add(call.callId);
       trajectoryRecorder?.recordEvent("tool.call", {
         threadId: call.threadId,
         turnId: call.turnId,
@@ -2549,7 +2551,7 @@ export async function runCodexAppServerAttempt(
             durationMs: toolDurationMs,
           });
         }
-        pendingOpenClawDynamicToolCompletionIds.delete(call.callId);
+        pendingNodoAssistDynamicToolCompletionIds.delete(call.callId);
         if (response.terminate === true) {
           scheduleTurnReleaseAfterTerminalDynamicTool({
             call,
@@ -2564,7 +2566,7 @@ export async function runCodexAppServerAttempt(
         }
         return protocolResponse as JsonValue;
       } catch (error) {
-        pendingOpenClawDynamicToolCompletionIds.delete(call.callId);
+        pendingNodoAssistDynamicToolCompletionIds.delete(call.callId);
         if (
           !terminalDiagnosticObserved &&
           !hasPendingDynamicToolTerminalDiagnostic({
@@ -2794,7 +2796,7 @@ export async function runCodexAppServerAttempt(
     thread.lifecycle.action === "resumed" && (thread.lifecycle.activeTurnIds?.length ?? 0) > 0;
   if (resumedWithActiveNativeTurn) {
     // A resumed Codex thread can already be running a native compact/review turn.
-    // Starting an OpenClaw turn before that native turn completes can wedge the
+    // Starting an NodoAssist turn before that native turn completes can wedge the
     // accepted turn behind a completion event we intentionally ignore.
     embeddedAgentLog.info(
       "codex app-server resumed thread has active native turn; waiting before turn/start",
@@ -2834,7 +2836,7 @@ export async function runCodexAppServerAttempt(
     let turnStartError = error;
     if (isCodexActiveCompactTurnError(turnStartError)) {
       // Codex native compaction returns before its compact turn finishes. If
-      // the next OpenClaw turn collides with that compact turn, wait for the
+      // the next NodoAssist turn collides with that compact turn, wait for the
       // terminal notification and retry once instead of surfacing drift.
       embeddedAgentLog.info(
         "codex app-server turn/start blocked by active compact turn; waiting to retry",
@@ -2862,8 +2864,8 @@ export async function runCodexAppServerAttempt(
       }) &&
       restartContextEngineCodexThread
     ) {
-      // Do not try to pre-compact or summarize through OpenClaw here. Codex owns
-      // automatic compaction; OpenClaw may only discard a stale projection thread
+      // Do not try to pre-compact or summarize through NodoAssist here. Codex owns
+      // automatic compaction; NodoAssist may only discard a stale projection thread
       // and let Codex start cleanly.
       embeddedAgentLog.warn(
         "codex app-server context-engine turn overflowed on resume; retrying with fresh thread",
@@ -3214,7 +3216,7 @@ export async function runCodexAppServerAttempt(
       activeAppServerTurnRequests === 0 &&
       activeTurnItemIds.size === 0 &&
       activeCompletionBlockerItemIds.size === 0 &&
-      pendingOpenClawDynamicToolCompletionIds.size === 0 &&
+      pendingNodoAssistDynamicToolCompletionIds.size === 0 &&
       activeFinalizationHookRunIds.size === 0 &&
       unsettledFinalizationHookCount === 0 &&
       rejectedFinalizationHookAssistant === undefined;
@@ -3850,7 +3852,7 @@ function handleApprovalRequest(params: {
   threadId: string;
   turnId: string;
   nativeHookRelay?: NativeHookRelayRegistrationHandle;
-  execPolicy?: Pick<OpenClawExecPolicyForCodexAppServer, "mode">;
+  execPolicy?: Pick<NodoAssistExecPolicyForCodexAppServer, "mode">;
   execReviewerAgentId?: string;
   internalExecAutoReview?: boolean;
   autoApprove?: boolean;
@@ -3900,15 +3902,15 @@ export const testing = {
   resolveCodexDynamicToolsLoadingForModel,
   resolveCodexAppServerHookChannelId,
   buildCodexAppServerPromptTimeoutOutcome,
-  resolveOpenClawCodingToolsSessionKeys,
+  resolveNodoAssistCodingToolsSessionKeys,
   shouldEnableCodexAppServerNativeToolSurface,
   shouldForceMessageTool,
   resolveCodexDynamicToolDirectNames,
   hasPendingDynamicToolTerminalDiagnostic,
   toTranscriptToolResultForTests: toTranscriptToolResult,
   withCodexStartupTimeout,
-  setOpenClawCodingToolsFactoryForTests,
-  resetOpenClawCodingToolsFactoryForTests,
+  setNodoAssistCodingToolsFactoryForTests,
+  resetNodoAssistCodingToolsFactoryForTests,
   async ensureCodexWorkspaceDirOnceForTests(workspaceDir: string): Promise<void> {
     await ensureCodexWorkspaceDirOnce(workspaceDir);
   },

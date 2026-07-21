@@ -10,10 +10,10 @@ import {
   AUTH_PROFILE_RUNTIME_CONTRACT,
   createAuthAliasManifestRegistry,
   expectedForwardedAuthProfile,
-} from "openclaw/plugin-sdk/agent-runtime-test-contracts";
+} from "nodoassist/plugin-sdk/agent-runtime-test-contracts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { SessionEntry } from "../config/sessions.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type * as ManifestRegistryModule from "../plugins/manifest-registry.js";
 import { runAgentAttempt as runAgentAttemptImpl } from "./command/attempt-execution.js";
 import type { RunEmbeddedAgentParams } from "./embedded-agent-runner/run/params.js";
@@ -161,7 +161,7 @@ function makeEmbeddedResult(text: string): EmbeddedAgentRunResult {
   };
 }
 
-function providerRuntimeConfig(provider: string, runtime: string): OpenClawConfig {
+function providerRuntimeConfig(provider: string, runtime: string): NodoAssistConfig {
   return {
     models: {
       providers: {
@@ -172,7 +172,7 @@ function providerRuntimeConfig(provider: string, runtime: string): OpenClawConfi
         },
       },
     },
-  } as OpenClawConfig;
+  } as NodoAssistConfig;
 }
 
 async function runAuthContractAttempt(params: {
@@ -181,10 +181,10 @@ async function runAuthContractAttempt(params: {
   providerOverride: string;
   authProfileProvider: string;
   authProfileOverride: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   sessionHasHistory?: boolean;
 }) {
-  const cfg = params.cfg ?? ({} as OpenClawConfig);
+  const cfg = params.cfg ?? ({} as NodoAssistConfig);
   const sessionEntry: SessionEntry = {
     sessionId: AUTH_PROFILE_RUNTIME_CONTRACT.sessionId,
     updatedAt: Date.now(),
@@ -234,12 +234,12 @@ async function runAuthContractAttempt(params: {
   };
 }
 
-describe("Auth profile runtime contract - embedded OpenClaw and CLI adapter", () => {
+describe("Auth profile runtime contract - embedded NodoAssist and CLI adapter", () => {
   let tmpDir: string;
   let storePath: string;
 
   beforeEach(async () => {
-    tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-auth-contract-"));
+    tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-auth-contract-"));
     storePath = path.join(tmpDir, "sessions.json");
     loadPluginManifestRegistry.mockReset().mockReturnValue(createAuthAliasManifestRegistry());
     runCliAgentMock.mockReset();
@@ -268,7 +268,7 @@ describe("Auth profile runtime contract - embedded OpenClaw and CLI adapter", ()
     (provider, expectedAuthProvider) => {
       expect(
         resolveProviderIdForAuth(provider, {
-          config: {} as OpenClawConfig,
+          config: {} as NodoAssistConfig,
           workspaceDir: tmpDir,
         }),
       ).toBe(expectedAuthProvider);
@@ -361,13 +361,13 @@ describe("Auth profile runtime contract - embedded OpenClaw and CLI adapter", ()
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
     });
 
     expect(capturedCliRunParams().authProfileId).toBeUndefined();
   });
 
-  it("forwards a legacy OpenAI Codex auth profile through the embedded OpenClaw path", async () => {
+  it("forwards a legacy OpenAI Codex auth profile through the embedded NodoAssist path", async () => {
     await runAuthContractAttempt({
       tmpDir,
       storePath,
@@ -400,14 +400,14 @@ describe("Auth profile runtime contract - embedded OpenClaw and CLI adapter", ()
     );
   });
 
-  it("forwards an OpenAI auth profile through the explicit embedded OpenAI OpenClaw path", async () => {
+  it("forwards an OpenAI auth profile through the explicit embedded OpenAI NodoAssist path", async () => {
     await runAuthContractAttempt({
       tmpDir,
       storePath,
       providerOverride: AUTH_PROFILE_RUNTIME_CONTRACT.openAiProvider,
       authProfileProvider: AUTH_PROFILE_RUNTIME_CONTRACT.openAiProvider,
       authProfileOverride: AUTH_PROFILE_RUNTIME_CONTRACT.openAiProfileId,
-      cfg: providerRuntimeConfig(AUTH_PROFILE_RUNTIME_CONTRACT.openAiProvider, "openclaw"),
+      cfg: providerRuntimeConfig(AUTH_PROFILE_RUNTIME_CONTRACT.openAiProvider, "nodoassist"),
     });
 
     const params = capturedEmbeddedRunParams();
@@ -429,14 +429,14 @@ describe("Auth profile runtime contract - embedded OpenClaw and CLI adapter", ()
     );
   });
 
-  it("routes explicit OpenAI OpenClaw runs with legacy Codex OAuth through OpenAI transport", async () => {
+  it("routes explicit OpenAI NodoAssist runs with legacy Codex OAuth through OpenAI transport", async () => {
     await runAuthContractAttempt({
       tmpDir,
       storePath,
       providerOverride: AUTH_PROFILE_RUNTIME_CONTRACT.openAiProvider,
       authProfileProvider: AUTH_PROFILE_RUNTIME_CONTRACT.openAiCodexProvider,
       authProfileOverride: AUTH_PROFILE_RUNTIME_CONTRACT.openAiCodexProfileId,
-      cfg: providerRuntimeConfig(AUTH_PROFILE_RUNTIME_CONTRACT.openAiProvider, "openclaw"),
+      cfg: providerRuntimeConfig(AUTH_PROFILE_RUNTIME_CONTRACT.openAiProvider, "nodoassist"),
     });
 
     const params = capturedEmbeddedRunParams();

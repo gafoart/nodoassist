@@ -195,6 +195,11 @@ export function extractAssistantThinking(msg: AssistantMessage): string {
   return blocks.join("\n").trim();
 }
 
+// Brand shown as the reasoning/"thinking" header on chat surfaces. Channels that
+// re-render reasoning (Telegram) detect this header to swap in their own inline
+// marker; keep it stable and in sync with those detectors.
+export const REASONING_HEADER = ".nodoassist";
+
 /** Format reasoning text for markdown-friendly channel surfaces. */
 export function formatReasoningMessage(text: string): string {
   const trimmed = text.trim();
@@ -202,14 +207,14 @@ export function formatReasoningMessage(text: string): string {
     return "";
   }
   // Show reasoning in italics (cursive) for markdown-friendly surfaces (Discord, etc.).
-  // Keep a plain prefix so existing parsing/detection keeps working.
+  // Keep the branded header prefix so existing parsing/detection keeps working.
   // Note: Underscore markdown cannot span multiple lines on Telegram, so we wrap
   // each non-empty line separately.
   const italicLines = trimmed
     .split("\n")
     .map((line) => (line ? `_${line}_` : line))
     .join("\n");
-  return `Thinking\n\n${italicLines}`;
+  return `${REASONING_HEADER}\n\n${italicLines}`;
 }
 
 type ThinkTaggedSplitBlock =

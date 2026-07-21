@@ -1,24 +1,24 @@
 // Sms plugin module implements channel behavior.
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/account-resolution";
+import { DEFAULT_ACCOUNT_ID } from "nodoassist/plugin-sdk/account-id";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/account-resolution";
 import {
   createHybridChannelConfigAdapter,
   createScopedDmSecurityResolver,
-} from "openclaw/plugin-sdk/channel-config-helpers";
+} from "nodoassist/plugin-sdk/channel-config-helpers";
 import {
   buildChannelOutboundSessionRoute,
   createChatChannelPlugin,
   type ChannelOutboundSessionRouteParams,
   type ChannelPlugin,
-} from "openclaw/plugin-sdk/channel-core";
+} from "nodoassist/plugin-sdk/channel-core";
 import {
   createMessageReceiptFromOutboundResults,
   defineChannelMessageAdapter,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { createConditionalWarningCollector } from "openclaw/plugin-sdk/channel-policy";
-import { createEmptyChannelDirectoryAdapter } from "openclaw/plugin-sdk/directory-runtime";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { chunkTextForOutbound } from "openclaw/plugin-sdk/text-chunking";
+} from "nodoassist/plugin-sdk/channel-outbound";
+import { createConditionalWarningCollector } from "nodoassist/plugin-sdk/channel-policy";
+import { createEmptyChannelDirectoryAdapter } from "nodoassist/plugin-sdk/directory-runtime";
+import { normalizeStringEntries } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { chunkTextForOutbound } from "nodoassist/plugin-sdk/text-chunking";
 import {
   inspectSmsAccount,
   isSmsAccountConfigured,
@@ -71,7 +71,7 @@ const resolveSmsDmPolicy = createScopedDmSecurityResolver<ResolvedSmsAccount>({
   resolveAllowFrom: (account) => account.allowFrom,
   policyPathSuffix: "dmPolicy",
   defaultPolicy: "pairing",
-  approveHint: "openclaw pairing approve sms <code>",
+  approveHint: "nodoassist pairing approve sms <code>",
   normalizeEntry: normalizeSmsAllowFrom,
 });
 
@@ -106,10 +106,10 @@ function smsSetupPatch(input: Record<string, unknown>): Record<string, unknown> 
 }
 
 function applySmsAccountConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId: string;
   input: Record<string, unknown>;
-}): OpenClawConfig {
+}): NodoAssistConfig {
   const patch = smsSetupPatch(params.input);
   const channels = { ...params.cfg.channels };
   const current = { ...(channels[CHANNEL_ID] as Record<string, unknown> | undefined) };
@@ -157,7 +157,7 @@ function createSmsReceipt(params: {
 }
 
 export function resolveSmsTextChunkLimit(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   fallbackLimit?: number;
 }): number {
@@ -167,7 +167,7 @@ export function resolveSmsTextChunkLimit(params: {
 }
 
 async function sendSmsText(ctx: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   to: string;
   text: string;
@@ -313,7 +313,7 @@ export const smsPlugin: ChannelPlugin<ResolvedSmsAccount, SmsProbe> = createChat
   pairing: {
     text: {
       idLabel: "phoneNumber",
-      message: "OpenClaw: your SMS access has been approved.",
+      message: "NodoAssist: your SMS access has been approved.",
       normalizeAllowEntry: normalizeSmsAllowFrom,
       notify: async ({ cfg, id, message, accountId }) => {
         const account = resolveSmsAccount(cfg, accountId);

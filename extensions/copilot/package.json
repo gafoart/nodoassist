@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/copilot",
+  "name": "@nodoassist/copilot",
   "version": "2026.6.11",
-  "description": "OpenClaw GitHub Copilot agent runtime plugin (registers a `github-copilot` AgentHarness backed by @github/copilot-sdk over JSON-RPC to the GitHub Copilot CLI)",
+  "description": "NodoAssist GitHub Copilot agent runtime plugin (registers a `github-copilot` AgentHarness backed by @github/copilot-sdk over JSON-RPC to the GitHub Copilot CLI)",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -12,15 +12,15 @@
   },
   "devDependencies": {
     "@github/copilot": "1.0.68",
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/copilot",
-      "npmSpec": "@openclaw/copilot",
+      "clawhubSpec": "clawhub:@nodoassist/copilot",
+      "npmSpec": "@nodoassist/copilot",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.5.28"
     },
@@ -28,7 +28,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

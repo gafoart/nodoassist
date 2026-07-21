@@ -41,7 +41,7 @@ class AppTopbar extends LitElement {
         aria-hidden=${this.onboarding ? "true" : nothing}
       >
         <div class="topnav-shell">
-          <openclaw-tooltip .content=${drawerLabel}>
+          <nodoassist-tooltip .content=${drawerLabel}>
             <button
               type="button"
               class="topbar-icon-btn topbar-nav-toggle"
@@ -52,16 +52,16 @@ class AppTopbar extends LitElement {
             >
               <span class="nav-collapse-toggle__icon" aria-hidden="true">${icons.menu}</span>
             </button>
-          </openclaw-tooltip>
+          </nodoassist-tooltip>
           <div class="topnav-shell__content">
-            <div class="topbar-brand" aria-label="OpenClaw">
+            <div class="topbar-brand" aria-label="NodoAssist">
               <img
                 class="topbar-brand__logo"
                 src=${controlUiPublicAssetPath("apple-touch-icon.png", this.basePath)}
                 alt=""
                 aria-hidden="true"
               />
-              <span class="topbar-brand__title">OpenClaw</span>
+              <span class="topbar-brand__title">NodoAssist</span>
             </div>
             <dashboard-header
               .routeId=${this.routeId}
@@ -72,7 +72,7 @@ class AppTopbar extends LitElement {
             ></dashboard-header>
           </div>
           <div class="topnav-shell__actions">
-            <openclaw-tooltip .content=${t("chat.commandPaletteTitle")}>
+            <nodoassist-tooltip .content=${t("chat.commandPaletteTitle")}>
               <button
                 class="topbar-search"
                 ?disabled=${this.searchDisabled || !this.onOpenPalette}
@@ -81,7 +81,7 @@ class AppTopbar extends LitElement {
               >
                 ${icons.search}
               </button>
-            </openclaw-tooltip>
+            </nodoassist-tooltip>
           </div>
         </div>
       </header>
@@ -89,6 +89,6 @@ class AppTopbar extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-app-topbar")) {
-  customElements.define("openclaw-app-topbar", AppTopbar);
+if (!customElements.get("nodoassist-app-topbar")) {
+  customElements.define("nodoassist-app-topbar", AppTopbar);
 }

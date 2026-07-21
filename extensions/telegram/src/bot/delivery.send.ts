@@ -1,9 +1,9 @@
 // Telegram plugin module implements delivery.send behavior.
 import type { Bot } from "grammy";
-import type { MarkdownTableMode } from "openclaw/plugin-sdk/config-contracts";
-import { createTelegramRetryRunner } from "openclaw/plugin-sdk/retry-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { MarkdownTableMode } from "nodoassist/plugin-sdk/config-contracts";
+import { createTelegramRetryRunner } from "nodoassist/plugin-sdk/retry-runtime";
+import type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime-env";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/ssrf-runtime";
 import { withTelegramApiErrorLogging } from "../api-logging.js";
 import { markdownToTelegramHtml } from "../format.js";
 import { isSafeToRetrySendError, isTelegramRateLimitError } from "../network-errors.js";

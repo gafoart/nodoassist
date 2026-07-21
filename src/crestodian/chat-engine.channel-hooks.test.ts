@@ -43,7 +43,7 @@ vi.mock("../config/config.js", async (importOriginal) => ({
   readConfigFileSnapshot: vi.fn(async () => ({
     exists: true,
     valid: true,
-    path: "/tmp/openclaw.json",
+    path: "/tmp/nodoassist.json",
     hash: "hash",
     config: {},
     sourceConfig: {},
@@ -60,7 +60,7 @@ describe("Crestodian chat channel setup", () => {
         loadOverview: async () =>
           ({
             config: {
-              path: "/tmp/openclaw.json",
+              path: "/tmp/nodoassist.json",
               exists: true,
               valid: true,
               issues: [],

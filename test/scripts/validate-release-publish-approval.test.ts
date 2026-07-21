@@ -28,7 +28,7 @@ function runApprovalScript(
       DIRECT_RELEASE_RECOVERY: env.DIRECT_RELEASE_RECOVERY ?? "false",
       EXPECTED_WORKFLOW_BRANCH: env.EXPECTED_WORKFLOW_BRANCH ?? "release/2026.6.21",
       APPROVAL_PATH: env.APPROVAL_PATH ?? "",
-      GITHUB_REPOSITORY: env.GITHUB_REPOSITORY ?? "openclaw/openclaw",
+      GITHUB_REPOSITORY: env.GITHUB_REPOSITORY ?? "nodoassist/nodoassist",
       RELEASE_TAG: env.RELEASE_TAG ?? "v2026.6.21",
       RELEASE_PUBLISH_RUN_ID: env.RELEASE_PUBLISH_RUN_ID ?? "123",
       RELEASE_TARGET_SHA: env.RELEASE_TARGET_SHA ?? "a".repeat(40),
@@ -38,14 +38,14 @@ function runApprovalScript(
 }
 
 function writeApproval(overrides: Record<string, unknown> = {}) {
-  const tempRoot = tempRoots.make("openclaw-release-approval-");
+  const tempRoot = tempRoots.make("nodoassist-release-approval-");
   const approvalPath = path.join(tempRoot, "approval.json");
   fs.writeFileSync(
     approvalPath,
     `${JSON.stringify({
       version: 1,
-      repository: "openclaw/openclaw",
-      workflow: "OpenClaw Release Publish",
+      repository: "nodoassist/nodoassist",
+      workflow: "NodoAssist Release Publish",
       parentRunId: "123",
       workflowBranch: "release/2026.6.21",
       releaseTag: "v2026.6.21",
@@ -63,7 +63,7 @@ function approvalRun(overrides: Record<string, unknown> = {}) {
     headBranch: "release/2026.6.21",
     status: "in_progress",
     url: "https://github.com/openclaw/openclaw/actions/runs/123",
-    workflowName: "OpenClaw Release Publish",
+    workflowName: "NodoAssist Release Publish",
     ...overrides,
   };
 }

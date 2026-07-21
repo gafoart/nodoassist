@@ -29,7 +29,7 @@ function escapedCodeBlockCopyAttribute(value: string): string {
 
 function withControlUiBasePath<T>(basePath: string, fn: () => T): T {
   const testWindow = window as Window & typeof globalThis & { [key: string]: unknown };
-  Object.defineProperty(window, "__OPENCLAW_CONTROL_UI_BASE_PATH__", {
+  Object.defineProperty(window, "__NODOASSIST_CONTROL_UI_BASE_PATH__", {
     value: basePath,
     writable: true,
     configurable: true,
@@ -37,7 +37,7 @@ function withControlUiBasePath<T>(basePath: string, fn: () => T): T {
   try {
     return fn();
   } finally {
-    delete testWindow["__OPENCLAW_CONTROL_UI_BASE_PATH__"];
+    delete testWindow["__NODOASSIST_CONTROL_UI_BASE_PATH__"];
   }
 }
 
@@ -278,9 +278,9 @@ describe("toSanitizedMarkdownHtml", () => {
     });
 
     it("does NOT rewrite explicit markdown links with CJK display text", () => {
-      const html = toSanitizedMarkdownHtml("[OpenClaw中文](https://docs.openclaw.ai)");
+      const html = toSanitizedMarkdownHtml("[NodoAssist中文](https://docs.openclaw.ai)");
       expect(html).toBe(
-        '<p><a href="https://docs.openclaw.ai" rel="noreferrer noopener" target="_blank">OpenClaw中文</a></p>\n',
+        '<p><a href="https://docs.openclaw.ai" rel="noreferrer noopener" target="_blank">NodoAssist中文</a></p>\n',
       );
     });
 
@@ -468,7 +468,7 @@ PY
     });
 
     it("keeps ordinary code blocks raw when they start with the block-art prefix", () => {
-      const source = 'openclaw:block-art-code:"literal"\n';
+      const source = 'nodoassist:block-art-code:"literal"\n';
       const html = toSanitizedMarkdownHtml(`\`\`\`txt\n${source}\`\`\``);
       const fragment = htmlFragment(html);
       const copy = fragment.querySelector<HTMLButtonElement>(".code-block-copy");
@@ -487,7 +487,7 @@ PY
       const copy = fragment.querySelector<HTMLButtonElement>(".code-block-copy");
 
       expect(copy?.dataset.code).not.toMatch(/^\s|\s$/);
-      expect(copy?.dataset.code).toContain("openclaw:block-art-code:");
+      expect(copy?.dataset.code).toContain("nodoassist:block-art-code:");
       expect(copy?.dataset.codeEncoding).toBe(blockArtCodeBlockCopyPayloadEncoding);
       expect(decodeCodeBlockCopyPayload(copy?.dataset.code ?? "", copy?.dataset.codeEncoding)).toBe(
         source,
@@ -775,7 +775,7 @@ PY
 
     it("strips href from host-local absolute file paths", () => {
       const html = toSanitizedMarkdownHtml(
-        "[report.docx](/Users/test/.openclaw/data/skills/output/report.docx)",
+        "[report.docx](/Users/test/.nodoassist/data/skills/output/report.docx)",
       );
       expect(html).toBe("<p><a>report.docx</a></p>\n");
     });
@@ -799,11 +799,11 @@ PY
     it("keeps app and resource routes instead of treating them as docs roots", () => {
       const html = withControlUiBasePath("/control", () =>
         toSanitizedMarkdownHtml(
-          "[channels](/channels) [automation](/automation) [workshop](/skills/workshop) [chat](/chat) [baseChat](/control/chat?session=abc) [baseSessions](/control/sessions) [health](/healthz) [pluginDynamic](/googlechat) [asset](/api/files/1) [baseApi](/control/api/files/1) [baseAvatar](/control/avatar/main) [plugin](/plugins/diffs/view/id/token) [basePlugin](/control/plugins/diffs/view/id/token) [artifact](/__openclaw__/canvas/documents/x/index.html) [baseArtifact](/control/__openclaw__/canvas/x)",
+          "[channels](/channels) [automation](/automation) [workshop](/skills/workshop) [chat](/chat) [baseChat](/control/chat?session=abc) [baseSessions](/control/sessions) [health](/healthz) [pluginDynamic](/googlechat) [asset](/api/files/1) [baseApi](/control/api/files/1) [baseAvatar](/control/avatar/main) [plugin](/plugins/diffs/view/id/token) [basePlugin](/control/plugins/diffs/view/id/token) [artifact](/__nodoassist__/canvas/documents/x/index.html) [baseArtifact](/control/__nodoassist__/canvas/x)",
         ),
       );
       expect(html).toBe(
-        '<p><a href="/channels" rel="noreferrer noopener" target="_blank">channels</a> <a href="/automation" rel="noreferrer noopener" target="_blank">automation</a> <a href="/skills/workshop" rel="noreferrer noopener" target="_blank">workshop</a> <a href="/chat" rel="noreferrer noopener" target="_blank">chat</a> <a href="/control/chat?session=abc" rel="noreferrer noopener" target="_blank">baseChat</a> <a href="/control/sessions" rel="noreferrer noopener" target="_blank">baseSessions</a> <a href="/healthz" rel="noreferrer noopener" target="_blank">health</a> <a href="/googlechat" rel="noreferrer noopener" target="_blank">pluginDynamic</a> <a href="/api/files/1" rel="noreferrer noopener" target="_blank">asset</a> <a href="/control/api/files/1" rel="noreferrer noopener" target="_blank">baseApi</a> <a href="/control/avatar/main" rel="noreferrer noopener" target="_blank">baseAvatar</a> <a href="/plugins/diffs/view/id/token" rel="noreferrer noopener" target="_blank">plugin</a> <a href="/control/plugins/diffs/view/id/token" rel="noreferrer noopener" target="_blank">basePlugin</a> <a href="/__openclaw__/canvas/documents/x/index.html" rel="noreferrer noopener" target="_blank">artifact</a> <a href="/control/__openclaw__/canvas/x" rel="noreferrer noopener" target="_blank">baseArtifact</a></p>\n',
+        '<p><a href="/channels" rel="noreferrer noopener" target="_blank">channels</a> <a href="/automation" rel="noreferrer noopener" target="_blank">automation</a> <a href="/skills/workshop" rel="noreferrer noopener" target="_blank">workshop</a> <a href="/chat" rel="noreferrer noopener" target="_blank">chat</a> <a href="/control/chat?session=abc" rel="noreferrer noopener" target="_blank">baseChat</a> <a href="/control/sessions" rel="noreferrer noopener" target="_blank">baseSessions</a> <a href="/healthz" rel="noreferrer noopener" target="_blank">health</a> <a href="/googlechat" rel="noreferrer noopener" target="_blank">pluginDynamic</a> <a href="/api/files/1" rel="noreferrer noopener" target="_blank">asset</a> <a href="/control/api/files/1" rel="noreferrer noopener" target="_blank">baseApi</a> <a href="/control/avatar/main" rel="noreferrer noopener" target="_blank">baseAvatar</a> <a href="/plugins/diffs/view/id/token" rel="noreferrer noopener" target="_blank">plugin</a> <a href="/control/plugins/diffs/view/id/token" rel="noreferrer noopener" target="_blank">basePlugin</a> <a href="/__nodoassist__/canvas/documents/x/index.html" rel="noreferrer noopener" target="_blank">artifact</a> <a href="/control/__nodoassist__/canvas/x" rel="noreferrer noopener" target="_blank">baseArtifact</a></p>\n',
       );
     });
   });
@@ -944,7 +944,7 @@ describe("toStreamingMarkdownHtml", () => {
     expect(code?.textContent).toContain("… truncated");
     expect(code?.textContent).toContain(`showing first 140000`);
     expect(code?.textContent?.length).toBeLessThan(blockArt.length);
-    expect(copy?.dataset.code).toContain("openclaw:block-art-code:");
+    expect(copy?.dataset.code).toContain("nodoassist:block-art-code:");
     expect(copy?.dataset.codeEncoding).toBe(blockArtCodeBlockCopyPayloadEncoding);
     expect(decodeCodeBlockCopyPayload(copy?.dataset.code ?? "", copy?.dataset.codeEncoding)).toBe(
       code?.textContent,

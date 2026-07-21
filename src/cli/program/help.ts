@@ -23,23 +23,26 @@ const ROOT_COMMANDS_HINT =
   "Hint: commands suffixed with * have subcommands. Run <command> --help for details.";
 
 const EXAMPLES = [
-  ["openclaw onboard", "Run guided setup for a local Gateway, workspace, auth, and channels."],
-  ["openclaw setup", "Create the baseline config, workspace, and session folders."],
-  ["openclaw configure", "Change models, Gateway, channels, plugins, skills, and health checks."],
-  ["openclaw status", "Check Gateway, channel, model, and recent-session status."],
-  ["openclaw doctor --fix", "Repair common config, service, plugin, and channel problems."],
-  ["openclaw channels add", "Add or update a chat channel account with guided prompts."],
-  ["openclaw channels status", "See connected messaging accounts and login state."],
-  ["openclaw --dev gateway", "Run a dev Gateway (isolated state/config) on ws://127.0.0.1:19001."],
-  ["openclaw gateway run --force", "Start the Gateway and replace anything bound to its port."],
-  ["openclaw models status", "Show model/provider auth health before running agents."],
-  ["openclaw plugins list", "Inspect enabled, disabled, and installed plugins."],
+  ["nodoassist onboard", "Run guided setup for a local Gateway, workspace, auth, and channels."],
+  ["nodoassist setup", "Create the baseline config, workspace, and session folders."],
+  ["nodoassist configure", "Change models, Gateway, channels, plugins, skills, and health checks."],
+  ["nodoassist status", "Check Gateway, channel, model, and recent-session status."],
+  ["nodoassist doctor --fix", "Repair common config, service, plugin, and channel problems."],
+  ["nodoassist channels add", "Add or update a chat channel account with guided prompts."],
+  ["nodoassist channels status", "See connected messaging accounts and login state."],
   [
-    'openclaw agent --to +15555550123 --message "Run summary" --deliver',
+    "nodoassist --dev gateway",
+    "Run a dev Gateway (isolated state/config) on ws://127.0.0.1:19001.",
+  ],
+  ["nodoassist gateway run --force", "Start the Gateway and replace anything bound to its port."],
+  ["nodoassist models status", "Show model/provider auth health before running agents."],
+  ["nodoassist plugins list", "Inspect enabled, disabled, and installed plugins."],
+  [
+    'nodoassist agent --to +15555550123 --message "Run summary" --deliver',
     "Run one agent turn through the Gateway and optionally deliver the reply.",
   ],
   [
-    'openclaw message send --channel telegram --target @mychat --message "Hi"',
+    'nodoassist message send --channel telegram --target @mychat --message "Hi"',
     "Send via your Telegram bot.",
   ],
 ] as const;
@@ -60,15 +63,15 @@ export function configureProgramHelp(
     .version(ctx.programVersion)
     .option(
       "--container <name>",
-      "Run the CLI inside a running Podman/Docker container named <name> (default: env OPENCLAW_CONTAINER)",
+      "Run the CLI inside a running Podman/Docker container named <name> (default: env NODOASSIST_CONTAINER)",
     )
     .option(
       "--dev",
-      "Dev profile: isolate state under ~/.openclaw-dev, default gateway port 19001, and shift derived ports (browser/canvas)",
+      "Dev profile: isolate state under ~/.nodoassist-dev, default gateway port 19001, and shift derived ports (browser/canvas)",
     )
     .option(
       "--profile <name>",
-      "Use a named profile (isolates OPENCLAW_STATE_DIR/OPENCLAW_CONFIG_PATH under ~/.openclaw-<name>)",
+      "Use a named profile (isolates NODOASSIST_STATE_DIR/NODOASSIST_CONFIG_PATH under ~/.nodoassist-<name>)",
     )
     .option(
       "--log-level <level>",
@@ -122,13 +125,13 @@ export function configureProgramHelp(
   if (isRootVersionInvocation(process.argv)) {
     const commit = resolveCommitHash({ moduleUrl: import.meta.url });
     console.log(
-      commit ? `OpenClaw ${ctx.programVersion} (${commit})` : `OpenClaw ${ctx.programVersion}`,
+      commit ? `NodoAssist ${ctx.programVersion} (${commit})` : `NodoAssist ${ctx.programVersion}`,
     );
     process.exit(0);
   }
 
   program.addHelpText("beforeAll", () => {
-    if (hasEmittedCliBanner() || process.env.OPENCLAW_SUPPRESS_HELP_BANNER === "1") {
+    if (hasEmittedCliBanner() || process.env.NODOASSIST_SUPPRESS_HELP_BANNER === "1") {
       return "";
     }
     const rich = isRich();

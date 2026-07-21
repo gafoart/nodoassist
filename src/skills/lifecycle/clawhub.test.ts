@@ -308,7 +308,7 @@ describe("skills-clawhub", () => {
     expectInstallPackageSourceDir("/tmp/extracted-skill");
     expect(installPolicyInput()).toMatchObject({
       origin: { registry: "https://clawhub.ai" },
-      source: { kind: "clawhub", authority: "openclaw", mutable: false, network: true },
+      source: { kind: "clawhub", authority: "nodoassist", mutable: false, network: true },
     });
     expectInstalledSkill(result, {
       slug: "agentreceipt",
@@ -447,7 +447,7 @@ describe("skills-clawhub", () => {
     expect(result.code).toBe("clawhub_download_blocked");
     expect(result.warning).toContain("BLOCKED - ClawHub flagged this release as malicious");
     expect(warnings.join("\n")).toContain("BLOCKED - ClawHub flagged this release as malicious");
-    expect(warnings.join("\n")).toContain("OpenClaw will not install this skill release");
+    expect(warnings.join("\n")).toContain("NodoAssist will not install this skill release");
     expect(downloadClawHubSkillArchiveUrlMock).not.toHaveBeenCalled();
     expect(downloadClawHubSkillArchiveMock).not.toHaveBeenCalled();
   });
@@ -784,7 +784,7 @@ describe("skills-clawhub", () => {
   });
 
   it("installs owner-qualified ClawHub skills without using owner as a local path", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-owner-skill-");
+    const workspaceDir = await tempDirs.make("nodoassist-owner-skill-");
     fetchClawHubSkillSecurityVerdictsMock.mockResolvedValueOnce({
       schema: "clawhub.skill.security-verdicts.v1",
       items: [
@@ -898,7 +898,7 @@ describe("skills-clawhub", () => {
   });
 
   it("does not require acknowledgement for owner-qualified clean skills missing only cards", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-owner-card-missing-");
+    const workspaceDir = await tempDirs.make("nodoassist-owner-card-missing-");
     fetchClawHubSkillSecurityVerdictsMock.mockResolvedValueOnce({
       schema: "clawhub.skill.security-verdicts.v1",
       items: [
@@ -1032,7 +1032,7 @@ describe("skills-clawhub", () => {
       throw new Error("expected ambiguous slug failure");
     }
     expect(result.error).toContain('Skill "weather" is ambiguous on ClawHub.');
-    expect(result.error).toContain("openclaw skills install @owner/weather");
+    expect(result.error).toContain("nodoassist skills install @owner/weather");
     expect(result.error).toContain("Multiple ClawHub publishers provide weather.");
   });
 
@@ -1051,7 +1051,7 @@ describe("skills-clawhub", () => {
   });
 
   it("persists install artifact and verification provenance in the ClawHub lockfile", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-skills-lock-");
+    const workspaceDir = await tempDirs.make("nodoassist-skills-lock-");
     const skillContent = "---\nname: agentreceipt\ndescription: Receipt helper\n---\n";
     const skillSha256 = createHash("sha256").update(skillContent).digest("hex");
     installPackageDirMock.mockImplementationOnce(async (params: { targetDir: string }) => {
@@ -1126,7 +1126,7 @@ describe("skills-clawhub", () => {
   });
 
   it("persists the source URL from server-resolved verification provenance", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-skills-source-");
+    const workspaceDir = await tempDirs.make("nodoassist-skills-source-");
     const sourceUrl = "https://github.com/openclaw/skills/tree/main/agentreceipt";
     const verifiedSourceUrl =
       "https://github.com/openclaw/skills/tree/0123456789abcdef0123456789abcdef01234567/agentreceipt";
@@ -1153,7 +1153,7 @@ describe("skills-clawhub", () => {
         source: "server-resolved-github-import",
         kind: "github",
         url: sourceUrl,
-        repo: "openclaw/skills",
+        repo: "nodoassist/skills",
         ref: "main",
         commit: "0123456789abcdef0123456789abcdef01234567",
         path: "agentreceipt",
@@ -1190,7 +1190,7 @@ describe("skills-clawhub", () => {
             source: "server-resolved-github-import",
             kind: "github",
             url: sourceUrl,
-            repo: "openclaw/skills",
+            repo: "nodoassist/skills",
             ref: "main",
             commit: "0123456789abcdef0123456789abcdef01234567",
             path: "agentreceipt",
@@ -1213,7 +1213,7 @@ describe("skills-clawhub", () => {
   it("requires a full commit SHA before promoting verified source provenance", () => {
     const baseProvenance = {
       source: "server-resolved-github-import",
-      repo: "openclaw/skills",
+      repo: "nodoassist/skills",
       path: "agentreceipt",
     };
 
@@ -1240,7 +1240,7 @@ describe("skills-clawhub", () => {
   });
 
   it("does not treat detail metadata as verified source provenance", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-skills-source-");
+    const workspaceDir = await tempDirs.make("nodoassist-skills-source-");
     fetchClawHubSkillDetailMock.mockResolvedValueOnce({
       skill: {
         slug: "agentreceipt",
@@ -1291,7 +1291,7 @@ describe("skills-clawhub", () => {
   });
 
   it("does not trust URLs from unavailable verification provenance", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-skills-source-");
+    const workspaceDir = await tempDirs.make("nodoassist-skills-source-");
     fetchClawHubSkillVerificationMock.mockResolvedValueOnce({
       schema: "clawhub.skill.verify.v1",
       ok: true,
@@ -1341,7 +1341,7 @@ describe("skills-clawhub", () => {
   });
 
   it("keeps installing when the ClawHub verification snapshot is unavailable", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-skills-lock-");
+    const workspaceDir = await tempDirs.make("nodoassist-skills-lock-");
     fetchClawHubSkillVerificationMock.mockRejectedValueOnce(new Error("verification down"));
     installPackageDirMock.mockImplementationOnce(async (params: { targetDir: string }) => {
       await fs.mkdir(params.targetDir, { recursive: true });
@@ -1514,7 +1514,7 @@ describe("skills-clawhub", () => {
   );
 
   it("updates owner-qualified ClawHub skills with the stored owner namespace", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-owner-update-");
+    const workspaceDir = await tempDirs.make("nodoassist-owner-update-");
     await writeClawHubOriginFixture({
       workspaceDir,
       slug: "weather",
@@ -1571,7 +1571,7 @@ describe("skills-clawhub", () => {
   });
 
   it("updates official publisher ClawHub skills without fetching security verdicts", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-official-owner-update-");
+    const workspaceDir = await tempDirs.make("nodoassist-official-owner-update-");
     await writeClawHubOriginFixture({
       workspaceDir,
       slug: "tao-setup-nvidia-gpu-host",
@@ -1641,7 +1641,7 @@ describe("skills-clawhub", () => {
   });
 
   it("explains that a malicious skill update will not be downloaded", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-skill-malicious-update-");
+    const workspaceDir = await tempDirs.make("nodoassist-skill-malicious-update-");
     const warnings: string[] = [];
     await writeClawHubOriginFixture({
       workspaceDir,
@@ -1683,7 +1683,7 @@ describe("skills-clawhub", () => {
       }),
     ]);
     expect(warnings.join("\n")).toContain(
-      "Latest skill version is marked malicious; OpenClaw will not download it.",
+      "Latest skill version is marked malicious; NodoAssist will not download it.",
     );
     expect(warnings.join("\n")).toContain(
       "Uninstall the installed skill unless you have independently reviewed it.",
@@ -1694,7 +1694,7 @@ describe("skills-clawhub", () => {
   });
 
   it("updates owner-qualified ClawHub skills when the requested owner matches tracking", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-owner-update-request-");
+    const workspaceDir = await tempDirs.make("nodoassist-owner-update-request-");
     await writeClawHubOriginFixture({
       workspaceDir,
       slug: "weather",
@@ -1738,7 +1738,7 @@ describe("skills-clawhub", () => {
   });
 
   it("rejects owner-qualified ClawHub updates when the requested owner does not match tracking", async () => {
-    const workspaceDir = await tempDirs.make("openclaw-owner-update-mismatch-");
+    const workspaceDir = await tempDirs.make("nodoassist-owner-update-mismatch-");
     await writeClawHubOriginFixture({
       workspaceDir,
       slug: "weather",
@@ -1759,7 +1759,7 @@ describe("skills-clawhub", () => {
 
   describe("legacy tracked slugs remain updatable", () => {
     async function createLegacyTrackedSkillFixture(slug: string) {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-clawhub-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skills-clawhub-"));
       const skillDir = path.join(workspaceDir, "skills", slug);
       await fs.mkdir(path.join(skillDir, ".clawhub"), { recursive: true });
       await fs.mkdir(path.join(workspaceDir, ".clawhub"), { recursive: true });
@@ -1879,7 +1879,7 @@ describe("skills-clawhub", () => {
     });
 
     it("does not install configured skills during update all without ClawHub tracking", async () => {
-      const workspaceDir = await tempDirs.make("openclaw-configured-update-");
+      const workspaceDir = await tempDirs.make("nodoassist-configured-update-");
       const results = await updateSkillsFromClawHub({
         workspaceDir,
         config: {
@@ -1897,7 +1897,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects untracked requested updates instead of installing by slug", async () => {
-      const workspaceDir = await tempDirs.make("openclaw-untracked-update-");
+      const workspaceDir = await tempDirs.make("nodoassist-untracked-update-");
 
       const results = await updateSkillsFromClawHub({
         workspaceDir,
@@ -1935,7 +1935,7 @@ describe("skills-clawhub", () => {
     });
 
     it("still rejects an untracked Unicode slug passed to update", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-clawhub-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skills-clawhub-"));
 
       try {
         await expect(
@@ -2035,7 +2035,7 @@ describe("skills-clawhub", () => {
 
   describe("verification target resolution", () => {
     it("uses installed origin registry and installed version by default", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         const skillDir = await writeClawHubOriginFixture({
           workspaceDir,
@@ -2069,7 +2069,7 @@ describe("skills-clawhub", () => {
     });
 
     it("uses installed owner namespace when resolving owner-qualified verification targets", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2104,7 +2104,7 @@ describe("skills-clawhub", () => {
     });
 
     it("accepts owner-qualified installed verification targets", async () => {
-      const workspaceDir = await tempDirs.make("openclaw-skill-verify-");
+      const workspaceDir = await tempDirs.make("nodoassist-skill-verify-");
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2139,7 +2139,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects owner-qualified installed verification when the owner differs", async () => {
-      const workspaceDir = await tempDirs.make("openclaw-skill-verify-");
+      const workspaceDir = await tempDirs.make("nodoassist-skill-verify-");
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2164,7 +2164,7 @@ describe("skills-clawhub", () => {
     });
 
     it("keeps the installed registry when an explicit version overrides the installed version", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2199,7 +2199,7 @@ describe("skills-clawhub", () => {
     });
 
     it("keeps the installed registry when an explicit tag is provided", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2234,7 +2234,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects installed owner namespace metadata that does not match lock tracking", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2264,7 +2264,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects installed origin metadata without workspace lock tracking", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2288,7 +2288,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects installed origin metadata for a different skill slug", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2312,7 +2312,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects installed origin metadata that does not match lock tracking", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2346,7 +2346,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects installed origin metadata when lock registry disagrees", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await writeClawHubOriginFixture({
           workspaceDir,
@@ -2381,7 +2381,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects lock-tracked installed skills without origin metadata", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await fs.mkdir(path.join(workspaceDir, ".clawhub"), { recursive: true });
         await fs.writeFile(
@@ -2419,7 +2419,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects malformed workspace locks before registry fallback", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         await fs.mkdir(path.join(workspaceDir, ".clawhub"), { recursive: true });
         await fs.writeFile(path.join(workspaceDir, ".clawhub", "lock.json"), "{not json", "utf8");
@@ -2440,7 +2440,7 @@ describe("skills-clawhub", () => {
     });
 
     it("uses the configured registry and latest selector for uninstalled skills", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       resolveClawHubBaseUrlMock.mockReturnValueOnce("https://configured.example.com/clawhub");
       try {
         await expect(
@@ -2469,7 +2469,7 @@ describe("skills-clawhub", () => {
     });
 
     it("uses owner-qualified registry verification targets", async () => {
-      const workspaceDir = await tempDirs.make("openclaw-skill-verify-");
+      const workspaceDir = await tempDirs.make("nodoassist-skill-verify-");
       resolveClawHubBaseUrlMock.mockReturnValueOnce("https://configured.example.com/clawhub");
       try {
         await expect(
@@ -2499,7 +2499,7 @@ describe("skills-clawhub", () => {
     });
 
     it("keeps owner-qualified registry selectors for explicit versions and tags", async () => {
-      const workspaceDir = await tempDirs.make("openclaw-skill-verify-");
+      const workspaceDir = await tempDirs.make("nodoassist-skill-verify-");
       try {
         await expect(
           resolveClawHubSkillVerificationTarget({
@@ -2542,7 +2542,7 @@ describe("skills-clawhub", () => {
     });
 
     it("fails clearly when installed origin metadata is malformed", async () => {
-      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skill-verify-"));
+      const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-skill-verify-"));
       try {
         const skillDir = path.join(workspaceDir, "skills", "agentreceipt");
         await fs.mkdir(path.join(skillDir, ".clawhub"), { recursive: true });
@@ -2657,7 +2657,7 @@ describe("ClawHub origin provenance readback", () => {
   }
 
   it("restores matching provenance and rejects one-sided origin edits", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-origin-prov-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-origin-prov-"));
     try {
       const artifact = {
         kind: "clawpack" as const,
@@ -2740,7 +2740,7 @@ describe("ClawHub origin provenance readback", () => {
   });
 
   it("drops malformed provenance fields while keeping the link valid", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-origin-prov-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-origin-prov-"));
     try {
       const skillDir = await writeOriginWithProvenance({
         workspaceDir,

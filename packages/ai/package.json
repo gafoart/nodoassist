@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/ai",
+  "name": "@nodoassist/ai",
   "version": "2026.6.11",
-  "description": "Reusable model provider adapters and streaming runtime from OpenClaw",
+  "description": "Reusable model provider adapters and streaming runtime from NodoAssist",
   "keywords": [
     "ai",
     "anthropic",
@@ -81,7 +81,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "openclaw": {
+  "nodoassist": {
     "release": {
       "publishToNpm": true
     }

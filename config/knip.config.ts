@@ -1,5 +1,5 @@
 /**
- * Knip configuration for OpenClaw root and bundled plugin dependency hygiene.
+ * Knip configuration for NodoAssist root and bundled plugin dependency hygiene.
  */
 const BUNDLED_PLUGIN_ROOT_DIR = "extensions";
 
@@ -8,7 +8,7 @@ function bundledPluginFile(pluginId: string, relativePath: string, suffix = ""):
 }
 
 const rootEntries = [
-  "openclaw.mjs!",
+  "nodoassist.mjs!",
   "src/index.ts!",
   "src/entry.ts!",
   "src/cli/daemon-cli.ts!",
@@ -53,7 +53,7 @@ const bundledPluginIgnoredRuntimeDependencies = [
   "json5",
   "lit",
   "linkedom",
-  "openclaw",
+  "nodoassist",
   "clawpdf",
 ] as const;
 
@@ -138,8 +138,8 @@ const config = {
     ".": {
       entry: rootEntries,
       ignoreDependencies: [
-        "@openclaw/*",
-        // Docker packaging stages @openclaw/ai without nested dependencies after
+        "@nodoassist/*",
+        // Docker packaging stages @nodoassist/ai without nested dependencies after
         // verifying the root owns its exact runtime dependency versions.
         "@mistralai/mistralai",
         "cross-spawn",
@@ -221,7 +221,7 @@ const config = {
     "packages/speech-core": {
       entry: ["api.ts!", "runtime-api.ts!", "speaker.ts!", "voice-models.ts!"],
       project: ["**/*.ts!"],
-      ignoreDependencies: ["openclaw"],
+      ignoreDependencies: ["nodoassist"],
     },
     "packages/*": {
       entry: ["index.js!", "scripts/postinstall.js!"],

@@ -138,18 +138,18 @@ export const vi: TranslationMap = {
     pairing: {
       button: "Ghép nối thiết bị di động",
       adminRequired: "Cần quyền truy cập quản trị viên để tạo mã thiết lập.",
-      title: "OpenClaw di động",
+      title: "NodoAssist di động",
       subtitle: "Quét mã QR này trong ứng dụng di động để kết nối điện thoại mới.",
       generating: "Đang tạo mã thiết lập bảo mật…",
       failed: "Không thể tạo mã thiết lập.",
-      qrAlt: "Mã QR ghép nối OpenClaw di động",
+      qrAlt: "Mã QR ghép nối NodoAssist di động",
       qrUnavailable: "Không có mã QR. Hãy sao chép mã thiết lập thay thế.",
       copySetupCode: "Sao chép mã thiết lập",
       newCode: "Mã mới",
       showSetupCode: "Hiển thị mã thiết lập",
       pending: "Yêu cầu thiết bị đang chờ xem xét: {count}",
       review: "Đánh giá",
-      waiting: "Các ứng dụng di động OpenClaw chính thức sẽ tự động kết nối sau khi quét.",
+      waiting: "Các ứng dụng di động NodoAssist chính thức sẽ tự động kết nối sau khi quét.",
       help: "Trợ giúp ghép nối",
       manageDevices: "Quản lý thiết bị",
     },
@@ -175,7 +175,7 @@ export const vi: TranslationMap = {
   },
   worktrees: {
     title: "Worktree được quản lý",
-    subtitle: "Các bản checkout kho lưu trữ được cô lập do OpenClaw sở hữu.",
+    subtitle: "Các bản checkout kho lưu trữ được cô lập do NodoAssist sở hữu.",
     cleanNow: "Dọn dẹp ngay",
     name: "Tên",
     repo: "Kho lưu trữ",
@@ -540,7 +540,7 @@ export const vi: TranslationMap = {
       "Xem xét, tinh chỉnh và áp dụng các đề xuất trước khi chúng trở thành kỹ năng đang hoạt động.",
     nodes: "Thiết bị đã ghép nối và lệnh.",
     chat: "Trò chuyện Gateway để can thiệp nhanh.",
-    config: "Chỉnh sửa openclaw.json.",
+    config: "Chỉnh sửa nodoassist.json.",
     communications: "Kênh, tin nhắn và cài đặt âm thanh.",
     appearance: "Giao diện, UI và cài đặt trình hướng dẫn thiết lập.",
     automation: "Lệnh, hook, cron và plugin.",
@@ -972,7 +972,7 @@ export const vi: TranslationMap = {
       metadataUpgradeSummary:
         "Thiết bị này đã được ghép nối, nhưng thay đổi siêu dữ liệu đang chờ phê duyệt.",
       mobileHint:
-        "Đang dùng di động? Sao chép URL đầy đủ (bao gồm #token=...) từ openclaw dashboard --no-open trên máy tính của bạn.",
+        "Đang dùng di động? Sao chép URL đầy đủ (bao gồm #token=...) từ nodoassist dashboard --no-open trên máy tính của bạn.",
       docsTitle: "Tài liệu ghép nối thiết bị (mở trong tab mới)",
       docsLink: "Tài liệu: Ghép nối thiết bị",
     },
@@ -1010,7 +1010,7 @@ export const vi: TranslationMap = {
       modelAuthExpiresIn: "hết hạn {when}",
       modelAuthAttentionExpiredTitle: "Xác thực mô hình đã hết hạn",
       modelAuthAttentionExpiringTitle: "Xác thực mô hình sắp hết hạn",
-      modelAuthAttentionExpiredDesc: "{providers} — xác thực lại bằng openclaw models auth",
+      modelAuthAttentionExpiredDesc: "{providers} — xác thực lại bằng nodoassist models auth",
       modelAuthAttentionExpiringEntry: "{provider} ({when})",
     },
     attention: {
@@ -1463,16 +1463,16 @@ export const vi: TranslationMap = {
         title: "Cần xác thực",
         summary:
           "Gateway có thể truy cập được, nhưng cần token hoặc mật khẩu khớp trước khi trình duyệt này có thể kết nối.",
-        stepPaste: "Dán token từ openclaw dashboard --no-open hoặc nhập mật khẩu đã cấu hình.",
+        stepPaste: "Dán token từ nodoassist dashboard --no-open hoặc nhập mật khẩu đã cấu hình.",
         stepGenerate:
-          "Nếu chưa cấu hình token, hãy chạy openclaw doctor --generate-gateway-token trên máy chủ Gateway.",
+          "Nếu chưa cấu hình token, hãy chạy nodoassist doctor --generate-gateway-token trên máy chủ Gateway.",
         stepConnect: "Nhấp Connect lần nữa sau khi cập nhật thông tin xác thực.",
       },
       authFailed: {
         title: "Xác thực không khớp",
         summary:
           "Thông tin xác thực đã cung cấp bị từ chối. Nguyên nhân phổ biến nhất là token cũ hoặc token sao chép từ một Gateway URL khác.",
-        stepDashboard: "Chạy openclaw dashboard --no-open rồi mở URL mới hoặc dán token của nó.",
+        stepDashboard: "Chạy nodoassist dashboard --no-open rồi mở URL mới hoặc dán token của nó.",
         stepReplace:
           "Thay các giá trị token/mật khẩu cũ; không dùng lại token từ Gateway URL khác.",
         stepMode:
@@ -1495,8 +1495,8 @@ export const vi: TranslationMap = {
           "Trình duyệt này cần phê duyệt một lần từ máy chủ Gateway trước khi dùng Control UI.",
         upgradeSummary:
           "Trình duyệt này đã được biết đến, nhưng quyền truy cập yêu cầu đã thay đổi và cần phê duyệt mới.",
-        stepList: "Chạy openclaw devices list trên máy chủ Gateway.",
-        stepApproveId: "Phê duyệt yêu cầu này: openclaw devices approve {requestId}.",
+        stepList: "Chạy nodoassist devices list trên máy chủ Gateway.",
+        stepApproveId: "Phê duyệt yêu cầu này: nodoassist devices approve {requestId}.",
         stepApprove: "Phê duyệt yêu cầu trình duyệt/thiết bị đang chờ trong danh sách đó.",
         stepReconnect: "Kết nối lại sau khi phê duyệt hoàn tất.",
       },
@@ -1522,20 +1522,21 @@ export const vi: TranslationMap = {
         summary:
           "Control UI được phục vụ và Gateway đang chạy không thống nhất về giao thức kết nối được hỗ trợ.",
         stepDashboard:
-          "Mở lại dashboard được phục vụ bằng openclaw dashboard để UI và Gateway đến từ cùng một bản cài đặt.",
+          "Mở lại dashboard được phục vụ bằng nodoassist dashboard để UI và Gateway đến từ cùng một bản cài đặt.",
         stepDevUi:
           "Nếu dùng pnpm ui:dev, hãy build lại hoặc khởi động lại UI dev theo checkout hiện tại.",
         stepRestart:
-          "Khởi động lại Gateway sau khi cập nhật OpenClaw để nó phục vụ giao thức hiện tại.",
+          "Khởi động lại Gateway sau khi cập nhật NodoAssist để nó phục vụ giao thức hiện tại.",
       },
       network: {
         title: "Không thể kết nối",
         summary:
           "Trình duyệt không thể hoàn tất kết nối Gateway. Kiểm tra đích và transport trước khi thử lại thông tin xác thực.",
-        stepGateway: "Xác nhận Gateway đang chạy bằng openclaw status hoặc openclaw gateway run.",
+        stepGateway:
+          "Xác nhận Gateway đang chạy bằng nodoassist status hoặc nodoassist gateway run.",
         stepUrl: "Kiểm tra WebSocket URL và dùng wss:// khi Gateway nằm sau HTTPS/Tailscale Serve.",
         stepDashboard:
-          "Mở lại dashboard bằng openclaw dashboard --no-open để sao chép lại URL và chi tiết auth hiện tại.",
+          "Mở lại dashboard bằng nodoassist dashboard --no-open để sao chép lại URL và chi tiết auth hiện tại.",
       },
     },
   },

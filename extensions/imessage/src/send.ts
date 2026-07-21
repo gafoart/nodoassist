@@ -4,20 +4,23 @@ import { constants, accessSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
-import { createActionGate } from "openclaw/plugin-sdk/channel-actions";
+import { createActionGate } from "nodoassist/plugin-sdk/channel-actions";
 import {
   createMessageReceiptFromOutboundResults,
   type MessageReceipt,
   type MessageReceiptPartKind,
   type MessageReceiptSourceResult,
-} from "openclaw/plugin-sdk/channel-outbound";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-import { kindFromMime, resolveOutboundAttachmentFromUrl } from "openclaw/plugin-sdk/media-runtime";
-import { requireRuntimeConfig } from "openclaw/plugin-sdk/plugin-config-runtime";
-import { sleep as delay } from "openclaw/plugin-sdk/runtime-env";
-import { convertMarkdownTables } from "openclaw/plugin-sdk/text-chunking";
-import { stripInlineDirectiveTagsForDelivery } from "openclaw/plugin-sdk/text-chunking";
+} from "nodoassist/plugin-sdk/channel-outbound";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { resolveMarkdownTableMode } from "nodoassist/plugin-sdk/markdown-table-runtime";
+import {
+  kindFromMime,
+  resolveOutboundAttachmentFromUrl,
+} from "nodoassist/plugin-sdk/media-runtime";
+import { requireRuntimeConfig } from "nodoassist/plugin-sdk/plugin-config-runtime";
+import { sleep as delay } from "nodoassist/plugin-sdk/runtime-env";
+import { convertMarkdownTables } from "nodoassist/plugin-sdk/text-chunking";
+import { stripInlineDirectiveTagsForDelivery } from "nodoassist/plugin-sdk/text-chunking";
 import { resolveIMessageAccount, type ResolvedIMessageAccount } from "./accounts.js";
 import {
   appendIMessageApprovalReactionHintForOutboundMessage,
@@ -66,7 +69,7 @@ type IMessageSendOpts = {
   timeoutMs?: number;
   chatId?: number;
   client?: IMessageRpcClient;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   account?: ResolvedIMessageAccount;
   resolveAttachmentImpl?: (
     mediaUrl: string,

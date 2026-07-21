@@ -1,7 +1,7 @@
 // Slack plugin module implements channel actions behavior.
-import type { AgentToolResult } from "openclaw/plugin-sdk/agent-core";
-import type { ChannelMessageActionAdapter } from "openclaw/plugin-sdk/channel-contract";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
+import type { AgentToolResult } from "nodoassist/plugin-sdk/agent-core";
+import type { ChannelMessageActionAdapter } from "nodoassist/plugin-sdk/channel-contract";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
 import type { SlackActionContext } from "./action-runtime.js";
 import { handleSlackMessageAction } from "./message-action-dispatch.js";
 import { extractSlackToolSend } from "./message-actions.js";

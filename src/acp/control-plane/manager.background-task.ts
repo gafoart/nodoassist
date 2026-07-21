@@ -1,5 +1,5 @@
 /** Mirrors child ACP turns into detached-task status for requester-facing progress. */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { logVerbose } from "../../globals.js";
 import {
   createRunningTaskRun,
@@ -96,7 +96,7 @@ export function resolveBackgroundTaskTerminalResult(progressSummary: string): {
 /** Resolves the requester task context for a spawned child ACP session. */
 export function resolveBackgroundTaskContext(params: {
   deps: AcpSessionManagerDeps;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   sessionKey: string;
   requestId: string;
   text: string;

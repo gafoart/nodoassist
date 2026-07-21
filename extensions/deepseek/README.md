@@ -1,12 +1,12 @@
-# OpenClaw DeepSeek Provider
+# NodoAssist DeepSeek Provider
 
-Official OpenClaw provider plugin for DeepSeek.
+Official NodoAssist provider plugin for DeepSeek.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/deepseek-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/deepseek-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/deepseek> for setup and configuration.

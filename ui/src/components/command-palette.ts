@@ -27,7 +27,7 @@ const SESSION_SEARCH_LIMIT = 10;
 const SESSION_SEARCH_MAX_PAGES = 4;
 const SESSION_SEARCH_PAGE_SIZE = 50;
 
-export const COMMAND_PALETTE_TARGET_EVENT = "openclaw-command-palette-target";
+export const COMMAND_PALETTE_TARGET_EVENT = "nodoassist-command-palette-target";
 
 export type CommandPaletteTargetDetail = {
   owner: Element;
@@ -598,6 +598,6 @@ export class CommandPalette extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-command-palette")) {
-  customElements.define("openclaw-command-palette", CommandPalette);
+if (!customElements.get("nodoassist-command-palette")) {
+  customElements.define("nodoassist-command-palette", CommandPalette);
 }

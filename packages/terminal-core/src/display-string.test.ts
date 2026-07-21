@@ -3,10 +3,10 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { displayString } from "./display-string.js";
 
-function stubHome(home: string, openclawHome = ""): void {
+function stubHome(home: string, nodoassistHome = ""): void {
   vi.stubEnv("HOME", home);
   vi.stubEnv("USERPROFILE", "");
-  vi.stubEnv("OPENCLAW_HOME", openclawHome);
+  vi.stubEnv("NODOASSIST_HOME", nodoassistHome);
 }
 
 describe("displayString", () => {
@@ -35,13 +35,13 @@ describe("displayString", () => {
     expect(displayString(`/tmp${home}/project`)).toBe(`/tmp${home}/project`);
   });
 
-  it("uses OPENCLAW_HOME as the display prefix", () => {
+  it("uses NODOASSIST_HOME as the display prefix", () => {
     const home = path.resolve("test-home", "alice");
-    const openclawHome = path.resolve("test-openclaw-home");
-    stubHome(home, openclawHome);
+    const nodoassistHome = path.resolve("test-nodoassist-home");
+    stubHome(home, nodoassistHome);
 
-    expect(displayString(openclawHome)).toBe("$OPENCLAW_HOME");
-    expect(displayString(`${openclawHome}/state`)).toBe("$OPENCLAW_HOME/state");
-    expect(displayString(`${openclawHome}2/state`)).toBe(`${openclawHome}2/state`);
+    expect(displayString(nodoassistHome)).toBe("$NODOASSIST_HOME");
+    expect(displayString(`${nodoassistHome}/state`)).toBe("$NODOASSIST_HOME/state");
+    expect(displayString(`${nodoassistHome}2/state`)).toBe(`${nodoassistHome}2/state`);
   });
 });

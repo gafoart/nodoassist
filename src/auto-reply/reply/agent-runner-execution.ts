@@ -5,12 +5,12 @@ import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
   readStringValue,
-} from "@openclaw/normalization-core/string-coerce";
-import { truncateUtf16Safe } from "@openclaw/normalization-core/utf16-slice";
+} from "@nodoassist/normalization-core/string-coerce";
+import { truncateUtf16Safe } from "@nodoassist/normalization-core/utf16-slice";
 import {
   hasOutboundReplyContent,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "nodoassist/plugin-sdk/reply-payload";
 import { sanitizeForLog } from "../../../packages/terminal-core/src/ansi.js";
 import {
   clearAutoFallbackPrimaryProbeSelection,
@@ -74,7 +74,7 @@ import { buildAgentRuntimeOutcomePlan } from "../../agents/runtime-plan/build.js
 import { resolveGroupSessionKey, type SessionEntry } from "../../config/sessions.js";
 import { updateSessionEntry } from "../../config/sessions/session-accessor.js";
 import { resolveSilentReplyPolicy } from "../../config/silent-reply.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { logVerbose } from "../../globals.js";
 import {
   captureAgentRunLifecycleGeneration,
@@ -824,7 +824,7 @@ function resolveExternalRunFailureTextForConversation(params: {
   text: string;
   sessionCtx: ExternalFailureConversationContext;
   isGenericRunnerFailure: boolean;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
 }): string {
   if (!isNonDirectConversationContext(params.sessionCtx)) {
     return params.text;
@@ -859,10 +859,10 @@ const CODEX_APP_SERVER_TURN_COMPLETION_IDLE_TIMEOUT_RE =
 function buildCodexAppServerFailureText(message: string): string | null {
   const normalizedMessage = collapseRepeatedFailureDetail(message);
   if (CODEX_APP_SERVER_CLIENT_CLOSED_BEFORE_REPLY_RE.test(normalizedMessage)) {
-    return "⚠️ Codex app-server connection closed before this turn finished. OpenClaw retried once when the stdio turn was still replay-safe; please try again if this keeps happening.";
+    return "⚠️ Codex app-server connection closed before this turn finished. NodoAssist retried once when the stdio turn was still replay-safe; please try again if this keeps happening.";
   }
   if (CODEX_APP_SERVER_TURN_COMPLETION_IDLE_TIMEOUT_RE.test(normalizedMessage)) {
-    return "⚠️ Codex app-server stopped before confirming turn completion. OpenClaw did not replay the turn automatically because it may still be active; try again, or use /new if the session stays stuck.";
+    return "⚠️ Codex app-server stopped before confirming turn completion. NodoAssist did not replay the turn automatically because it may still be active; try again, or use /new if the session stays stuck.";
   }
   return null;
 }
@@ -922,7 +922,7 @@ function buildMissingApiKeyFailureText(input: { message: string; error?: unknown
     return "⚠️ Missing API key for OpenAI on the gateway. Use `openai/gpt-5.5` with the OpenAI OAuth profile, or set `OPENAI_API_KEY` for direct OpenAI API-key runs.";
   }
   if (provider === "openai") {
-    return '⚠️ Missing API key for provider "openai". Run `openclaw doctor --fix` to repair stale OpenAI model/session routes, restart the gateway if doctor asks, then try again. If doctor has nothing to repair or the error persists, re-auth with `openclaw models auth login --provider openai` or run `openclaw configure`.';
+    return '⚠️ Missing API key for provider "openai". Run `nodoassist doctor --fix` to repair stale OpenAI model/session routes, restart the gateway if doctor asks, then try again. If doctor has nothing to repair or the error persists, re-auth with `nodoassist models auth login --provider openai` or run `nodoassist configure`.';
   }
   if (SAFE_MISSING_API_KEY_PROVIDERS.has(provider)) {
     return `⚠️ Missing API key for provider "${provider}". Configure the gateway auth for that provider, then try again.`;
@@ -1060,7 +1060,7 @@ function markAgentRunFailureReplyPayload<T extends ReplyPayload>(payload: T): T 
 export function buildTerminalAgentRunFailureReplyPayload(params: {
   isHeartbeat?: boolean;
   sessionCtx: ExternalFailureConversationContext;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
 }): ReplyPayload {
   return markAgentRunFailureReplyPayload({
     text: resolveExternalRunFailureTextForConversation({
@@ -1084,7 +1084,7 @@ export function buildEmptyInteractiveReplyPayload(params: {
   hasExplicitSilentReply: boolean;
   hasCommittedDelivery: boolean;
   sessionCtx: ExternalFailureConversationContext;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
 }): ReplyPayload | undefined {
   if (
     !params.isInteractive ||
@@ -1113,7 +1113,7 @@ export function buildKnownAgentRunFailureReplyPayload(params: {
   err: unknown;
   sessionCtx: TemplateContext;
   resolvedVerboseLevel: VerboseLevel | undefined;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
 }): ReplyPayload | undefined {
   const message = formatErrorMessage(params.err);
   const isFallbackSummary = isFallbackSummaryError(params.err);
@@ -1581,7 +1581,7 @@ function emitModelFallbackStepLifecycle(params: {
 export function resolveSessionRuntimeOverrideForProvider(params: {
   provider: string;
   entry?: Pick<SessionEntry, "agentRuntimeOverride">;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
 }): string | undefined {
   const provider = normalizeLowercaseStringOrEmpty(params.provider);
   const runtime = normalizeLowercaseStringOrEmpty(params.entry?.agentRuntimeOverride);
@@ -2616,8 +2616,8 @@ async function runAgentTurnWithFallbackInternal(
             });
             const embeddedRunHarnessOverride =
               sessionRuntimeOverride ??
-              (agentHarnessPolicy.runtime === "openclaw" && embeddedRunProvider !== provider
-                ? "openclaw"
+              (agentHarnessPolicy.runtime === "nodoassist" && embeddedRunProvider !== provider
+                ? "nodoassist"
                 : undefined);
             return (async () => {
               let attemptCompactionCount = 0;
@@ -3220,7 +3220,7 @@ async function runAgentTurnWithFallbackInternal(
           kind: "final",
           payload: markAgentRunFailureReplyPayload({
             text: shouldSurfaceToControlUi
-              ? `⚠️ Agent failed before reply: ${embeddedErrorText}.\nLogs: openclaw logs --follow`
+              ? `⚠️ Agent failed before reply: ${embeddedErrorText}.\nLogs: nodoassist logs --follow`
               : (providerRequestError?.userMessage ??
                 PROVIDER_CONVERSATION_STATE_ERROR_USER_MESSAGE),
           }),
@@ -3266,7 +3266,7 @@ async function runAgentTurnWithFallbackInternal(
           const switchErrorText = shouldSurfaceToControlUi
             ? "⚠️ Agent failed before reply: model switch could not be completed. " +
               "The requested model may be temporarily unavailable.\n" +
-              "Logs: openclaw logs --follow"
+              "Logs: nodoassist logs --follow"
             : isVerboseFailureDetailEnabled(params.resolvedVerboseLevel)
               ? "⚠️ Agent failed before reply: model switch could not be completed. " +
                 "The requested model may be temporarily unavailable. Please try again shortly."
@@ -3479,7 +3479,7 @@ async function runAgentTurnWithFallbackInternal(
             : isContextOverflow
               ? "⚠️ Context overflow — prompt too large for this model. Try a shorter message or a larger-context model."
               : shouldSurfaceToControlUi
-                ? `⚠️ Agent failed before reply: ${trimmedMessage}.\nLogs: openclaw logs --follow`
+                ? `⚠️ Agent failed before reply: ${trimmedMessage}.\nLogs: nodoassist logs --follow`
                 : (externalRunFailureReply?.text ?? genericFallbackText);
       const userVisibleFallbackText = resolveExternalRunFailureTextForConversation({
         text: fallbackText,

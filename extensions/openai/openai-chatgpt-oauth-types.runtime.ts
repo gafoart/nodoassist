@@ -10,4 +10,4 @@ export type {
   OAuthProviderInterface,
   OAuthSelectOption,
   OAuthSelectPrompt,
-} from "openclaw/plugin-sdk/provider-oauth-runtime";
+} from "nodoassist/plugin-sdk/provider-oauth-runtime";

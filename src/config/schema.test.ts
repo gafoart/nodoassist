@@ -1,10 +1,10 @@
 // Covers canonical config schema defaults, validation, and sensitive redaction.
-import { SENSITIVE_URL_HINT_TAG } from "@openclaw/net-policy/redact-sensitive-url";
+import { SENSITIVE_URL_HINT_TAG } from "@nodoassist/net-policy/redact-sensitive-url";
 import { beforeAll, describe, expect, it } from "vitest";
 import { buildConfigSchema, lookupConfigSchema } from "./schema.js";
 import { applyDerivedTags, CONFIG_TAGS, deriveTagsForPath } from "./schema.tags.js";
 import { ToolsSchema } from "./zod-schema.agent-runtime.js";
-import { OpenClawSchema } from "./zod-schema.js";
+import { NodoAssistSchema } from "./zod-schema.js";
 import {
   DiscordConfigSchema,
   SlackConfigSchema,
@@ -132,7 +132,7 @@ describe("config schema", () => {
   });
 
   it("accepts qmd query rerank override", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = NodoAssistSchema.safeParse({
       memory: {
         backend: "qmd",
         qmd: {
@@ -145,7 +145,7 @@ describe("config schema", () => {
   });
 
   it("accepts queued status reaction emoji overrides", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = NodoAssistSchema.safeParse({
       messages: {
         statusReactions: {
           emojis: {
@@ -188,7 +188,7 @@ describe("config schema", () => {
 
   it("rejects empty Codex MCP agent scopes", () => {
     expect(() =>
-      OpenClawSchema.parse({
+      NodoAssistSchema.parse({
         mcp: {
           servers: {
             scoped: {
@@ -201,7 +201,7 @@ describe("config schema", () => {
       }),
     ).toThrow();
     expect(() =>
-      OpenClawSchema.parse({
+      NodoAssistSchema.parse({
         mcp: {
           servers: {
             scoped: {
@@ -214,7 +214,7 @@ describe("config schema", () => {
       }),
     ).toThrow();
     expect(() =>
-      OpenClawSchema.parse({
+      NodoAssistSchema.parse({
         mcp: {
           servers: {
             scoped: {
@@ -230,7 +230,7 @@ describe("config schema", () => {
 
   it("validates MCP OAuth client metadata URLs against the SDK contract", () => {
     expect(() =>
-      OpenClawSchema.parse({
+      NodoAssistSchema.parse({
         mcp: {
           servers: {
             docs: {
@@ -250,7 +250,7 @@ describe("config schema", () => {
       "https://client.example.com/",
     ]) {
       expect(() =>
-        OpenClawSchema.parse({
+        NodoAssistSchema.parse({
           mcp: {
             servers: {
               docs: {
@@ -267,7 +267,7 @@ describe("config schema", () => {
   });
 
   it("accepts stdio transport for command-bearing MCP servers", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = NodoAssistSchema.safeParse({
       mcp: {
         servers: {
           myTool: {
@@ -284,7 +284,7 @@ describe("config schema", () => {
   it("rejects unsupported transport values for MCP servers", () => {
     for (const transport of ["tcp", "websocket", "grpc", ""]) {
       expect(() =>
-        OpenClawSchema.parse({
+        NodoAssistSchema.parse({
           mcp: {
             servers: {
               bad: {
@@ -299,7 +299,7 @@ describe("config schema", () => {
   });
 
   it("rejects stdio transport for URL-only MCP servers (command required)", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = NodoAssistSchema.safeParse({
       mcp: {
         servers: {
           bad: {
@@ -313,7 +313,7 @@ describe("config schema", () => {
   });
 
   it("rejects stdio transport with whitespace-only command", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = NodoAssistSchema.safeParse({
       mcp: {
         servers: {
           bad: {
@@ -581,7 +581,7 @@ describe("config schema", () => {
   });
 
   it("keeps per-agent model overrides limited to model selection", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = NodoAssistSchema.safeParse({
       agents: {
         list: [
           {
@@ -599,7 +599,7 @@ describe("config schema", () => {
   });
 
   it("rejects per-agent subagent model timeout config", () => {
-    const result = OpenClawSchema.safeParse({
+    const result = NodoAssistSchema.safeParse({
       agents: {
         list: [
           {
@@ -626,7 +626,7 @@ describe("config schema", () => {
     });
     expect(tools?.exec?.commandHighlighting).toBe(false);
 
-    const config = OpenClawSchema.parse({
+    const config = NodoAssistSchema.parse({
       agents: {
         list: [
           {
@@ -658,7 +658,7 @@ describe("config schema", () => {
       primary: "openrouter/anthropic/claude-sonnet-4-6",
     });
 
-    const config = OpenClawSchema.parse({
+    const config = NodoAssistSchema.parse({
       agents: {
         list: [
           {
@@ -688,7 +688,7 @@ describe("config schema", () => {
     ).toBe(false);
 
     expect(
-      OpenClawSchema.safeParse({
+      NodoAssistSchema.safeParse({
         agents: {
           list: [
             {
@@ -749,14 +749,14 @@ describe("config schema", () => {
   });
 
   it("accepts install policy exec config in the runtime zod schema", () => {
-    const parsed = OpenClawSchema.parse({
+    const parsed = NodoAssistSchema.parse({
       security: {
         installPolicy: {
           enabled: true,
           targets: ["skill", "plugin"],
           exec: {
             source: "exec",
-            command: "/usr/local/bin/openclaw-install-policy",
+            command: "/usr/local/bin/nodoassist-install-policy",
             args: ["--json"],
             timeoutMs: 5000,
             noOutputTimeoutMs: 2500,
@@ -764,7 +764,7 @@ describe("config schema", () => {
             env: {
               POLICY_MODE: "strict",
             },
-            passEnv: ["OPENCLAW_STATE_DIR"],
+            passEnv: ["NODOASSIST_STATE_DIR"],
             trustedDirs: ["/usr/local/bin"],
             allowInsecurePath: false,
             allowSymlinkCommand: false,
@@ -776,7 +776,7 @@ describe("config schema", () => {
     expect(parsed.security?.installPolicy?.targets).toEqual(["skill", "plugin"]);
     expect(parsed.security?.installPolicy?.exec?.source).toBe("exec");
     expect(parsed.security?.installPolicy?.exec?.command).toBe(
-      "/usr/local/bin/openclaw-install-policy",
+      "/usr/local/bin/nodoassist-install-policy",
     );
   });
 
@@ -836,7 +836,7 @@ describe("config schema", () => {
   });
 
   it("accepts WhatsApp Web Baileys socket timing in the runtime zod schema", () => {
-    const parsed = OpenClawSchema.parse({
+    const parsed = NodoAssistSchema.parse({
       web: {
         whatsapp: {
           keepAliveIntervalMs: 15_000,

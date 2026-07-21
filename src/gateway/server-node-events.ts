@@ -4,9 +4,9 @@ import { randomUUID } from "node:crypto";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import { sliceUtf16Safe } from "@openclaw/normalization-core/utf16-slice";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+} from "@nodoassist/normalization-core/string-coerce";
+import { sliceUtf16Safe } from "@nodoassist/normalization-core/utf16-slice";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import { updatePairedDeviceMetadata } from "../infra/device-pairing.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import {
@@ -343,7 +343,7 @@ function parsePayloadObject(payloadJSON?: string | null): Record<string, unknown
 }
 
 async function sendReceiptAck(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   deps: NodeEventContext["deps"];
   sessionKey: string;
   channel: string;

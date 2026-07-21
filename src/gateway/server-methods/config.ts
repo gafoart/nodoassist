@@ -5,9 +5,9 @@ import { isDeepStrictEqual } from "node:util";
 import {
   asDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "@openclaw/normalization-core/number-coercion";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+} from "@nodoassist/normalization-core/number-coercion";
+import { isRecord } from "@nodoassist/normalization-core/record-coerce";
+import { normalizeStringEntries } from "@nodoassist/normalization-core/string-normalization";
 import {
   ErrorCodes,
   errorShape,
@@ -38,7 +38,7 @@ import {
 } from "../../config/redact-snapshot.js";
 import { loadGatewayRuntimeConfigSchema } from "../../config/runtime-schema.js";
 import { lookupConfigSchema, type ConfigSchemaResponse } from "../../config/schema.js";
-import type { ConfigValidationIssue, OpenClawConfig } from "../../config/types.openclaw.js";
+import type { ConfigValidationIssue, NodoAssistConfig } from "../../config/types.nodoassist.js";
 import {
   validateConfigObjectRawWithPlugins,
   validateConfigObjectWithPlugins,
@@ -293,7 +293,7 @@ function collectDestructiveIdKeyedArrayEntryPatchPaths(params: {
 }
 
 function rejectDestructiveArrayPatchWithoutIntent(params: {
-  currentConfig: OpenClawConfig;
+  currentConfig: NodoAssistConfig;
   mergedConfig: unknown;
   patch: unknown;
   replacePaths: Set<string>;
@@ -469,7 +469,11 @@ function parseValidateConfigFromRawOrRespond(
   requestName: string,
   snapshot: Awaited<ReturnType<typeof readConfigFileSnapshot>>,
   respond: RespondFn,
-): { config: OpenClawConfig; writeConfig: OpenClawConfig; schema: ConfigSchemaResponse } | null {
+): {
+  config: NodoAssistConfig;
+  writeConfig: NodoAssistConfig;
+  schema: ConfigSchemaResponse;
+} | null {
   const rawValue = parseRawConfigOrRespond(params, requestName, respond);
   if (!rawValue) {
     return null;
@@ -528,7 +532,7 @@ function parseValidateConfigFromRawOrRespond(
   }
   return {
     config: validated.config,
-    writeConfig: validationCandidate as OpenClawConfig,
+    writeConfig: validationCandidate as NodoAssistConfig,
     schema,
   };
 }
@@ -548,7 +552,7 @@ function summarizeConfigValidationIssues(issues: ReadonlyArray<ConfigValidationI
 }
 
 async function ensureResolvableSecretRefsOrRespond(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   respond: RespondFn;
 }): Promise<PreparedSecretsRuntimeSnapshot | null> {
   try {
@@ -622,8 +626,8 @@ async function respondWithConfigRestartWrite(params: {
 }
 
 function shouldDisconnectSharedAuthClientsForConfigWrite(params: {
-  prevConfig: OpenClawConfig;
-  nextConfig: OpenClawConfig;
+  prevConfig: NodoAssistConfig;
+  nextConfig: NodoAssistConfig;
   preparedSecretsSnapshot: PreparedSecretsRuntimeSnapshot;
 }): boolean {
   return (
@@ -637,7 +641,7 @@ function shouldDisconnectSharedAuthClientsForConfigWrite(params: {
 
 function respondConfigPatchNoop(params: {
   snapshot: Awaited<ReturnType<typeof readConfigFileSnapshot>>;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   uiHints: ConfigRedactionHints;
   actor: ReturnType<typeof resolveControlPlaneActor>;
   context: GatewayRequestContext | undefined;
@@ -878,7 +882,7 @@ export const configHandlers: GatewayRequestHandlers = {
       );
       return;
     }
-    const writeConfig = validationCandidate as OpenClawConfig;
+    const writeConfig = validationCandidate as NodoAssistConfig;
     const validated = validateConfigObjectWithPlugins(validationCandidate);
     if (!validated.ok) {
       respond(

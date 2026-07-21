@@ -1,10 +1,10 @@
 // Gateway chat display projection.
 // Converts raw transcript messages into bounded Control UI/history display records.
 import { createHash } from "node:crypto";
-import { asFiniteNumber } from "@openclaw/normalization-core/number-coercion";
-import { asOptionalRecord as readRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import { OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE } from "../agents/internal-runtime-context.js";
+import { asFiniteNumber } from "@nodoassist/normalization-core/number-coercion";
+import { asOptionalRecord as readRecord } from "@nodoassist/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
+import { NODOASSIST_RUNTIME_CONTEXT_CUSTOM_TYPE } from "../agents/internal-runtime-context.js";
 import { STREAM_ERROR_FALLBACK_TEXT } from "../agents/stream-message-shared.js";
 import { isHeartbeatOkResponse, isHeartbeatUserMessage } from "../auto-reply/heartbeat-filter.js";
 import { HEARTBEAT_PROMPT } from "../auto-reply/heartbeat.js";
@@ -19,7 +19,7 @@ import {
   parseAssistantTextSignature,
   resolveAssistantMessagePhase,
 } from "../shared/chat-message-content.js";
-import { isOpenClawDeliveryMirrorAssistantMessage } from "../shared/transcript-only-openclaw-assistant.js";
+import { isNodoAssistDeliveryMirrorAssistantMessage } from "../shared/transcript-only-nodoassist-assistant.js";
 import { stripInlineDirectiveTagsForDisplay } from "../utils/directive-tags.js";
 import { stripEnvelopeFromMessages } from "./chat-sanitize.js";
 import { isSuppressedControlReplyText } from "./control-reply-text.js";
@@ -303,8 +303,8 @@ function sanitizeChatHistoryContentBlock(
     delete entry.thinkingSignature;
     changed = true;
   }
-  if ("openclawReasoningReplay" in entry) {
-    delete entry.openclawReasoningReplay;
+  if ("nodoassistReasoningReplay" in entry) {
+    delete entry.nodoassistReasoningReplay;
     changed = true;
   }
   const type = typeof entry.type === "string" ? entry.type : "";
@@ -933,7 +933,7 @@ function buildMessageToolVisibleReplyMirror(
   const mirror: Record<string, unknown> = {
     role: "assistant",
     content: [{ type: "text", text: pending.text }],
-    openclawMessageToolMirror: {
+    nodoassistMessageToolMirror: {
       toolName: "message",
       ...(pending.toolCallId ? { toolCallId: pending.toolCallId } : {}),
     },
@@ -943,9 +943,9 @@ function buildMessageToolVisibleReplyMirror(
       mirror[field] = pending.anchor[field];
     }
   }
-  const transcriptMeta = readRecord((pending.completionAnchor ?? pending.anchor)["__openclaw"]);
+  const transcriptMeta = readRecord((pending.completionAnchor ?? pending.anchor)["__nodoassist"]);
   if (transcriptMeta) {
-    mirror["__openclaw"] = { ...transcriptMeta };
+    mirror["__nodoassist"] = { ...transcriptMeta };
   }
   return mirror;
 }
@@ -954,7 +954,7 @@ function readMessageToolDeliveryMirrorText(message: Record<string, unknown>): st
   // Delivery mirrors can arrive between a successful message-tool result and
   // the final NO_REPLY. The pending mirror is the display row; the raw mirror
   // would duplicate that same send.
-  if (!isOpenClawDeliveryMirrorAssistantMessage(message)) {
+  if (!isNodoAssistDeliveryMirrorAssistantMessage(message)) {
     return undefined;
   }
   return displayTextForDuplicateCheck(message);
@@ -1211,7 +1211,7 @@ function digestTtsSupplementText(text: string): string {
 function readTtsSupplementMarker(
   message: Record<string, unknown>,
 ): { textSha256?: string; spokenText?: string } | undefined {
-  const marker = message.openclawTtsSupplement;
+  const marker = message.nodoassistTtsSupplement;
   if (!marker || typeof marker !== "object" || Array.isArray(marker)) {
     return undefined;
   }
@@ -1349,7 +1349,7 @@ function isSubagentAnnounceInterSessionUserMessage(message: Record<string, unkno
 }
 
 function readChatHistoryRecordTimestampMs(message: unknown): number | undefined {
-  const meta = readRecord(readRecord(message)?.["__openclaw"]);
+  const meta = readRecord(readRecord(message)?.["__nodoassist"]);
   const value = meta?.recordTimestampMs;
   if (typeof value === "number" && Number.isFinite(value)) {
     return value;
@@ -1433,7 +1433,7 @@ function isDisplayHiddenProjectedMessage(message: Record<string, unknown>): bool
   if (message.display === false) {
     return true;
   }
-  return message.role === "custom" && message.customType === OPENCLAW_RUNTIME_CONTEXT_CUSTOM_TYPE;
+  return message.role === "custom" && message.customType === NODOASSIST_RUNTIME_CONTEXT_CUSTOM_TYPE;
 }
 
 function shouldHideProjectedHistoryMessage(message: Record<string, unknown>): boolean {
@@ -1466,9 +1466,9 @@ function shouldHideProjectedHistoryMessage(message: Record<string, unknown>): bo
   return isHeartbeatOkResponse(roleContent);
 }
 
-function openclawAssistantModel(message: Record<string, unknown>): string | undefined {
+function nodoassistAssistantModel(message: Record<string, unknown>): string | undefined {
   return message.role === "assistant" &&
-    message.provider === "openclaw" &&
+    message.provider === "nodoassist" &&
     typeof message.model === "string"
     ? message.model
     : undefined;
@@ -1487,8 +1487,8 @@ function isDuplicateAcpGatewayInjectedMessage(
     return false;
   }
   if (
-    openclawAssistantModel(previousVisible) !== "acp-runtime" ||
-    openclawAssistantModel(current) !== "gateway-injected"
+    nodoassistAssistantModel(previousVisible) !== "acp-runtime" ||
+    nodoassistAssistantModel(current) !== "gateway-injected"
   ) {
     return false;
   }
@@ -1504,23 +1504,23 @@ function isDuplicateChannelFinalDeliveryMirror(
   current: Record<string, unknown>,
   previousVisible: Record<string, unknown> | undefined,
 ): boolean {
-  if (!previousVisible || !isOpenClawDeliveryMirrorAssistantMessage(current)) {
+  if (!previousVisible || !isNodoAssistDeliveryMirrorAssistantMessage(current)) {
     return false;
   }
-  const deliveryMirror = readRecord(current.openclawDeliveryMirror);
+  const deliveryMirror = readRecord(current.nodoassistDeliveryMirror);
   if (deliveryMirror?.kind !== "channel-final") {
     return false;
   }
   if (asRoleContentMessage(previousVisible)?.role !== "assistant") {
     return false;
   }
-  if (isOpenClawDeliveryMirrorAssistantMessage(previousVisible)) {
+  if (isNodoAssistDeliveryMirrorAssistantMessage(previousVisible)) {
     return false;
   }
   if (isProjectedSessionsSendForwardedMessage(previousVisible)) {
     return false;
   }
-  const previousMeta = readRecord(previousVisible["__openclaw"]);
+  const previousMeta = readRecord(previousVisible["__nodoassist"]);
   if (typeof previousMeta?.mirrorIdentity !== "string" || !previousMeta.mirrorIdentity.trim()) {
     return false;
   }

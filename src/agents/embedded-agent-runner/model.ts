@@ -1,10 +1,10 @@
 /**
  * Resolves embedded-agent provider/model selections from config, registry, and catalogs.
  */
-import { finiteSecondsToTimerSafeMilliseconds } from "@openclaw/normalization-core/number-coercion";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { finiteSecondsToTimerSafeMilliseconds } from "@nodoassist/normalization-core/number-coercion";
+import { normalizeLowercaseStringOrEmpty } from "@nodoassist/normalization-core/string-coerce";
 import type { ModelCompatConfig, ModelMediaInputConfig } from "../../config/types.models.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import type { ModelRegistry as CoreModelRegistry } from "../../llm/model-registry.js";
 import type { Api, Model } from "../../llm/types.js";
 import type { ProviderRuntimeModel } from "../../plugins/provider-runtime-model.types.js";
@@ -152,7 +152,7 @@ function resolveRuntimeHooks(params?: {
 
 function discoverCachedAgentStoresForAgent(
   resolvedAgentDir: string,
-  cfg: OpenClawConfig | undefined,
+  cfg: NodoAssistConfig | undefined,
   workspaceDir: string | undefined,
 ): {
   authStorage: AuthStorage;
@@ -183,7 +183,7 @@ function canonicalizeLegacyResolvedModel(params: { provider: string; model: Mode
 
 function applyResolvedTransportFallback(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   workspaceDir?: string;
   runtimeHooks: ProviderRuntimeHooks;
   model: Model;
@@ -220,7 +220,7 @@ function applyResolvedTransportFallback(params: {
 function normalizeResolvedModel(params: {
   provider: string;
   model: Model;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
@@ -319,7 +319,7 @@ function resolveProviderTransport(params: {
   modelId?: string;
   api?: Api | null;
   baseUrl?: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
 }): {
@@ -351,7 +351,7 @@ function resolveProviderTransport(params: {
 function resolveConfiguredProviderDefaultApi(params: {
   provider: string;
   providerConfig: InlineProviderConfig | undefined;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
 }): Api | undefined {
@@ -456,7 +456,7 @@ function findInlineModelMatch(params: {
 }
 
 function resolveConfiguredProviderConfig(
-  cfg: OpenClawConfig | undefined,
+  cfg: NodoAssistConfig | undefined,
   provider: string,
 ): InlineProviderConfig | undefined {
   const configuredProviders = cfg?.models?.providers;
@@ -549,7 +549,7 @@ function mergeModelParams(
 }
 
 function findConfiguredAgentModelParams(params: {
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   provider: string;
   modelId: string;
 }): Record<string, unknown> | undefined {
@@ -591,7 +591,7 @@ function findConfiguredAgentModelParams(params: {
 }
 
 function mergeConfiguredRuntimeModelParams(params: {
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   provider: string;
   modelId: string;
   discoveredParams?: unknown;
@@ -615,7 +615,7 @@ function applyConfiguredProviderOverrides(params: {
   discoveredModel: ProviderRuntimeModel;
   providerConfig?: InlineProviderConfig;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   runtimeHooks?: ProviderRuntimeHooks;
   preferDiscoveredModelMetadata?: boolean;
   preferDiscoveredTransport?: boolean;
@@ -858,7 +858,7 @@ type ExplicitModelResolution =
 function shouldSuppressInlineConfiguredModel(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   workspaceDir?: string;
   baseUrl?: string;
 }): boolean {
@@ -891,7 +891,7 @@ function resolveExplicitModelWithRegistry(params: {
   provider: string;
   modelId: string;
   modelRegistry: CoreModelRegistry;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
@@ -1067,7 +1067,7 @@ function resolveExplicitModelWithRegistry(params: {
 
 function resolveDynamicModelAuthProfile(params: {
   provider: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentDir?: string;
   authProfileId?: string;
   preferredProfile?: string;
@@ -1122,7 +1122,7 @@ function resolvePluginDynamicModelWithRegistry(params: {
   provider: string;
   modelId: string;
   modelRegistry: CoreModelRegistry;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   authProfileId?: string;
@@ -1196,7 +1196,7 @@ function resolveRuntimePreferredSuppressedModel(params: {
   provider: string;
   modelId: string;
   modelRegistry: CoreModelRegistry;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   authProfileId?: string;
@@ -1234,7 +1234,7 @@ function shouldDropRuntimePreferredExplicitMiss(params: {
 function resolveConfiguredFallbackModel(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
@@ -1395,7 +1395,7 @@ function resolveConfiguredFallbackModel(params: {
 function shouldCompareProviderRuntimeResolvedModel(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks: ProviderRuntimeHooks;
@@ -1489,7 +1489,7 @@ function mergeModelCompat(
 function normalizeProviderModelRef(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   workspaceDir?: string;
 }): { provider: string; model: string } {
   const provider = canonicalizeManifestModelCatalogProviderAlias({
@@ -1507,7 +1507,7 @@ export function resolveModelWithRegistry(params: {
   provider: string;
   modelId: string;
   modelRegistry: CoreModelRegistry;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   authProfileId?: string;
@@ -1567,7 +1567,7 @@ export function resolveModel(
   provider: string,
   modelId: string,
   agentDir?: string,
-  cfg?: OpenClawConfig,
+  cfg?: NodoAssistConfig,
   options?: {
     authStorage?: AuthStorage;
     modelRegistry?: ModelRegistry;
@@ -1630,7 +1630,7 @@ export async function resolveModelAsync(
   provider: string,
   modelId: string,
   agentDir?: string,
-  cfg?: OpenClawConfig,
+  cfg?: NodoAssistConfig,
   options?: {
     authStorage?: AuthStorage;
     modelRegistry?: ModelRegistry;
@@ -1866,7 +1866,7 @@ export async function resolveModelAsync(
 function buildUnknownModelError(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentDir?: string;
   workspaceDir?: string;
   runtimeHooks?: ProviderRuntimeHooks;
@@ -1910,13 +1910,13 @@ function buildUnknownModelError(params: {
 function buildMissingProviderModelRegistrationHint(params: {
   provider: string;
   modelId: string;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
 }): string | undefined {
   // Legacy openai-codex refs can come from model selections, provider config,
   // or persisted routes. All of them should be repaired by doctor rather than
   // turned into a new models.providers[] registration.
   if (normalizeProviderId(params.provider) === "openai-codex") {
-    return `"openai-codex" is a legacy provider ID. Run \`openclaw doctor --fix\` to migrate legacy model and provider config to the current OpenAI format. If the provider has no authenticated profile, run \`openclaw models status\` to check provider auth and re-authenticate if needed. See https://docs.openclaw.ai/concepts/model-providers.`;
+    return `"openai-codex" is a legacy provider ID. Run \`nodoassist doctor --fix\` to migrate legacy model and provider config to the current OpenAI format. If the provider has no authenticated profile, run \`nodoassist models status\` to check provider auth and re-authenticate if needed. See https://docs.openclaw.ai/concepts/model-providers.`;
   }
   const configuredModels = params.cfg?.agents?.defaults?.models;
   if (!configuredModels) {
@@ -1937,7 +1937,7 @@ function buildMissingProviderModelRegistrationHint(params: {
   // offered). Point the user at the runtime's live catalog instead.
   const agentRuntimeId = configuredEntry.agentRuntime?.id;
   if (agentRuntimeId) {
-    return `Found agents.defaults.models["${agentModelKey}"] bound to the "${agentRuntimeId}" agent runtime. Models served by an agent runtime come from that runtime and its linked account, not from models.providers["${params.provider}"].models[] — registering it there will not make it usable. Confirm "${params.modelId}" is still offered by the "${agentRuntimeId}" runtime and switch agents.defaults.model.primary to a currently available model (run \`openclaw models list --provider ${params.provider}\` to list them). See https://docs.openclaw.ai/concepts/model-providers.`;
+    return `Found agents.defaults.models["${agentModelKey}"] bound to the "${agentRuntimeId}" agent runtime. Models served by an agent runtime come from that runtime and its linked account, not from models.providers["${params.provider}"].models[] — registering it there will not make it usable. Confirm "${params.modelId}" is still offered by the "${agentRuntimeId}" runtime and switch agents.defaults.model.primary to a currently available model (run \`nodoassist models list --provider ${params.provider}\` to list them). See https://docs.openclaw.ai/concepts/model-providers.`;
   }
   const providerConfig = findNormalizedProviderValue(
     params.cfg?.models?.providers,

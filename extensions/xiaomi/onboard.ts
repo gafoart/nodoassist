@@ -1,8 +1,8 @@
 // Xiaomi setup module handles plugin onboarding behavior.
 import {
   createDefaultModelsPresetAppliers,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-onboard";
+  type NodoAssistConfig,
+} from "nodoassist/plugin-sdk/provider-onboard";
 import {
   buildXiaomiProvider,
   buildXiaomiTokenPlanProvider,
@@ -19,7 +19,7 @@ export const XIAOMI_TOKEN_PLAN_DEFAULT_MODEL_REF = `${XIAOMI_TOKEN_PLAN_PROVIDER
 
 const xiaomiPresetAppliers = createDefaultModelsPresetAppliers({
   primaryModelRef: XIAOMI_DEFAULT_MODEL_REF,
-  resolveParams: (_cfg: OpenClawConfig) => {
+  resolveParams: (_cfg: NodoAssistConfig) => {
     const defaultProvider = buildXiaomiProvider();
     return {
       providerId: XIAOMI_PROVIDER_ID,
@@ -34,7 +34,7 @@ const xiaomiPresetAppliers = createDefaultModelsPresetAppliers({
 
 const xiaomiTokenPlanPresetAppliers = createDefaultModelsPresetAppliers({
   primaryModelRef: XIAOMI_TOKEN_PLAN_DEFAULT_MODEL_REF,
-  resolveParams: (_cfg: OpenClawConfig) => {
+  resolveParams: (_cfg: NodoAssistConfig) => {
     const defaultProvider = buildXiaomiTokenPlanProvider();
     return {
       providerId: XIAOMI_TOKEN_PLAN_PROVIDER_ID,
@@ -58,10 +58,10 @@ const xiaomiTokenPlanPresetAppliers = createDefaultModelsPresetAppliers({
 });
 
 function withProviderBaseUrl(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   providerId: string,
   baseUrl: string,
-): OpenClawConfig {
+): NodoAssistConfig {
   const providers: Record<string, unknown> = {
     ...cfg.models?.providers,
     [providerId]: {
@@ -75,21 +75,21 @@ function withProviderBaseUrl(
       ...cfg.models,
       providers,
     },
-  } as OpenClawConfig;
+  } as NodoAssistConfig;
 }
 
-export function applyXiaomiProviderConfig(cfg: OpenClawConfig): OpenClawConfig {
+export function applyXiaomiProviderConfig(cfg: NodoAssistConfig): NodoAssistConfig {
   return xiaomiPresetAppliers.applyProviderConfig(cfg);
 }
 
-export function applyXiaomiConfig(cfg: OpenClawConfig): OpenClawConfig {
+export function applyXiaomiConfig(cfg: NodoAssistConfig): NodoAssistConfig {
   return xiaomiPresetAppliers.applyConfig(cfg);
 }
 
 export function applyXiaomiTokenPlanProviderConfig(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   region: XiaomiTokenPlanRegion,
-): OpenClawConfig {
+): NodoAssistConfig {
   return withProviderBaseUrl(
     xiaomiTokenPlanPresetAppliers.applyProviderConfig(cfg),
     XIAOMI_TOKEN_PLAN_PROVIDER_ID,
@@ -98,9 +98,9 @@ export function applyXiaomiTokenPlanProviderConfig(
 }
 
 export function applyXiaomiTokenPlanConfig(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   region: XiaomiTokenPlanRegion,
-): OpenClawConfig {
+): NodoAssistConfig {
   return withProviderBaseUrl(
     xiaomiTokenPlanPresetAppliers.applyConfig(cfg),
     XIAOMI_TOKEN_PLAN_PROVIDER_ID,

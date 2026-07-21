@@ -1,19 +1,19 @@
 // Sms plugin module implements accounts behavior.
-import { normalizeOptionalAccountId } from "openclaw/plugin-sdk/account-id";
+import { normalizeOptionalAccountId } from "nodoassist/plugin-sdk/account-id";
 import {
   DEFAULT_ACCOUNT_ID,
   listCombinedAccountIds,
   resolveAccountEntry,
   resolveListedDefaultAccountId,
   resolveMergedAccountConfig,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/account-resolution";
-import { parseStrictInteger } from "openclaw/plugin-sdk/number-runtime";
+  type NodoAssistConfig,
+} from "nodoassist/plugin-sdk/account-resolution";
+import { parseStrictInteger } from "nodoassist/plugin-sdk/number-runtime";
 import {
   hasConfiguredSecretInput,
   normalizeResolvedSecretInputString,
-} from "openclaw/plugin-sdk/secret-input";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/secret-input";
+import { normalizeStringEntries } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { normalizeSmsAllowFrom, normalizeSmsPhoneNumber } from "./phone.js";
 import type { ResolvedSmsAccount, SmsChannelConfig } from "./types.js";
 
@@ -21,7 +21,7 @@ const CHANNEL_ID = "sms";
 const DEFAULT_WEBHOOK_PATH = "/webhooks/sms";
 const DEFAULT_TEXT_CHUNK_LIMIT = 1500;
 
-function getChannelConfig(cfg: OpenClawConfig): SmsChannelConfig | undefined {
+function getChannelConfig(cfg: NodoAssistConfig): SmsChannelConfig | undefined {
   return cfg?.channels?.[CHANNEL_ID] as SmsChannelConfig | undefined;
 }
 
@@ -65,7 +65,7 @@ function hasBaseAccount(channelCfg: SmsChannelConfig | undefined): boolean {
   );
 }
 
-export function listSmsAccountIds(cfg: OpenClawConfig): string[] {
+export function listSmsAccountIds(cfg: NodoAssistConfig): string[] {
   const channelCfg = getChannelConfig(cfg);
   return listCombinedAccountIds({
     configuredAccountIds: Object.keys(channelCfg?.accounts ?? {}),
@@ -73,7 +73,7 @@ export function listSmsAccountIds(cfg: OpenClawConfig): string[] {
   });
 }
 
-export function resolveDefaultSmsAccountId(cfg: OpenClawConfig): string {
+export function resolveDefaultSmsAccountId(cfg: NodoAssistConfig): string {
   const channelCfg = getChannelConfig(cfg);
   return resolveListedDefaultAccountId({
     accountIds: listSmsAccountIds(cfg),
@@ -82,7 +82,7 @@ export function resolveDefaultSmsAccountId(cfg: OpenClawConfig): string {
 }
 
 export function resolveSmsAccount(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   accountId?: string | null,
 ): ResolvedSmsAccount {
   const channelCfg = getChannelConfig(cfg) ?? {};
@@ -152,7 +152,7 @@ export function resolveSmsAccount(
   };
 }
 
-export function inspectSmsAccount(cfg: OpenClawConfig, accountId?: string | null) {
+export function inspectSmsAccount(cfg: NodoAssistConfig, accountId?: string | null) {
   const account = resolveSmsAccount(cfg, accountId);
   const configured = isSmsAccountConfigured(account);
   return {

@@ -6,8 +6,8 @@ import type {
   AgentHarnessCompactParams,
   AgentHarnessCompactResult,
   ContextEngineHostCapability,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "nodoassist/plugin-sdk/agent-harness-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import type {
   CodexAppServerListModelsOptions,
   CodexAppServerModel,
@@ -45,7 +45,7 @@ export function createCodexAppServerAgentHarness(options: {
   providerIds?: Iterable<string>;
   pluginConfig?: unknown;
   resolvePluginConfig?: () => unknown;
-  resolveConfig?: () => OpenClawConfig | undefined;
+  resolveConfig?: () => NodoAssistConfig | undefined;
   bindingStore: CodexAppServerBindingStore;
 }): AgentHarness {
   const providerIds = new Set(

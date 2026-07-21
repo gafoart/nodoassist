@@ -1,25 +1,25 @@
 // Slack plugin module implements outbound adapter behavior.
-import type { OutboundIdentity } from "openclaw/plugin-sdk/channel-outbound";
-import { resolveOutboundSendDep } from "openclaw/plugin-sdk/channel-outbound";
+import type { OutboundIdentity } from "nodoassist/plugin-sdk/channel-outbound";
+import { resolveOutboundSendDep } from "nodoassist/plugin-sdk/channel-outbound";
 import {
   attachChannelToResult,
   type ChannelOutboundAdapter,
   createAttachedChannelResultAdapter,
-} from "openclaw/plugin-sdk/channel-send-result";
+} from "nodoassist/plugin-sdk/channel-send-result";
 import {
   resolveInteractiveTextFallback,
   renderMessagePresentationFallbackText,
   type InteractiveReply,
   type MessagePresentation,
-} from "openclaw/plugin-sdk/interactive-runtime";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
+} from "nodoassist/plugin-sdk/interactive-runtime";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
 import {
   resolvePayloadMediaUrls,
   sendPayloadMediaSequenceAndFinalize,
   sendTextMediaPayload,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/reply-payload";
+import type { ReplyPayload } from "nodoassist/plugin-sdk/reply-runtime";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { parseSlackBlocksInput, SLACK_MAX_BLOCKS } from "./blocks-input.js";
 import {
   buildSlackInteractiveBlocks,

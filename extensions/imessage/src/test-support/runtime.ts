@@ -4,21 +4,21 @@ import path from "node:path";
 import type {
   OpenKeyedStoreOptions,
   PluginStateSyncKeyedStore,
-} from "openclaw/plugin-sdk/plugin-state-runtime";
+} from "nodoassist/plugin-sdk/plugin-state-runtime";
 import {
   createPluginStateKeyedStoreForTests,
   createPluginStateSyncKeyedStoreForTests,
   resetPluginStateStoreForTests,
-} from "openclaw/plugin-sdk/plugin-state-test-runtime";
-import type { PluginRuntime } from "openclaw/plugin-sdk/runtime-store";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+} from "nodoassist/plugin-sdk/plugin-state-test-runtime";
+import type { PluginRuntime } from "nodoassist/plugin-sdk/runtime-store";
+import { resolvePreferredNodoAssistTmpDir } from "nodoassist/plugin-sdk/temp-path";
 import { setIMessageRuntime } from "../runtime.js";
 
 function createIMessageTestEnv(): NodeJS.ProcessEnv {
   const stateDir = fs.mkdtempSync(
-    path.join(resolvePreferredOpenClawTmpDir(), "openclaw-imessage-state-"),
+    path.join(resolvePreferredNodoAssistTmpDir(), "nodoassist-imessage-state-"),
   );
-  return { ...process.env, OPENCLAW_STATE_DIR: stateDir };
+  return { ...process.env, NODOASSIST_STATE_DIR: stateDir };
 }
 
 let imessageTestEnv = createIMessageTestEnv();

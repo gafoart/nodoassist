@@ -10,8 +10,8 @@
  * parameterized by `RetryPolicy` and optional `PersistentRetryPolicy`.
  */
 
-import { sleep } from "openclaw/plugin-sdk/runtime-env";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+import { sleep } from "nodoassist/plugin-sdk/runtime-env";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import type { EngineLogger } from "../types.js";
 import { formatErrorMessage } from "../utils/format.js";
 

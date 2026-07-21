@@ -430,7 +430,7 @@ export function renderExpandedToolCardContent(
               ${canOpenSidebar
                 ? html`
                     <div class="chat-tool-card__actions">
-                      <openclaw-tooltip content="Open in the side panel">
+                      <nodoassist-tooltip content="Open in the side panel">
                         <button
                           class="chat-tool-card__action-btn"
                           type="button"
@@ -439,7 +439,7 @@ export function renderExpandedToolCardContent(
                         >
                           <span class="chat-tool-card__action-icon">${icons.panelRightOpen}</span>
                         </button>
-                      </openclaw-tooltip>
+                      </nodoassist-tooltip>
                     </div>
                   `
                 : nothing}

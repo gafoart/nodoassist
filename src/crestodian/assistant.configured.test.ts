@@ -5,7 +5,7 @@ import { planCrestodianCommandWithConfiguredModel } from "./assistant.js";
 describe("Crestodian configured-model planner", () => {
   it("skips the configured model path when no config file exists", async () => {
     const readConfigFileSnapshot = vi.fn(async () => ({
-      path: "/tmp/openclaw.json",
+      path: "/tmp/nodoassist.json",
       exists: false,
       raw: null,
       parsed: {},
@@ -25,7 +25,7 @@ describe("Crestodian configured-model planner", () => {
         input: "please set up my model",
         overview: {
           config: {
-            path: "/tmp/openclaw.json",
+            path: "/tmp/nodoassist.json",
             exists: false,
             valid: true,
             issues: [],

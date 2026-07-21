@@ -9,7 +9,7 @@ import { isAtLeast, parseMinHostVersionRequirement, parseSemver } from "../testi
 type PackageManifest = {
   dependencies?: Record<string, string>;
   optionalDependencies?: Record<string, string>;
-  openclaw?: {
+  nodoassist?: {
     install?: {
       minHostVersion?: string;
     };
@@ -65,12 +65,12 @@ export function describePackageManifestContract(params: PackageManifestContractP
 
         const manifest = readPackageManifest(packagePath);
         const requirement = parseMinHostVersionRequirement(
-          manifest.openclaw?.install?.minHostVersion ?? null,
+          manifest.nodoassist?.install?.minHostVersion ?? null,
         );
 
         expect(
           requirement,
-          `${packagePath} should declare openclaw.install.minHostVersion`,
+          `${packagePath} should declare nodoassist.install.minHostVersion`,
         ).not.toBeNull();
         if (!requirement) {
           return;
@@ -84,7 +84,7 @@ export function describePackageManifestContract(params: PackageManifestContractP
 
         expect(
           isAtLeast(minimum, baseline),
-          `${packagePath} should require at least OpenClaw ${minHostVersionBaseline}`,
+          `${packagePath} should require at least NodoAssist ${minHostVersionBaseline}`,
         ).toBe(true);
       });
     }

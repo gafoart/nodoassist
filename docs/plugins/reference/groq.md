@@ -1,5 +1,5 @@
 ---
-summary: "Adds Groq model provider support to OpenClaw."
+summary: "Adds Groq model provider support to NodoAssist."
 read_when:
   - You are installing, configuring, or auditing the groq plugin
 title: "Groq plugin"
@@ -7,12 +7,12 @@ title: "Groq plugin"
 
 # Groq plugin
 
-Adds Groq model provider support to OpenClaw.
+Adds Groq model provider support to NodoAssist.
 
 ## Distribution
 
-- Package: `@openclaw/groq-provider`
-- Install route: npm; ClawHub: `clawhub:@openclaw/groq-provider`
+- Package: `@nodoassist/groq-provider`
+- Install route: npm; ClawHub: `clawhub:@nodoassist/groq-provider`
 
 ## Surface
 

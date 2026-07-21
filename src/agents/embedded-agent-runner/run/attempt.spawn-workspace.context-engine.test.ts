@@ -2,10 +2,10 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
+import type { AgentMessage } from "nodoassist/plugin-sdk/agent-core";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { HEARTBEAT_TRANSCRIPT_PROMPT } from "../../../auto-reply/heartbeat.js";
-import type { OpenClawConfig } from "../../../config/types.js";
+import type { NodoAssistConfig } from "../../../config/types.js";
 import { buildMemorySystemPromptAddition } from "../../../context-engine/delegate.js";
 import {
   clearMemoryPluginState,
@@ -265,14 +265,14 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
             tools: {
               toolSearch: true,
             },
-          } as OpenClawConfig,
+          } as NodoAssistConfig,
         },
       });
 
       toolSearchControlsCase = mockParams(
-        hoisted.createOpenClawCodingToolsMock,
+        hoisted.createNodoAssistCodingToolsMock,
         0,
-        "createOpenClawCodingTools options",
+        "createNodoAssistCodingTools options",
       );
     } finally {
       await cleanupTempPaths(setupTempPaths);
@@ -294,7 +294,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     vi.restoreAllMocks();
   });
 
-  it("enables Tool Search controls for embedded OpenClaw runs when configured", async () => {
+  it("enables Tool Search controls for embedded NodoAssist runs when configured", async () => {
     expect(toolSearchControlsCase.includeToolSearchControls).toBe(true);
     expect(toolSearchControlsCase.toolSearchCatalogRef).toEqual({});
   });
@@ -312,7 +312,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
           tools: {
             toolSearch: { enabled: true, mode: "directory" },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
         clientTools: [
           {
             type: "function",
@@ -416,21 +416,21 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
               },
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
       },
     });
 
-    expect(hoisted.createOpenClawCodingToolsMock).toHaveBeenCalledTimes(1);
+    expect(hoisted.createNodoAssistCodingToolsMock).toHaveBeenCalledTimes(1);
     const options = mockParams(
-      hoisted.createOpenClawCodingToolsMock,
+      hoisted.createNodoAssistCodingToolsMock,
       0,
-      "createOpenClawCodingTools options",
+      "createNodoAssistCodingTools options",
     );
     expect(options.includeToolSearchControls).toBe(true);
-    const optionsConfig = requireRecord(options.config, "createOpenClawCodingTools config");
+    const optionsConfig = requireRecord(options.config, "createNodoAssistCodingTools config");
     const toolsConfig = requireRecord(
       optionsConfig.tools,
-      "createOpenClawCodingTools tools config",
+      "createNodoAssistCodingTools tools config",
     );
     expect(toolsConfig.toolSearch).toEqual({
       enabled: true,
@@ -441,7 +441,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
   });
 
   it("keeps Tool Search controls off for lean message-tool-only delivery", async () => {
-    hoisted.createOpenClawCodingToolsMock.mockReturnValueOnce([
+    hoisted.createNodoAssistCodingToolsMock.mockReturnValueOnce([
       {
         name: "message",
         label: "Message",
@@ -475,15 +475,15 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
               },
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
       },
     });
 
-    expect(hoisted.createOpenClawCodingToolsMock).toHaveBeenCalledTimes(1);
+    expect(hoisted.createNodoAssistCodingToolsMock).toHaveBeenCalledTimes(1);
     const options = mockParams(
-      hoisted.createOpenClawCodingToolsMock,
+      hoisted.createNodoAssistCodingToolsMock,
       0,
-      "createOpenClawCodingTools options",
+      "createNodoAssistCodingTools options",
     );
     expect(options.includeToolSearchControls).toBe(false);
     const sessionOptions = mockParams(
@@ -496,7 +496,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
   });
 
   it("quarantines unsupported tool schemas before creating the model session", async () => {
-    hoisted.createOpenClawCodingToolsMock.mockReturnValue([
+    hoisted.createNodoAssistCodingToolsMock.mockReturnValue([
       {
         name: "healthy_lookup",
         label: "Healthy Lookup",
@@ -530,7 +530,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
             codeMode: { enabled: false },
             toolSearch: false,
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
       },
       createSession: () => {
         const session = createDefaultEmbeddedSession();
@@ -585,7 +585,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
           agents: {
             list: [{ id: "ops", tools: { codeMode: true } }],
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
         model: {
           api: "openai-chatgpt-responses",
           provider: "gateway",
@@ -639,7 +639,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
       },
     });
 
-    expect(observedOptions.at(-1)?.openclawCodeModeToolSurface).toBe(true);
+    expect(observedOptions.at(-1)?.nodoassistCodeModeToolSurface).toBe(true);
     expect(payloads.at(-1)?.tools).toEqual([
       { type: "function", name: "exec" },
       { type: "function", name: "wait" },
@@ -845,9 +845,9 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
         prompt: [
           "visible ask",
           "",
-          "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>",
           "secret runtime context",
-          "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<END_NODOASSIST_INTERNAL_CONTEXT>>>",
         ].join("\n"),
         transcriptPrompt: "visible ask",
       },
@@ -867,12 +867,12 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     expectFields(
       findRecord(
         requireRecords(seen.messages, "seen messages"),
-        (message) => message.customType === "openclaw.runtime-context",
+        (message) => message.customType === "nodoassist.runtime-context",
         "runtime context message",
       ),
       {
         role: "custom",
-        customType: "openclaw.runtime-context",
+        customType: "nodoassist.runtime-context",
         display: false,
       },
     );
@@ -899,7 +899,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
       modelCompleted?.data?.finalPromptText,
       traceArtifacts?.data?.finalPromptText,
     ]) {
-      expect(String(value)).not.toContain("OPENCLAW_INTERNAL_CONTEXT");
+      expect(String(value)).not.toContain("NODOASSIST_INTERNAL_CONTEXT");
       expect(String(value)).not.toContain("secret runtime context");
     }
   });
@@ -1193,7 +1193,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
   });
 
   it("rebuilds skill prompt inputs from the sandbox workspace for non-rw sandbox runs", async () => {
-    const sandboxWorkspace = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sandbox-skills-"));
+    const sandboxWorkspace = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-sandbox-skills-"));
     tempPaths.push(sandboxWorkspace);
     hoisted.resolveSandboxContextMock.mockResolvedValue({
       enabled: true,
@@ -1208,22 +1208,22 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
       attemptOverrides: {
         skillsSnapshot: {
           prompt:
-            "<available_skills><skill><location>~/.openclaw/skills/smaug/SKILL.md</location></skill></available_skills>",
+            "<available_skills><skill><location>~/.nodoassist/skills/smaug/SKILL.md</location></skill></available_skills>",
           skills: [{ name: "smaug" }],
           resolvedSkills: [
             {
               name: "smaug",
               description: "Host copy",
               disableModelInvocation: false,
-              filePath: "/Users/alice/.openclaw/skills/smaug/SKILL.md",
-              baseDir: "/Users/alice/.openclaw/skills/smaug",
-              source: "openclaw-workspace",
+              filePath: "/Users/alice/.nodoassist/skills/smaug/SKILL.md",
+              baseDir: "/Users/alice/.nodoassist/skills/smaug",
+              source: "nodoassist-workspace",
               sourceInfo: {
-                path: "/Users/alice/.openclaw/skills/smaug/SKILL.md",
-                source: "openclaw-workspace",
+                path: "/Users/alice/.nodoassist/skills/smaug/SKILL.md",
+                source: "nodoassist-workspace",
                 scope: "project",
                 origin: "top-level",
-                baseDir: "/Users/alice/.openclaw/skills/smaug",
+                baseDir: "/Users/alice/.nodoassist/skills/smaug",
               },
             },
           ],
@@ -1384,9 +1384,9 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
         prompt: [
           "visible ask",
           "",
-          "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>",
           "secret runtime context",
-          "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<END_NODOASSIST_INTERNAL_CONTEXT>>>",
         ].join("\n"),
         transcriptPrompt: "visible ask",
       },
@@ -1406,7 +1406,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     expect(result.finalPromptText).toBe(seen.prompt);
     const runtimeContext = findRecord(
       requireRecords(seen.messages, "seen messages"),
-      (message) => message.customType === "openclaw.runtime-context",
+      (message) => message.customType === "nodoassist.runtime-context",
       "runtime context message",
     );
     expect(runtimeContext.content).toContain("secret runtime context");
@@ -1420,13 +1420,13 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
       bootstrapFiles: [
         {
           name: "AGENTS.md",
-          path: "/tmp/openclaw-warning-workspace/AGENTS.md",
+          path: "/tmp/nodoassist-warning-workspace/AGENTS.md",
           content: "A".repeat(200),
           missing: false,
         },
       ],
       contextFiles: [
-        { path: "/tmp/openclaw-warning-workspace/AGENTS.md", content: "A".repeat(20) },
+        { path: "/tmp/nodoassist-warning-workspace/AGENTS.md", content: "A".repeat(20) },
       ],
     });
 
@@ -1442,7 +1442,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
               bootstrapTotalMaxChars: 50,
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
         prompt: "visible ask",
         transcriptPrompt: "visible ask",
       },
@@ -1464,21 +1464,21 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
   it("preserves bootstrap system context in the assembled system prompt", async () => {
     const seen: { prompt?: string; messages?: unknown[] } = {};
     hoisted.isWorkspaceBootstrapPendingMock.mockResolvedValueOnce(true);
-    hoisted.createOpenClawCodingToolsMock.mockImplementationOnce(() => [
+    hoisted.createNodoAssistCodingToolsMock.mockImplementationOnce(() => [
       { name: "read", execute: async () => "" },
     ]);
     hoisted.resolveBootstrapContextForRunMock.mockResolvedValueOnce({
       bootstrapFiles: [
         {
           name: "BOOTSTRAP.md",
-          path: "/tmp/openclaw-bootstrap-workspace/BOOTSTRAP.md",
+          path: "/tmp/nodoassist-bootstrap-workspace/BOOTSTRAP.md",
           content: "Ask who I am.",
           missing: false,
         },
       ],
       contextFiles: [
         {
-          path: "/tmp/openclaw-bootstrap-workspace/BOOTSTRAP.md",
+          path: "/tmp/nodoassist-bootstrap-workspace/BOOTSTRAP.md",
           content: "Ask who I am.",
         },
       ],
@@ -1514,14 +1514,14 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     expect(promptInput.bootstrapMode).toBe("full");
     expect(promptInput.contextFiles).toEqual([
       {
-        path: "/tmp/openclaw-bootstrap-workspace/BOOTSTRAP.md",
+        path: "/tmp/nodoassist-bootstrap-workspace/BOOTSTRAP.md",
         content: "Ask who I am.",
       },
     ]);
   });
 
   it("includes hook-adjusted bootstrap files preloaded before routing", async () => {
-    const workspaceDir = "/tmp/openclaw-hook-workspace";
+    const workspaceDir = "/tmp/nodoassist-hook-workspace";
     hoisted.resolveBootstrapFilesForRunMock.mockResolvedValueOnce([
       {
         name: "BOOTSTRAP.md",
@@ -1606,9 +1606,9 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
         prompt: [
           "what does this mean?",
           "",
-          "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>",
           "secret runtime context",
-          "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<END_NODOASSIST_INTERNAL_CONTEXT>>>",
         ].join("\n"),
         transcriptPrompt: "what does this mean?",
         currentInboundContext: {
@@ -1643,12 +1643,12 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     expect(seenPrompt).not.toContain(
       "Reply target of current user message (untrusted, for context):",
     );
-    expect(seenPrompt).not.toContain("OPENCLAW_INTERNAL_CONTEXT");
+    expect(seenPrompt).not.toContain("NODOASSIST_INTERNAL_CONTEXT");
     expect(seenPrompt).not.toContain("secret runtime context");
     expect(result.finalPromptText).toBe(seenPrompt);
     const runtimeContext = findRecord(
       requireRecords(seenMessages, "seen messages"),
-      (message) => message.customType === "openclaw.runtime-context",
+      (message) => message.customType === "nodoassist.runtime-context",
       "runtime context message",
     );
     expect(runtimeContext.content).toContain(
@@ -1700,9 +1700,9 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
         prompt: [
           "visible ask",
           "",
-          "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>",
           "secret runtime context",
-          "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>",
+          "<<<END_NODOASSIST_INTERNAL_CONTEXT>>>",
         ].join("\n"),
         transcriptPrompt: "visible ask",
         inputProvenance: {
@@ -1740,7 +1740,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     expect(JSON.stringify(seen.modelMessages)).not.toContain("secret runtime context");
     const runtimeContext = findRecord(
       requireRecords(seen.messages, "seen messages"),
-      (message) => message.customType === "openclaw.runtime-context",
+      (message) => message.customType === "nodoassist.runtime-context",
       "runtime context message",
     );
     expect(seen.systemPrompt).not.toContain("[Inter-session message]");
@@ -1793,8 +1793,8 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
       },
     });
 
-    expect(seenPrompt).toBe("Continue the OpenClaw runtime event.");
-    expect(result.finalPromptText).toBe("Continue the OpenClaw runtime event.");
+    expect(seenPrompt).toBe("Continue the NodoAssist runtime event.");
+    expect(result.finalPromptText).toBe("Continue the NodoAssist runtime event.");
     expect(JSON.stringify(seenModelMessages)).toContain("dynamic hook context");
     expect(JSON.stringify(seenModelMessages)).toContain("internal heartbeat event");
     expect(JSON.stringify(seenModelMessages)).toContain("dynamic hook tail");
@@ -1860,7 +1860,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     const contextCompiled = trajectoryEvents.find((event) => event.type === "context.compiled");
     const runtimeContext = findRecord(
       requireRecords(seenMessages, "seen messages"),
-      (message) => message.customType === "openclaw.runtime-context",
+      (message) => message.customType === "nodoassist.runtime-context",
       "runtime context message",
     );
     expect(runtimeContext.content).toContain("internal heartbeat event");
@@ -1904,7 +1904,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
 
     expect(seenPrompt).toContain("Reply target of current user message (untrusted, for context):");
     expect(seenPrompt).toContain("Hello from the replied message");
-    expect(seenPrompt).toContain("Continue the OpenClaw runtime event.");
+    expect(seenPrompt).toContain("Continue the NodoAssist runtime event.");
     expect(result.finalPromptText).toBe(seenPrompt);
     const trajectoryEvents = (
       await fs.readFile(path.join(tempPaths[0] ?? "", "session.trajectory.jsonl"), "utf8")
@@ -1937,12 +1937,12 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
       tempPaths,
       trajectory: true,
       attemptOverrides: {
-        prompt: "[OpenClaw room event]",
+        prompt: "[NodoAssist room event]",
         transcriptPrompt: "",
         currentInboundEventKind: "room_event",
         currentInboundContext: {
           text: [
-            "[OpenClaw room event]",
+            "[NodoAssist room event]",
             "inbound_event_kind: room_event",
             "visible_reply_contract: message_tool_only",
             "Room context:\n#2001 Alice: lunch at 2?\n#2002 Bob: works",
@@ -1972,14 +1972,14 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
 
     // The user prompt stays the bare room-event marker; the room context is
     // routed into the runtime-context carrier instead of the user text.
-    expect(seenPrompt).toBe("[OpenClaw room event]");
+    expect(seenPrompt).toBe("[NodoAssist room event]");
     expect(seenPrompt).not.toContain("inbound_event_kind: room_event");
-    expect(seenPrompt).not.toBe("Continue the OpenClaw runtime event.");
+    expect(seenPrompt).not.toBe("Continue the NodoAssist runtime event.");
     expect(seenPrompt).not.toContain("dynamic hook context");
     expect(seenPrompt).not.toContain("dynamic hook tail");
     const roomRuntimeContext = findRecord(
       requireRecords(seenMessages, "seen messages"),
-      (message) => message.customType === "openclaw.runtime-context",
+      (message) => message.customType === "nodoassist.runtime-context",
       "runtime context message",
     );
     expect(roomRuntimeContext.content).toContain("inbound_event_kind: room_event");
@@ -2001,7 +2001,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
     expect(contextCompiled?.data?.prompt).not.toContain(
       "visible_reply_contract: message_tool_only",
     );
-    expect(contextCompiled?.data?.prompt).toContain("[OpenClaw room event]");
+    expect(contextCompiled?.data?.prompt).toContain("[NodoAssist room event]");
   });
 
   it("skips blank visible prompts with replay history before provider submission", async () => {
@@ -2524,7 +2524,7 @@ describe("runEmbeddedAttempt context engine sessionKey forwarding", () => {
       tempPaths,
       attemptOverrides: {
         currentInboundEventKind: "room_event",
-        currentInboundContext: { text: "[OpenClaw room event]" },
+        currentInboundContext: { text: "[NodoAssist room event]" },
         suppressNextUserMessagePersistence: true,
         transcriptPrompt: "",
       },
@@ -2994,7 +2994,7 @@ describe("runEmbeddedAttempt context engine mid-turn precheck integration", () =
               },
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
       },
     });
 
@@ -3042,7 +3042,7 @@ describe("runEmbeddedAttempt context engine mid-turn precheck integration", () =
               },
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
       },
       sessionMessages: [seedMessage],
       sessionPrompt: async (session) => {
@@ -3173,7 +3173,7 @@ describe("runEmbeddedAttempt tool-result guard budget wiring", () => {
             },
             list: [{ id: "main" }],
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
       },
       createSession: () => {
         const session = createDefaultEmbeddedSession({ initialMessages: sessionMessages });

@@ -1,9 +1,9 @@
-// File Transfer plugin entrypoint registers its OpenClaw integration.
+// File Transfer plugin entrypoint registers its NodoAssist integration.
 import {
   definePluginEntry,
   type AnyAgentTool,
-  type OpenClawPluginNodeHostCommand,
-} from "openclaw/plugin-sdk/plugin-entry";
+  type NodoAssistPluginNodeHostCommand,
+} from "nodoassist/plugin-sdk/plugin-entry";
 import { createLazyFileTransferNodeInvokePolicy } from "./src/shared/lazy-node-invoke-policy.js";
 import {
   DIR_FETCH_TOOL_DESCRIPTOR,
@@ -39,7 +39,7 @@ function createLazyTool(
   };
 }
 
-const fileTransferNodeHostCommands: OpenClawPluginNodeHostCommand[] = [
+const fileTransferNodeHostCommands: NodoAssistPluginNodeHostCommand[] = [
   {
     command: "file.fetch",
     cap: "file",

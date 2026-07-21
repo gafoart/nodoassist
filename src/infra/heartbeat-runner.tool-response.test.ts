@@ -12,7 +12,7 @@ import {
   HEARTBEAT_EXTERNAL_RUN_FAILURE_TEXT,
 } from "../auto-reply/reply/agent-runner-failure-copy.js";
 import { markReplyPayloadForSourceSuppressionDelivery } from "../auto-reply/types.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { NodoAssistConfig } from "../config/config.js";
 import { getLastHeartbeatEvent, resetHeartbeatEventsForTest } from "./heartbeat-events.js";
 import { runHeartbeatOnce, testing, type HeartbeatDeps } from "./heartbeat-runner.js";
 import { installHeartbeatRunnerTestRuntime } from "./heartbeat-runner.test-harness.js";
@@ -48,7 +48,7 @@ describe("runHeartbeatOnce heartbeat response tool", () => {
     model?: string;
     target?: "telegram" | "last";
     showOk?: boolean;
-  }): OpenClawConfig {
+  }): NodoAssistConfig {
     return {
       agents: {
         defaults: {
@@ -79,7 +79,7 @@ describe("runHeartbeatOnce heartbeat response tool", () => {
         },
       },
       session: { store: params.storePath },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
   }
 
   function createDeps(params: {
@@ -96,7 +96,7 @@ describe("runHeartbeatOnce heartbeat response tool", () => {
 
   function expectTelegramSend(
     sendTelegram: ReturnType<typeof vi.fn>,
-    params: { text: string; cfg: OpenClawConfig; silent?: boolean },
+    params: { text: string; cfg: NodoAssistConfig; silent?: boolean },
   ) {
     expect(sendTelegram).toHaveBeenCalledTimes(1);
     expect(sendTelegram.mock.calls).toEqual([
@@ -192,7 +192,7 @@ describe("runHeartbeatOnce heartbeat response tool", () => {
       beforeSeed?: (params: {
         tmpDir: string;
         storePath: string;
-        cfg: OpenClawConfig;
+        cfg: NodoAssistConfig;
       }) => Promise<void>;
     } = {},
   ) {
@@ -490,7 +490,7 @@ describe("runHeartbeatOnce heartbeat response tool", () => {
   });
 
   it("uses the heartbeat response tool prompt when the Codex runtime is env-forced", async () => {
-    vi.stubEnv("OPENCLAW_AGENT_RUNTIME", "codex");
+    vi.stubEnv("NODOASSIST_AGENT_RUNTIME", "codex");
     const result = await runPromptScenario({
       config: { model: "openai/gpt-5.5" },
     });

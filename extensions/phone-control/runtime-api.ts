@@ -1,8 +1,8 @@
 // Phone Control API module exposes the plugin public contract.
-export { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+export { definePluginEntry } from "nodoassist/plugin-sdk/plugin-entry";
 export type {
-  OpenClawPluginApi,
-  OpenClawPluginCommandDefinition,
+  NodoAssistPluginApi,
+  NodoAssistPluginCommandDefinition,
   PluginCommandContext,
-  OpenClawPluginService,
-} from "openclaw/plugin-sdk/plugin-entry";
+  NodoAssistPluginService,
+} from "nodoassist/plugin-sdk/plugin-entry";

@@ -1,11 +1,11 @@
-# OpenClaw WhatsApp
+# NodoAssist WhatsApp
 
-Official OpenClaw channel plugin for WhatsApp Web chats.
+Official NodoAssist channel plugin for WhatsApp Web chats.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugin add @openclaw/whatsapp
+nodoassist plugin add @nodoassist/whatsapp
 ```
 
-Link a WhatsApp account through the plugin's setup flow, then configure which chats OpenClaw agents should monitor and reply to.
+Link a WhatsApp account through the plugin's setup flow, then configure which chats NodoAssist agents should monitor and reply to.

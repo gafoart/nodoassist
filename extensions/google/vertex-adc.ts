@@ -8,9 +8,9 @@ import {
   asDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
   resolveExpiresAtMsFromDurationSeconds,
-} from "openclaw/plugin-sdk/number-runtime";
-import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/number-runtime";
+import { readResponseWithLimit } from "nodoassist/plugin-sdk/response-limit-runtime";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 
 type GoogleAuthorizedUserCredentials = {
   type: "authorized_user";
@@ -186,7 +186,7 @@ function readGoogleAdcCredentialsTypeSync(credentialsPath: string): string | und
  *      application-default login` produces this).
  *   2. `external_account` credentials file (Workload Identity Federation).
  *   3. `service_account` credentials file (raw GSA key - rarely used in
- *      OpenClaw, included for completeness).
+ *      NodoAssist, included for completeness).
  * Metadata-server ADC is intentionally not detected here: `google-auth-library`
  * probes the default metadata hosts asynchronously at request time, and the
  * provider wires the Vertex transport without this sync predicate.
@@ -383,7 +383,7 @@ async function resolveGoogleVertexAccessTokenViaGoogleAuth(): Promise<string> {
  * Resolve `Authorization: Bearer ...` headers for Google Vertex calls.
  *
  * We try the hand-rolled `authorized_user` refresh path first (preserves the
- * existing fetchImpl test seam and the OpenClaw upstream behaviour); when the
+ * existing fetchImpl test seam and the NodoAssist upstream behaviour); when the
  * configured ADC source is anything other than `authorized_user` (the common
  * production cases on GKE: Workload Identity, Workload Identity Federation,
  * service-account JSON keys), we hand off to `google-auth-library` which

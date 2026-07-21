@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/anthropic-vertex-provider",
+  "name": "@nodoassist/anthropic-vertex-provider",
   "version": "2026.6.11",
-  "description": "OpenClaw Anthropic Vertex provider plugin for Claude models on Google Vertex AI.",
+  "description": "NodoAssist Anthropic Vertex provider plugin for Claude models on Google Vertex AI.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -11,14 +11,14 @@
     "@anthropic-ai/vertex-sdk": "0.19.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "npmSpec": "@openclaw/anthropic-vertex-provider",
+      "npmSpec": "@nodoassist/anthropic-vertex-provider",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.5.12-beta.1"
     },
@@ -26,7 +26,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

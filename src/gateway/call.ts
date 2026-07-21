@@ -1,9 +1,9 @@
 // Gateway RPC call helper.
 // Builds a GatewayClient, resolves auth/scopes, and performs one request.
 import { randomUUID } from "node:crypto";
-import { isLoopbackIpAddress } from "@openclaw/net-policy/ip";
-import { redactSensitiveUrlLikeString } from "@openclaw/net-policy/redact-sensitive-url";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { isLoopbackIpAddress } from "@nodoassist/net-policy/ip";
+import { redactSensitiveUrlLikeString } from "@nodoassist/net-policy/redact-sensitive-url";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
 import {
   GATEWAY_CLIENT_MODES,
   GATEWAY_CLIENT_NAMES,
@@ -20,7 +20,7 @@ import {
   resolveGatewayPort as resolveGatewayPortFromPaths,
   resolveStateDir as resolveStateDirFromPaths,
 } from "../config/paths.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import { createAbortError } from "../infra/abort-signal.js";
 import { loadDeviceAuthToken } from "../infra/device-auth-store.js";
 import { loadOrCreateDeviceIdentity, type DeviceIdentity } from "../infra/device-identity.js";
@@ -72,7 +72,7 @@ type CallGatewayBaseOptions = {
   token?: string;
   password?: string;
   tlsFingerprint?: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   method: string;
   params?: unknown;
   expectFinal?: boolean;
@@ -102,7 +102,7 @@ type CallGatewayBaseOptions = {
   configPath?: string;
   /**
    * Explicit local gateway port for command-line overrides such as `gateway health --port`.
-   * Bypasses OPENCLAW_GATEWAY_URL and OPENCLAW_GATEWAY_PORT for this call only.
+   * Bypasses NODOASSIST_GATEWAY_URL and NODOASSIST_GATEWAY_PORT for this call only.
    */
   localPortOverride?: number;
 };
@@ -327,8 +327,8 @@ export function isGatewayExplicitAuthRequiredError(
 }
 
 const defaultCreateGatewayClient = (opts: GatewayClientOptions) => new GatewayClient(opts);
-type GatewayRuntimeConfigLoader = () => OpenClawConfig | Promise<OpenClawConfig>;
-const defaultGetRuntimeConfig = async (): Promise<OpenClawConfig> =>
+type GatewayRuntimeConfigLoader = () => NodoAssistConfig | Promise<NodoAssistConfig>;
+const defaultGetRuntimeConfig = async (): Promise<NodoAssistConfig> =>
   (await import("../config/io.js")).getRuntimeConfig();
 const defaultGatewayCallDeps: {
   createGatewayClient: typeof defaultCreateGatewayClient;
@@ -374,7 +374,7 @@ function resolveGatewayClientDisplayName(opts: CallGatewayBaseOptions): string |
   return method ? `gateway:${method}` : "gateway:request";
 }
 
-async function loadGatewayConfig(): Promise<OpenClawConfig> {
+async function loadGatewayConfig(): Promise<NodoAssistConfig> {
   const loadConfigFn =
     typeof gatewayCallDeps.getRuntimeConfig === "function"
       ? gatewayCallDeps.getRuntimeConfig
@@ -384,16 +384,16 @@ async function loadGatewayConfig(): Promise<OpenClawConfig> {
   return await loadConfigFn();
 }
 
-function loadGatewayConfigForConnectionDetails(): OpenClawConfig {
+function loadGatewayConfigForConnectionDetails(): NodoAssistConfig {
   if (
     gatewayCallDeps.getRuntimeConfig !== defaultGetRuntimeConfig &&
     typeof gatewayCallDeps.getRuntimeConfig === "function"
   ) {
     const config = gatewayCallDeps.getRuntimeConfig();
-    if (config && typeof (config as Promise<OpenClawConfig>).then === "function") {
+    if (config && typeof (config as Promise<NodoAssistConfig>).then === "function") {
       throw new Error("async gateway config loader is not supported for connection details");
     }
-    return config as OpenClawConfig;
+    return config as NodoAssistConfig;
   }
   return readGatewayDispatchConfig();
 }
@@ -414,7 +414,7 @@ function resolveGatewayConfigPath(env: NodeJS.ProcessEnv): string {
   return resolveConfigPathFn(env, resolveGatewayStateDir(env));
 }
 
-function resolveGatewayPortValue(config?: OpenClawConfig, env?: NodeJS.ProcessEnv): number {
+function resolveGatewayPortValue(config?: NodoAssistConfig, env?: NodeJS.ProcessEnv): number {
   const resolveGatewayPortFn =
     typeof gatewayCallDeps.resolveGatewayPort === "function"
       ? gatewayCallDeps.resolveGatewayPort
@@ -424,7 +424,7 @@ function resolveGatewayPortValue(config?: OpenClawConfig, env?: NodeJS.ProcessEn
 
 export function buildGatewayConnectionDetails(
   options: {
-    config?: OpenClawConfig;
+    config?: NodoAssistConfig;
     url?: string;
     configPath?: string;
     urlSource?: "cli" | "env";
@@ -541,7 +541,7 @@ function hasStoredOperatorDeviceAuthToken(deviceIdentity: DeviceIdentity | null)
   return Boolean(loadStoredOperatorDeviceAuthToken(deviceIdentity)?.token);
 }
 
-function resolveGatewayCallAuth(config: OpenClawConfig) {
+function resolveGatewayCallAuth(config: NodoAssistConfig) {
   return resolveGatewayAuth({
     authConfig: config.gateway?.auth,
     env: process.env,
@@ -618,7 +618,7 @@ export function ensureExplicitGatewayAuth(params: {
   }
   const sourceHint =
     params.urlOverrideSource === "env"
-      ? "Set OPENCLAW_GATEWAY_TOKEN or OPENCLAW_GATEWAY_PASSWORD alongside OPENCLAW_GATEWAY_URL; config credentials are intentionally not reused."
+      ? "Set NODOASSIST_GATEWAY_TOKEN or NODOASSIST_GATEWAY_PASSWORD alongside NODOASSIST_GATEWAY_URL; config credentials are intentionally not reused."
       : params.urlOverrideSource === "cli"
         ? "For the default local or SSH-tunneled Gateway, remove --url to use the configured target."
         : undefined;
@@ -641,7 +641,7 @@ type GatewayRemoteSettings = {
 };
 
 type ResolvedGatewayCallContext = {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   configPath: string;
   isRemoteMode: boolean;
   remote?: GatewayRemoteSettings;
@@ -671,8 +671,8 @@ function resolveGatewayCallTimeout(
     Number.isFinite(configuredHandshakeTimeoutMs) &&
     configuredHandshakeTimeoutMs > 0;
   const hasEnvHandshakeTimeout =
-    Boolean(process.env.OPENCLAW_HANDSHAKE_TIMEOUT_MS) ||
-    Boolean(process.env.VITEST && process.env.OPENCLAW_TEST_HANDSHAKE_TIMEOUT_MS);
+    Boolean(process.env.NODOASSIST_HANDSHAKE_TIMEOUT_MS) ||
+    Boolean(process.env.VITEST && process.env.NODOASSIST_TEST_HANDSHAKE_TIMEOUT_MS);
   const resolvedHandshakeTimeoutMs =
     hasConfiguredHandshakeTimeout || hasEnvHandshakeTimeout
       ? resolvePreauthHandshakeTimeoutMs({ configuredTimeoutMs: configuredHandshakeTimeoutMs })
@@ -697,7 +697,7 @@ async function resolveGatewayCallContext(
   const envUrlOverride =
     cliUrlOverride || opts.localPortOverride !== undefined
       ? undefined
-      : trimToUndefined(process.env.OPENCLAW_GATEWAY_URL);
+      : trimToUndefined(process.env.NODOASSIST_GATEWAY_URL);
   const urlOverride = cliUrlOverride ?? envUrlOverride;
   const urlOverrideSource = cliUrlOverride ? "cli" : envUrlOverride ? "env" : undefined;
   const canSkipConfigLoad = canSkipGatewayConfigLoad({
@@ -706,7 +706,7 @@ async function resolveGatewayCallContext(
     explicitAuth,
   });
   const config =
-    opts.config ?? (canSkipConfigLoad ? ({} as OpenClawConfig) : await loadGatewayConfig());
+    opts.config ?? (canSkipConfigLoad ? ({} as NodoAssistConfig) : await loadGatewayConfig());
   const configPath = opts.configPath ?? resolveGatewayConfigPath(process.env);
   const isRemoteMode = config.gateway?.mode === "remote";
   const remote = isRemoteMode
@@ -823,7 +823,7 @@ function formatGatewayCloseError(
       "\n- Gateway not yet ready to accept connections (retry after a moment)" +
       "\n- TLS mismatch (connecting with ws:// to a wss:// gateway, or vice versa)" +
       "\n- Gateway process stopped or became unreachable (confirm it is still running)" +
-      "\nRun `openclaw doctor` for diagnostics.";
+      "\nRun `nodoassist doctor` for diagnostics.";
   }
   return message;
 }

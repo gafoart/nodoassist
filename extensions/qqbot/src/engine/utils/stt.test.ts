@@ -1,19 +1,19 @@
 // Qqbot tests cover stt plugin behavior.
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { withTempDir } from "openclaw/plugin-sdk/test-env";
+import { withTempDir } from "nodoassist/plugin-sdk/test-env";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const ssrfRuntimeMocks = vi.hoisted(() => ({
   fetchWithSsrFGuard: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ({
+vi.mock("nodoassist/plugin-sdk/ssrf-runtime", () => ({
   fetchWithSsrFGuard: ssrfRuntimeMocks.fetchWithSsrFGuard,
 }));
 
 afterAll(() => {
-  vi.doUnmock("openclaw/plugin-sdk/ssrf-runtime");
+  vi.doUnmock("nodoassist/plugin-sdk/ssrf-runtime");
   vi.resetModules();
 });
 
@@ -162,7 +162,7 @@ describe("engine/utils/stt", () => {
   });
 
   it("posts audio to OpenAI-compatible transcription endpoint", async () => {
-    await withTempDir("openclaw-qqbot-stt-", async (tmpDir) => {
+    await withTempDir("nodoassist-qqbot-stt-", async (tmpDir) => {
       const audioPath = path.join(tmpDir, "voice.wav");
       fs.writeFileSync(audioPath, Buffer.from([1, 2, 3, 4]));
 
@@ -208,7 +208,7 @@ describe("engine/utils/stt", () => {
   });
 
   it("bounds successful STT JSON responses before parsing", async () => {
-    await withTempDir("openclaw-qqbot-stt-success-limit-", async (tmpDir) => {
+    await withTempDir("nodoassist-qqbot-stt-success-limit-", async (tmpDir) => {
       const audioPath = path.join(tmpDir, "voice.wav");
       fs.writeFileSync(audioPath, Buffer.from([1, 2, 3, 4]));
 
@@ -246,7 +246,7 @@ describe("engine/utils/stt", () => {
   });
 
   it("bounds STT error bodies on a UTF-16 boundary without using response.text()", async () => {
-    await withTempDir("openclaw-qqbot-stt-error-", async (tmpDir) => {
+    await withTempDir("nodoassist-qqbot-stt-error-", async (tmpDir) => {
       const audioPath = path.join(tmpDir, "voice.wav");
       fs.writeFileSync(audioPath, Buffer.from([1, 2, 3, 4]));
 

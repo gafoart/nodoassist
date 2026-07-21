@@ -1,10 +1,10 @@
-/** ACP protocol helpers and OpenClaw agent identity metadata. */
-export { normalizeAcpProvenanceMode } from "@openclaw/acp-core/types";
+/** ACP protocol helpers and NodoAssist agent identity metadata. */
+export { normalizeAcpProvenanceMode } from "@nodoassist/acp-core/types";
 import { VERSION } from "../version.js";
 
 /** ACP agent identity advertised during protocol initialization. */
 export const ACP_AGENT_INFO = {
-  name: "openclaw-acp",
-  title: "OpenClaw ACP Gateway",
+  name: "nodoassist-acp",
+  title: "NodoAssist ACP Gateway",
   version: VERSION,
 };

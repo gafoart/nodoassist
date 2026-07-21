@@ -4,30 +4,30 @@ import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import {
   resolveSessionTranscriptsDirForAgent,
-  type OpenClawConfig,
+  type NodoAssistConfig,
   type ResolvedMemorySearchConfig,
-} from "openclaw/plugin-sdk/memory-core-host-engine-foundation";
-import type { MemorySource } from "openclaw/plugin-sdk/memory-core-host-engine-storage";
+} from "nodoassist/plugin-sdk/memory-core-host-engine-foundation";
+import type { MemorySource } from "nodoassist/plugin-sdk/memory-core-host-engine-storage";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { buildSessionEntryMock } = vi.hoisted(() => ({
   buildSessionEntryMock: vi.fn(),
 }));
-const originalSyncYieldStateDir = process.env.OPENCLAW_STATE_DIR;
+const originalSyncYieldStateDir = process.env.NODOASSIST_STATE_DIR;
 
 function setSyncYieldStateDir(): void {
   Reflect.set(
     process.env,
-    "OPENCLAW_STATE_DIR",
-    path.join(os.tmpdir(), "openclaw-session-sync-yield"),
+    "NODOASSIST_STATE_DIR",
+    path.join(os.tmpdir(), "nodoassist-session-sync-yield"),
   );
 }
 
 function restoreSyncYieldStateDir(): void {
   if (originalSyncYieldStateDir === undefined) {
-    Reflect.deleteProperty(process.env, "OPENCLAW_STATE_DIR");
+    Reflect.deleteProperty(process.env, "NODOASSIST_STATE_DIR");
   } else {
-    Reflect.set(process.env, "OPENCLAW_STATE_DIR", originalSyncYieldStateDir);
+    Reflect.set(process.env, "NODOASSIST_STATE_DIR", originalSyncYieldStateDir);
   }
 }
 
@@ -44,7 +44,7 @@ vi.mock("undici", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/memory-core-host-engine-qmd", () => {
+vi.mock("nodoassist/plugin-sdk/memory-core-host-engine-qmd", () => {
   const basename = (filePath: string) => filePath.split(/[\\/]/).pop() ?? filePath;
   return {
     buildSessionEntry: buildSessionEntryMock,
@@ -95,9 +95,9 @@ function createDbMock(): DatabaseSync {
 }
 
 class SessionSyncYieldHarness extends MemoryManagerSyncOps {
-  protected readonly cfg = {} as OpenClawConfig;
+  protected readonly cfg = {} as NodoAssistConfig;
   protected readonly agentId = "main";
-  protected readonly workspaceDir = "/tmp/openclaw-test-workspace";
+  protected readonly workspaceDir = "/tmp/nodoassist-test-workspace";
   protected readonly settings = {
     sync: {
       sessions: {

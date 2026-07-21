@@ -460,6 +460,6 @@ class DreamsPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-dreams-page")) {
-  customElements.define("openclaw-dreams-page", DreamsPage);
+if (!customElements.get("nodoassist-dreams-page")) {
+  customElements.define("nodoassist-dreams-page", DreamsPage);
 }

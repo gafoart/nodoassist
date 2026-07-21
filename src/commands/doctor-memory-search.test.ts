@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { NodoAssistConfig } from "../config/config.js";
 import type { checkQmdBinaryAvailability as checkQmdBinaryAvailabilityFn } from "../memory-host-sdk/engine-qmd.js";
 import type { DoctorPrompter } from "./doctor-prompter.js";
 
@@ -151,7 +151,7 @@ function firstNoteMessage(): string {
 }
 
 describe("noteMemorySearchHealth", () => {
-  const cfg = {} as OpenClawConfig;
+  const cfg = {} as NodoAssistConfig;
 
   async function expectNoWarningWithConfiguredRemoteApiKey(provider: string) {
     resolveMemorySearchConfig.mockReturnValue({
@@ -183,7 +183,7 @@ describe("noteMemorySearchHealth", () => {
     getActiveMemorySearchManager.mockReset();
     resolveActiveMemoryBackendConfig.mockReset();
     resolveActiveMemoryBackendConfig.mockImplementation(
-      ({ cfg: cfgLocal }: { cfg: OpenClawConfig }) =>
+      ({ cfg: cfgLocal }: { cfg: NodoAssistConfig }) =>
         cfgLocal.memory?.backend === "qmd"
           ? { backend: "qmd", qmd: cfgLocal.memory.qmd ?? {} }
           : { backend: "builtin" },
@@ -211,7 +211,7 @@ describe("noteMemorySearchHealth", () => {
     expect(note).toHaveBeenCalledTimes(1);
     const message = firstNoteMessage();
     expect(message).toContain('Memory search provider is set to "local"');
-    expect(message).toContain("openclaw plugins install @openclaw/llama-cpp-provider");
+    expect(message).toContain("nodoassist plugins install @nodoassist/llama-cpp-provider");
   });
 
   it("supports silent structured collection through an injected note sink", async () => {
@@ -278,7 +278,7 @@ describe("noteMemorySearchHealth", () => {
         checked: false,
         ready: false,
         error:
-          "memory embedding readiness not checked; run `openclaw memory status --deep` to probe",
+          "memory embedding readiness not checked; run `nodoassist memory status --deep` to probe",
         skipped: true,
       },
     });
@@ -289,7 +289,7 @@ describe("noteMemorySearchHealth", () => {
   it("warns when local provider skipped readiness but configured local model is missing", async () => {
     resolveMemorySearchConfig.mockReturnValue({
       provider: "local",
-      local: { modelPath: "/definitely/missing/openclaw-memory-model.gguf" },
+      local: { modelPath: "/definitely/missing/nodoassist-memory-model.gguf" },
       remote: {},
     });
 
@@ -298,7 +298,7 @@ describe("noteMemorySearchHealth", () => {
         checked: false,
         ready: false,
         error:
-          "memory embedding readiness not checked; run `openclaw memory status --deep` to probe",
+          "memory embedding readiness not checked; run `nodoassist memory status --deep` to probe",
         skipped: true,
       },
     });
@@ -367,9 +367,9 @@ describe("noteMemorySearchHealth", () => {
     const cfgWithLancedb = {
       plugins: {
         slots: { memory: "memory-lancedb" },
-        entries: { "memory-lancedb": { enabled: true, config: { dbPath: ".openclaw/memory" } } },
+        entries: { "memory-lancedb": { enabled: true, config: { dbPath: ".nodoassist/memory" } } },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
 
     await noteMemorySearchHealth(cfgWithLancedb, {});
 
@@ -387,7 +387,7 @@ describe("noteMemorySearchHealth", () => {
     });
     const cfgWithSlotOnly = {
       plugins: { slots: { memory: "memory-lancedb" } },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
 
     await noteMemorySearchHealth(cfgWithSlotOnly, {});
 
@@ -407,7 +407,7 @@ describe("noteMemorySearchHealth", () => {
         slots: { memory: "memory-lancedb" },
         entries: { "memory-lancedb": { enabled: false } },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
 
     await noteMemorySearchHealth(cfgWithDisabledLancedb, {});
 
@@ -427,7 +427,7 @@ describe("noteMemorySearchHealth", () => {
         slots: { memory: "memory-lancedb" },
         entries: { "memory-lancedb": {} },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
 
     await noteMemorySearchHealth(cfgWithPlaceholderEntry, {});
 
@@ -489,7 +489,7 @@ describe("noteMemorySearchHealth", () => {
   });
 
   it("does not warn when QMD backend is active", async () => {
-    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as OpenClawConfig;
+    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as NodoAssistConfig;
     resolveMemorySearchConfig.mockReturnValue({
       provider: "auto",
       local: {},
@@ -507,7 +507,9 @@ describe("noteMemorySearchHealth", () => {
   });
 
   it("skips QMD binary probing while preserving QMD session export warnings", async () => {
-    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "custom-qmd" } } } as OpenClawConfig;
+    const qmdCfg = {
+      memory: { backend: "qmd", qmd: { command: "custom-qmd" } },
+    } as NodoAssistConfig;
     resolveMemorySearchConfig.mockReturnValue({
       provider: "auto",
       sources: ["memory", "sessions"],
@@ -528,7 +530,7 @@ describe("noteMemorySearchHealth", () => {
   });
 
   it("warns when QMD backend is active but the qmd binary is unavailable", async () => {
-    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as OpenClawConfig;
+    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as NodoAssistConfig;
     checkQmdBinaryAvailability.mockResolvedValueOnce({
       available: false,
       reason: "binary",
@@ -551,7 +553,7 @@ describe("noteMemorySearchHealth", () => {
   });
 
   it("treats legacy QMD unavailable results without a reason as binary failures", async () => {
-    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as OpenClawConfig;
+    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as NodoAssistConfig;
     checkQmdBinaryAvailability.mockResolvedValueOnce({
       available: false,
       error: "spawn qmd ENOENT",
@@ -573,7 +575,7 @@ describe("noteMemorySearchHealth", () => {
   });
 
   it("warns with a workspace-specific fix when the QMD probe cwd is missing", async () => {
-    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as OpenClawConfig;
+    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as NodoAssistConfig;
     checkQmdBinaryAvailability.mockResolvedValueOnce({
       available: false,
       reason: "workspace-cwd",
@@ -596,7 +598,7 @@ describe("noteMemorySearchHealth", () => {
   });
 
   it("warns when QMD backend uses session sources but QMD session export is disabled", async () => {
-    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as OpenClawConfig;
+    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as NodoAssistConfig;
     resolveMemorySearchConfig.mockReturnValue({
       provider: "auto",
       sources: ["memory", "sessions"],
@@ -611,13 +613,13 @@ describe("noteMemorySearchHealth", () => {
     const message = String(note.mock.calls[0]?.[0] ?? "");
     expect(message).toContain("memorySearch.sources with sessions");
     expect(message).toContain("memory.qmd.sessions.enabled is not true");
-    expect(message).toContain("openclaw config set memory.qmd.sessions.enabled true");
+    expect(message).toContain("nodoassist config set memory.qmd.sessions.enabled true");
   });
 
   it("warns when QMD session export is explicitly disabled", async () => {
     const qmdCfg = {
       memory: { backend: "qmd", qmd: { command: "qmd", sessions: { enabled: false } } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     resolveMemorySearchConfig.mockReturnValue({
       provider: "auto",
       sources: ["memory", "sessions"],
@@ -634,7 +636,7 @@ describe("noteMemorySearchHealth", () => {
   });
 
   it("does not warn about QMD session export when session sources are not enabled", async () => {
-    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as OpenClawConfig;
+    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as NodoAssistConfig;
     resolveMemorySearchConfig.mockReturnValue({
       provider: "auto",
       sources: ["memory"],
@@ -649,7 +651,7 @@ describe("noteMemorySearchHealth", () => {
   });
 
   it("reports QMD binary and session export warnings independently", async () => {
-    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as OpenClawConfig;
+    const qmdCfg = { memory: { backend: "qmd", qmd: { command: "qmd" } } } as NodoAssistConfig;
     checkQmdBinaryAvailability.mockResolvedValueOnce({
       available: false,
       error: "spawn qmd ENOENT",
@@ -674,7 +676,7 @@ describe("noteMemorySearchHealth", () => {
   it("does not warn when QMD session sources and QMD session export are both enabled", async () => {
     const qmdCfg = {
       memory: { backend: "qmd", qmd: { command: "qmd", sessions: { enabled: true } } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     resolveMemorySearchConfig.mockReturnValue({
       provider: "auto",
       sources: ["memory", "sessions"],
@@ -848,7 +850,7 @@ describe("noteMemorySearchHealth", () => {
   });
 
   it("does not warn when key-optional provider (lmstudio) probe was skipped (skipped: true)", async () => {
-    // When `openclaw doctor` runs without --deep, the probe is skipped and returns
+    // When `nodoassist doctor` runs without --deep, the probe is skipped and returns
     // { checked: false, ready: false, skipped: true }. This must NOT produce a
     // false-positive warning — it means readiness was never checked, not that
     // embeddings are unavailable.
@@ -911,7 +913,7 @@ describe("noteMemorySearchHealth", () => {
     const message = firstNoteMessage();
     expect(message).toContain('provider is set to "openai-compatible"');
     expect(message).toContain("remote.baseUrl");
-    expect(message).toContain("openclaw config set");
+    expect(message).toContain("nodoassist config set");
     expect(resolveApiKeyForProvider).not.toHaveBeenCalled();
   });
 
@@ -930,7 +932,7 @@ describe("noteMemorySearchHealth", () => {
     const message = firstNoteMessage();
     expect(message).toContain('provider is set to "openai-compatible"');
     expect(message).toContain("memorySearch.model");
-    expect(message).toContain("openclaw config set");
+    expect(message).toContain("nodoassist config set");
     expect(resolveApiKeyForProvider).not.toHaveBeenCalled();
   });
 
@@ -944,7 +946,7 @@ describe("noteMemorySearchHealth", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
     resolveMemorySearchConfig.mockReturnValue({
       provider: "localEmbeddings",
       model: "text-embedding-bge-m3",
@@ -992,7 +994,7 @@ describe("noteMemorySearchHealth", () => {
     const orderedCfg = {
       ...cfg,
       auth: { order: { openai: ["openai:expired"] } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await noteMemorySearchHealth(orderedCfg, {
       skipAuthProfileResolution: true,
@@ -1019,7 +1021,7 @@ describe("noteMemorySearchHealth", () => {
     const orderedCfg = {
       ...cfg,
       auth: { order: { openai: [] } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await noteMemorySearchHealth(orderedCfg, {
       skipAuthProfileResolution: true,
@@ -1049,7 +1051,7 @@ describe("noteMemorySearchHealth", () => {
           "amazon-bedrock": { auth: "aws-sdk", models: [] },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
 
     await noteMemorySearchHealth(bedrockCfg, {
       skipAuthProfileResolution: true,
@@ -1084,7 +1086,7 @@ describe("noteMemorySearchHealth", () => {
         },
         order: { "amazon-bedrock": ["amazon-bedrock:default"] },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
 
     await noteMemorySearchHealth(bedrockCfg, {
       skipAuthProfileResolution: true,
@@ -1152,7 +1154,7 @@ describe("noteMemorySearchHealth", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
     resolveMemorySearchConfig.mockReturnValue({
       provider: "openai",
       model: "text-embedding-3-small",
@@ -1229,8 +1231,8 @@ describe("noteMemorySearchHealth", () => {
 
     const message = firstNoteMessage();
     expect(message).toContain("Gateway memory probe for default agent is not ready");
-    expect(message).toContain("openclaw configure --section model");
-    expect(message).not.toContain("openclaw auth add --provider");
+    expect(message).toContain("nodoassist configure --section model");
+    expect(message).not.toContain("nodoassist auth add --provider");
   });
 
   it("warns for legacy auto mode as OpenAI when no API key is configured", async () => {
@@ -1246,7 +1248,7 @@ describe("noteMemorySearchHealth", () => {
     const message = firstNoteMessage();
     expect(message).toContain('provider is set to "openai"');
     expect(message).toContain("OPENAI_API_KEY");
-    expect(message).toContain("openclaw configure --section model");
+    expect(message).toContain("nodoassist configure --section model");
   });
 
   it("does not probe unrelated embedding providers for legacy auto mode", async () => {
@@ -1327,7 +1329,7 @@ describe("noteMemorySearchHealth", () => {
 });
 
 describe("memory recall doctor integration", () => {
-  const cfg = {} as OpenClawConfig;
+  const cfg = {} as NodoAssistConfig;
 
   beforeEach(() => {
     note.mockClear();
@@ -1455,7 +1457,8 @@ describe("memory recall doctor integration", () => {
     });
     repairDreamingArtifacts.mockResolvedValueOnce({
       changed: true,
-      archiveDir: "/tmp/agent-default/workspace/.openclaw-repair/dreaming/2026-04-11T21-35-00-000Z",
+      archiveDir:
+        "/tmp/agent-default/workspace/.nodoassist-repair/dreaming/2026-04-11T21-35-00-000Z",
       archivedDreamsDiary: false,
       archivedSessionCorpus: true,
       archivedSessionIngestion: true,

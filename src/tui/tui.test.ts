@@ -1,7 +1,7 @@
 // Covers core TUI state transitions and backend event rendering.
 import { EventEmitter } from "node:events";
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { NodoAssistConfig } from "../config/config.js";
 import { MAX_TIMER_TIMEOUT_MS } from "../infra/parse-finite-number.js";
 import { MALFORMED_STREAMING_FRAGMENT_ERROR_MESSAGE } from "../shared/assistant-error-format.js";
 import { withEnv } from "../test-utils/env.js";
@@ -78,7 +78,7 @@ describe("resolveTuiFooterHostLabel", () => {
   });
 
   it("renders only remote hosts when explicitly enabled", () => {
-    const config = { tui: { footer: { showRemoteHost: true } } } satisfies OpenClawConfig;
+    const config = { tui: { footer: { showRemoteHost: true } } } satisfies NodoAssistConfig;
 
     expect(
       resolveTuiFooterHostLabel({
@@ -229,19 +229,19 @@ describe("resolveTuiShutdownHardExitMs", () => {
   });
 
   it("adds local run shutdown grace before forcing embedded shutdown", () => {
-    withEnv({ OPENCLAW_TUI_LOCAL_RUN_SHUTDOWN_GRACE_MS: "3456" }, () => {
+    withEnv({ NODOASSIST_TUI_LOCAL_RUN_SHUTDOWN_GRACE_MS: "3456" }, () => {
       expect(resolveTuiShutdownHardExitMs({ localMode: true })).toBe(5456);
     });
   });
 
   it("ignores partial local run shutdown grace values", () => {
-    withEnv({ OPENCLAW_TUI_LOCAL_RUN_SHUTDOWN_GRACE_MS: "3456abc" }, () => {
+    withEnv({ NODOASSIST_TUI_LOCAL_RUN_SHUTDOWN_GRACE_MS: "3456abc" }, () => {
       expect(resolveTuiShutdownHardExitMs({ localMode: true })).toBe(122000);
     });
   });
 
   it("clamps oversized local run shutdown grace values", () => {
-    withEnv({ OPENCLAW_TUI_LOCAL_RUN_SHUTDOWN_GRACE_MS: String(Number.MAX_SAFE_INTEGER) }, () => {
+    withEnv({ NODOASSIST_TUI_LOCAL_RUN_SHUTDOWN_GRACE_MS: String(Number.MAX_SAFE_INTEGER) }, () => {
       expect(resolveTuiShutdownHardExitMs({ localMode: true })).toBe(MAX_TIMER_TIMEOUT_MS + 2000);
     });
   });
@@ -301,11 +301,11 @@ describe("resolveTuiSessionKey", () => {
 });
 
 describe("resolveInitialTuiAgentId", () => {
-  const cfg: OpenClawConfig = {
+  const cfg: NodoAssistConfig = {
     agents: {
       list: [
-        { id: "main", workspace: "/tmp/openclaw" },
-        { id: "ops", workspace: "/tmp/openclaw/projects/ops" },
+        { id: "main", workspace: "/tmp/nodoassist" },
+        { id: "ops", workspace: "/tmp/nodoassist/projects/ops" },
       ],
     },
   };
@@ -316,7 +316,7 @@ describe("resolveInitialTuiAgentId", () => {
         cfg,
         fallbackAgentId: "main",
         initialSessionInput: "",
-        cwd: "/tmp/openclaw/projects/ops/src",
+        cwd: "/tmp/nodoassist/projects/ops/src",
       }),
     ).toBe("ops");
   });
@@ -327,7 +327,7 @@ describe("resolveInitialTuiAgentId", () => {
         cfg,
         fallbackAgentId: "main",
         initialSessionInput: "agent:main:incident",
-        cwd: "/tmp/openclaw/projects/ops/src",
+        cwd: "/tmp/nodoassist/projects/ops/src",
       }),
     ).toBe("main");
   });
@@ -361,11 +361,11 @@ describe("resolveGatewayDisconnectState", () => {
     const state = resolveGatewayDisconnectState("gateway closed (1008): pairing required");
     expect(state.connectionStatus).toContain("pairing required");
     expect(state.activityStatus).toBe("device approval needed: preview latest request");
-    expect(state.pairingHint).toContain("openclaw devices approve --latest");
-    expect(state.pairingHint).toContain("openclaw devices approve <requestId>");
+    expect(state.pairingHint).toContain("nodoassist devices approve --latest");
+    expect(state.pairingHint).toContain("nodoassist devices approve <requestId>");
     expect(state.pairingHint).toContain("--token");
     // Must steer users to `devices`, not the unrelated chat-DM `pairing` command.
-    expect(state.pairingHint).not.toContain("openclaw pairing");
+    expect(state.pairingHint).not.toContain("nodoassist pairing");
   });
 
   it("returns the same guidance when the gateway reports a pending scope upgrade", () => {
@@ -373,8 +373,8 @@ describe("resolveGatewayDisconnectState", () => {
       "gateway closed (1008): scope upgrade pending approval",
     );
     expect(state.activityStatus).toBe("device approval needed: preview latest request");
-    expect(state.pairingHint).toContain("openclaw devices approve --latest");
-    expect(state.pairingHint).toContain("openclaw devices approve <requestId>");
+    expect(state.pairingHint).toContain("nodoassist devices approve --latest");
+    expect(state.pairingHint).toContain("nodoassist devices approve <requestId>");
   });
 
   it("falls back to idle for generic disconnect reasons", () => {
@@ -618,7 +618,7 @@ describe("TUI shutdown safety", () => {
     expect(setTimeoutFn).toHaveBeenCalledOnce();
     expect(unref).toHaveBeenCalledOnce();
     callback?.();
-    expect(writeStderr).toHaveBeenCalledWith("openclaw tui forcing process exit after return\n");
+    expect(writeStderr).toHaveBeenCalledWith("nodoassist tui forcing process exit after return\n");
     expect(exit).toHaveBeenCalledWith(0);
   });
 });
@@ -649,7 +649,7 @@ describe("resolveLocalAuthCliInvocation", () => {
     expect(
       resolveLocalAuthCliInvocation({
         execPath: "/usr/bin/node",
-        wrapperPath: "/repo/openclaw.mjs",
+        wrapperPath: "/repo/nodoassist.mjs",
         runNodePath: "/repo/scripts/run-node.mjs",
         hasDistEntry: false,
         hasRunNodeScript: true,
@@ -664,14 +664,14 @@ describe("resolveLocalAuthCliInvocation", () => {
     expect(
       resolveLocalAuthCliInvocation({
         execPath: "/usr/bin/node",
-        wrapperPath: "/repo/openclaw.mjs",
+        wrapperPath: "/repo/nodoassist.mjs",
         runNodePath: "/repo/scripts/run-node.mjs",
         hasDistEntry: true,
         hasRunNodeScript: true,
       }),
     ).toEqual({
       command: "/usr/bin/node",
-      args: ["/repo/openclaw.mjs", "models", "auth", "login"],
+      args: ["/repo/nodoassist.mjs", "models", "auth", "login"],
     });
   });
 });
@@ -727,7 +727,7 @@ describe("resolveLocalAuthSpawnCwd", () => {
   it("runs the packaged wrapper from the repo root", () => {
     expect(
       resolveLocalAuthSpawnCwd({
-        args: ["/repo/openclaw.mjs", "models", "auth", "login"],
+        args: ["/repo/nodoassist.mjs", "models", "auth", "login"],
         defaultCwd: "/worktree/subdir",
       }),
     ).toBe("/repo");

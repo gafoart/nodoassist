@@ -383,29 +383,30 @@ export function clearActiveMcpLoopbackRuntimeByOwnerToken(ownerToken: string): v
 }
 
 const MCP_AUTH_HEADERS = {
-  Authorization: "Bearer ${OPENCLAW_MCP_TOKEN}",
+  Authorization: "Bearer ${NODOASSIST_MCP_TOKEN}",
 } as const;
 
 const MCP_CONTEXT_HEADERS = {
-  "x-session-key": "${OPENCLAW_MCP_SESSION_KEY}",
-  "x-openclaw-session-id": "${OPENCLAW_MCP_SESSION_ID}",
-  "x-openclaw-agent-id": "${OPENCLAW_MCP_AGENT_ID}",
-  "x-openclaw-account-id": "${OPENCLAW_MCP_ACCOUNT_ID}",
-  "x-openclaw-message-channel": "${OPENCLAW_MCP_MESSAGE_CHANNEL}",
-  "x-openclaw-current-channel-id": "${OPENCLAW_MCP_CURRENT_CHANNEL_ID}",
-  "x-openclaw-current-thread-ts": "${OPENCLAW_MCP_CURRENT_THREAD_TS}",
-  "x-openclaw-current-message-id": "${OPENCLAW_MCP_CURRENT_MESSAGE_ID}",
-  "x-openclaw-current-inbound-audio": "${OPENCLAW_MCP_CURRENT_INBOUND_AUDIO}",
-  "x-openclaw-inbound-event-kind": "${OPENCLAW_MCP_INBOUND_EVENT_KIND}",
-  "x-openclaw-source-reply-delivery-mode": "${OPENCLAW_MCP_SOURCE_REPLY_DELIVERY_MODE}",
-  "x-openclaw-require-explicit-message-target": "${OPENCLAW_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
-  "x-openclaw-cli-capture-key": "${OPENCLAW_MCP_CLI_CAPTURE_KEY}",
+  "x-session-key": "${NODOASSIST_MCP_SESSION_KEY}",
+  "x-nodoassist-session-id": "${NODOASSIST_MCP_SESSION_ID}",
+  "x-nodoassist-agent-id": "${NODOASSIST_MCP_AGENT_ID}",
+  "x-nodoassist-account-id": "${NODOASSIST_MCP_ACCOUNT_ID}",
+  "x-nodoassist-message-channel": "${NODOASSIST_MCP_MESSAGE_CHANNEL}",
+  "x-nodoassist-current-channel-id": "${NODOASSIST_MCP_CURRENT_CHANNEL_ID}",
+  "x-nodoassist-current-thread-ts": "${NODOASSIST_MCP_CURRENT_THREAD_TS}",
+  "x-nodoassist-current-message-id": "${NODOASSIST_MCP_CURRENT_MESSAGE_ID}",
+  "x-nodoassist-current-inbound-audio": "${NODOASSIST_MCP_CURRENT_INBOUND_AUDIO}",
+  "x-nodoassist-inbound-event-kind": "${NODOASSIST_MCP_INBOUND_EVENT_KIND}",
+  "x-nodoassist-source-reply-delivery-mode": "${NODOASSIST_MCP_SOURCE_REPLY_DELIVERY_MODE}",
+  "x-nodoassist-require-explicit-message-target":
+    "${NODOASSIST_MCP_REQUIRE_EXPLICIT_MESSAGE_TARGET}",
+  "x-nodoassist-cli-capture-key": "${NODOASSIST_MCP_CLI_CAPTURE_KEY}",
 } as const;
 
 function createMcpServerConfig(port: number, headers: Record<string, string>) {
   return {
     mcpServers: {
-      openclaw: {
+      nodoassist: {
         type: "http",
         url: `http://127.0.0.1:${port}/mcp`,
         alwaysLoad: true,

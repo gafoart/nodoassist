@@ -1,4 +1,4 @@
-import OpenClawProtocol
+import NodoAssistProtocol
 import SwiftUI
 
 struct RootTabsPhoneControlHub: View {
@@ -33,7 +33,7 @@ struct RootTabsPhoneControlHub: View {
                     } header: {
                         if let title = self.sectionTitle(for: group) {
                             Text(title)
-                                .font(OpenClawType.captionSemiBold)
+                                .font(NodoAssistType.captionSemiBold)
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -62,10 +62,10 @@ struct RootTabsPhoneControlHub: View {
                 color: self.gatewayStateColor)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Gateway")
-                    .font(OpenClawType.subheadSemiBold)
+                    .font(NodoAssistType.subheadSemiBold)
                     .foregroundStyle(.primary)
                 Text(self.sidebarActiveAgentTitle)
-                    .font(OpenClawType.footnote)
+                    .font(NodoAssistType.footnote)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
@@ -73,10 +73,10 @@ struct RootTabsPhoneControlHub: View {
             HStack(spacing: 6) {
                 ProStatusDot(color: self.gatewayStateColor)
                 Text(self.gatewayStateText)
-                    .font(OpenClawType.footnoteSemiBold)
+                    .font(NodoAssistType.footnoteSemiBold)
                     .foregroundStyle(self.gatewayStateColor)
                 Image(systemName: "chevron.right")
-                    .font(OpenClawType.captionSemiBold)
+                    .font(NodoAssistType.captionSemiBold)
                     .foregroundStyle(.secondary)
             }
         }
@@ -97,7 +97,7 @@ struct RootTabsPhoneControlHub: View {
                     self.rowLabel(destination)
                     Spacer(minLength: 8)
                     Image(systemName: "chevron.right")
-                        .font(OpenClawType.captionSemiBold)
+                        .font(NodoAssistType.captionSemiBold)
                         .foregroundStyle(.secondary)
                 }
                 .contentShape(Rectangle())
@@ -113,7 +113,7 @@ struct RootTabsPhoneControlHub: View {
     private func rowLabel(_ destination: RootTabs.SidebarDestination) -> some View {
         Label {
             Text(destination.title)
-                .font(OpenClawType.subheadSemiBold)
+                .font(NodoAssistType.subheadSemiBold)
                 .foregroundStyle(.primary)
         } icon: {
             ProIconBadge(systemName: destination.systemImage, color: .secondary)
@@ -184,7 +184,7 @@ struct RootTabsPhoneControlHub: View {
                 usesNativeNavigationChrome: true,
                 gatewayAction: { self.openGatewayDetail() })
         case .docs:
-            OpenClawDocsScreen(
+            NodoAssistDocsScreen(
                 usesNativeNavigationChrome: true,
                 gatewayAction: { self.openGatewayDetail() })
         case .settings:
@@ -261,11 +261,11 @@ struct RootTabsPhoneControlHub: View {
     private var gatewayStateColor: Color {
         switch GatewayStatusBuilder.build(appModel: self.appModel) {
         case .connected:
-            OpenClawBrand.ok
+            NodoAssistBrand.ok
         case .connecting:
-            OpenClawBrand.accent
+            NodoAssistBrand.accent
         case .error:
-            OpenClawBrand.warn
+            NodoAssistBrand.warn
         case .disconnected:
             .secondary
         }

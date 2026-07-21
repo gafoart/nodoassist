@@ -1,13 +1,13 @@
-# SMS OpenClaw channel
+# SMS NodoAssist channel
 
-Official OpenClaw channel plugin for SMS.
+Official NodoAssist channel plugin for SMS.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/sms
+nodoassist plugins install @nodoassist/sms
 ```
 
 ## Docs
 
-See `docs/channels/sms.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/channels/sms`.
+See `docs/channels/sms.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/channels/sms`.

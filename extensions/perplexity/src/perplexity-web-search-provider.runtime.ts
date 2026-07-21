@@ -1,10 +1,10 @@
-import { readProviderJsonResponse } from "openclaw/plugin-sdk/provider-http";
+import { readProviderJsonResponse } from "nodoassist/plugin-sdk/provider-http";
 // Perplexity provider module implements model/runtime integration.
 import {
   readPositiveIntegerParam,
   readStringArrayParam,
   readStringParam,
-} from "openclaw/plugin-sdk/provider-web-search";
+} from "nodoassist/plugin-sdk/provider-web-search";
 import {
   buildSearchCacheKey,
   DEFAULT_SEARCH_COUNT,
@@ -24,8 +24,11 @@ import {
   withTrustedWebSearchEndpoint,
   wrapWebContent,
   writeCachedSearchPayload,
-} from "openclaw/plugin-sdk/provider-web-search";
-import { normalizeOptionalString, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/provider-web-search";
+import {
+  normalizeOptionalString,
+  uniqueStrings,
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   DEFAULT_PERPLEXITY_BASE_URL,
   inferPerplexityBaseUrlFromApiKey,
@@ -138,7 +141,7 @@ function buildPerplexityRequestHeaders(apiKey: string, acceptJson = false): Reco
     ...(acceptJson ? { Accept: "application/json" } : {}),
     Authorization: `Bearer ${apiKey}`,
     "HTTP-Referer": "https://openclaw.ai",
-    "X-Title": "OpenClaw Web Search",
+    "X-Title": "NodoAssist Web Search",
   };
 }
 

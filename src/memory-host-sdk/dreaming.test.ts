@@ -1,6 +1,6 @@
 // Memory host dreaming tests cover dreaming artifact persistence and lookup.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { NodoAssistConfig } from "../config/config.js";
 import {
   formatMemoryDreamingDay,
   isSameMemoryDreamingDay,
@@ -109,7 +109,7 @@ describe("memory dreaming host helpers", () => {
           userTimezone: "America/Los_Angeles",
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     const resolved = resolveMemoryDreamingConfig({
       pluginConfig: {},
@@ -176,7 +176,7 @@ describe("memory dreaming host helpers", () => {
           { id: "gamma", workspace: "/workspace/shared" },
         ],
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     expect(resolveMemoryDreamingWorkspaces(cfg)).toEqual([
       {
@@ -198,7 +198,7 @@ describe("memory dreaming host helpers", () => {
           { id: "agi-cdo", workspace: "/workspace/agi-cdo" },
         ],
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     expect(
       resolveMemoryDreamingWorkspaces(cfg, {
@@ -228,7 +228,7 @@ describe("memory dreaming host helpers", () => {
           workspace: "/workspace",
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     expect(resolveMemoryDreamingWorkspaces(cfg)).toEqual([
       {
@@ -254,11 +254,11 @@ describe("memory dreaming host helpers", () => {
       resolveMemoryDreamingPluginId({
         plugins: {
           slots: {
-            memory: "memos-local-openclaw-plugin",
+            memory: "memos-local-nodoassist-plugin",
           },
         },
-      } as OpenClawConfig),
-    ).toBe("memos-local-openclaw-plugin");
+      } as NodoAssistConfig),
+    ).toBe("memos-local-nodoassist-plugin");
   });
 
   it("reads dreaming config from the configured memory-slot owner", () => {
@@ -266,10 +266,10 @@ describe("memory dreaming host helpers", () => {
       resolveMemoryDreamingPluginConfig({
         plugins: {
           slots: {
-            memory: "memos-local-openclaw-plugin",
+            memory: "memos-local-nodoassist-plugin",
           },
           entries: {
-            "memos-local-openclaw-plugin": {
+            "memos-local-nodoassist-plugin": {
               config: {
                 dreaming: {
                   enabled: true,
@@ -278,7 +278,7 @@ describe("memory dreaming host helpers", () => {
             },
           },
         },
-      } as OpenClawConfig),
+      } as NodoAssistConfig),
     ).toEqual({
       dreaming: {
         enabled: true,
@@ -304,7 +304,7 @@ describe("memory dreaming host helpers", () => {
             },
           },
         },
-      } as OpenClawConfig),
+      } as NodoAssistConfig),
     ).toEqual({
       dreaming: {
         enabled: true,
@@ -327,7 +327,7 @@ describe("memory dreaming host helpers", () => {
             },
           },
         },
-      } as OpenClawConfig),
+      } as NodoAssistConfig),
     ).toEqual({
       dreaming: {
         enabled: true,
@@ -343,7 +343,7 @@ describe("memory dreaming host helpers", () => {
             memory: "none",
           },
         },
-      } as OpenClawConfig),
+      } as NodoAssistConfig),
     ).toBe("memory-core");
 
     expect(
@@ -362,7 +362,7 @@ describe("memory dreaming host helpers", () => {
             },
           },
         },
-      } as OpenClawConfig),
+      } as NodoAssistConfig),
     ).toEqual({
       dreaming: {
         enabled: true,

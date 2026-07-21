@@ -480,7 +480,7 @@
 }
 
 /* macOS app only: the native window hides its titlebar and injects
-   html.openclaw-native-macos plus --openclaw-native-titlebar-height (see
+   html.nodoassist-native-macos plus --nodoassist-native-titlebar-height (see
    DashboardWindowController.installNativeChromeScript), leaving an empty
    strip next to the traffic lights. The brand mark sits there instead of
    spending a sidebar row; web builds never show it (breadcrumb has the name). */
@@ -489,7 +489,7 @@
 }
 
 @media (min-width: 700px) {
-  html.openclaw-native-macos .sidebar:not(.sidebar--collapsed) .sidebar-native-brand {
+  html.nodoassist-native-macos .sidebar:not(.sidebar--collapsed) .sidebar-native-brand {
     /* 84px clears the native traffic-light cluster (drag region starts at 78px).
        The mark is a transparent SVG; any box-shadow/background reads as a
        misplaced card behind the mascot, so it renders bare. */
@@ -499,7 +499,7 @@
     display: block;
     width: 22px;
     height: 22px;
-    margin-top: calc((var(--openclaw-native-titlebar-height, 50px) - 22px) / 2);
+    margin-top: calc((var(--nodoassist-native-titlebar-height, 50px) - 22px) / 2);
   }
 }
 
@@ -1615,7 +1615,7 @@
   margin-top: 0;
 }
 
-.content--chat > openclaw-router-outlet {
+.content--chat > nodoassist-router-outlet {
   display: flex;
   flex: 1 1 0;
   min-width: 0;
@@ -1633,15 +1633,15 @@
   margin-top: 14px;
 }
 
-.content--workboard > openclaw-router-outlet,
-.content--workboard openclaw-workboard-page {
+.content--workboard > nodoassist-router-outlet,
+.content--workboard nodoassist-workboard-page {
   display: flex;
   flex: 1 1 0;
   flex-direction: column;
   min-height: 0;
 }
 
-.content--workboard openclaw-workboard-page {
+.content--workboard nodoassist-workboard-page {
   gap: 14px;
 }
 

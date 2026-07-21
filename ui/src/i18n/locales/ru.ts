@@ -138,11 +138,11 @@ export const ru: TranslationMap = {
     pairing: {
       button: "Сопрячь мобильное устройство",
       adminRequired: "Для создания кодов настройки требуется доступ администратора.",
-      title: "OpenClaw для мобильных устройств",
+      title: "NodoAssist для мобильных устройств",
       subtitle: "Отсканируйте этот QR-код в мобильном приложении, чтобы подключить новый телефон.",
       generating: "Создаём безопасный код настройки…",
       failed: "Не удалось создать код настройки.",
-      qrAlt: "QR-код сопряжения OpenClaw для мобильных устройств",
+      qrAlt: "QR-код сопряжения NodoAssist для мобильных устройств",
       qrUnavailable: "QR-код недоступен. Скопируйте код настройки.",
       copySetupCode: "Скопировать код настройки",
       newCode: "Новый код",
@@ -150,7 +150,7 @@ export const ru: TranslationMap = {
       pending: "Запросы устройств, ожидающие проверки: {count}",
       review: "Обзор",
       waiting:
-        "Официальные мобильные приложения OpenClaw подключаются автоматически после сканирования.",
+        "Официальные мобильные приложения NodoAssist подключаются автоматически после сканирования.",
       help: "Справка по сопряжению",
       manageDevices: "Управление устройствами",
     },
@@ -177,7 +177,7 @@ export const ru: TranslationMap = {
   },
   worktrees: {
     title: "Управляемые рабочие деревья",
-    subtitle: "Изолированные копии репозиториев, принадлежащие OpenClaw.",
+    subtitle: "Изолированные копии репозиториев, принадлежащие NodoAssist.",
     cleanNow: "Очистить сейчас",
     name: "Имя",
     repo: "Репозиторий",
@@ -544,7 +544,7 @@ export const ru: TranslationMap = {
       "Проверяйте, уточняйте и применяйте предложения до того, как они станут активными навыками.",
     nodes: "Сопряженные устройства и команды.",
     chat: "Чат шлюза для быстрых вмешательств.",
-    config: "Редактировать openclaw.json.",
+    config: "Редактировать nodoassist.json.",
     communications: "Каналы, сообщения и настройки аудио.",
     appearance: "Тема, интерфейс и настройки мастера настройки.",
     automation: "Команды, хуки, cron и плагины.",
@@ -980,7 +980,7 @@ export const ru: TranslationMap = {
       metadataUpgradeSummary:
         "Это устройство уже сопряжено, но изменение метаданных ожидает подтверждения.",
       mobileHint:
-        "На мобильном устройстве? Скопируйте полный URL (включая #token=...) из openclaw dashboard --no-open на настольном компьютере.",
+        "На мобильном устройстве? Скопируйте полный URL (включая #token=...) из nodoassist dashboard --no-open на настольном компьютере.",
       docsTitle: "Документация по сопряжению устройств (откроется в новой вкладке)",
       docsLink: "Документация: сопряжение устройств",
     },
@@ -1019,7 +1019,7 @@ export const ru: TranslationMap = {
       modelAuthAttentionExpiredTitle: "Срок действия авторизации модели истек",
       modelAuthAttentionExpiringTitle: "Срок действия авторизации модели скоро истечет",
       modelAuthAttentionExpiredDesc:
-        "{providers} — повторно авторизуйтесь с помощью openclaw models auth",
+        "{providers} — повторно авторизуйтесь с помощью nodoassist models auth",
       modelAuthAttentionExpiringEntry: "{provider} ({when})",
     },
     attention: {
@@ -1478,9 +1478,10 @@ export const ru: TranslationMap = {
         title: "Требуется аутентификация",
         summary:
           "Gateway доступен, но для подключения этого браузера требуется соответствующий токен или пароль.",
-        stepPaste: "Вставьте токен из openclaw dashboard --no-open или введите настроенный пароль.",
+        stepPaste:
+          "Вставьте токен из nodoassist dashboard --no-open или введите настроенный пароль.",
         stepGenerate:
-          "Если токен не настроен, выполните openclaw doctor --generate-gateway-token на хосте шлюза.",
+          "Если токен не настроен, выполните nodoassist doctor --generate-gateway-token на хосте шлюза.",
         stepConnect: "Нажмите «Подключиться» еще раз после обновления учетных данных.",
       },
       authFailed: {
@@ -1488,7 +1489,7 @@ export const ru: TranslationMap = {
         summary:
           "Предоставленные учетные данные были отклонены. Чаще всего причина — устаревший токен или токен, скопированный с другого URL Gateway.",
         stepDashboard:
-          "Запустите openclaw dashboard --no-open и откройте новый URL или вставьте его токен.",
+          "Запустите nodoassist dashboard --no-open и откройте новый URL или вставьте его токен.",
         stepReplace:
           "Замените устаревшие значения токена/пароля; не используйте повторно токен с другого URL Gateway.",
         stepMode:
@@ -1512,8 +1513,8 @@ export const ru: TranslationMap = {
           "Этому браузеру требуется одноразовое подтверждение с хоста Gateway, прежде чем он сможет использовать Control UI.",
         upgradeSummary:
           "Этот браузер уже известен, но запрошенный доступ изменился и требует нового подтверждения.",
-        stepList: "Выполните openclaw devices list на хосте Gateway.",
-        stepApproveId: "Подтвердите этот запрос: openclaw devices approve {requestId}.",
+        stepList: "Выполните nodoassist devices list на хосте Gateway.",
+        stepApproveId: "Подтвердите этот запрос: nodoassist devices approve {requestId}.",
         stepApprove: "Подтвердите ожидающий запрос браузера/устройства из этого списка.",
         stepReconnect: "Подключитесь повторно после завершения подтверждения.",
       },
@@ -1541,22 +1542,22 @@ export const ru: TranslationMap = {
         summary:
           "Обслуживаемый Control UI и запущенный Gateway не согласованы по поддерживаемому протоколу подключения.",
         stepDashboard:
-          "Повторно откройте обслуживаемую панель командой openclaw dashboard, чтобы UI и Gateway были из одной установки.",
+          "Повторно откройте обслуживаемую панель командой nodoassist dashboard, чтобы UI и Gateway были из одной установки.",
         stepDevUi:
           "Если используется pnpm ui:dev, пересоберите или перезапустите dev UI для текущей рабочей копии.",
         stepRestart:
-          "Перезапустите Gateway после обновления OpenClaw, чтобы он обслуживал текущий протокол.",
+          "Перезапустите Gateway после обновления NodoAssist, чтобы он обслуживал текущий протокол.",
       },
       network: {
         title: "Не удалось подключиться",
         summary:
           "Браузер не смог завершить подключение к Gateway. Проверьте цель и транспорт перед повторной попыткой ввода учетных данных.",
         stepGateway:
-          "Убедитесь, что Gateway запущен, с помощью openclaw status или openclaw gateway run.",
+          "Убедитесь, что Gateway запущен, с помощью nodoassist status или nodoassist gateway run.",
         stepUrl:
           "Проверьте URL WebSocket и используйте wss://, когда Gateway находится за HTTPS/Tailscale Serve.",
         stepDashboard:
-          "Снова откройте панель управления с помощью openclaw dashboard --no-open, чтобы повторно скопировать текущий URL и данные аутентификации.",
+          "Снова откройте панель управления с помощью nodoassist dashboard --no-open, чтобы повторно скопировать текущий URL и данные аутентификации.",
       },
     },
   },

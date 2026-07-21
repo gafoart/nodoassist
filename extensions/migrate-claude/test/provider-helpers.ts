@@ -1,9 +1,9 @@
 // Migrate Claude provider module implements model/runtime integration.
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { MigrationProviderContext } from "openclaw/plugin-sdk/plugin-entry";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/provider-auth";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+import type { MigrationProviderContext } from "nodoassist/plugin-sdk/plugin-entry";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/provider-auth";
+import { resolvePreferredNodoAssistTmpDir } from "nodoassist/plugin-sdk/temp-path";
 
 const tempRoots = new Set<string>();
 
@@ -16,7 +16,7 @@ const logger = {
 
 export async function makeTempRoot() {
   const root = await fs.mkdtemp(
-    path.join(resolvePreferredOpenClawTmpDir(), "openclaw-migrate-claude-"),
+    path.join(resolvePreferredNodoAssistTmpDir(), "nodoassist-migrate-claude-"),
   );
   tempRoots.add(root);
   return root;
@@ -35,11 +35,11 @@ export async function writeFile(filePath: string, content: string) {
 }
 
 export function makeConfigRuntime(
-  config: OpenClawConfig,
-  onWrite?: (next: OpenClawConfig) => void,
+  config: NodoAssistConfig,
+  onWrite?: (next: NodoAssistConfig) => void,
 ): NonNullable<MigrationProviderContext["runtime"]> {
-  const commitConfig = (next: OpenClawConfig) => {
-    for (const key of Object.keys(config) as Array<keyof OpenClawConfig>) {
+  const commitConfig = (next: NodoAssistConfig) => {
+    for (const key of Object.keys(config) as Array<keyof NodoAssistConfig>) {
       delete config[key];
     }
     Object.assign(config, next);
@@ -54,12 +54,12 @@ export function makeConfigRuntime(
         mutate,
       }: {
         afterWrite?: unknown;
-        mutate: (draft: OpenClawConfig, context: unknown) => Promise<unknown> | void;
+        mutate: (draft: NodoAssistConfig, context: unknown) => Promise<unknown> | void;
       }) => {
         const next = structuredClone(config);
         const result = await mutate(next, {
           snapshot: {
-            path: "/tmp/openclaw.json",
+            path: "/tmp/nodoassist.json",
             exists: true,
             raw: "{}",
             parsed: {},
@@ -87,7 +87,7 @@ export function makeConfigRuntime(
         nextConfig,
       }: {
         afterWrite?: unknown;
-        nextConfig: OpenClawConfig;
+        nextConfig: NodoAssistConfig;
       }) => {
         commitConfig(nextConfig);
         return {
@@ -104,7 +104,7 @@ export function makeContext(params: {
   source: string;
   stateDir: string;
   workspaceDir: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   includeSecrets?: boolean;
   overwrite?: boolean;
   reportDir?: string;
@@ -118,7 +118,7 @@ export function makeContext(params: {
           workspace: params.workspaceDir,
         },
       },
-    } as OpenClawConfig);
+    } as NodoAssistConfig);
   return {
     config,
     stateDir: params.stateDir,

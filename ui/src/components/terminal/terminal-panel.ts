@@ -58,17 +58,17 @@ function shellBasename(shell: string): string {
   return base && base.length > 0 ? base : "shell";
 }
 
-const LAYOUT_KEY = "openclaw.terminal.panel.v1";
+const LAYOUT_KEY = "nodoassist.terminal.panel.v1";
 // Session ids for reattach after a reload/reconnect. Deliberately
 // sessionStorage, not localStorage: attach is take-over, and a shared
 // per-origin key would make multiple Control UI windows clobber each other's
 // ids and steal each other's live shells. Per-tab storage survives exactly the
 // cases reattach is for (reload, laptop sleep, transient disconnect).
-const SESSIONS_KEY = "openclaw.terminal.sessions.v1";
+const SESSIONS_KEY = "nodoassist.terminal.sessions.v1";
 const DEFAULT_LAYOUT: PanelLayout = { open: false, dock: "bottom", height: 320, width: 520 };
 const MIN_HEIGHT = 140;
 const MIN_WIDTH = 320;
-const TOGGLE_EVENT = "openclaw:terminal-toggle";
+const TOGGLE_EVENT = "nodoassist:terminal-toggle";
 const TERMINAL_FONT_FAMILY =
   'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Symbols Nerd Font Mono", "MesloLGLDZ Nerd Font Mono", "JetBrainsMono Nerd Font Mono", "Liberation Mono", monospace';
 const TERMINAL_INPUT_DECODER = new TextDecoder();
@@ -124,8 +124,8 @@ function loadPersistedSessionIds(): string[] {
   }
 }
 
-/** `<openclaw-terminal-panel>` — the dockable Control UI shell surface. */
-export class OpenClawTerminalPanel extends LitElement {
+/** `<nodoassist-terminal-panel>` — the dockable Control UI shell surface. */
+export class NodoAssistTerminalPanel extends LitElement {
   /** Gateway client used for terminal.* RPCs; null until connected. */
   @property({ attribute: false }) client: TerminalGatewayClient | null = null;
   /** Agent whose workspace and sandbox policy own newly opened sessions. */
@@ -1006,12 +1006,12 @@ export class OpenClawTerminalPanel extends LitElement {
 
 // Guarded define (not @customElement) so re-imports under a shared registry —
 // e.g. vitest with isolate=false — don't throw "already registered".
-if (!customElements.get("openclaw-terminal-panel")) {
-  customElements.define("openclaw-terminal-panel", OpenClawTerminalPanel);
+if (!customElements.get("nodoassist-terminal-panel")) {
+  customElements.define("nodoassist-terminal-panel", NodoAssistTerminalPanel);
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "openclaw-terminal-panel": OpenClawTerminalPanel;
+    "nodoassist-terminal-panel": NodoAssistTerminalPanel;
   }
 }

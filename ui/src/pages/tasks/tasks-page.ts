@@ -186,6 +186,6 @@ class TasksPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-tasks-page")) {
-  customElements.define("openclaw-tasks-page", TasksPage);
+if (!customElements.get("nodoassist-tasks-page")) {
+  customElements.define("nodoassist-tasks-page", TasksPage);
 }

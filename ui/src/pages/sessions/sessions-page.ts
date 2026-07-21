@@ -33,7 +33,7 @@ import { captureSessionToWorkboard } from "../../lib/workboard/index.ts";
 import { getSafeLocalStorage } from "../../local-storage.ts";
 import { renderSessions, type SessionsProps } from "./view.ts";
 
-const GROUP_BY_STORAGE_KEY = "openclaw:sessions:group-by";
+const GROUP_BY_STORAGE_KEY = "nodoassist:sessions:group-by";
 
 function loadStoredGroupBy(): SessionsGroupBy {
   return normalizeSessionsGroupBy(getSafeLocalStorage()?.getItem(GROUP_BY_STORAGE_KEY));
@@ -871,6 +871,6 @@ class SessionsPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-sessions-page")) {
-  customElements.define("openclaw-sessions-page", SessionsPage);
+if (!customElements.get("nodoassist-sessions-page")) {
+  customElements.define("nodoassist-sessions-page", SessionsPage);
 }

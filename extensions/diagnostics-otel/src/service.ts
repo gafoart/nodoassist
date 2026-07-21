@@ -36,18 +36,18 @@ import {
   ATTR_GEN_AI_TOOL_DEFINITIONS,
   GEN_AI_OPERATION_NAME_VALUE_EXECUTE_TOOL,
 } from "@opentelemetry/semantic-conventions/incubating";
-import { waitForDiagnosticEventsDrained } from "openclaw/plugin-sdk/diagnostic-runtime";
-import { createNodeProxyAgent } from "openclaw/plugin-sdk/fetch-runtime";
-import { registerUnhandledRejectionHandler } from "openclaw/plugin-sdk/runtime-env";
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+import { waitForDiagnosticEventsDrained } from "nodoassist/plugin-sdk/diagnostic-runtime";
+import { createNodeProxyAgent } from "nodoassist/plugin-sdk/fetch-runtime";
+import { registerUnhandledRejectionHandler } from "nodoassist/plugin-sdk/runtime-env";
+import { isRecord } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import type {
   DiagnosticEventMetadata,
   DiagnosticEventPayload,
   DiagnosticEventPrivateData,
   DiagnosticTraceContext,
-  OpenClawPluginService,
-  OpenClawPluginServiceContext,
+  NodoAssistPluginService,
+  NodoAssistPluginServiceContext,
 } from "../api.js";
 import {
   isValidDiagnosticSpanId,
@@ -56,28 +56,28 @@ import {
   redactSensitiveText,
 } from "../api.js";
 
-const DEFAULT_SERVICE_NAME = "openclaw";
+const DEFAULT_SERVICE_NAME = "nodoassist";
 const DROPPED_OTEL_ATTRIBUTE_KEYS = new Set([
-  "openclaw.callId",
-  "openclaw.call_id",
-  "openclaw.chatId",
-  "openclaw.chat_id",
-  "openclaw.messageId",
-  "openclaw.message_id",
-  "openclaw.parentSpanId",
-  "openclaw.parent_span_id",
-  "openclaw.runId",
-  "openclaw.run_id",
-  "openclaw.sessionId",
-  "openclaw.session_id",
-  "openclaw.sessionKey",
-  "openclaw.session_key",
-  "openclaw.spanId",
-  "openclaw.span_id",
-  "openclaw.toolCallId",
-  "openclaw.tool_call_id",
-  "openclaw.traceId",
-  "openclaw.trace_id",
+  "nodoassist.callId",
+  "nodoassist.call_id",
+  "nodoassist.chatId",
+  "nodoassist.chat_id",
+  "nodoassist.messageId",
+  "nodoassist.message_id",
+  "nodoassist.parentSpanId",
+  "nodoassist.parent_span_id",
+  "nodoassist.runId",
+  "nodoassist.run_id",
+  "nodoassist.sessionId",
+  "nodoassist.session_id",
+  "nodoassist.sessionKey",
+  "nodoassist.session_key",
+  "nodoassist.spanId",
+  "nodoassist.span_id",
+  "nodoassist.toolCallId",
+  "nodoassist.tool_call_id",
+  "nodoassist.traceId",
+  "nodoassist.trace_id",
 ]);
 const LOW_CARDINALITY_VALUE_RE = /^[A-Za-z0-9_.:-]{1,120}$/u;
 const SECURITY_TARGET_NAME_VALUE_RE = /^[A-Za-z0-9@/_.:-]{1,256}$/u;
@@ -91,7 +91,7 @@ const LOG_RECORD_EXPORT_FAILURE_REPORT_INTERVAL_MS = 60_000;
 const OTEL_LOG_RAW_ATTRIBUTE_KEY_RE = /^[A-Za-z0-9_.:-]{1,64}$/u;
 const OTEL_LOG_ATTRIBUTE_KEY_RE = /^[A-Za-z0-9_.:-]{1,96}$/u;
 const BLOCKED_OTEL_LOG_ATTRIBUTE_KEYS = new Set(["__proto__", "prototype", "constructor"]);
-const PRELOADED_OTEL_SDK_ENV = "OPENCLAW_OTEL_PRELOADED";
+const PRELOADED_OTEL_SDK_ENV = "NODOASSIST_OTEL_PRELOADED";
 const OTEL_EXPORTER_OTLP_ENDPOINT_ENV = "OTEL_EXPORTER_OTLP_ENDPOINT";
 const OTEL_EXPORTER_OTLP_TRACES_ENDPOINT_ENV = "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT";
 const OTEL_EXPORTER_OTLP_METRICS_ENDPOINT_ENV = "OTEL_EXPORTER_OTLP_METRICS_ENDPOINT";
@@ -130,7 +130,7 @@ const AGENT_DURATION_MS_BUCKETS = [
   1_800_000,
   3_600_000,
 ];
-// openclaw.context.tokens records context window limit/used token counts, which
+// nodoassist.context.tokens records context window limit/used token counts, which
 // range from a few thousand to >1M for large-context models. Keep the prior
 // layout and add common context-window sizes above it.
 const CONTEXT_TOKENS_BUCKETS = [
@@ -164,7 +164,7 @@ type OtelSignalIdentifier = "TRACES" | "METRICS" | "LOGS";
 type OtelHttpAgentOptions = HttpsAgentOptions & {
   keepAlive: true;
 };
-type OtelLogger = OpenClawPluginServiceContext["logger"];
+type OtelLogger = NodoAssistPluginServiceContext["logger"];
 
 type BuiltOtelLogRecord = {
   logRecord: LogRecord;
@@ -516,7 +516,7 @@ function writeStdoutDiagnosticLogRecord(params: {
   const { logRecord, serviceName, traceContext } = params;
   const line = {
     ts: otelLogTimestampIso(logRecord.timestamp),
-    signal: "openclaw.diagnostic.log",
+    signal: "nodoassist.diagnostic.log",
     "service.name": serviceName,
     severityText: logRecord.severityText,
     severityNumber: logRecord.severityNumber,
@@ -584,11 +584,11 @@ function assignModelCallSizeTimingAttrs(
     timeToFirstByteMs?: number;
   },
 ): void {
-  assignPositiveNumberAttr(attrs, "openclaw.model_call.request_bytes", evt.requestPayloadBytes);
-  assignPositiveNumberAttr(attrs, "openclaw.model_call.response_bytes", evt.responseStreamBytes);
+  assignPositiveNumberAttr(attrs, "nodoassist.model_call.request_bytes", evt.requestPayloadBytes);
+  assignPositiveNumberAttr(attrs, "nodoassist.model_call.response_bytes", evt.responseStreamBytes);
   assignPositiveNumberAttr(
     attrs,
-    "openclaw.model_call.time_to_first_byte_ms",
+    "nodoassist.model_call.time_to_first_byte_ms",
     evt.timeToFirstByteMs,
   );
 }
@@ -628,12 +628,12 @@ function assignModelCallPromptStatsAttrs(
     return;
   }
   for (const [key, value] of [
-    ["openclaw.model_call.prompt.input_messages_count", stats.inputMessagesCount],
-    ["openclaw.model_call.prompt.input_messages_chars", stats.inputMessagesChars],
-    ["openclaw.model_call.prompt.system_prompt_chars", stats.systemPromptChars],
-    ["openclaw.model_call.prompt.tool_definitions_count", stats.toolDefinitionsCount],
-    ["openclaw.model_call.prompt.tool_definitions_chars", stats.toolDefinitionsChars],
-    ["openclaw.model_call.prompt.total_chars", stats.totalChars],
+    ["nodoassist.model_call.prompt.input_messages_count", stats.inputMessagesCount],
+    ["nodoassist.model_call.prompt.input_messages_chars", stats.inputMessagesChars],
+    ["nodoassist.model_call.prompt.system_prompt_chars", stats.systemPromptChars],
+    ["nodoassist.model_call.prompt.tool_definitions_count", stats.toolDefinitionsCount],
+    ["nodoassist.model_call.prompt.tool_definitions_chars", stats.toolDefinitionsChars],
+    ["nodoassist.model_call.prompt.total_chars", stats.totalChars],
   ] as const) {
     assignNumberAttr(attrs, key, value);
   }
@@ -649,13 +649,13 @@ function assignModelCallUsageAttrs(
   }
   const promptTokens = modelCallPromptTokens(usage);
   for (const [key, value] of [
-    ["openclaw.model_call.usage.input_tokens", usage.input],
-    ["openclaw.model_call.usage.output_tokens", usage.output],
-    ["openclaw.model_call.usage.cache_read_input_tokens", usage.cacheRead],
-    ["openclaw.model_call.usage.cache_creation_input_tokens", usage.cacheWrite],
-    ["openclaw.model_call.usage.reasoning_output_tokens", usage.reasoningTokens],
-    ["openclaw.model_call.usage.prompt_tokens", promptTokens],
-    ["openclaw.model_call.usage.total_tokens", usage.total],
+    ["nodoassist.model_call.usage.input_tokens", usage.input],
+    ["nodoassist.model_call.usage.output_tokens", usage.output],
+    ["nodoassist.model_call.usage.cache_read_input_tokens", usage.cacheRead],
+    ["nodoassist.model_call.usage.cache_creation_input_tokens", usage.cacheWrite],
+    ["nodoassist.model_call.usage.reasoning_output_tokens", usage.reasoningTokens],
+    ["nodoassist.model_call.usage.prompt_tokens", promptTokens],
+    ["nodoassist.model_call.usage.total_tokens", usage.total],
     ["gen_ai.usage.input_tokens", promptTokens],
     ["gen_ai.usage.output_tokens", usage.output],
     ["gen_ai.usage.cache_read.input_tokens", usage.cacheRead],
@@ -694,7 +694,7 @@ function assignGenAiModelCallAttrs(
 
 function modelCallSpanName(evt: { api?: string; model?: string }): string {
   if (!emitLatestGenAiSemconv()) {
-    return "openclaw.model.call";
+    return "nodoassist.model.call";
   }
   return `${genAiOperationName(evt.api)} ${lowCardinalityAttr(evt.model)}`;
 }
@@ -714,8 +714,8 @@ function addUpstreamRequestIdSpanEvent(
   if (boundedHash === "unknown") {
     return;
   }
-  span.addEvent?.("openclaw.provider.request", {
-    "openclaw.upstreamRequestIdHash": boundedHash,
+  span.addEvent?.("nodoassist.provider.request", {
+    "nodoassist.upstreamRequestIdHash": boundedHash,
   });
 }
 
@@ -954,7 +954,7 @@ function textPart(content: string): Record<string, unknown> {
   return { type: "text", content };
 }
 
-// Shared text-part reading for gen_ai message normalization: OpenClaw emits
+// Shared text-part reading for gen_ai message normalization: NodoAssist emits
 // {type:"text", text}; some harness shapes carry {type:"text", content}.
 function textPartContent(part: Record<string, unknown>): string | undefined {
   if (part.type !== "text") {
@@ -1201,7 +1201,7 @@ function assignOtelToolIdentityAttributes(
   evt: { toolCallId?: string },
 ): void {
   // Semconv execute_tool identity, span-only by design: metric attrs must stay
-  // low-cardinality, and unlike the dropped openclaw.toolCallId passthrough keys
+  // low-cardinality, and unlike the dropped nodoassist.toolCallId passthrough keys
   // (DROPPED_OTEL_ATTRIBUTE_KEYS) the semconv id is a deliberate per-span export.
   attributes["gen_ai.operation.name"] = GEN_AI_OPERATION_NAME_VALUE_EXECUTE_TOOL;
   const toolCallId = evt.toolCallId?.trim();
@@ -1219,26 +1219,30 @@ function assignOtelModelContentAttributes(
   if (policy.inputMessages) {
     assignOtelContentAttribute(
       attributes,
-      "openclaw.content.input_messages",
+      "nodoassist.content.input_messages",
       content?.inputMessages,
     );
   }
   if (policy.toolDefinitions) {
     assignOtelContentAttribute(
       attributes,
-      "openclaw.content.tool_definitions",
+      "nodoassist.content.tool_definitions",
       content?.toolDefinitions,
     );
   }
   if (policy.outputMessages) {
     assignOtelContentAttribute(
       attributes,
-      "openclaw.content.output_messages",
+      "nodoassist.content.output_messages",
       content?.outputMessages,
     );
   }
   if (policy.systemPrompt) {
-    assignOtelContentAttribute(attributes, "openclaw.content.system_prompt", content?.systemPrompt);
+    assignOtelContentAttribute(
+      attributes,
+      "nodoassist.content.system_prompt",
+      content?.systemPrompt,
+    );
   }
 }
 
@@ -1248,19 +1252,19 @@ function assignOtelToolContentAttributes(
   policy: OtelContentCapturePolicy,
 ): void {
   // Mirror captured content onto the semconv keys next to the shipped
-  // openclaw.content.* names; normalize once so both copies stay byte-identical.
+  // nodoassist.content.* names; normalize once so both copies stay byte-identical.
   if (policy.toolInputs) {
     const toolInput = normalizeOtelContentValue(content?.toolInput);
     if (toolInput) {
       attributes[ATTR_GEN_AI_TOOL_CALL_ARGUMENTS] = toolInput;
-      attributes["openclaw.content.tool_input"] = toolInput;
+      attributes["nodoassist.content.tool_input"] = toolInput;
     }
   }
   if (policy.toolOutputs) {
     const toolOutput = normalizeOtelContentValue(content?.toolOutput);
     if (toolOutput) {
       attributes[ATTR_GEN_AI_TOOL_CALL_RESULT] = toolOutput;
-      attributes["openclaw.content.tool_output"] = toolOutput;
+      attributes["nodoassist.content.tool_output"] = toolOutput;
     }
   }
 }
@@ -1344,7 +1348,7 @@ function assignOtelLogEventAttributes(
     if (!OTEL_LOG_RAW_ATTRIBUTE_KEY_RE.test(key)) {
       continue;
     }
-    assignOtelLogAttribute(attributes, `openclaw.${key}`, eventAttributes[rawKey]);
+    assignOtelLogAttribute(attributes, `nodoassist.${key}`, eventAttributes[rawKey]);
   }
 }
 
@@ -1375,7 +1379,7 @@ function assignOtelSecurityEventAttributes(
     const value = eventAttributes[rawKey];
     assignOtelLogAttribute(
       attributes,
-      `openclaw.security.attribute.${key}`,
+      `nodoassist.security.attribute.${key}`,
       typeof value === "string" ? lowCardinalityAttr(value) : value,
     );
   }
@@ -1403,72 +1407,76 @@ function assignOtelSecurityAttributes(
   attributes: Record<string, string | number | boolean>,
   evt: Extract<DiagnosticEventPayload, { type: "security.event" }>,
 ): void {
-  assignOtelLogAttribute(attributes, "openclaw.security.event_id", evt.eventId);
-  assignOtelLogAttribute(attributes, "openclaw.security.category", evt.category);
-  assignOtelLogAttribute(attributes, "openclaw.security.action", lowCardinalityAttr(evt.action));
-  assignOtelLogAttribute(attributes, "openclaw.security.outcome", evt.outcome);
-  assignOtelLogAttribute(attributes, "openclaw.security.severity", evt.severity);
+  assignOtelLogAttribute(attributes, "nodoassist.security.event_id", evt.eventId);
+  assignOtelLogAttribute(attributes, "nodoassist.security.category", evt.category);
+  assignOtelLogAttribute(attributes, "nodoassist.security.action", lowCardinalityAttr(evt.action));
+  assignOtelLogAttribute(attributes, "nodoassist.security.outcome", evt.outcome);
+  assignOtelLogAttribute(attributes, "nodoassist.security.severity", evt.severity);
   if (evt.reason) {
-    assignOtelLogAttribute(attributes, "openclaw.security.reason", lowCardinalityAttr(evt.reason));
+    assignOtelLogAttribute(
+      attributes,
+      "nodoassist.security.reason",
+      lowCardinalityAttr(evt.reason),
+    );
   }
   if (evt.actor) {
-    assignOtelLogAttribute(attributes, "openclaw.security.actor.kind", evt.actor.kind);
+    assignOtelLogAttribute(attributes, "nodoassist.security.actor.kind", evt.actor.kind);
     if (evt.actor.idHash) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.actor.id_hash",
+        "nodoassist.security.actor.id_hash",
         lowCardinalityAttr(evt.actor.idHash),
       );
     }
     if (evt.actor.deviceIdHash) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.actor.device_id_hash",
+        "nodoassist.security.actor.device_id_hash",
         lowCardinalityAttr(evt.actor.deviceIdHash),
       );
     }
     if (evt.actor.channel) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.actor.channel",
+        "nodoassist.security.actor.channel",
         lowCardinalityAttr(evt.actor.channel),
       );
     }
     if (evt.actor.role) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.actor.role",
+        "nodoassist.security.actor.role",
         lowCardinalityAttr(evt.actor.role),
       );
     }
     if (evt.actor.scopes?.length) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.actor.scopes",
+        "nodoassist.security.actor.scopes",
         evt.actor.scopes.map((scope) => lowCardinalityAttr(scope)).join(","),
       );
     }
   }
   if (evt.target) {
-    assignOtelLogAttribute(attributes, "openclaw.security.target.kind", evt.target.kind);
+    assignOtelLogAttribute(attributes, "nodoassist.security.target.kind", evt.target.kind);
     if (evt.target.idHash) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.target.id_hash",
+        "nodoassist.security.target.id_hash",
         lowCardinalityAttr(evt.target.idHash),
       );
     }
     if (evt.target.name) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.target.name",
+        "nodoassist.security.target.name",
         securityTargetNameAttr(evt.target.name),
       );
     }
     if (evt.target.owner) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.target.owner",
+        "nodoassist.security.target.owner",
         lowCardinalityAttr(evt.target.owner),
       );
     }
@@ -1477,17 +1485,21 @@ function assignOtelSecurityAttributes(
     if (evt.policy.id) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.policy.id",
+        "nodoassist.security.policy.id",
         lowCardinalityAttr(evt.policy.id),
       );
     }
     if (evt.policy.decision) {
-      assignOtelLogAttribute(attributes, "openclaw.security.policy.decision", evt.policy.decision);
+      assignOtelLogAttribute(
+        attributes,
+        "nodoassist.security.policy.decision",
+        evt.policy.decision,
+      );
     }
     if (evt.policy.reason) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.policy.reason",
+        "nodoassist.security.policy.reason",
         lowCardinalityAttr(evt.policy.reason),
       );
     }
@@ -1496,12 +1508,12 @@ function assignOtelSecurityAttributes(
     if (evt.control.id) {
       assignOtelLogAttribute(
         attributes,
-        "openclaw.security.control.id",
+        "nodoassist.security.control.id",
         lowCardinalityAttr(evt.control.id),
       );
     }
     if (evt.control.family) {
-      assignOtelLogAttribute(attributes, "openclaw.security.control.family", evt.control.family);
+      assignOtelLogAttribute(attributes, "nodoassist.security.control.family", evt.control.family);
     }
   }
   assignOtelSecurityEventAttributes(attributes, evt.attributes);
@@ -1551,19 +1563,19 @@ function addTraceAttributes(
   if (!normalized) {
     return;
   }
-  attributes["openclaw.traceId"] = normalized.traceId;
+  attributes["nodoassist.traceId"] = normalized.traceId;
   if (normalized.spanId) {
-    attributes["openclaw.spanId"] = normalized.spanId;
+    attributes["nodoassist.spanId"] = normalized.spanId;
   }
   if (normalized.parentSpanId) {
-    attributes["openclaw.parentSpanId"] = normalized.parentSpanId;
+    attributes["nodoassist.parentSpanId"] = normalized.parentSpanId;
   }
   if (normalized.traceFlags) {
-    attributes["openclaw.traceFlags"] = normalized.traceFlags;
+    attributes["nodoassist.traceFlags"] = normalized.traceFlags;
   }
 }
 
-export function createDiagnosticsOtelService(): OpenClawPluginService {
+export function createDiagnosticsOtelService(): NodoAssistPluginService {
   let sdk: NodeSDK | null = null;
   let logProvider: LoggerProvider | null = null;
   let unsubscribe: (() => void) | null = null;
@@ -1777,8 +1789,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         FATAL: 21 as SeverityNumber,
       };
 
-      const meter = metrics.getMeter("openclaw");
-      const tracer = trace.getTracer("openclaw");
+      const meter = metrics.getMeter("nodoassist");
+      const tracer = trace.getTracer("nodoassist");
       const activeTrustedSpans = new Map<string, ReturnType<typeof tracer.startSpan>>();
       const activeTrustedSpanAliases = new Map<
         string,
@@ -1806,7 +1818,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         activeTrustedSpanAliases.clear();
       };
 
-      const tokensCounter = meter.createCounter("openclaw.tokens", {
+      const tokensCounter = meter.createCounter("nodoassist.tokens", {
         unit: "1",
         description: "Token usage by type",
       });
@@ -1827,284 +1839,290 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           },
         },
       );
-      const costCounter = meter.createCounter("openclaw.cost.usd", {
+      const costCounter = meter.createCounter("nodoassist.cost.usd", {
         unit: "1",
         description: "Estimated model cost (USD)",
       });
-      const durationHistogram = meter.createHistogram("openclaw.run.duration_ms", {
+      const durationHistogram = meter.createHistogram("nodoassist.run.duration_ms", {
         unit: "ms",
         description: "Agent run duration",
         advice: { explicitBucketBoundaries: AGENT_DURATION_MS_BUCKETS },
       });
-      const harnessDurationHistogram = meter.createHistogram("openclaw.harness.duration_ms", {
+      const harnessDurationHistogram = meter.createHistogram("nodoassist.harness.duration_ms", {
         unit: "ms",
         description: "Agent harness lifecycle duration",
         advice: { explicitBucketBoundaries: AGENT_DURATION_MS_BUCKETS },
       });
-      const contextHistogram = meter.createHistogram("openclaw.context.tokens", {
+      const contextHistogram = meter.createHistogram("nodoassist.context.tokens", {
         unit: "1",
         description: "Context window size and usage",
         advice: { explicitBucketBoundaries: CONTEXT_TOKENS_BUCKETS },
       });
-      const webhookReceivedCounter = meter.createCounter("openclaw.webhook.received", {
+      const webhookReceivedCounter = meter.createCounter("nodoassist.webhook.received", {
         unit: "1",
         description: "Webhook requests received",
       });
-      const webhookErrorCounter = meter.createCounter("openclaw.webhook.error", {
+      const webhookErrorCounter = meter.createCounter("nodoassist.webhook.error", {
         unit: "1",
         description: "Webhook processing errors",
       });
-      const webhookDurationHistogram = meter.createHistogram("openclaw.webhook.duration_ms", {
+      const webhookDurationHistogram = meter.createHistogram("nodoassist.webhook.duration_ms", {
         unit: "ms",
         description: "Webhook processing duration",
       });
-      const messageQueuedCounter = meter.createCounter("openclaw.message.queued", {
+      const messageQueuedCounter = meter.createCounter("nodoassist.message.queued", {
         unit: "1",
         description: "Messages queued for processing",
       });
-      const messageReceivedCounter = meter.createCounter("openclaw.message.received", {
+      const messageReceivedCounter = meter.createCounter("nodoassist.message.received", {
         unit: "1",
         description: "Inbound messages received",
       });
       const messageDispatchStartedCounter = meter.createCounter(
-        "openclaw.message.dispatch.started",
+        "nodoassist.message.dispatch.started",
         {
           unit: "1",
           description: "Inbound message dispatch attempts started",
         },
       );
       const messageDispatchCompletedCounter = meter.createCounter(
-        "openclaw.message.dispatch.completed",
+        "nodoassist.message.dispatch.completed",
         {
           unit: "1",
           description: "Inbound message dispatch attempts completed",
         },
       );
       const messageDispatchDurationHistogram = meter.createHistogram(
-        "openclaw.message.dispatch.duration_ms",
+        "nodoassist.message.dispatch.duration_ms",
         {
           unit: "ms",
           description: "Inbound message dispatch duration",
         },
       );
-      const messageProcessedCounter = meter.createCounter("openclaw.message.processed", {
+      const messageProcessedCounter = meter.createCounter("nodoassist.message.processed", {
         unit: "1",
         description: "Messages processed by outcome",
       });
-      const messageDurationHistogram = meter.createHistogram("openclaw.message.duration_ms", {
+      const messageDurationHistogram = meter.createHistogram("nodoassist.message.duration_ms", {
         unit: "ms",
         description: "Message processing duration",
       });
       const messageDeliveryStartedCounter = meter.createCounter(
-        "openclaw.message.delivery.started",
+        "nodoassist.message.delivery.started",
         {
           unit: "1",
           description: "Outbound message delivery attempts started",
         },
       );
       const messageDeliveryDurationHistogram = meter.createHistogram(
-        "openclaw.message.delivery.duration_ms",
+        "nodoassist.message.delivery.duration_ms",
         {
           unit: "ms",
           description: "Outbound message delivery duration",
         },
       );
-      const queueDepthHistogram = meter.createHistogram("openclaw.queue.depth", {
+      const queueDepthHistogram = meter.createHistogram("nodoassist.queue.depth", {
         unit: "1",
         description: "Queue depth on enqueue/dequeue",
       });
-      const queueWaitHistogram = meter.createHistogram("openclaw.queue.wait_ms", {
+      const queueWaitHistogram = meter.createHistogram("nodoassist.queue.wait_ms", {
         unit: "ms",
         description: "Queue wait time before execution",
       });
-      const laneEnqueueCounter = meter.createCounter("openclaw.queue.lane.enqueue", {
+      const laneEnqueueCounter = meter.createCounter("nodoassist.queue.lane.enqueue", {
         unit: "1",
         description: "Command queue lane enqueue events",
       });
-      const laneDequeueCounter = meter.createCounter("openclaw.queue.lane.dequeue", {
+      const laneDequeueCounter = meter.createCounter("nodoassist.queue.lane.dequeue", {
         unit: "1",
         description: "Command queue lane dequeue events",
       });
-      const sessionStateCounter = meter.createCounter("openclaw.session.state", {
+      const sessionStateCounter = meter.createCounter("nodoassist.session.state", {
         unit: "1",
         description: "Session state transitions",
       });
-      const sessionTurnCreatedCounter = meter.createCounter("openclaw.session.turn.created", {
+      const sessionTurnCreatedCounter = meter.createCounter("nodoassist.session.turn.created", {
         unit: "1",
         description: "Agent session turns created",
       });
-      const sessionStuckCounter = meter.createCounter("openclaw.session.stuck", {
+      const sessionStuckCounter = meter.createCounter("nodoassist.session.stuck", {
         unit: "1",
         description: "Sessions stuck in processing",
       });
-      const sessionStuckAgeHistogram = meter.createHistogram("openclaw.session.stuck_age_ms", {
+      const sessionStuckAgeHistogram = meter.createHistogram("nodoassist.session.stuck_age_ms", {
         unit: "ms",
         description: "Age of stuck sessions",
       });
       const sessionRecoveryRequestedCounter = meter.createCounter(
-        "openclaw.session.recovery.requested",
+        "nodoassist.session.recovery.requested",
         {
           unit: "1",
           description: "Session recovery attempts requested",
         },
       );
       const sessionRecoveryCompletedCounter = meter.createCounter(
-        "openclaw.session.recovery.completed",
+        "nodoassist.session.recovery.completed",
         {
           unit: "1",
           description: "Session recovery attempts completed",
         },
       );
       const sessionRecoveryAgeHistogram = meter.createHistogram(
-        "openclaw.session.recovery.age_ms",
+        "nodoassist.session.recovery.age_ms",
         {
           unit: "ms",
           description: "Age of sessions selected for recovery",
         },
       );
-      const talkEventCounter = meter.createCounter("openclaw.talk.event", {
+      const talkEventCounter = meter.createCounter("nodoassist.talk.event", {
         unit: "1",
         description: "Talk events emitted by type",
       });
-      const talkEventDurationHistogram = meter.createHistogram("openclaw.talk.event.duration_ms", {
-        unit: "ms",
-        description: "Talk event duration when reported",
-      });
-      const talkAudioBytesHistogram = meter.createHistogram("openclaw.talk.audio.bytes", {
+      const talkEventDurationHistogram = meter.createHistogram(
+        "nodoassist.talk.event.duration_ms",
+        {
+          unit: "ms",
+          description: "Talk event duration when reported",
+        },
+      );
+      const talkAudioBytesHistogram = meter.createHistogram("nodoassist.talk.audio.bytes", {
         unit: "By",
         description: "Talk audio frame byte lengths",
       });
-      const runAttemptCounter = meter.createCounter("openclaw.run.attempt", {
+      const runAttemptCounter = meter.createCounter("nodoassist.run.attempt", {
         unit: "1",
         description: "Run attempts",
       });
-      const toolLoopCounter = meter.createCounter("openclaw.tool.loop", {
+      const toolLoopCounter = meter.createCounter("nodoassist.tool.loop", {
         unit: "1",
         description: "Detected repetitive tool-call loop events",
       });
-      const skillUsedCounter = meter.createCounter("openclaw.skill.used", {
+      const skillUsedCounter = meter.createCounter("nodoassist.skill.used", {
         unit: "1",
         description: "Skills used by agent runs",
       });
-      const modelCallDurationHistogram = meter.createHistogram("openclaw.model_call.duration_ms", {
-        unit: "ms",
-        description: "Model call duration",
-      });
+      const modelCallDurationHistogram = meter.createHistogram(
+        "nodoassist.model_call.duration_ms",
+        {
+          unit: "ms",
+          description: "Model call duration",
+        },
+      );
       const modelCallRequestBytesHistogram = meter.createHistogram(
-        "openclaw.model_call.request_bytes",
+        "nodoassist.model_call.request_bytes",
         {
           unit: "By",
           description: "UTF-8 byte size of sanitized model request payloads",
         },
       );
       const modelCallResponseBytesHistogram = meter.createHistogram(
-        "openclaw.model_call.response_bytes",
+        "nodoassist.model_call.response_bytes",
         {
           unit: "By",
           description: "UTF-8 byte size of bounded streamed model response payloads",
         },
       );
       const modelCallTimeToFirstByteHistogram = meter.createHistogram(
-        "openclaw.model_call.time_to_first_byte_ms",
+        "nodoassist.model_call.time_to_first_byte_ms",
         {
           unit: "ms",
           description: "Elapsed time before the first streamed model response event",
         },
       );
-      const modelFailoverCounter = meter.createCounter("openclaw.model.failover", {
+      const modelFailoverCounter = meter.createCounter("nodoassist.model.failover", {
         unit: "1",
         description: "Model failovers by source, destination, lane, and reason",
       });
       const toolExecutionDurationHistogram = meter.createHistogram(
-        "openclaw.tool.execution.duration_ms",
+        "nodoassist.tool.execution.duration_ms",
         {
           unit: "ms",
           description: "Tool execution duration",
         },
       );
-      const toolExecutionBlockedCounter = meter.createCounter("openclaw.tool.execution.blocked", {
+      const toolExecutionBlockedCounter = meter.createCounter("nodoassist.tool.execution.blocked", {
         unit: "1",
         description: "Tool executions blocked by policy or sandbox diagnostics",
       });
-      const execProcessDurationHistogram = meter.createHistogram("openclaw.exec.duration_ms", {
+      const execProcessDurationHistogram = meter.createHistogram("nodoassist.exec.duration_ms", {
         unit: "ms",
         description: "Exec process duration",
       });
-      const memoryRssHistogram = meter.createHistogram("openclaw.memory.rss_bytes", {
+      const memoryRssHistogram = meter.createHistogram("nodoassist.memory.rss_bytes", {
         unit: "By",
         description: "Resident set size reported by diagnostic memory samples",
       });
-      const memoryHeapUsedHistogram = meter.createHistogram("openclaw.memory.heap_used_bytes", {
+      const memoryHeapUsedHistogram = meter.createHistogram("nodoassist.memory.heap_used_bytes", {
         unit: "By",
         description: "Heap used bytes reported by diagnostic memory samples",
       });
-      const memoryHeapTotalHistogram = meter.createHistogram("openclaw.memory.heap_total_bytes", {
+      const memoryHeapTotalHistogram = meter.createHistogram("nodoassist.memory.heap_total_bytes", {
         unit: "By",
         description: "Heap total bytes reported by diagnostic memory samples",
       });
-      const memoryExternalHistogram = meter.createHistogram("openclaw.memory.external_bytes", {
+      const memoryExternalHistogram = meter.createHistogram("nodoassist.memory.external_bytes", {
         unit: "By",
         description: "External memory bytes reported by diagnostic memory samples",
       });
       const memoryArrayBuffersHistogram = meter.createHistogram(
-        "openclaw.memory.array_buffers_bytes",
+        "nodoassist.memory.array_buffers_bytes",
         {
           unit: "By",
           description: "ArrayBuffer bytes reported by diagnostic memory samples",
         },
       );
-      const memoryPressureCounter = meter.createCounter("openclaw.memory.pressure", {
+      const memoryPressureCounter = meter.createCounter("nodoassist.memory.pressure", {
         unit: "1",
         description: "Diagnostic memory pressure events",
       });
       const asyncQueueDroppedCounter = meter.createCounter(
-        "openclaw.diagnostic.async_queue.dropped",
+        "nodoassist.diagnostic.async_queue.dropped",
         {
           unit: "1",
           description: "Async diagnostic queue drops by dropped event class",
         },
       );
-      const payloadLargeCounter = meter.createCounter("openclaw.payload.large", {
+      const payloadLargeCounter = meter.createCounter("nodoassist.payload.large", {
         unit: "1",
         description: "Oversized payload diagnostics by surface and action",
       });
-      const payloadLargeBytesHistogram = meter.createHistogram("openclaw.payload.large_bytes", {
+      const payloadLargeBytesHistogram = meter.createHistogram("nodoassist.payload.large_bytes", {
         unit: "By",
         description: "Oversized payload byte sizes by surface and action",
       });
-      const livenessWarningCounter = meter.createCounter("openclaw.liveness.warning", {
+      const livenessWarningCounter = meter.createCounter("nodoassist.liveness.warning", {
         unit: "1",
         description: "Diagnostic liveness warning events",
       });
       const livenessEventLoopDelayP99Histogram = meter.createHistogram(
-        "openclaw.liveness.event_loop_delay_p99_ms",
+        "nodoassist.liveness.event_loop_delay_p99_ms",
         {
           unit: "ms",
           description: "P99 event-loop delay reported by diagnostic liveness warnings",
         },
       );
       const livenessEventLoopDelayMaxHistogram = meter.createHistogram(
-        "openclaw.liveness.event_loop_delay_max_ms",
+        "nodoassist.liveness.event_loop_delay_max_ms",
         {
           unit: "ms",
           description: "Maximum event-loop delay reported by diagnostic liveness warnings",
         },
       );
       const livenessEventLoopUtilizationHistogram = meter.createHistogram(
-        "openclaw.liveness.event_loop_utilization",
+        "nodoassist.liveness.event_loop_utilization",
         {
           unit: "1",
           description: "Event-loop utilization reported by diagnostic liveness warnings",
         },
       );
       const livenessCpuCoreRatioHistogram = meter.createHistogram(
-        "openclaw.liveness.cpu_core_ratio",
+        "nodoassist.liveness.cpu_core_ratio",
         {
           unit: "1",
           description: "CPU core ratio reported by diagnostic liveness warnings",
         },
       );
-      const telemetryExporterCounter = meter.createCounter("openclaw.telemetry.exporter.events", {
+      const telemetryExporterCounter = meter.createCounter("nodoassist.telemetry.exporter.events", {
         unit: "1",
         description: "Diagnostic telemetry exporter lifecycle and failure events",
       });
@@ -2146,7 +2164,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
             resource,
             processors: [logProcessor],
           });
-          otelLogger = logProvider.getLogger("openclaw");
+          otelLogger = logProvider.getLogger("nodoassist");
         }
 
         const reportLogExportFailure = (err: unknown, label: "log record" | "security event") => {
@@ -2190,14 +2208,14 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
             ? normalizeOtelLogString(evt.message || "log", MAX_OTEL_LOG_BODY_CHARS)
             : "log";
           const attributes = Object.create(null) as Record<string, string | number | boolean>;
-          assignOtelLogAttribute(attributes, "openclaw.log.level", logLevelName);
+          assignOtelLogAttribute(attributes, "nodoassist.log.level", logLevelName);
           if (evt.loggerName) {
-            assignOtelLogAttribute(attributes, "openclaw.logger", evt.loggerName);
+            assignOtelLogAttribute(attributes, "nodoassist.logger", evt.loggerName);
           }
           if (evt.loggerParents?.length) {
             assignOtelLogAttribute(
               attributes,
-              "openclaw.logger.parents",
+              "nodoassist.logger.parents",
               evt.loggerParents.join("."),
             );
           }
@@ -2235,7 +2253,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
 
           const traceContext = normalizedTrustedTraceContext(evt, metadata);
           const logRecord: LogRecord = {
-            body: "openclaw.security.event",
+            body: "nodoassist.security.event",
             severityText,
             severityNumber: logSeverityMap[severityText] ?? (9 as SeverityNumber),
             attributes: redactOtelAttributes(attributes),
@@ -2590,16 +2608,16 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         },
       ) => {
         if (evt.provider) {
-          spanAttrs["openclaw.provider"] = evt.provider;
+          spanAttrs["nodoassist.provider"] = evt.provider;
         }
         if (evt.model) {
-          spanAttrs["openclaw.model"] = evt.model;
+          spanAttrs["nodoassist.model"] = evt.model;
         }
         if (evt.channel) {
-          spanAttrs["openclaw.channel"] = evt.channel;
+          spanAttrs["nodoassist.channel"] = evt.channel;
         }
         if (evt.trigger) {
-          spanAttrs["openclaw.trigger"] = evt.trigger;
+          spanAttrs["nodoassist.trigger"] = evt.trigger;
         }
       };
 
@@ -2613,8 +2631,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           return {};
         }
         return {
-          "openclaw.tool.params.kind": summary.kind,
-          ...("length" in summary ? { "openclaw.tool.params.length": summary.length } : {}),
+          "nodoassist.tool.params.kind": summary.kind,
+          ...("length" in summary ? { "nodoassist.tool.params.length": summary.length } : {}),
         };
       };
 
@@ -2623,10 +2641,10 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         metadata: DiagnosticEventMetadata,
       ) => {
         const attrs = {
-          "openclaw.channel": evt.channel ?? "unknown",
-          "openclaw.agent": lowCardinalityAttr(evt.agentId),
-          "openclaw.provider": evt.provider ?? "unknown",
-          "openclaw.model": evt.model ?? "unknown",
+          "nodoassist.channel": evt.channel ?? "unknown",
+          "nodoassist.agent": lowCardinalityAttr(evt.agentId),
+          "nodoassist.provider": evt.provider ?? "unknown",
+          "nodoassist.model": evt.model ?? "unknown",
         };
         const genAiAttrs: Record<string, string> = {
           "gen_ai.operation.name": "chat",
@@ -2636,30 +2654,30 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
 
         const usage = evt.usage;
         if (usage.input) {
-          tokensCounter.add(usage.input, { ...attrs, "openclaw.token": "input" });
+          tokensCounter.add(usage.input, { ...attrs, "nodoassist.token": "input" });
           genAiTokenUsageHistogram.record(usage.input, {
             ...genAiAttrs,
             "gen_ai.token.type": "input",
           });
         }
         if (usage.output) {
-          tokensCounter.add(usage.output, { ...attrs, "openclaw.token": "output" });
+          tokensCounter.add(usage.output, { ...attrs, "nodoassist.token": "output" });
           genAiTokenUsageHistogram.record(usage.output, {
             ...genAiAttrs,
             "gen_ai.token.type": "output",
           });
         }
         if (usage.cacheRead) {
-          tokensCounter.add(usage.cacheRead, { ...attrs, "openclaw.token": "cache_read" });
+          tokensCounter.add(usage.cacheRead, { ...attrs, "nodoassist.token": "cache_read" });
         }
         if (usage.cacheWrite) {
-          tokensCounter.add(usage.cacheWrite, { ...attrs, "openclaw.token": "cache_write" });
+          tokensCounter.add(usage.cacheWrite, { ...attrs, "nodoassist.token": "cache_write" });
         }
         if (usage.promptTokens) {
-          tokensCounter.add(usage.promptTokens, { ...attrs, "openclaw.token": "prompt" });
+          tokensCounter.add(usage.promptTokens, { ...attrs, "nodoassist.token": "prompt" });
         }
         if (usage.total) {
-          tokensCounter.add(usage.total, { ...attrs, "openclaw.token": "total" });
+          tokensCounter.add(usage.total, { ...attrs, "nodoassist.token": "total" });
         }
 
         if (evt.costUsd) {
@@ -2671,13 +2689,13 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         if (evt.context?.limit) {
           contextHistogram.record(evt.context.limit, {
             ...attrs,
-            "openclaw.context": "limit",
+            "nodoassist.context": "limit",
           });
         }
         if (evt.context?.used) {
           contextHistogram.record(evt.context.used, {
             ...attrs,
-            "openclaw.context": "used",
+            "nodoassist.context": "used",
           });
         }
 
@@ -2689,11 +2707,11 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           (usage.input ?? 0) + (usage.cacheRead ?? 0) + (usage.cacheWrite ?? 0);
         const spanAttrs: Record<string, string | number> = {
           ...attrs,
-          "openclaw.tokens.input": usage.input ?? 0,
-          "openclaw.tokens.output": usage.output ?? 0,
-          "openclaw.tokens.cache_read": usage.cacheRead ?? 0,
-          "openclaw.tokens.cache_write": usage.cacheWrite ?? 0,
-          "openclaw.tokens.total": usage.total ?? 0,
+          "nodoassist.tokens.input": usage.input ?? 0,
+          "nodoassist.tokens.output": usage.output ?? 0,
+          "nodoassist.tokens.cache_read": usage.cacheRead ?? 0,
+          "nodoassist.tokens.cache_write": usage.cacheWrite ?? 0,
+          "nodoassist.tokens.total": usage.total ?? 0,
         };
         assignGenAiSpanIdentityAttrs(spanAttrs, evt);
         assignPositiveNumberAttr(spanAttrs, "gen_ai.usage.input_tokens", genAiInputTokens);
@@ -2709,7 +2727,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           usage.cacheWrite,
         );
 
-        const span = spanWithDuration("openclaw.model.usage", spanAttrs, evt.durationMs, {
+        const span = spanWithDuration("nodoassist.model.usage", spanAttrs, evt.durationMs, {
           parentContext: activeTrustedParentContext(evt, metadata),
           endTimeMs: evt.ts,
         });
@@ -2720,8 +2738,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "webhook.received" }>,
       ) => {
         const attrs = {
-          "openclaw.channel": evt.channel ?? "unknown",
-          "openclaw.webhook": evt.updateType ?? "unknown",
+          "nodoassist.channel": evt.channel ?? "unknown",
+          "nodoassist.webhook": evt.updateType ?? "unknown",
         };
         webhookReceivedCounter.add(1, attrs);
       };
@@ -2730,8 +2748,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "webhook.processed" }>,
       ) => {
         const attrs = {
-          "openclaw.channel": lowCardinalityAttr(evt.channel),
-          "openclaw.webhook": lowCardinalityAttr(evt.updateType),
+          "nodoassist.channel": lowCardinalityAttr(evt.channel),
+          "nodoassist.webhook": lowCardinalityAttr(evt.updateType),
         };
         if (typeof evt.durationMs === "number") {
           webhookDurationHistogram.record(evt.durationMs, attrs);
@@ -2740,7 +2758,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           return;
         }
         const spanAttrs: Record<string, string | number> = { ...attrs };
-        const span = spanWithDuration("openclaw.webhook.processed", spanAttrs, evt.durationMs);
+        const span = spanWithDuration("nodoassist.webhook.processed", spanAttrs, evt.durationMs);
         span.end();
       };
 
@@ -2748,8 +2766,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "webhook.error" }>,
       ) => {
         const attrs = {
-          "openclaw.channel": lowCardinalityAttr(evt.channel),
-          "openclaw.webhook": lowCardinalityAttr(evt.updateType),
+          "nodoassist.channel": lowCardinalityAttr(evt.channel),
+          "nodoassist.webhook": lowCardinalityAttr(evt.updateType),
         };
         webhookErrorCounter.add(1, attrs);
         if (!tracesEnabled) {
@@ -2758,9 +2776,9 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         const redactedError = redactSensitiveText(evt.error);
         const spanAttrs: Record<string, string | number> = {
           ...attrs,
-          "openclaw.error": redactedError,
+          "nodoassist.error": redactedError,
         };
-        const span = tracer.startSpan("openclaw.webhook.error", {
+        const span = tracer.startSpan("nodoassist.webhook.error", {
           attributes: spanAttrs,
         });
         span.setStatus({ code: SpanStatusCode.ERROR, message: redactedError });
@@ -2771,8 +2789,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "message.queued" }>,
       ) => {
         const attrs = {
-          "openclaw.channel": lowCardinalityAttr(evt.channel),
-          "openclaw.source": lowCardinalityAttr(evt.source),
+          "nodoassist.channel": lowCardinalityAttr(evt.channel),
+          "nodoassist.source": lowCardinalityAttr(evt.source),
         };
         messageQueuedCounter.add(1, attrs);
         if (typeof evt.queueDepth === "number") {
@@ -2784,8 +2802,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "message.received" }>,
       ) => {
         messageReceivedCounter.add(1, {
-          "openclaw.channel": lowCardinalityAttr(evt.channel),
-          "openclaw.source": lowCardinalityAttr(evt.source),
+          "nodoassist.channel": lowCardinalityAttr(evt.channel),
+          "nodoassist.source": lowCardinalityAttr(evt.source),
         });
       };
 
@@ -2794,8 +2812,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         metadata: DiagnosticEventMetadata,
       ) => {
         const attrs = {
-          "openclaw.channel": lowCardinalityAttr(evt.channel),
-          "openclaw.source": lowCardinalityAttr(evt.source),
+          "nodoassist.channel": lowCardinalityAttr(evt.channel),
+          "nodoassist.source": lowCardinalityAttr(evt.source),
         };
         messageDispatchStartedCounter.add(1, attrs);
         if (!tracesEnabled) {
@@ -2808,7 +2826,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         trackInternalOrTrustedSpan(
           evt,
           metadata,
-          spanWithDuration("openclaw.message.processed", attrs, undefined, {
+          spanWithDuration("nodoassist.message.processed", attrs, undefined, {
             parentContext: internalOrTrustedExplicitParentContext(evt, metadata),
             startTimeMs: evt.ts,
           }),
@@ -2819,10 +2837,10 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "message.dispatch.completed" }>,
       ) => {
         const attrs = {
-          "openclaw.channel": lowCardinalityAttr(evt.channel),
-          "openclaw.outcome": evt.outcome,
-          "openclaw.reason": lowCardinalityAttr(evt.reason, "none"),
-          "openclaw.source": lowCardinalityAttr(evt.source),
+          "nodoassist.channel": lowCardinalityAttr(evt.channel),
+          "nodoassist.outcome": evt.outcome,
+          "nodoassist.reason": lowCardinalityAttr(evt.reason, "none"),
+          "nodoassist.source": lowCardinalityAttr(evt.source),
         };
         messageDispatchCompletedCounter.add(1, attrs);
         messageDispatchDurationHistogram.record(evt.durationMs, attrs);
@@ -2833,8 +2851,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         metadata: DiagnosticEventMetadata,
       ) => {
         const attrs = {
-          "openclaw.channel": lowCardinalityAttr(evt.channel),
-          "openclaw.outcome": evt.outcome ?? "unknown",
+          "nodoassist.channel": lowCardinalityAttr(evt.channel),
+          "nodoassist.outcome": evt.outcome ?? "unknown",
         };
         messageProcessedCounter.add(1, attrs);
         if (typeof evt.durationMs === "number") {
@@ -2845,12 +2863,12 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         }
         const spanAttrs: Record<string, string | number> = { ...attrs };
         if (evt.reason) {
-          spanAttrs["openclaw.reason"] = lowCardinalityAttr(evt.reason, "unknown");
+          spanAttrs["nodoassist.reason"] = lowCardinalityAttr(evt.reason, "unknown");
         }
         const trackedSpan = getTrackedInternalOrTrustedSpan(evt, metadata);
         const span =
           trackedSpan ??
-          spanWithDuration("openclaw.message.processed", spanAttrs, evt.durationMs, {
+          spanWithDuration("nodoassist.message.processed", spanAttrs, evt.durationMs, {
             parentContext: internalOrTrustedExplicitParentContext(evt, metadata),
             endTimeMs: evt.ts,
           });
@@ -2869,8 +2887,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       const messageDeliveryAttrs = (
         evt: MessageDeliveryDiagnosticEvent,
       ): Record<string, string> => ({
-        "openclaw.channel": lowCardinalityAttr(evt.channel),
-        "openclaw.delivery.kind": lowCardinalityAttr(evt.deliveryKind, "other"),
+        "nodoassist.channel": lowCardinalityAttr(evt.channel),
+        "nodoassist.delivery.kind": lowCardinalityAttr(evt.deliveryKind, "other"),
       });
 
       const recordMessageDeliveryStarted = (
@@ -2885,17 +2903,17 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       ) => {
         const attrs = {
           ...messageDeliveryAttrs(evt),
-          "openclaw.outcome": "completed",
+          "nodoassist.outcome": "completed",
         };
         messageDeliveryDurationHistogram.record(evt.durationMs, attrs);
         if (!tracesEnabled) {
           return;
         }
         const span = spanWithDuration(
-          "openclaw.message.delivery",
+          "nodoassist.message.delivery",
           {
             ...attrs,
-            "openclaw.delivery.result_count": evt.resultCount,
+            "nodoassist.delivery.result_count": evt.resultCount,
           },
           evt.durationMs,
           { parentContext: activeInternalOrTrustedContext(evt, metadata), endTimeMs: evt.ts },
@@ -2909,14 +2927,14 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       ) => {
         const attrs = {
           ...messageDeliveryAttrs(evt),
-          "openclaw.outcome": "error",
-          "openclaw.errorCategory": lowCardinalityAttr(evt.errorCategory, "other"),
+          "nodoassist.outcome": "error",
+          "nodoassist.errorCategory": lowCardinalityAttr(evt.errorCategory, "other"),
         };
         messageDeliveryDurationHistogram.record(evt.durationMs, attrs);
         if (!tracesEnabled) {
           return;
         }
-        const span = spanWithDuration("openclaw.message.delivery", attrs, evt.durationMs, {
+        const span = spanWithDuration("nodoassist.message.delivery", attrs, evt.durationMs, {
           parentContext: activeInternalOrTrustedContext(evt, metadata),
           endTimeMs: evt.ts,
         });
@@ -2939,7 +2957,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         const span = trackTrustedSpan(
           evt,
           metadata,
-          spanWithDuration("openclaw.run", spanAttrs, undefined, {
+          spanWithDuration("nodoassist.run", spanAttrs, undefined, {
             parentContext: activeTrustedParentContext(evt, metadata),
             startTimeMs: evt.ts,
           }),
@@ -2958,7 +2976,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       const recordLaneEnqueue = (
         evt: Extract<DiagnosticEventPayload, { type: "queue.lane.enqueue" }>,
       ) => {
-        const attrs = { "openclaw.lane": lowCardinalityQueueLaneAttr(evt.lane) };
+        const attrs = { "nodoassist.lane": lowCardinalityQueueLaneAttr(evt.lane) };
         laneEnqueueCounter.add(1, attrs);
         queueDepthHistogram.record(evt.queueSize, attrs);
       };
@@ -2966,7 +2984,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       const recordLaneDequeue = (
         evt: Extract<DiagnosticEventPayload, { type: "queue.lane.dequeue" }>,
       ) => {
-        const attrs = { "openclaw.lane": lowCardinalityQueueLaneAttr(evt.lane) };
+        const attrs = { "nodoassist.lane": lowCardinalityQueueLaneAttr(evt.lane) };
         laneDequeueCounter.add(1, attrs);
         queueDepthHistogram.record(evt.queueSize, attrs);
         if (typeof evt.waitMs === "number") {
@@ -2977,9 +2995,9 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       const recordSessionState = (
         evt: Extract<DiagnosticEventPayload, { type: "session.state" }>,
       ) => {
-        const attrs: Record<string, string> = { "openclaw.state": evt.state };
+        const attrs: Record<string, string> = { "nodoassist.state": evt.state };
         if (evt.reason) {
-          attrs["openclaw.reason"] = redactSensitiveText(evt.reason);
+          attrs["nodoassist.reason"] = redactSensitiveText(evt.reason);
         }
         sessionStateCounter.add(1, attrs);
       };
@@ -2988,16 +3006,16 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "session.turn.created" }>,
       ) => {
         sessionTurnCreatedCounter.add(1, {
-          "openclaw.agent": lowCardinalityAttr(evt.agentId, "unknown"),
-          "openclaw.channel": lowCardinalityAttr(evt.channel, "unknown"),
-          "openclaw.trigger": evt.trigger,
+          "nodoassist.agent": lowCardinalityAttr(evt.agentId, "unknown"),
+          "nodoassist.channel": lowCardinalityAttr(evt.channel, "unknown"),
+          "nodoassist.trigger": evt.trigger,
         });
       };
 
       const recordSessionStuck = (
         evt: Extract<DiagnosticEventPayload, { type: "session.stuck" }>,
       ) => {
-        const attrs: Record<string, string> = { "openclaw.state": evt.state };
+        const attrs: Record<string, string> = { "nodoassist.state": evt.state };
         sessionStuckCounter.add(1, attrs);
         if (typeof evt.ageMs === "number") {
           sessionStuckAgeHistogram.record(evt.ageMs, attrs);
@@ -3006,20 +3024,20 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           return;
         }
         const spanAttrs: Record<string, string | number> = { ...attrs };
-        spanAttrs["openclaw.queueDepth"] = evt.queueDepth ?? 0;
-        spanAttrs["openclaw.ageMs"] = evt.ageMs;
-        const span = tracer.startSpan("openclaw.session.stuck", { attributes: spanAttrs });
+        spanAttrs["nodoassist.queueDepth"] = evt.queueDepth ?? 0;
+        spanAttrs["nodoassist.ageMs"] = evt.ageMs;
+        const span = tracer.startSpan("nodoassist.session.stuck", { attributes: spanAttrs });
         span.setStatus({ code: SpanStatusCode.ERROR, message: "session stuck" });
         span.end();
       };
 
       const sessionRecoveryAttrs = (evt: SessionRecoveryDiagnosticEvent) => {
-        const attrs: Record<string, string> = { "openclaw.state": evt.state };
+        const attrs: Record<string, string> = { "nodoassist.state": evt.state };
         if (evt.reason) {
-          attrs["openclaw.reason"] = redactSensitiveText(evt.reason);
+          attrs["nodoassist.reason"] = redactSensitiveText(evt.reason);
         }
         if (evt.activeWorkKind) {
-          attrs["openclaw.active_work_kind"] = evt.activeWorkKind;
+          attrs["nodoassist.active_work_kind"] = evt.activeWorkKind;
         }
         return attrs;
       };
@@ -3028,7 +3046,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "session.recovery.requested" }>,
       ) => {
         const attrs = sessionRecoveryAttrs(evt);
-        attrs["openclaw.action"] = evt.allowActiveAbort ? "abort" : "recover";
+        attrs["nodoassist.action"] = evt.allowActiveAbort ? "abort" : "recover";
         sessionRecoveryRequestedCounter.add(1, attrs);
         sessionRecoveryAgeHistogram.record(evt.ageMs, attrs);
       };
@@ -3037,21 +3055,21 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "session.recovery.completed" }>,
       ) => {
         const attrs = sessionRecoveryAttrs(evt);
-        attrs["openclaw.status"] = evt.status;
-        attrs["openclaw.action"] = lowCardinalityAttr(evt.action, "unknown");
+        attrs["nodoassist.status"] = evt.status;
+        attrs["nodoassist.action"] = lowCardinalityAttr(evt.action, "unknown");
         if (evt.outcomeReason) {
-          attrs["openclaw.reason"] = redactSensitiveText(evt.outcomeReason);
+          attrs["nodoassist.reason"] = redactSensitiveText(evt.outcomeReason);
         }
         sessionRecoveryCompletedCounter.add(1, attrs);
         sessionRecoveryAgeHistogram.record(evt.ageMs, attrs);
       };
 
       const talkEventAttrs = (evt: TalkDiagnosticEvent): Record<string, string> => ({
-        "openclaw.talk.brain": lowCardinalityAttr(evt.brain),
-        "openclaw.talk.event_type": lowCardinalityAttr(evt.talkEventType),
-        "openclaw.talk.mode": lowCardinalityAttr(evt.mode),
-        "openclaw.talk.provider": lowCardinalityAttr(evt.provider),
-        "openclaw.talk.transport": lowCardinalityAttr(evt.transport),
+        "nodoassist.talk.brain": lowCardinalityAttr(evt.brain),
+        "nodoassist.talk.event_type": lowCardinalityAttr(evt.talkEventType),
+        "nodoassist.talk.mode": lowCardinalityAttr(evt.mode),
+        "nodoassist.talk.provider": lowCardinalityAttr(evt.provider),
+        "nodoassist.talk.transport": lowCardinalityAttr(evt.transport),
       });
 
       const recordTalkEvent = (evt: TalkDiagnosticEvent, metadata: DiagnosticEventMetadata) => {
@@ -3069,19 +3087,19 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       };
 
       const recordRunAttempt = (evt: Extract<DiagnosticEventPayload, { type: "run.attempt" }>) => {
-        runAttemptCounter.add(1, { "openclaw.attempt": evt.attempt });
+        runAttemptCounter.add(1, { "nodoassist.attempt": evt.attempt });
       };
 
       const toolLoopAttrs = (
         evt: Extract<DiagnosticEventPayload, { type: "tool.loop" }>,
       ): Record<string, string | number> => ({
-        "openclaw.toolName": lowCardinalityAttr(evt.toolName, "tool"),
-        "openclaw.loop.level": evt.level,
-        "openclaw.loop.action": evt.action,
-        "openclaw.loop.detector": evt.detector,
-        "openclaw.loop.count": evt.count,
+        "nodoassist.toolName": lowCardinalityAttr(evt.toolName, "tool"),
+        "nodoassist.loop.level": evt.level,
+        "nodoassist.loop.action": evt.action,
+        "nodoassist.loop.detector": evt.detector,
+        "nodoassist.loop.count": evt.count,
         ...(evt.pairedToolName
-          ? { "openclaw.loop.paired_tool": lowCardinalityAttr(evt.pairedToolName, "tool") }
+          ? { "nodoassist.loop.paired_tool": lowCardinalityAttr(evt.pairedToolName, "tool") }
           : {}),
       });
 
@@ -3091,7 +3109,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         if (!tracesEnabled) {
           return;
         }
-        const span = spanWithDuration("openclaw.tool.loop", attrs, 0, { endTimeMs: evt.ts });
+        const span = spanWithDuration("nodoassist.tool.loop", attrs, 0, { endTimeMs: evt.ts });
         if (evt.level === "critical" || evt.action === "block") {
           span.setStatus({
             code: SpanStatusCode.ERROR,
@@ -3125,8 +3143,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "diagnostic.memory.pressure" }>,
       ) => {
         const attrs = {
-          "openclaw.memory.level": evt.level,
-          "openclaw.memory.reason": evt.reason,
+          "nodoassist.memory.level": evt.level,
+          "nodoassist.memory.reason": evt.reason,
         };
         memoryPressureCounter.add(1, attrs);
         recordMemoryUsageMetrics(evt, attrs);
@@ -3135,20 +3153,20 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         }
         const spanAttrs: Record<string, string | number | boolean> = {
           ...attrs,
-          "openclaw.memory.rss_bytes": evt.memory.rssBytes,
-          "openclaw.memory.heap_used_bytes": evt.memory.heapUsedBytes,
-          "openclaw.memory.heap_total_bytes": evt.memory.heapTotalBytes,
-          "openclaw.memory.external_bytes": evt.memory.externalBytes,
-          "openclaw.memory.array_buffers_bytes": evt.memory.arrayBuffersBytes,
+          "nodoassist.memory.rss_bytes": evt.memory.rssBytes,
+          "nodoassist.memory.heap_used_bytes": evt.memory.heapUsedBytes,
+          "nodoassist.memory.heap_total_bytes": evt.memory.heapTotalBytes,
+          "nodoassist.memory.external_bytes": evt.memory.externalBytes,
+          "nodoassist.memory.array_buffers_bytes": evt.memory.arrayBuffersBytes,
           ...(evt.thresholdBytes !== undefined
-            ? { "openclaw.memory.threshold_bytes": evt.thresholdBytes }
+            ? { "nodoassist.memory.threshold_bytes": evt.thresholdBytes }
             : {}),
           ...(evt.rssGrowthBytes !== undefined
-            ? { "openclaw.memory.rss_growth_bytes": evt.rssGrowthBytes }
+            ? { "nodoassist.memory.rss_growth_bytes": evt.rssGrowthBytes }
             : {}),
-          ...(evt.windowMs !== undefined ? { "openclaw.memory.window_ms": evt.windowMs } : {}),
+          ...(evt.windowMs !== undefined ? { "nodoassist.memory.window_ms": evt.windowMs } : {}),
         };
-        const span = spanWithDuration("openclaw.memory.pressure", spanAttrs, 0, {
+        const span = spanWithDuration("nodoassist.memory.pressure", spanAttrs, 0, {
           endTimeMs: evt.ts,
         });
         if (evt.level === "critical") {
@@ -3164,21 +3182,21 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "diagnostic.async_queue.dropped" }>,
       ) => {
         asyncQueueDroppedCounter.add(evt.droppedEvents, {
-          "openclaw.diagnostic.async_queue.drop_class": "total",
+          "nodoassist.diagnostic.async_queue.drop_class": "total",
         });
         if (evt.droppedTrustedEvents !== undefined) {
           asyncQueueDroppedCounter.add(evt.droppedTrustedEvents, {
-            "openclaw.diagnostic.async_queue.drop_class": "trusted",
+            "nodoassist.diagnostic.async_queue.drop_class": "trusted",
           });
         }
         if (evt.droppedUntrustedEvents !== undefined) {
           asyncQueueDroppedCounter.add(evt.droppedUntrustedEvents, {
-            "openclaw.diagnostic.async_queue.drop_class": "untrusted",
+            "nodoassist.diagnostic.async_queue.drop_class": "untrusted",
           });
         }
         if (evt.droppedPriorityEvents !== undefined) {
           asyncQueueDroppedCounter.add(evt.droppedPriorityEvents, {
-            "openclaw.diagnostic.async_queue.drop_class": "priority",
+            "nodoassist.diagnostic.async_queue.drop_class": "priority",
           });
         }
       };
@@ -3189,34 +3207,34 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         privateData: DiagnosticEventPrivateData,
       ) => {
         const attrs: Record<string, string | number> = {
-          "openclaw.outcome": evt.outcome,
-          "openclaw.provider": evt.provider ?? "unknown",
-          "openclaw.model": evt.model ?? "unknown",
+          "nodoassist.outcome": evt.outcome,
+          "nodoassist.provider": evt.provider ?? "unknown",
+          "nodoassist.model": evt.model ?? "unknown",
         };
         if (evt.channel) {
-          attrs["openclaw.channel"] = evt.channel;
+          attrs["nodoassist.channel"] = evt.channel;
         }
         if (evt.blockedBy) {
-          attrs["openclaw.blocked_by"] = lowCardinalityAttr(evt.blockedBy, "unknown");
+          attrs["nodoassist.blocked_by"] = lowCardinalityAttr(evt.blockedBy, "unknown");
         }
         durationHistogram.record(evt.durationMs, attrs);
         if (!tracesEnabled) {
           return;
         }
         const spanAttrs: Record<string, string | number | boolean> = {
-          "openclaw.outcome": evt.outcome,
+          "nodoassist.outcome": evt.outcome,
         };
         addRunAttrs(spanAttrs, evt);
         if (evt.blockedBy) {
-          spanAttrs["openclaw.blocked_by"] = lowCardinalityAttr(evt.blockedBy, "unknown");
+          spanAttrs["nodoassist.blocked_by"] = lowCardinalityAttr(evt.blockedBy, "unknown");
         }
         if (evt.errorCategory) {
-          spanAttrs["openclaw.errorCategory"] = lowCardinalityAttr(evt.errorCategory, "other");
+          spanAttrs["nodoassist.errorCategory"] = lowCardinalityAttr(evt.errorCategory, "other");
         }
         // Redacted message goes on the span only, never the low-cardinality metric attrs.
         const redactedError = normalizeOtelErrorMessage(privateData.errorMessage);
         if (redactedError) {
-          spanAttrs["openclaw.error"] = redactedError;
+          spanAttrs["nodoassist.error"] = redactedError;
         }
         const trustedTrace = trustedTraceContext(evt, metadata);
         const trackedSpan = trustedTrace?.spanId
@@ -3224,7 +3242,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           : undefined;
         const span =
           trackedSpan ??
-          spanWithDuration("openclaw.run", spanAttrs, evt.durationMs, {
+          spanWithDuration("nodoassist.run", spanAttrs, evt.durationMs, {
             parentContext: activeTrustedParentContext(evt, metadata),
             endTimeMs: evt.ts,
           });
@@ -3246,16 +3264,16 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       };
 
       const harnessRunMetricAttrs = (evt: HarnessRunDiagnosticEvent) => ({
-        "openclaw.harness.id": lowCardinalityAttr(evt.harnessId, "unknown"),
-        "openclaw.harness.plugin": lowCardinalityAttr(evt.pluginId),
+        "nodoassist.harness.id": lowCardinalityAttr(evt.harnessId, "unknown"),
+        "nodoassist.harness.plugin": lowCardinalityAttr(evt.pluginId),
         ...(evt.type === "harness.run.started"
           ? {}
           : {
-              "openclaw.outcome": evt.type === "harness.run.error" ? "error" : evt.outcome,
+              "nodoassist.outcome": evt.type === "harness.run.error" ? "error" : evt.outcome,
             }),
-        "openclaw.provider": lowCardinalityAttr(evt.provider, "unknown"),
-        "openclaw.model": lowCardinalityAttr(evt.model, "unknown"),
-        ...(evt.channel ? { "openclaw.channel": lowCardinalityAttr(evt.channel) } : {}),
+        "nodoassist.provider": lowCardinalityAttr(evt.provider, "unknown"),
+        "nodoassist.model": lowCardinalityAttr(evt.model, "unknown"),
+        ...(evt.channel ? { "nodoassist.channel": lowCardinalityAttr(evt.channel) } : {}),
       });
 
       const recordHarnessRunStarted = (
@@ -3268,7 +3286,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         trackTrustedSpan(
           evt,
           metadata,
-          spanWithDuration("openclaw.harness.run", harnessRunMetricAttrs(evt), undefined, {
+          spanWithDuration("nodoassist.harness.run", harnessRunMetricAttrs(evt), undefined, {
             parentContext: activeTrustedParentContext(evt, metadata),
             startTimeMs: evt.ts,
           }),
@@ -3288,22 +3306,22 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           ...harnessRunMetricAttrs(evt),
         };
         if (evt.resultClassification) {
-          spanAttrs["openclaw.harness.result_classification"] = lowCardinalityAttr(
+          spanAttrs["nodoassist.harness.result_classification"] = lowCardinalityAttr(
             evt.resultClassification,
           );
         }
         if (typeof evt.yieldDetected === "boolean") {
-          spanAttrs["openclaw.harness.yield_detected"] = evt.yieldDetected;
+          spanAttrs["nodoassist.harness.yield_detected"] = evt.yieldDetected;
         }
         if (evt.itemLifecycle) {
-          spanAttrs["openclaw.harness.items.started"] = evt.itemLifecycle.startedCount;
-          spanAttrs["openclaw.harness.items.completed"] = evt.itemLifecycle.completedCount;
-          spanAttrs["openclaw.harness.items.active"] = evt.itemLifecycle.activeCount;
+          spanAttrs["nodoassist.harness.items.started"] = evt.itemLifecycle.startedCount;
+          spanAttrs["nodoassist.harness.items.completed"] = evt.itemLifecycle.completedCount;
+          spanAttrs["nodoassist.harness.items.active"] = evt.itemLifecycle.activeCount;
         }
         // Redacted message goes on the span only, never the low-cardinality metric attrs.
         const redactedError = normalizeOtelErrorMessage(privateData.errorMessage);
         if (redactedError) {
-          spanAttrs["openclaw.error"] = redactedError;
+          spanAttrs["nodoassist.error"] = redactedError;
         }
         const trustedTrace = trustedTraceContext(evt, metadata);
         const trackedSpan = trustedTrace?.spanId
@@ -3311,7 +3329,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           : undefined;
         const span =
           trackedSpan ??
-          spanWithDuration("openclaw.harness.run", spanAttrs, evt.durationMs, {
+          spanWithDuration("nodoassist.harness.run", spanAttrs, evt.durationMs, {
             parentContext: activeTrustedParentContext(evt, metadata),
             endTimeMs: evt.ts,
           });
@@ -3337,8 +3355,8 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         const errorType = lowCardinalityAttr(evt.errorCategory, "other");
         const attrs = {
           ...harnessRunMetricAttrs(evt),
-          "openclaw.harness.phase": evt.phase,
-          "openclaw.errorCategory": errorType,
+          "nodoassist.harness.phase": evt.phase,
+          "nodoassist.errorCategory": errorType,
         };
         harnessDurationHistogram.record(evt.durationMs, attrs);
         if (!tracesEnabled) {
@@ -3349,12 +3367,12 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         const spanAttrs: Record<string, string | number | boolean> = {
           ...attrs,
           "error.type": errorType,
-          ...(redactedError ? { "openclaw.error": redactedError } : {}),
-          ...(evt.cleanupFailed ? { "openclaw.harness.cleanup_failed": true } : {}),
+          ...(redactedError ? { "nodoassist.error": redactedError } : {}),
+          ...(evt.cleanupFailed ? { "nodoassist.harness.cleanup_failed": true } : {}),
         };
         const span =
           takeTrackedTrustedSpan(evt, metadata) ??
-          spanWithDuration("openclaw.harness.run", spanAttrs, evt.durationMs, {
+          spanWithDuration("nodoassist.harness.run", spanAttrs, evt.durationMs, {
             parentContext: activeTrustedParentContext(evt, metadata),
             endTimeMs: evt.ts,
           });
@@ -3374,22 +3392,22 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           return;
         }
         const spanAttrs: Record<string, string | number | boolean> = {
-          "openclaw.context.message_count": evt.messageCount,
-          "openclaw.context.history_text_chars": evt.historyTextChars,
-          "openclaw.context.history_image_blocks": evt.historyImageBlocks,
-          "openclaw.context.max_message_text_chars": evt.maxMessageTextChars,
-          "openclaw.context.system_prompt_chars": evt.systemPromptChars,
-          "openclaw.context.prompt_chars": evt.promptChars,
-          "openclaw.context.prompt_images": evt.promptImages,
+          "nodoassist.context.message_count": evt.messageCount,
+          "nodoassist.context.history_text_chars": evt.historyTextChars,
+          "nodoassist.context.history_image_blocks": evt.historyImageBlocks,
+          "nodoassist.context.max_message_text_chars": evt.maxMessageTextChars,
+          "nodoassist.context.system_prompt_chars": evt.systemPromptChars,
+          "nodoassist.context.prompt_chars": evt.promptChars,
+          "nodoassist.context.prompt_images": evt.promptImages,
         };
         addRunAttrs(spanAttrs, evt);
         if (evt.contextTokenBudget !== undefined) {
-          spanAttrs["openclaw.context.token_budget"] = evt.contextTokenBudget;
+          spanAttrs["nodoassist.context.token_budget"] = evt.contextTokenBudget;
         }
         if (evt.reserveTokens !== undefined) {
-          spanAttrs["openclaw.context.reserve_tokens"] = evt.reserveTokens;
+          spanAttrs["nodoassist.context.reserve_tokens"] = evt.reserveTokens;
         }
-        const span = spanWithDuration("openclaw.context.assembled", spanAttrs, 0, {
+        const span = spanWithDuration("nodoassist.context.assembled", spanAttrs, 0, {
           parentContext: activeTrustedParentContext(evt, metadata),
           endTimeMs: evt.ts,
         });
@@ -3401,44 +3419,44 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         metadata: DiagnosticEventMetadata,
       ) => {
         const metricAttrs: Record<string, string> = {
-          "openclaw.failover.reason": lowCardinalityAttr(evt.reason, "unknown"),
-          "openclaw.failover.suspended":
+          "nodoassist.failover.reason": lowCardinalityAttr(evt.reason, "unknown"),
+          "nodoassist.failover.suspended":
             evt.suspended === undefined ? "unknown" : String(evt.suspended),
-          "openclaw.lane": lowCardinalityQueueLaneAttr(evt.lane, "unknown"),
-          "openclaw.model": lowCardinalityAttr(evt.fromModel),
-          "openclaw.provider": lowCardinalityAttr(evt.fromProvider),
-          "openclaw.failover.to_model": lowCardinalityAttr(evt.toModel),
-          "openclaw.failover.to_provider": lowCardinalityAttr(evt.toProvider),
+          "nodoassist.lane": lowCardinalityQueueLaneAttr(evt.lane, "unknown"),
+          "nodoassist.model": lowCardinalityAttr(evt.fromModel),
+          "nodoassist.provider": lowCardinalityAttr(evt.fromProvider),
+          "nodoassist.failover.to_model": lowCardinalityAttr(evt.toModel),
+          "nodoassist.failover.to_provider": lowCardinalityAttr(evt.toProvider),
         };
         modelFailoverCounter.add(1, metricAttrs);
         if (!tracesEnabled) {
           return;
         }
         const spanAttrs: Record<string, string | number | boolean> = {
-          "openclaw.failover.reason": lowCardinalityAttr(evt.reason, "unknown"),
+          "nodoassist.failover.reason": lowCardinalityAttr(evt.reason, "unknown"),
         };
         if (evt.fromProvider) {
-          spanAttrs["openclaw.provider"] = evt.fromProvider;
+          spanAttrs["nodoassist.provider"] = evt.fromProvider;
         }
         if (evt.fromModel) {
-          spanAttrs["openclaw.model"] = evt.fromModel;
+          spanAttrs["nodoassist.model"] = evt.fromModel;
         }
         if (evt.toProvider) {
-          spanAttrs["openclaw.failover.to_provider"] = evt.toProvider;
+          spanAttrs["nodoassist.failover.to_provider"] = evt.toProvider;
         }
         if (evt.toModel) {
-          spanAttrs["openclaw.failover.to_model"] = evt.toModel;
+          spanAttrs["nodoassist.failover.to_model"] = evt.toModel;
         }
         if (evt.lane) {
-          spanAttrs["openclaw.lane"] = lowCardinalityQueueLaneAttr(evt.lane, "unknown");
+          spanAttrs["nodoassist.lane"] = lowCardinalityQueueLaneAttr(evt.lane, "unknown");
         }
         if (evt.suspended !== undefined) {
-          spanAttrs["openclaw.failover.suspended"] = evt.suspended;
+          spanAttrs["nodoassist.failover.suspended"] = evt.suspended;
         }
         if (evt.cascadeDepth !== undefined) {
-          spanAttrs["openclaw.failover.cascade_depth"] = evt.cascadeDepth;
+          spanAttrs["nodoassist.failover.cascade_depth"] = evt.cascadeDepth;
         }
-        const span = spanWithDuration("openclaw.model.failover", spanAttrs, 0, {
+        const span = spanWithDuration("nodoassist.model.failover", spanAttrs, 0, {
           parentContext: activeTrustedParentContext(evt, metadata),
           endTimeMs: evt.ts,
         });
@@ -3446,10 +3464,10 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       };
 
       const modelCallMetricAttrs = (evt: ModelCallLifecycleDiagnosticEvent) => ({
-        "openclaw.provider": evt.provider,
-        "openclaw.model": evt.model,
-        "openclaw.api": lowCardinalityAttr(evt.api),
-        "openclaw.transport": lowCardinalityAttr(evt.transport),
+        "nodoassist.provider": evt.provider,
+        "nodoassist.model": evt.model,
+        "nodoassist.api": lowCardinalityAttr(evt.api),
+        "nodoassist.transport": lowCardinalityAttr(evt.transport),
       });
       const genAiModelCallMetricAttrs = (
         evt: ModelCallLifecycleDiagnosticEvent,
@@ -3486,15 +3504,15 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           return;
         }
         const spanAttrs: Record<string, string | number | boolean> = {
-          "openclaw.provider": evt.provider,
-          "openclaw.model": evt.model,
+          "nodoassist.provider": evt.provider,
+          "nodoassist.model": evt.model,
         };
         assignGenAiModelCallAttrs(spanAttrs, evt);
         if (evt.api) {
-          spanAttrs["openclaw.api"] = evt.api;
+          spanAttrs["nodoassist.api"] = evt.api;
         }
         if (evt.transport) {
-          spanAttrs["openclaw.transport"] = evt.transport;
+          spanAttrs["nodoassist.transport"] = evt.transport;
         }
         assignModelCallPromptStatsAttrs(spanAttrs, evt);
         trackTrustedSpan(
@@ -3524,15 +3542,15 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           return;
         }
         const spanAttrs: Record<string, string | number | boolean> = {
-          "openclaw.provider": evt.provider,
-          "openclaw.model": evt.model,
+          "nodoassist.provider": evt.provider,
+          "nodoassist.model": evt.model,
         };
         assignGenAiModelCallAttrs(spanAttrs, evt);
         if (evt.api) {
-          spanAttrs["openclaw.api"] = evt.api;
+          spanAttrs["nodoassist.api"] = evt.api;
         }
         if (evt.transport) {
-          spanAttrs["openclaw.transport"] = evt.transport;
+          spanAttrs["nodoassist.transport"] = evt.transport;
         }
         assignModelCallSizeTimingAttrs(spanAttrs, evt);
         assignModelCallPromptStatsAttrs(spanAttrs, evt);
@@ -3558,9 +3576,9 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         const errorType = lowCardinalityAttr(evt.errorCategory, "other");
         const metricAttrs = {
           ...modelCallMetricAttrs(evt),
-          "openclaw.errorCategory": errorType,
+          "nodoassist.errorCategory": errorType,
           ...(evt.failureKind
-            ? { "openclaw.failureKind": lowCardinalityAttr(evt.failureKind, "other") }
+            ? { "nodoassist.failureKind": lowCardinalityAttr(evt.failureKind, "other") }
             : {}),
         };
         modelCallDurationHistogram.record(evt.durationMs, metricAttrs);
@@ -3573,20 +3591,20 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           return;
         }
         const spanAttrs: Record<string, string | number | boolean> = {
-          "openclaw.provider": evt.provider,
-          "openclaw.model": evt.model,
-          "openclaw.errorCategory": errorType,
+          "nodoassist.provider": evt.provider,
+          "nodoassist.model": evt.model,
+          "nodoassist.errorCategory": errorType,
           "error.type": errorType,
         };
         if (evt.failureKind) {
-          spanAttrs["openclaw.failureKind"] = lowCardinalityAttr(evt.failureKind, "other");
+          spanAttrs["nodoassist.failureKind"] = lowCardinalityAttr(evt.failureKind, "other");
         }
         assignGenAiModelCallAttrs(spanAttrs, evt);
         if (evt.api) {
-          spanAttrs["openclaw.api"] = evt.api;
+          spanAttrs["nodoassist.api"] = evt.api;
         }
         if (evt.transport) {
-          spanAttrs["openclaw.transport"] = evt.transport;
+          spanAttrs["nodoassist.transport"] = evt.transport;
         }
         assignModelCallSizeTimingAttrs(spanAttrs, evt);
         assignModelCallPromptStatsAttrs(spanAttrs, evt);
@@ -3620,21 +3638,23 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           }
         >,
       ): Record<string, string | number | boolean> => ({
-        "openclaw.toolName": evt.toolName,
-        "openclaw.tool.source": lowCardinalityAttr(evt.toolSource, "core"),
+        "nodoassist.toolName": evt.toolName,
+        "nodoassist.tool.source": lowCardinalityAttr(evt.toolSource, "core"),
         "gen_ai.tool.name": evt.toolName,
-        ...(evt.toolOwner ? { "openclaw.tool.owner": lowCardinalityAttr(evt.toolOwner) } : {}),
+        ...(evt.toolOwner ? { "nodoassist.tool.owner": lowCardinalityAttr(evt.toolOwner) } : {}),
         ...paramsSummaryAttrs(evt.paramsSummary),
       });
 
       const skillUsedAttrs = (
         evt: Extract<DiagnosticEventPayload, { type: "skill.used" }>,
       ): Record<string, string | number | boolean> => ({
-        "openclaw.skill.name": lowCardinalityAttr(evt.skillName, "skill"),
-        "openclaw.skill.source": lowCardinalityAttr(evt.skillSource),
-        "openclaw.skill.activation": lowCardinalityAttr(evt.activation),
-        ...(evt.agentId ? { "openclaw.agent": lowCardinalityAttr(evt.agentId) } : {}),
-        ...(evt.toolName ? { "openclaw.toolName": lowCardinalityAttr(evt.toolName, "tool") } : {}),
+        "nodoassist.skill.name": lowCardinalityAttr(evt.skillName, "skill"),
+        "nodoassist.skill.source": lowCardinalityAttr(evt.skillSource),
+        "nodoassist.skill.activation": lowCardinalityAttr(evt.activation),
+        ...(evt.agentId ? { "nodoassist.agent": lowCardinalityAttr(evt.agentId) } : {}),
+        ...(evt.toolName
+          ? { "nodoassist.toolName": lowCardinalityAttr(evt.toolName, "tool") }
+          : {}),
       });
 
       const recordSkillUsed = (
@@ -3651,7 +3671,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         }
         const spanAttrs: Record<string, string | number | boolean> = { ...attrs };
         addRunAttrs(spanAttrs, evt);
-        const span = spanWithDuration("openclaw.skill.used", spanAttrs, 0, {
+        const span = spanWithDuration("nodoassist.skill.used", spanAttrs, 0, {
           parentContext: activeTrustedParentContext(evt, metadata),
           endTimeMs: evt.ts,
         });
@@ -3671,7 +3691,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         trackTrustedSpan(
           evt,
           metadata,
-          spanWithDuration("openclaw.tool.execution", spanAttrs, undefined, {
+          spanWithDuration("nodoassist.tool.execution", spanAttrs, undefined, {
             parentContext: activeTrustedParentContext(evt, metadata),
             startTimeMs: evt.ts,
           }),
@@ -3694,7 +3714,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         assignOtelToolContentAttributes(spanAttrs, toolContent, contentCapturePolicy);
         const span =
           takeTrackedTrustedSpan(evt, metadata) ??
-          spanWithDuration("openclaw.tool.execution", spanAttrs, evt.durationMs, {
+          spanWithDuration("nodoassist.tool.execution", spanAttrs, evt.durationMs, {
             parentContext: activeTrustedParentContext(evt, metadata),
             endTimeMs: evt.ts,
           });
@@ -3709,7 +3729,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       ) => {
         const attrs = {
           ...toolExecutionBaseAttrs(evt),
-          "openclaw.errorCategory": lowCardinalityAttr(evt.errorCategory, "other"),
+          "nodoassist.errorCategory": lowCardinalityAttr(evt.errorCategory, "other"),
         };
         toolExecutionDurationHistogram.record(evt.durationMs, attrs);
         if (!tracesEnabled) {
@@ -3719,12 +3739,12 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         addRunAttrs(spanAttrs, evt);
         assignOtelToolIdentityAttributes(spanAttrs, evt);
         if (evt.errorCode) {
-          spanAttrs["openclaw.errorCode"] = lowCardinalityAttr(evt.errorCode, "other");
+          spanAttrs["nodoassist.errorCode"] = lowCardinalityAttr(evt.errorCode, "other");
         }
         assignOtelToolContentAttributes(spanAttrs, toolContent, contentCapturePolicy);
         const span =
           takeTrackedTrustedSpan(evt, metadata) ??
-          spanWithDuration("openclaw.tool.execution", spanAttrs, evt.durationMs, {
+          spanWithDuration("nodoassist.tool.execution", spanAttrs, evt.durationMs, {
             parentContext: activeTrustedParentContext(evt, metadata),
             endTimeMs: evt.ts,
           });
@@ -3742,19 +3762,19 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       ) => {
         toolExecutionBlockedCounter.add(1, {
           ...toolExecutionBaseAttrs(evt),
-          "openclaw.deniedReason": lowCardinalityAttr(evt.deniedReason, "other"),
+          "nodoassist.deniedReason": lowCardinalityAttr(evt.deniedReason, "other"),
         });
         if (!tracesEnabled) {
           return;
         }
         const spanAttrs: Record<string, string | number | boolean> = {
           ...toolExecutionBaseAttrs(evt),
-          "openclaw.outcome": "blocked",
-          "openclaw.deniedReason": lowCardinalityAttr(evt.deniedReason, "other"),
+          "nodoassist.outcome": "blocked",
+          "nodoassist.deniedReason": lowCardinalityAttr(evt.deniedReason, "other"),
         };
         addRunAttrs(spanAttrs, evt);
         assignOtelToolIdentityAttributes(spanAttrs, evt);
-        const span = spanWithDuration("openclaw.tool.execution", spanAttrs, 0, {
+        const span = spanWithDuration("nodoassist.tool.execution", spanAttrs, 0, {
           parentContext: activeTrustedParentContext(evt, metadata),
           endTimeMs: evt.ts,
         });
@@ -3766,11 +3786,11 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "payload.large" }>,
       ) => {
         const attrs = {
-          "openclaw.payload.action": evt.action,
-          "openclaw.payload.surface": lowCardinalityAttr(evt.surface, "unknown"),
-          "openclaw.channel": lowCardinalityAttr(evt.channel, "none"),
-          "openclaw.plugin": lowCardinalityAttr(evt.pluginId, "none"),
-          "openclaw.reason": lowCardinalityAttr(evt.reason, "none"),
+          "nodoassist.payload.action": evt.action,
+          "nodoassist.payload.surface": lowCardinalityAttr(evt.surface, "unknown"),
+          "nodoassist.channel": lowCardinalityAttr(evt.channel, "none"),
+          "nodoassist.plugin": lowCardinalityAttr(evt.pluginId, "none"),
+          "nodoassist.reason": lowCardinalityAttr(evt.reason, "none"),
         };
         payloadLargeCounter.add(1, attrs);
         const bytes = positiveFiniteNumber(evt.bytes);
@@ -3783,12 +3803,12 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         evt: Extract<DiagnosticEventPayload, { type: "exec.process.completed" }>,
       ) => {
         const attrs: Record<string, string | number> = {
-          "openclaw.exec.target": evt.target,
-          "openclaw.exec.mode": evt.mode,
-          "openclaw.outcome": evt.outcome,
+          "nodoassist.exec.target": evt.target,
+          "nodoassist.exec.mode": evt.mode,
+          "nodoassist.outcome": evt.outcome,
         };
         if (evt.failureKind) {
-          attrs["openclaw.failureKind"] = evt.failureKind;
+          attrs["nodoassist.failureKind"] = evt.failureKind;
         }
         execProcessDurationHistogram.record(evt.durationMs, attrs);
         if (!tracesEnabled) {
@@ -3797,19 +3817,19 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
 
         const spanAttrs: Record<string, string | number | boolean> = {
           ...attrs,
-          "openclaw.exec.command_length": evt.commandLength,
+          "nodoassist.exec.command_length": evt.commandLength,
         };
         if (typeof evt.exitCode === "number") {
-          spanAttrs["openclaw.exec.exit_code"] = evt.exitCode;
+          spanAttrs["nodoassist.exec.exit_code"] = evt.exitCode;
         }
         if (evt.exitSignal) {
-          spanAttrs["openclaw.exec.exit_signal"] = lowCardinalityAttr(evt.exitSignal, "other");
+          spanAttrs["nodoassist.exec.exit_signal"] = lowCardinalityAttr(evt.exitSignal, "other");
         }
         if (evt.timedOut !== undefined) {
-          spanAttrs["openclaw.exec.timed_out"] = evt.timedOut;
+          spanAttrs["nodoassist.exec.timed_out"] = evt.timedOut;
         }
 
-        const span = spanWithDuration("openclaw.exec", spanAttrs, evt.durationMs, {
+        const span = spanWithDuration("nodoassist.exec", spanAttrs, evt.durationMs, {
           endTimeMs: evt.ts,
         });
         if (evt.outcome === "failed") {
@@ -3824,7 +3844,7 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       const recordHeartbeat = (
         evt: Extract<DiagnosticEventPayload, { type: "diagnostic.heartbeat" }>,
       ) => {
-        queueDepthHistogram.record(evt.queued, { "openclaw.channel": "heartbeat" });
+        queueDepthHistogram.record(evt.queued, { "nodoassist.channel": "heartbeat" });
       };
 
       const recordLivenessWarning = (
@@ -3832,10 +3852,10 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
       ) => {
         const reason = evt.reasons.join(":");
         const attrs = {
-          "openclaw.liveness.reason": lowCardinalityAttr(reason, "unknown"),
+          "nodoassist.liveness.reason": lowCardinalityAttr(reason, "unknown"),
         };
         livenessWarningCounter.add(1, attrs);
-        queueDepthHistogram.record(evt.queued, { "openclaw.channel": "liveness" });
+        queueDepthHistogram.record(evt.queued, { "nodoassist.channel": "liveness" });
         if (evt.eventLoopDelayP99Ms !== undefined) {
           livenessEventLoopDelayP99Histogram.record(evt.eventLoopDelayP99Ms, attrs);
         }
@@ -3853,33 +3873,33 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
         }
         const spanAttrs: Record<string, string | number> = {
           ...attrs,
-          "openclaw.liveness.active": evt.active,
-          "openclaw.liveness.waiting": evt.waiting,
-          "openclaw.liveness.queued": evt.queued,
-          "openclaw.liveness.interval_ms": evt.intervalMs,
+          "nodoassist.liveness.active": evt.active,
+          "nodoassist.liveness.waiting": evt.waiting,
+          "nodoassist.liveness.queued": evt.queued,
+          "nodoassist.liveness.interval_ms": evt.intervalMs,
           ...(evt.eventLoopDelayP99Ms !== undefined
-            ? { "openclaw.liveness.event_loop_delay_p99_ms": evt.eventLoopDelayP99Ms }
+            ? { "nodoassist.liveness.event_loop_delay_p99_ms": evt.eventLoopDelayP99Ms }
             : {}),
           ...(evt.eventLoopDelayMaxMs !== undefined
-            ? { "openclaw.liveness.event_loop_delay_max_ms": evt.eventLoopDelayMaxMs }
+            ? { "nodoassist.liveness.event_loop_delay_max_ms": evt.eventLoopDelayMaxMs }
             : {}),
           ...(evt.eventLoopUtilization !== undefined
-            ? { "openclaw.liveness.event_loop_utilization": evt.eventLoopUtilization }
+            ? { "nodoassist.liveness.event_loop_utilization": evt.eventLoopUtilization }
             : {}),
           ...(evt.cpuUserMs !== undefined
-            ? { "openclaw.liveness.cpu_user_ms": evt.cpuUserMs }
+            ? { "nodoassist.liveness.cpu_user_ms": evt.cpuUserMs }
             : {}),
           ...(evt.cpuSystemMs !== undefined
-            ? { "openclaw.liveness.cpu_system_ms": evt.cpuSystemMs }
+            ? { "nodoassist.liveness.cpu_system_ms": evt.cpuSystemMs }
             : {}),
           ...(evt.cpuTotalMs !== undefined
-            ? { "openclaw.liveness.cpu_total_ms": evt.cpuTotalMs }
+            ? { "nodoassist.liveness.cpu_total_ms": evt.cpuTotalMs }
             : {}),
           ...(evt.cpuCoreRatio !== undefined
-            ? { "openclaw.liveness.cpu_core_ratio": evt.cpuCoreRatio }
+            ? { "nodoassist.liveness.cpu_core_ratio": evt.cpuCoreRatio }
             : {}),
         };
-        const span = spanWithDuration("openclaw.liveness.warning", spanAttrs, 0, {
+        const span = spanWithDuration("nodoassist.liveness.warning", spanAttrs, 0, {
           endTimeMs: evt.ts,
         });
         span.setStatus({
@@ -3896,23 +3916,23 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           return;
         }
         const spanAttrs: Record<string, string | number> = {
-          "openclaw.phase": lowCardinalityAttr(evt.name, "unknown"),
-          ...(evt.cpuUserMs !== undefined ? { "openclaw.phase.cpu_user_ms": evt.cpuUserMs } : {}),
+          "nodoassist.phase": lowCardinalityAttr(evt.name, "unknown"),
+          ...(evt.cpuUserMs !== undefined ? { "nodoassist.phase.cpu_user_ms": evt.cpuUserMs } : {}),
           ...(evt.cpuSystemMs !== undefined
-            ? { "openclaw.phase.cpu_system_ms": evt.cpuSystemMs }
+            ? { "nodoassist.phase.cpu_system_ms": evt.cpuSystemMs }
             : {}),
           ...(evt.cpuTotalMs !== undefined
-            ? { "openclaw.phase.cpu_total_ms": evt.cpuTotalMs }
+            ? { "nodoassist.phase.cpu_total_ms": evt.cpuTotalMs }
             : {}),
           ...(evt.cpuCoreRatio !== undefined
-            ? { "openclaw.phase.cpu_core_ratio": evt.cpuCoreRatio }
+            ? { "nodoassist.phase.cpu_core_ratio": evt.cpuCoreRatio }
             : {}),
         };
         for (const [key, value] of Object.entries(evt.details ?? {})) {
-          spanAttrs[`openclaw.phase.detail.${key}`] =
+          spanAttrs[`nodoassist.phase.detail.${key}`] =
             typeof value === "boolean" ? String(value) : value;
         }
-        const span = spanWithDuration("openclaw.diagnostic.phase", spanAttrs, evt.durationMs, {
+        const span = spanWithDuration("nodoassist.diagnostic.phase", spanAttrs, evt.durationMs, {
           endTimeMs: evt.ts,
         });
         span.end(evt.ts);
@@ -3926,12 +3946,12 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
           return;
         }
         telemetryExporterCounter.add(1, {
-          "openclaw.exporter": lowCardinalityAttr(evt.exporter, "unknown"),
-          "openclaw.signal": evt.signal,
-          "openclaw.status": evt.status,
-          ...(evt.reason ? { "openclaw.reason": evt.reason } : {}),
+          "nodoassist.exporter": lowCardinalityAttr(evt.exporter, "unknown"),
+          "nodoassist.signal": evt.signal,
+          "nodoassist.status": evt.status,
+          ...(evt.reason ? { "nodoassist.reason": evt.reason } : {}),
           ...(evt.errorCategory
-            ? { "openclaw.errorCategory": lowCardinalityAttr(evt.errorCategory, "other") }
+            ? { "nodoassist.errorCategory": lowCardinalityAttr(evt.errorCategory, "other") }
             : {}),
         });
       };
@@ -4134,5 +4154,5 @@ export function createDiagnosticsOtelService(): OpenClawPluginService {
     async stop() {
       await stopStarted();
     },
-  } satisfies OpenClawPluginService;
+  } satisfies NodoAssistPluginService;
 }

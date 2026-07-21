@@ -50,7 +50,7 @@ flow:
                   conversation: { id: telegram-command-room, kind: channel }
                   senderId: qa-command-operator
                   senderName: QA Command Operator
-                  text: /status@openclaw
+                  text: /status@nodoassist
               - waitForNoOutbound:
                   quietMs: 8000
                   sinceIndex: { ref: deniedStart }
@@ -68,7 +68,7 @@ flow:
             conversation: { id: telegram-command-room, kind: channel }
             senderId: qa-command-operator
             senderName: QA Command Operator
-            text: /status@openclaw
+            text: /status@nodoassist
         - waitForOutbound:
             conversation: { id: telegram-command-room, kind: channel }
             textIncludes: "Session:"
@@ -77,7 +77,7 @@ flow:
             conversation: { id: telegram-command-room, kind: channel }
             senderId: qa-command-operator
             senderName: QA Command Operator
-            text: /help@openclaw
+            text: /help@nodoassist
         - waitForOutbound:
             conversation: { id: telegram-command-room, kind: channel }
             textIncludes: /commands for full list
@@ -86,7 +86,7 @@ flow:
             conversation: { id: telegram-command-room, kind: channel }
             senderId: qa-command-operator
             senderName: QA Command Operator
-            text: /commands@openclaw
+            text: /commands@nodoassist
         - waitForOutbound:
             conversation: { id: telegram-command-room, kind: channel }
             textIncludes: /stop

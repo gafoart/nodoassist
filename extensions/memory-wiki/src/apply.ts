@@ -3,10 +3,10 @@ import path from "node:path";
 import {
   replaceManagedMarkdownBlock,
   withTrailingNewline,
-} from "openclaw/plugin-sdk/memory-host-markdown";
-import { readFiniteNumberParam } from "openclaw/plugin-sdk/param-readers";
-import { FsSafeError, root as fsRoot } from "openclaw/plugin-sdk/security-runtime";
-import { normalizeStringEntries, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/memory-host-markdown";
+import { readFiniteNumberParam } from "nodoassist/plugin-sdk/param-readers";
+import { FsSafeError, root as fsRoot } from "nodoassist/plugin-sdk/security-runtime";
+import { normalizeStringEntries, uniqueStrings } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { compileMemoryWikiVault, type CompileMemoryWikiResult } from "./compile.js";
 import type { ResolvedMemoryWikiConfig } from "./config.js";
 import {
@@ -25,10 +25,10 @@ import {
 } from "./query.js";
 import { initializeMemoryWikiVault } from "./vault.js";
 
-const GENERATED_START = "<!-- openclaw:wiki:generated:start -->";
-const GENERATED_END = "<!-- openclaw:wiki:generated:end -->";
-const HUMAN_START = "<!-- openclaw:human:start -->";
-const HUMAN_END = "<!-- openclaw:human:end -->";
+const GENERATED_START = "<!-- nodoassist:wiki:generated:start -->";
+const GENERATED_END = "<!-- nodoassist:wiki:generated:end -->";
+const HUMAN_START = "<!-- nodoassist:human:start -->";
+const HUMAN_END = "<!-- nodoassist:human:end -->";
 
 type CreateSynthesisMemoryWikiMutation = {
   op: "create_synthesis";

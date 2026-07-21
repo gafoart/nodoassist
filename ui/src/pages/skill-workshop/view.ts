@@ -109,7 +109,7 @@ export function renderSkillWorkshop(props: SkillWorkshopProps) {
     </section>
     ${preview && selected
       ? html`
-          <openclaw-file-preview-modal
+          <nodoassist-file-preview-modal
             .files=${selected.supportFiles}
             .activePath=${preview.path}
             .query=${props.filePreviewQuery}
@@ -119,7 +119,7 @@ export function renderSkillWorkshop(props: SkillWorkshopProps) {
             @file-preview-select=${(event: CustomEvent<string>) =>
               props.onPreviewFile(selected.key, event.detail)}
             @file-preview-close=${props.onClosePreview}
-          ></openclaw-file-preview-modal>
+          ></nodoassist-file-preview-modal>
         `
       : nothing}
     ${revisionProposal ? renderRevisionDialog(props, revisionProposal) : nothing}
@@ -145,7 +145,7 @@ function renderRevisionDialog(props: SkillWorkshopProps, proposal: SkillWorkshop
             <div class="sw-revision-dialog__eyebrow">${verb} proposal</div>
             <h2 id="sw-revision-title">${proposal.slug}</h2>
           </div>
-          <openclaw-tooltip content="Close">
+          <nodoassist-tooltip content="Close">
             <button
               class="sw-revision-dialog__close"
               aria-label="Close"
@@ -154,7 +154,7 @@ function renderRevisionDialog(props: SkillWorkshopProps, proposal: SkillWorkshop
             >
               ×
             </button>
-          </openclaw-tooltip>
+          </nodoassist-tooltip>
         </div>
         <p class="sw-revision-dialog__copy">
           Tell the agent what should change. The proposal stays pending and the workshop will create
@@ -372,12 +372,12 @@ function renderDetail(props: SkillWorkshopProps, proposal: SkillWorkshopProposal
           </div>
         </div>
         <div class="sw-detail__nav">
-          <openclaw-tooltip content="Previous">
+          <nodoassist-tooltip content="Previous">
             <button aria-label="Previous" @click=${props.onPrev}>↑</button>
-          </openclaw-tooltip>
-          <openclaw-tooltip content="Next">
+          </nodoassist-tooltip>
+          <nodoassist-tooltip content="Next">
             <button aria-label="Next" @click=${props.onNext}>↓</button>
-          </openclaw-tooltip>
+          </nodoassist-tooltip>
         </div>
       </div>
 

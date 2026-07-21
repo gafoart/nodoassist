@@ -1,5 +1,5 @@
 ---
-summary: "Setup guide for developers working on the OpenClaw macOS app"
+summary: "Setup guide for developers working on the NodoAssist macOS app"
 read_when:
   - Setting up the macOS development environment
 title: "macOS dev setup"
@@ -7,7 +7,7 @@ title: "macOS dev setup"
 
 # macOS developer setup
 
-Build and run the OpenClaw macOS application from source.
+Build and run the NodoAssist macOS application from source.
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ pnpm install
 ./scripts/package-mac-app.sh
 ```
 
-Outputs `dist/OpenClaw.app`. Without an Apple Developer ID certificate, the
+Outputs `dist/NodoAssist.app`. Without an Apple Developer ID certificate, the
 script falls back to ad-hoc signing.
 
 For dev run modes, signing flags, and Team ID troubleshooting, see
@@ -50,10 +50,10 @@ matching user-space CLI and runtime before starting the Gateway wizard.
 For manual development recovery, install the matching CLI yourself:
 
 ```bash
-npm install -g openclaw@<version>
+npm install -g nodoassist@<version>
 ```
 
-`pnpm add -g openclaw@<version>` and `bun add -g openclaw@<version>` also
+`pnpm add -g nodoassist@<version>` and `bun add -g nodoassist@<version>` also
 work. Node remains the recommended runtime for the Gateway itself.
 
 ## Troubleshooting
@@ -78,7 +78,7 @@ If the app crashes when you try to allow **Speech Recognition** or
 1. Reset TCC permissions for the debug bundle id:
 
    ```bash
-   tccutil reset All ai.openclaw.mac.debug
+   tccutil reset All ai.nodoassist.mac.debug
    ```
 
 2. If that fails, temporarily change `BUNDLE_ID` in
@@ -90,8 +90,8 @@ If the app crashes when you try to allow **Speech Recognition** or
 Check whether a zombie process holds the port:
 
 ```bash
-openclaw gateway status
-openclaw gateway stop
+nodoassist gateway status
+nodoassist gateway stop
 
 # If you're not using a LaunchAgent (dev mode / manual runs), find the listener:
 lsof -nP -iTCP:18789 -sTCP:LISTEN

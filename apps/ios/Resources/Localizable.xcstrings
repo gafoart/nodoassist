@@ -681,138 +681,138 @@
         }
       }
     },
-    "Check OpenClaw status": {
+    "Check NodoAssist status": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Check OpenClaw status"
+            "value": "Check NodoAssist status"
           }
         },
         "zh-CN": {
           "stringUnit": {
             "state": "translated",
-            "value": "检查 OpenClaw 状态"
+            "value": "检查 NodoAssist 状态"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "檢查 OpenClaw 狀態"
+            "value": "檢查 NodoAssist 狀態"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Verificar status do OpenClaw"
+            "value": "Verificar status do NodoAssist"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw-Status prüfen"
+            "value": "NodoAssist-Status prüfen"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Comprobar el estado de OpenClaw"
+            "value": "Comprobar el estado de NodoAssist"
           }
         },
         "ja-JP": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClawのステータスを確認"
+            "value": "NodoAssistのステータスを確認"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw 상태 확인"
+            "value": "NodoAssist 상태 확인"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vérifier l’état d’OpenClaw"
+            "value": "Vérifier l’état d’NodoAssist"
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw की स्थिति जाँचें"
+            "value": "NodoAssist की स्थिति जाँचें"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "التحقق من حالة OpenClaw"
+            "value": "التحقق من حالة NodoAssist"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Controlla lo stato di OpenClaw"
+            "value": "Controlla lo stato di NodoAssist"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw durumunu kontrol et"
+            "value": "NodoAssist durumunu kontrol et"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перевірити стан OpenClaw"
+            "value": "Перевірити стан NodoAssist"
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "Periksa status OpenClaw"
+            "value": "Periksa status NodoAssist"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sprawdź stan OpenClaw"
+            "value": "Sprawdź stan NodoAssist"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ตรวจสอบสถานะ OpenClaw"
+            "value": "ตรวจสอบสถานะ NodoAssist"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kiểm tra trạng thái OpenClaw"
+            "value": "Kiểm tra trạng thái NodoAssist"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw-status controleren"
+            "value": "NodoAssist-status controleren"
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "بررسی وضعیت OpenClaw"
+            "value": "بررسی وضعیت NodoAssist"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Проверить состояние OpenClaw"
+            "value": "Проверить состояние NodoAssist"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kontrollera OpenClaw-status"
+            "value": "Kontrollera NodoAssist-status"
           }
         }
       }
@@ -2993,138 +2993,138 @@
         }
       }
     },
-    "Message OpenClaw": {
+    "Message NodoAssist": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Message OpenClaw"
+            "value": "Message NodoAssist"
           }
         },
         "zh-CN": {
           "stringUnit": {
             "state": "translated",
-            "value": "给 OpenClaw 发消息"
+            "value": "给 NodoAssist 发消息"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "傳訊息給 OpenClaw"
+            "value": "傳訊息給 NodoAssist"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enviar mensagem ao OpenClaw"
+            "value": "Enviar mensagem ao NodoAssist"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw eine Nachricht senden"
+            "value": "NodoAssist eine Nachricht senden"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enviar mensaje a OpenClaw"
+            "value": "Enviar mensaje a NodoAssist"
           }
         },
         "ja-JP": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw にメッセージ"
+            "value": "NodoAssist にメッセージ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw에 메시지 보내기"
+            "value": "NodoAssist에 메시지 보내기"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Envoyer un message à OpenClaw"
+            "value": "Envoyer un message à NodoAssist"
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw को संदेश भेजें"
+            "value": "NodoAssist को संदेश भेजें"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "مراسلة OpenClaw"
+            "value": "مراسلة NodoAssist"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invia un messaggio a OpenClaw"
+            "value": "Invia un messaggio a NodoAssist"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw’a mesaj gönder"
+            "value": "NodoAssist’a mesaj gönder"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Написати в OpenClaw"
+            "value": "Написати в NodoAssist"
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kirim pesan ke OpenClaw"
+            "value": "Kirim pesan ke NodoAssist"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wyślij wiadomość do OpenClaw"
+            "value": "Wyślij wiadomość do NodoAssist"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ส่งข้อความถึง OpenClaw"
+            "value": "ส่งข้อความถึง NodoAssist"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nhắn tin cho OpenClaw"
+            "value": "Nhắn tin cho NodoAssist"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bericht naar OpenClaw"
+            "value": "Bericht naar NodoAssist"
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "پیام به OpenClaw"
+            "value": "پیام به NodoAssist"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Написать OpenClaw"
+            "value": "Написать NodoAssist"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skicka meddelande till OpenClaw"
+            "value": "Skicka meddelande till NodoAssist"
           }
         }
       }
@@ -3673,138 +3673,138 @@
         }
       }
     },
-    "OpenClaw is not connected to a gateway yet.": {
+    "NodoAssist is not connected to a gateway yet.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw is not connected to a gateway yet."
+            "value": "NodoAssist is not connected to a gateway yet."
           }
         },
         "zh-CN": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw 尚未连接到网关。"
+            "value": "NodoAssist 尚未连接到网关。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw 尚未連線到 gateway。"
+            "value": "NodoAssist 尚未連線到 gateway。"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "O OpenClaw ainda não está conectado a um gateway."
+            "value": "O NodoAssist ainda não está conectado a um gateway."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw ist noch nicht mit einem Gateway verbunden."
+            "value": "NodoAssist ist noch nicht mit einem Gateway verbunden."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw aún no está conectado a un gateway."
+            "value": "NodoAssist aún no está conectado a un gateway."
           }
         },
         "ja-JP": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw はまだゲートウェイに接続されていません。"
+            "value": "NodoAssist はまだゲートウェイに接続されていません。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw가 아직 게이트웨이에 연결되어 있지 않습니다."
+            "value": "NodoAssist가 아직 게이트웨이에 연결되어 있지 않습니다."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw n’est pas encore connecté à une passerelle."
+            "value": "NodoAssist n’est pas encore connecté à une passerelle."
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw अभी तक किसी गेटवे से कनेक्ट नहीं है।"
+            "value": "NodoAssist अभी तक किसी गेटवे से कनेक्ट नहीं है।"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw غير متصل ببوابة بعد."
+            "value": "NodoAssist غير متصل ببوابة بعد."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw non è ancora connesso a un gateway."
+            "value": "NodoAssist non è ancora connesso a un gateway."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw henüz bir gateway’e bağlı değil."
+            "value": "NodoAssist henüz bir gateway’e bağlı değil."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw ще не підключено до шлюзу."
+            "value": "NodoAssist ще не підключено до шлюзу."
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw belum terhubung ke gateway."
+            "value": "NodoAssist belum terhubung ke gateway."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw nie jest jeszcze połączony z gatewayem."
+            "value": "NodoAssist nie jest jeszcze połączony z gatewayem."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw ยังไม่ได้เชื่อมต่อกับ gateway"
+            "value": "NodoAssist ยังไม่ได้เชื่อมต่อกับ gateway"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw chưa được kết nối với gateway."
+            "value": "NodoAssist chưa được kết nối với gateway."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw is nog niet verbonden met een gateway."
+            "value": "NodoAssist is nog niet verbonden met een gateway."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw هنوز به gateway متصل نشده است."
+            "value": "NodoAssist هنوز به gateway متصل نشده است."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw еще не подключен к шлюзу."
+            "value": "NodoAssist еще не подключен к шлюзу."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw är inte ansluten till någon gateway ännu."
+            "value": "NodoAssist är inte ansluten till någon gateway ännu."
           }
         }
       }
@@ -4625,410 +4625,410 @@
         }
       }
     },
-    "Send to OpenClaw": {
+    "Send to NodoAssist": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Send to OpenClaw"
+            "value": "Send to NodoAssist"
           }
         },
         "zh-CN": {
           "stringUnit": {
             "state": "translated",
-            "value": "发送到 OpenClaw"
+            "value": "发送到 NodoAssist"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "傳送到 OpenClaw"
+            "value": "傳送到 NodoAssist"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enviar para o OpenClaw"
+            "value": "Enviar para o NodoAssist"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "An OpenClaw senden"
+            "value": "An NodoAssist senden"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enviar a OpenClaw"
+            "value": "Enviar a NodoAssist"
           }
         },
         "ja-JP": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw に送信"
+            "value": "NodoAssist に送信"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw로 보내기"
+            "value": "NodoAssist로 보내기"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Envoyer à OpenClaw"
+            "value": "Envoyer à NodoAssist"
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw को भेजें"
+            "value": "NodoAssist को भेजें"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "إرسال إلى OpenClaw"
+            "value": "إرسال إلى NodoAssist"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invia a OpenClaw"
+            "value": "Invia a NodoAssist"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw’a gönder"
+            "value": "NodoAssist’a gönder"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Надіслати в OpenClaw"
+            "value": "Надіслати в NodoAssist"
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kirim ke OpenClaw"
+            "value": "Kirim ke NodoAssist"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wyślij do OpenClaw"
+            "value": "Wyślij do NodoAssist"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ส่งไปยัง OpenClaw"
+            "value": "ส่งไปยัง NodoAssist"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gửi đến OpenClaw"
+            "value": "Gửi đến NodoAssist"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Naar OpenClaw sturen"
+            "value": "Naar NodoAssist sturen"
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "ارسال به OpenClaw"
+            "value": "ارسال به NodoAssist"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отправить в OpenClaw"
+            "value": "Отправить в NodoAssist"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skicka till OpenClaw"
+            "value": "Skicka till NodoAssist"
           }
         }
       }
     },
-    "Sending to OpenClaw gateway…": {
+    "Sending to NodoAssist gateway…": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sending to OpenClaw gateway…"
+            "value": "Sending to NodoAssist gateway…"
           }
         },
         "zh-CN": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在发送到 OpenClaw 网关…"
+            "value": "正在发送到 NodoAssist 网关…"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在傳送到 OpenClaw gateway…"
+            "value": "正在傳送到 NodoAssist gateway…"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enviando para o gateway OpenClaw…"
+            "value": "Enviando para o gateway NodoAssist…"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wird an OpenClaw-Gateway gesendet…"
+            "value": "Wird an NodoAssist-Gateway gesendet…"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enviando al gateway de OpenClaw…"
+            "value": "Enviando al gateway de NodoAssist…"
           }
         },
         "ja-JP": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw ゲートウェイに送信中…"
+            "value": "NodoAssist ゲートウェイに送信中…"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw 게이트웨이로 보내는 중…"
+            "value": "NodoAssist 게이트웨이로 보내는 중…"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Envoi à la passerelle OpenClaw…"
+            "value": "Envoi à la passerelle NodoAssist…"
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw गेटवे को भेजा जा रहा है…"
+            "value": "NodoAssist गेटवे को भेजा जा रहा है…"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "جارٍ الإرسال إلى بوابة OpenClaw…"
+            "value": "جارٍ الإرسال إلى بوابة NodoAssist…"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invio al gateway OpenClaw…"
+            "value": "Invio al gateway NodoAssist…"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw gateway’ine gönderiliyor…"
+            "value": "NodoAssist gateway’ine gönderiliyor…"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Надсилання до шлюзу OpenClaw…"
+            "value": "Надсилання до шлюзу NodoAssist…"
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mengirim ke gateway OpenClaw…"
+            "value": "Mengirim ke gateway NodoAssist…"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wysyłanie do gatewaya OpenClaw…"
+            "value": "Wysyłanie do gatewaya NodoAssist…"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "กำลังส่งไปยัง gateway ของ OpenClaw…"
+            "value": "กำลังส่งไปยัง gateway ของ NodoAssist…"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đang gửi đến gateway OpenClaw…"
+            "value": "Đang gửi đến gateway NodoAssist…"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Verzenden naar OpenClaw-gateway…"
+            "value": "Verzenden naar NodoAssist-gateway…"
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "در حال ارسال به gateway OpenClaw…"
+            "value": "در حال ارسال به gateway NodoAssist…"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отправка на шлюз OpenClaw…"
+            "value": "Отправка на шлюз NodoAssist…"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skickar till OpenClaw-gateway…"
+            "value": "Skickar till NodoAssist-gateway…"
           }
         }
       }
     },
-    "Sent to OpenClaw.": {
+    "Sent to NodoAssist.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sent to OpenClaw."
+            "value": "Sent to NodoAssist."
           }
         },
         "zh-CN": {
           "stringUnit": {
             "state": "translated",
-            "value": "已发送到 OpenClaw。"
+            "value": "已发送到 NodoAssist。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "已傳送到 OpenClaw。"
+            "value": "已傳送到 NodoAssist。"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enviado para o OpenClaw."
+            "value": "Enviado para o NodoAssist."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "An OpenClaw gesendet."
+            "value": "An NodoAssist gesendet."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enviado a OpenClaw."
+            "value": "Enviado a NodoAssist."
           }
         },
         "ja-JP": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw に送信しました。"
+            "value": "NodoAssist に送信しました。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw로 보냈습니다."
+            "value": "NodoAssist로 보냈습니다."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Envoyé à OpenClaw."
+            "value": "Envoyé à NodoAssist."
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw को भेज दिया गया।"
+            "value": "NodoAssist को भेज दिया गया।"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "تم الإرسال إلى OpenClaw."
+            "value": "تم الإرسال إلى NodoAssist."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inviato a OpenClaw."
+            "value": "Inviato a NodoAssist."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw’a gönderildi."
+            "value": "NodoAssist’a gönderildi."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Надіслано в OpenClaw."
+            "value": "Надіслано в NodoAssist."
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "Terkirim ke OpenClaw."
+            "value": "Terkirim ke NodoAssist."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wysłano do OpenClaw."
+            "value": "Wysłano do NodoAssist."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ส่งไปยัง OpenClaw แล้ว"
+            "value": "ส่งไปยัง NodoAssist แล้ว"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đã gửi đến OpenClaw."
+            "value": "Đã gửi đến NodoAssist."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Verzonden naar OpenClaw."
+            "value": "Verzonden naar NodoAssist."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "به OpenClaw ارسال شد."
+            "value": "به NodoAssist ارسال شد."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отправлено в OpenClaw."
+            "value": "Отправлено в NodoAssist."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skickat till OpenClaw."
+            "value": "Skickat till NodoAssist."
           }
         }
       }
@@ -5305,138 +5305,138 @@
         }
       }
     },
-    "Summarize the current OpenClaw status and tell me what needs attention.": {
+    "Summarize the current NodoAssist status and tell me what needs attention.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Summarize the current OpenClaw status and tell me what needs attention."
+            "value": "Summarize the current NodoAssist status and tell me what needs attention."
           }
         },
         "zh-CN": {
           "stringUnit": {
             "state": "translated",
-            "value": "总结当前的 OpenClaw 状态，并告诉我哪些方面需要注意。"
+            "value": "总结当前的 NodoAssist 状态，并告诉我哪些方面需要注意。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "總結目前的 OpenClaw 狀態，並告訴我哪些方面需要注意。"
+            "value": "總結目前的 NodoAssist 狀態，並告訴我哪些方面需要注意。"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Resuma o status atual do OpenClaw e diga o que precisa de atenção."
+            "value": "Resuma o status atual do NodoAssist e diga o que precisa de atenção."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fasse den aktuellen OpenClaw-Status zusammen und sage mir, was Aufmerksamkeit erfordert."
+            "value": "Fasse den aktuellen NodoAssist-Status zusammen und sage mir, was Aufmerksamkeit erfordert."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Resume el estado actual de OpenClaw y dime qué necesita atención."
+            "value": "Resume el estado actual de NodoAssist y dime qué necesita atención."
           }
         },
         "ja-JP": {
           "stringUnit": {
             "state": "translated",
-            "value": "現在のOpenClawの状態を要約し、注意が必要な点を教えてください。"
+            "value": "現在のNodoAssistの状態を要約し、注意が必要な点を教えてください。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "현재 OpenClaw 상태를 요약하고 주의가 필요한 항목을 알려 주세요."
+            "value": "현재 NodoAssist 상태를 요약하고 주의가 필요한 항목을 알려 주세요."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Résumez l’état actuel d’OpenClaw et indiquez-moi ce qui nécessite mon attention."
+            "value": "Résumez l’état actuel d’NodoAssist et indiquez-moi ce qui nécessite mon attention."
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "OpenClaw की मौजूदा स्थिति का सारांश दें और बताएं कि किन चीज़ों पर ध्यान देने की ज़रूरत है।"
+            "value": "NodoAssist की मौजूदा स्थिति का सारांश दें और बताएं कि किन चीज़ों पर ध्यान देने की ज़रूरत है।"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "لخّص حالة OpenClaw الحالية وأخبرني بما يحتاج إلى الاهتمام."
+            "value": "لخّص حالة NodoAssist الحالية وأخبرني بما يحتاج إلى الاهتمام."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Riassumi lo stato attuale di OpenClaw e dimmi cosa richiede attenzione."
+            "value": "Riassumi lo stato attuale di NodoAssist e dimmi cosa richiede attenzione."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mevcut OpenClaw durumunu özetle ve nelerin ilgilenilmesi gerektiğini söyle."
+            "value": "Mevcut NodoAssist durumunu özetle ve nelerin ilgilenilmesi gerektiğini söyle."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Підсумуй поточний стан OpenClaw і скажи, що потребує уваги."
+            "value": "Підсумуй поточний стан NodoAssist і скажи, що потребує уваги."
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ringkas status OpenClaw saat ini dan beri tahu saya apa yang perlu diperhatikan."
+            "value": "Ringkas status NodoAssist saat ini dan beri tahu saya apa yang perlu diperhatikan."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Podsumuj bieżący stan OpenClaw i powiedz mi, co wymaga uwagi."
+            "value": "Podsumuj bieżący stan NodoAssist i powiedz mi, co wymaga uwagi."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "สรุปสถานะ OpenClaw ปัจจุบันและบอกฉันว่ามีอะไรที่ต้องตรวจสอบ"
+            "value": "สรุปสถานะ NodoAssist ปัจจุบันและบอกฉันว่ามีอะไรที่ต้องตรวจสอบ"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tóm tắt trạng thái OpenClaw hiện tại và cho tôi biết những gì cần chú ý."
+            "value": "Tóm tắt trạng thái NodoAssist hiện tại và cho tôi biết những gì cần chú ý."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vat de huidige OpenClaw-status samen en vertel me wat aandacht nodig heeft."
+            "value": "Vat de huidige NodoAssist-status samen en vertel me wat aandacht nodig heeft."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "وضعیت فعلی OpenClaw را خلاصه کن و بگو چه چیزهایی نیاز به توجه دارند."
+            "value": "وضعیت فعلی NodoAssist را خلاصه کن و بگو چه چیزهایی نیاز به توجه دارند."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Подведи итог текущего состояния OpenClaw и скажи, что требует внимания."
+            "value": "Подведи итог текущего состояния NodoAssist и скажи, что требует внимания."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sammanfatta aktuell OpenClaw-status och berätta vad som behöver uppmärksammas."
+            "value": "Sammanfatta aktuell NodoAssist-status och berätta vad som behöver uppmärksammas."
           }
         }
       }

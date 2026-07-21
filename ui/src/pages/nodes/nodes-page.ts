@@ -302,6 +302,6 @@ class NodesPage extends LitElement implements NodesPageDataState {
   }
 }
 
-if (!customElements.get("openclaw-nodes-page")) {
-  customElements.define("openclaw-nodes-page", NodesPage);
+if (!customElements.get("nodoassist-nodes-page")) {
+  customElements.define("nodoassist-nodes-page", NodesPage);
 }

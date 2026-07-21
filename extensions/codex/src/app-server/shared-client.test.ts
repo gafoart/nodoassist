@@ -23,7 +23,7 @@ const mocks = vi.hoisted(() => ({
   resolveCodexAppServerFallbackApiKeyCacheKey: vi.fn(() => undefined as string | undefined),
   resolveManagedCodexAppServerStartOptions: vi.fn(async (startOptions) => startOptions),
   embeddedAgentLog: { debug: vi.fn(), warn: vi.fn() },
-  resolveDefaultAgentDir: vi.fn(() => "/tmp/openclaw-agent"),
+  resolveDefaultAgentDir: vi.fn(() => "/tmp/nodoassist-agent"),
 }));
 
 vi.mock("./auth-bridge.js", () => ({
@@ -39,12 +39,12 @@ vi.mock("./managed-binary.js", () => ({
   resolveManagedCodexAppServerStartOptions: mocks.resolveManagedCodexAppServerStartOptions,
 }));
 
-vi.mock("openclaw/plugin-sdk/agent-harness-runtime", () => ({
+vi.mock("nodoassist/plugin-sdk/agent-harness-runtime", () => ({
   embeddedAgentLog: mocks.embeddedAgentLog,
-  OPENCLAW_VERSION: "test",
+  NODOASSIST_VERSION: "test",
 }));
 
-vi.mock("openclaw/plugin-sdk/agent-runtime", () => ({
+vi.mock("nodoassist/plugin-sdk/agent-runtime", () => ({
   resolveDefaultAgentDir: mocks.resolveDefaultAgentDir,
 }));
 
@@ -177,7 +177,7 @@ describe("shared Codex app-server client", () => {
     // Model discovery uses the shared-client path, which owns child teardown
     // when initialize discovers an unsupported app-server.
     const listPromise = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(harness, "openclaw/0.117.9 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.117.9 (macOS; test)");
 
     await expect(listPromise).rejects.toThrow(
       `Codex app-server ${MIN_CODEX_APP_SERVER_VERSION} or newer is required`,
@@ -197,12 +197,12 @@ describe("shared Codex app-server client", () => {
       ...startOptions,
       command: "/Applications/Codex.app/Contents/Resources/codex",
       commandSource: "resolved-managed",
-      managedFallbackCommandPaths: ["/cache/openclaw/codex"],
+      managedFallbackCommandPaths: ["/cache/nodoassist/codex"],
     }));
 
     const listPromise = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(desktop, "openclaw/0.124.9 (macOS; test)");
-    await sendInitializeResult(pluginLocal, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(desktop, "nodoassist/0.124.9 (macOS; test)");
+    await sendInitializeResult(pluginLocal, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(pluginLocal);
 
     await expect(listPromise).resolves.toEqual({ models: [] });
@@ -212,10 +212,10 @@ describe("shared Codex app-server client", () => {
     expect(startSpy.mock.calls[0]?.[0]).toMatchObject({
       command: "/Applications/Codex.app/Contents/Resources/codex",
       commandSource: "resolved-managed",
-      managedFallbackCommandPaths: ["/cache/openclaw/codex"],
+      managedFallbackCommandPaths: ["/cache/nodoassist/codex"],
     });
     expect(startSpy.mock.calls[1]?.[0]).toMatchObject({
-      command: "/cache/openclaw/codex",
+      command: "/cache/nodoassist/codex",
       commandSource: "resolved-managed",
     });
     expect(startSpy.mock.calls[1]?.[0]).not.toHaveProperty("managedFallbackCommandPaths");
@@ -235,7 +235,7 @@ describe("shared Codex app-server client", () => {
     expect(first.process.stdin.destroyed).toBe(true);
 
     const secondList = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(second, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(second, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(second);
 
     await expect(secondList).resolves.toEqual({ models: [] });
@@ -257,7 +257,7 @@ describe("shared Codex app-server client", () => {
     abandonController.abort();
     expect(harness.process.stdin.destroyed).toBe(false);
 
-    await sendInitializeResult(harness, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.142.0 (macOS; test)");
 
     await expect(abandonedAcquire).resolves.toBe(harness.client);
     await expect(activeAcquire).resolves.toBe(harness.client);
@@ -282,7 +282,7 @@ describe("shared Codex app-server client", () => {
       timeoutMs: 1000,
       authProfileId: "openai:work",
     });
-    await sendInitializeResult(harness, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(harness);
 
     await expect(listPromise).resolves.toEqual({ models: [] });
@@ -309,11 +309,11 @@ describe("shared Codex app-server client", () => {
       timeoutMs: 1000,
       authProfileStore,
     });
-    await sendInitializeResult(harness, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.142.0 (macOS; test)");
 
     await expect(clientPromise).resolves.toBe(harness.client);
     expect(mocks.resolveCodexAppServerAuthProfileStore).toHaveBeenCalledWith({
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/nodoassist-agent",
       authProfileId: undefined,
       authProfileStore,
       config: undefined,
@@ -331,7 +331,7 @@ describe("shared Codex app-server client", () => {
     await vi.waitFor(() => expect(harness.writes.length).toBeGreaterThan(priorWriteCount));
 
     expect(mocks.refreshCodexAppServerAuthTokens).toHaveBeenCalledWith({
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/nodoassist-agent",
       authProfileId: "openai:scoped",
       authProfileStore: preparedAuthProfileStore,
       config: undefined,
@@ -353,9 +353,9 @@ describe("shared Codex app-server client", () => {
     const clientPromise = createIsolatedCodexAppServerClient({
       timeoutMs: 1000,
       authProfileId: "openai:persisted",
-      agentDir: "/tmp/openclaw-persisted-agent",
+      agentDir: "/tmp/nodoassist-persisted-agent",
     });
-    await sendInitializeResult(harness, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.142.0 (macOS; test)");
 
     await expect(clientPromise).resolves.toBe(harness.client);
     const priorWriteCount = harness.writes.length;
@@ -367,7 +367,7 @@ describe("shared Codex app-server client", () => {
     await vi.waitFor(() => expect(harness.writes.length).toBeGreaterThan(priorWriteCount));
 
     expect(mocks.refreshCodexAppServerAuthTokens).toHaveBeenCalledWith({
-      agentDir: "/tmp/openclaw-persisted-agent",
+      agentDir: "/tmp/nodoassist-persisted-agent",
       authProfileId: "openai:persisted",
       config: undefined,
     });
@@ -389,19 +389,19 @@ describe("shared Codex app-server client", () => {
     const clientPromise = getSharedCodexAppServerClient({
       timeoutMs: 1000,
       authProfileId: null,
-      agentDir: "/tmp/openclaw-target-agent",
+      agentDir: "/tmp/nodoassist-target-agent",
       config,
     });
-    await sendInitializeResult(harness, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.142.0 (macOS; test)");
 
     await expect(clientPromise).resolves.toBe(harness.client);
     expect(mocks.resolveCodexAppServerAuthProfileIdForAgent).not.toHaveBeenCalled();
     const bridgeCall = bridgeStartOptionsCall();
-    expect(bridgeCall.agentDir).toBe("/tmp/openclaw-target-agent");
+    expect(bridgeCall.agentDir).toBe("/tmp/nodoassist-target-agent");
     expect(bridgeCall.authProfileId).toBeNull();
     expect(bridgeCall.config).toBe(config);
     const applyCall = applyAuthProfileCall();
-    expect(applyCall.agentDir).toBe("/tmp/openclaw-target-agent");
+    expect(applyCall.agentDir).toBe("/tmp/nodoassist-target-agent");
     expect(applyCall.authProfileId).toBeNull();
     expect(applyCall.config).toBe(config);
   });
@@ -421,7 +421,7 @@ describe("shared Codex app-server client", () => {
         headers: {},
       },
     });
-    await sendInitializeResult(harness, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.142.0 (macOS; test)");
 
     await expect(clientPromise).resolves.toBe(harness.client);
     expect(mocks.resolveCodexAppServerAuthProfileIdForAgent).not.toHaveBeenCalled();
@@ -439,14 +439,14 @@ describe("shared Codex app-server client", () => {
       timeoutMs: 1000,
       config,
     });
-    await sendInitializeResult(harness, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(harness);
 
     await expect(listPromise).resolves.toEqual({ models: [] });
     const resolveCall = resolveAuthProfileCall();
     expect(resolveCall).toStrictEqual({
       authProfileId: undefined,
-      agentDir: "/tmp/openclaw-agent",
+      agentDir: "/tmp/nodoassist-agent",
       config,
     });
     const bridgeCall = bridgeStartOptionsCall();
@@ -464,17 +464,17 @@ describe("shared Codex app-server client", () => {
     const listPromise = listCodexAppServerModels({
       timeoutMs: 1000,
       authProfileId: "openai:work",
-      agentDir: "/tmp/openclaw-agent-nova",
+      agentDir: "/tmp/nodoassist-agent-nova",
     });
-    await sendInitializeResult(harness, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(harness);
 
     await expect(listPromise).resolves.toEqual({ models: [] });
     const bridgeCall = bridgeStartOptionsCall();
-    expect(bridgeCall?.agentDir).toBe("/tmp/openclaw-agent-nova");
+    expect(bridgeCall?.agentDir).toBe("/tmp/nodoassist-agent-nova");
     expect(bridgeCall?.authProfileId).toBe("openai:work");
     const applyCall = applyAuthProfileCall();
-    expect(applyCall?.agentDir).toBe("/tmp/openclaw-agent-nova");
+    expect(applyCall?.agentDir).toBe("/tmp/nodoassist-agent-nova");
     expect(applyCall?.authProfileId).toBe("openai:work");
   });
 
@@ -488,17 +488,17 @@ describe("shared Codex app-server client", () => {
 
     const firstList = listCodexAppServerModels({
       timeoutMs: 1000,
-      agentDir: "/tmp/openclaw-agent-one",
+      agentDir: "/tmp/nodoassist-agent-one",
     });
-    await sendInitializeResult(first, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(first, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(first);
     await expect(firstList).resolves.toEqual({ models: [] });
 
     const secondList = listCodexAppServerModels({
       timeoutMs: 1000,
-      agentDir: "/tmp/openclaw-agent-two",
+      agentDir: "/tmp/nodoassist-agent-two",
     });
-    await sendInitializeResult(second, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(second, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(second);
     await expect(secondList).resolves.toEqual({ models: [] });
 
@@ -512,12 +512,12 @@ describe("shared Codex app-server client", () => {
     const startSpy = vi.spyOn(CodexAppServerClient, "start").mockReturnValue(harness.client);
     mocks.resolveManagedCodexAppServerStartOptions.mockImplementationOnce(async (startOptions) => ({
       ...startOptions,
-      command: "/cache/openclaw/codex",
+      command: "/cache/nodoassist/codex",
       commandSource: "resolved-managed",
     }));
 
     const listPromise = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(harness, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(harness, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(harness);
 
     await expect(listPromise).resolves.toEqual({ models: [] });
@@ -525,10 +525,10 @@ describe("shared Codex app-server client", () => {
     expect(managedCall?.command).toBe("codex");
     expect(managedCall?.commandSource).toBe("managed");
     const bridgeCall = bridgeStartOptionsCall();
-    expect(bridgeCall?.startOptions.command).toBe("/cache/openclaw/codex");
+    expect(bridgeCall?.startOptions.command).toBe("/cache/nodoassist/codex");
     expect(bridgeCall?.startOptions.commandSource).toBe("resolved-managed");
     const startCall = clientStartCall(startSpy);
-    expect(startCall?.command).toBe("/cache/openclaw/codex");
+    expect(startCall?.command).toBe("/cache/nodoassist/codex");
     expect(startCall?.commandSource).toBe("resolved-managed");
   });
 
@@ -551,7 +551,7 @@ describe("shared Codex app-server client", () => {
         headers: {},
       },
     });
-    await sendInitializeResult(first, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(first, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(first);
     await expect(firstList).resolves.toEqual({ models: [] });
 
@@ -566,7 +566,7 @@ describe("shared Codex app-server client", () => {
         headers: {},
       },
     });
-    await sendInitializeResult(second, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(second, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(second);
     await expect(secondList).resolves.toEqual({ models: [] });
 
@@ -586,12 +586,12 @@ describe("shared Codex app-server client", () => {
       .mockReturnValueOnce("api-key:second");
 
     const firstList = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(first, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(first, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(first);
     await expect(firstList).resolves.toEqual({ models: [] });
 
     const secondList = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(second, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(second, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(second);
     await expect(secondList).resolves.toEqual({ models: [] });
 
@@ -634,7 +634,7 @@ describe("shared Codex app-server client", () => {
     });
     await vi.waitFor(() => expect(second.writes.length).toBeGreaterThanOrEqual(1));
 
-    await sendInitializeResult(second, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(second, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(second);
     await expect(secondList).resolves.toEqual({ models: [] });
 
@@ -652,7 +652,7 @@ describe("shared Codex app-server client", () => {
       .mockReturnValueOnce(second.client);
 
     const firstList = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(first, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(first, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(first);
     await expect(firstList).resolves.toEqual({ models: [] });
 
@@ -660,7 +660,7 @@ describe("shared Codex app-server client", () => {
     expect(first.process.stdin.destroyed).toBe(true);
 
     const secondList = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(second, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(second, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(second);
     await expect(secondList).resolves.toEqual({ models: [] });
 
@@ -678,7 +678,7 @@ describe("shared Codex app-server client", () => {
       .mockReturnValueOnce(second.client);
 
     const firstList = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(first, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(first, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(first);
     await expect(firstList).resolves.toEqual({ models: [] });
 
@@ -686,7 +686,7 @@ describe("shared Codex app-server client", () => {
     expect(first.process.stdin.destroyed).toBe(false);
 
     const secondList = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(second, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(second, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(second);
     await expect(secondList).resolves.toEqual({ models: [] });
 
@@ -707,7 +707,7 @@ describe("shared Codex app-server client", () => {
       .mockReturnValueOnce(second.client);
 
     const firstList = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(first, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(first, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(first);
     await expect(firstList).resolves.toEqual({ models: [] });
 
@@ -722,7 +722,7 @@ describe("shared Codex app-server client", () => {
     expect(first.process.stdin.destroyed).toBe(false);
 
     const secondList = listCodexAppServerModels({ timeoutMs: 1000 });
-    await sendInitializeResult(second, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(second, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(second);
     await expect(secondList).resolves.toEqual({ models: [] });
 
@@ -744,7 +744,7 @@ describe("shared Codex app-server client", () => {
 
     const firstLease = getLeasedSharedCodexAppServerClient({ timeoutMs: 1000 });
     const secondLease = getLeasedSharedCodexAppServerClient({ timeoutMs: 1000 });
-    await sendInitializeResult(first, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(first, "nodoassist/0.142.0 (macOS; test)");
     await expect(firstLease).resolves.toBe(first.client);
     await expect(secondLease).resolves.toBe(first.client);
 
@@ -776,17 +776,17 @@ describe("shared Codex app-server client", () => {
 
     const firstList = listCodexAppServerModels({
       timeoutMs: 1000,
-      agentDir: "/tmp/openclaw-agent-one",
+      agentDir: "/tmp/nodoassist-agent-one",
     });
-    await sendInitializeResult(first, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(first, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(first);
     await expect(firstList).resolves.toEqual({ models: [] });
 
     const secondList = listCodexAppServerModels({
       timeoutMs: 1000,
-      agentDir: "/tmp/openclaw-agent-two",
+      agentDir: "/tmp/nodoassist-agent-two",
     });
-    await sendInitializeResult(second, "openclaw/0.142.0 (macOS; test)");
+    await sendInitializeResult(second, "nodoassist/0.142.0 (macOS; test)");
     await sendEmptyModelList(second);
     await expect(secondList).resolves.toEqual({ models: [] });
 
@@ -812,7 +812,7 @@ describe("shared Codex app-server client", () => {
         const message = JSON.parse(rawDataToText(data)) as { id?: number; method?: string };
         if (message.method === "initialize") {
           socket.send(
-            JSON.stringify({ id: message.id, result: { userAgent: "openclaw/0.142.0" } }),
+            JSON.stringify({ id: message.id, result: { userAgent: "nodoassist/0.142.0" } }),
           );
           return;
         }

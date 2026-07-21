@@ -1,11 +1,11 @@
-# GitHub Copilot agent runtime (OpenClaw plugin)
+# GitHub Copilot agent runtime (NodoAssist plugin)
 
-External OpenClaw plugin that registers a `copilot` agent harness backed by `@github/copilot-sdk` and the GitHub Copilot CLI.
+External NodoAssist plugin that registers a `copilot` agent harness backed by `@github/copilot-sdk` and the GitHub Copilot CLI.
 
 ## Install
 
 ```bash
-openclaw plugins install @openclaw/copilot
+nodoassist plugins install @nodoassist/copilot
 ```
 
 Restart the Gateway after installing or updating the plugin.
@@ -25,5 +25,5 @@ for the SDK capability inventory the harness is pinned to.
 ## Package
 
 - Plugin id: `copilot`
-- Package: `@openclaw/copilot`
-- Minimum OpenClaw host: `2026.5.28`
+- Package: `@nodoassist/copilot`
+- Minimum NodoAssist host: `2026.5.28`

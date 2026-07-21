@@ -1,11 +1,11 @@
 // Discord provider module implements model/runtime integration.
 import path from "node:path";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/dangerous-name-runtime";
-import { danger } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { resolveStateDir } from "openclaw/plugin-sdk/state-paths";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { isDangerousNameMatchingEnabled } from "nodoassist/plugin-sdk/dangerous-name-runtime";
+import { danger } from "nodoassist/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime-env";
+import { resolveStateDir } from "nodoassist/plugin-sdk/state-paths";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   Client,
   ReadyListener,
@@ -238,7 +238,7 @@ export async function fetchDiscordBotIdentity(params: {
 }
 
 export function registerDiscordMonitorListeners(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   client: Pick<Client, "listeners">;
   accountId: string;
   discordConfig: DiscordListenerConfig;

@@ -2,7 +2,7 @@
 // sentinels, and hand off managed-service restarts when needed.
 import { randomUUID } from "node:crypto";
 import os from "node:os";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
+import { isRecord } from "@nodoassist/normalization-core/record-coerce";
 import {
   validateUpdateRunParams,
   validateUpdateStatusParams,
@@ -10,9 +10,9 @@ import {
 import { isRestartEnabled } from "../../config/commands.flags.js";
 import { readConfigFileSnapshot } from "../../config/config.js";
 import { extractDeliveryInfo } from "../../config/sessions.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { GATEWAY_SERVICE_KIND, GATEWAY_SERVICE_MARKER } from "../../daemon/constants.js";
-import { resolveOpenClawPackageRoot } from "../../infra/openclaw-root.js";
+import { resolveNodoAssistPackageRoot } from "../../infra/nodoassist-root.js";
 import { readPackageVersion } from "../../infra/package-json.js";
 import { type RestartSentinelPayload, writeRestartSentinel } from "../../infra/restart-sentinel.js";
 import {
@@ -74,7 +74,7 @@ async function readPreUpdateConfigForPostCoreFinalize(): Promise<
   return {
     sourceConfig: snapshot.sourceConfig,
     authoredConfig: isRecord(snapshot.parsed)
-      ? (snapshot.parsed as OpenClawConfig)
+      ? (snapshot.parsed as NodoAssistConfig)
       : snapshot.sourceConfig,
   };
 }
@@ -98,7 +98,7 @@ function hasManagedServiceHandoffContext(
 ): boolean {
   if (supervisor === "launchd") {
     return Boolean(
-      env.OPENCLAW_LAUNCHD_LABEL?.trim() ||
+      env.NODOASSIST_LAUNCHD_LABEL?.trim() ||
       env.LAUNCH_JOB_LABEL?.trim() ||
       env.LAUNCH_JOB_NAME?.trim() ||
       env.XPC_SERVICE_NAME?.trim(),
@@ -108,13 +108,13 @@ function hasManagedServiceHandoffContext(
     // Ambient systemd markers only prove that a service manager started this
     // process. The detached CLI needs the durable unit name to stop the same
     // gateway before mutating the install root.
-    return Boolean(env.OPENCLAW_SYSTEMD_UNIT?.trim());
+    return Boolean(env.NODOASSIST_SYSTEMD_UNIT?.trim());
   }
   if (supervisor === "schtasks") {
     return Boolean(
-      env.OPENCLAW_WINDOWS_TASK_NAME?.trim() ||
-      (env.OPENCLAW_SERVICE_MARKER?.trim() === GATEWAY_SERVICE_MARKER &&
-        env.OPENCLAW_SERVICE_KIND?.trim() === GATEWAY_SERVICE_KIND),
+      env.NODOASSIST_WINDOWS_TASK_NAME?.trim() ||
+      (env.NODOASSIST_SERVICE_MARKER?.trim() === GATEWAY_SERVICE_MARKER &&
+        env.NODOASSIST_SERVICE_KIND?.trim() === GATEWAY_SERVICE_KIND),
     );
   }
   return false;
@@ -179,7 +179,7 @@ export const updateHandlers: GatewayRequestHandlers = {
       const configChannel = normalizeUpdateChannel(config.update?.channel);
       const invocationCwd = tryResolveProcessCwd();
       const root =
-        (await resolveOpenClawPackageRoot({
+        (await resolveNodoAssistPackageRoot({
           moduleUrl: import.meta.url,
           argv1: process.argv[1],
           ...(invocationCwd ? { cwd: invocationCwd } : {}),
@@ -346,7 +346,7 @@ export const updateHandlers: GatewayRequestHandlers = {
           allowGatewayServiceRepair: false,
           allowGatewayActivation: false,
         });
-        // The CLI `openclaw update` resumes post-core plugin convergence after a
+        // The CLI `nodoassist update` resumes post-core plugin convergence after a
         // git/source core update; the RPC path did not, leaving official managed
         // plugins stale on the new core. Run the finalizer here to match.
         const finalizeOutcome = await runPostCoreFinalizeAfterGatewayUpdate({

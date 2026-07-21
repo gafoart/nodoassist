@@ -363,7 +363,7 @@ function normalizeReasoningProgressLine(text: string): string {
   }
   return stripReasoningProgressTagsOutsideCode(reasoningText)
     .replace(
-      /^\s*(?:>\s*)?(?:Reasoning:\s*(?:\r?\n|\r)\s*|Thinking\.{0,3}\s*(?:\r?\n|\r)\s*(?:\r?\n|\r)\s*)/i,
+      /^\s*(?:>\s*)?(?:Reasoning:\s*(?:\r?\n|\r)\s*|\.nodoassist\.{0,3}\s*(?:\r?\n|\r)\s*(?:\r?\n|\r)\s*)/i,
       "",
     )
     .replace(/\s+/g, " ")
@@ -541,7 +541,7 @@ function mergeReasoningProgressText(
 }
 
 function isReasoningSnapshotText(text: string): boolean {
-  return /^\s*(?:>\s*)?(?:Reasoning:\s*(?:\r?\n|\r)\s*|Thinking\.{0,3}\s*(?:\r?\n|\r)\s*(?:\r?\n|\r)\s*)/i.test(
+  return /^\s*(?:>\s*)?(?:Reasoning:\s*(?:\r?\n|\r)\s*|\.nodoassist\.{0,3}\s*(?:\r?\n|\r)\s*(?:\r?\n|\r)\s*)/i.test(
     text,
   );
 }

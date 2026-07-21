@@ -1,7 +1,7 @@
 [
   {
-    "source": "OpenClaw",
-    "target": "OpenClaw"
+    "source": "NodoAssist",
+    "target": "NodoAssist"
   },
   {
     "source": "macOS platform notes",
@@ -1172,12 +1172,12 @@
     "target": "Agent runtime architecture"
   },
   {
-    "source": "OpenClaw agent runtime workflow",
-    "target": "OpenClaw agent runtime workflow"
+    "source": "NodoAssist agent runtime workflow",
+    "target": "NodoAssist agent runtime workflow"
   },
   {
-    "source": "OpenClaw agent runtime architecture",
-    "target": "OpenClaw agent runtime architecture"
+    "source": "NodoAssist agent runtime architecture",
+    "target": "NodoAssist agent runtime architecture"
   },
   {
     "source": "Install and Configure Plugins",

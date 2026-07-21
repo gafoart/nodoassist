@@ -1,5 +1,5 @@
 // Normalizes installed plugin config and install records.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type { PluginInstallRecord } from "../config/types.plugins.js";
 import { buildNpmResolutionFields, type NpmSpecResolution } from "../infra/install-source-utils.js";
 import { parseRegistryNpmSpec } from "../infra/npm-registry-spec.js";
@@ -45,11 +45,11 @@ export function resolveNpmInstallRecordSpec(params: {
   return resolvedSpec;
 }
 
-/** Records or updates a plugin install record in OpenClaw config. */
+/** Records or updates a plugin install record in NodoAssist config. */
 export function recordPluginInstall(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   update: PluginInstallUpdate,
-): OpenClawConfig {
+): NodoAssistConfig {
   const { pluginId, ...record } = update;
   const previous = clearStaleInstallRecordFields(cfg.plugins?.installs?.[pluginId]);
   const installs = {

@@ -1,12 +1,12 @@
 ---
 title: "Release notes"
-summary: "Curated OpenClaw release notes for people who want the product story, not the raw changelog."
-description: "Browse polished OpenClaw release notes with highlights, reader-facing context, source links, and contributor credits."
+summary: "Curated NodoAssist release notes for people who want the product story, not the raw changelog."
+description: "Browse polished NodoAssist release notes with highlights, reader-facing context, source links, and contributor credits."
 ---
 
 # Release notes
 
-These pages will be the reader-facing version of OpenClaw releases. They keep
+These pages will be the reader-facing version of NodoAssist releases. They keep
 the main story, practical impact, source links, and contributor credit together
 without making you scan the raw changelog first.
 

@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import OpenClaw
+@testable import NodoAssist
 
 @Suite("Voice Wake manager suppression", .serialized)
 struct VoiceWakeManagerSuppressionTests {

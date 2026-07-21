@@ -157,7 +157,7 @@ function makeForwardedRuntimePlan(overrides: RuntimePlanOverrides = {}): AgentRu
     resolvedRef: {
       provider: "anthropic",
       modelId: "test-model",
-      harnessId: "openclaw",
+      harnessId: "nodoassist",
     },
     tools: {
       normalize: vi.fn((tools) => tools),
@@ -408,7 +408,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
       mockedEnsureAuthProfileStoreWithoutExternalProfiles,
     ) as [string | undefined, { allowKeychainPrompt?: boolean } | undefined];
     expect(typeof agentDir).toBe("string");
-    expect(String(agentDir).replaceAll("\\", "/").endsWith("/.openclaw/agents/main/agent")).toBe(
+    expect(String(agentDir).replaceAll("\\", "/").endsWith("/.nodoassist/agents/main/agent")).toBe(
       true,
     );
     expect(authStoreOptions).toEqual({ allowKeychainPrompt: false });
@@ -2169,7 +2169,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
   });
 
   it("recovers preflight compaction when stale tokens point at an empty transcript", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-empty-preflight-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-empty-preflight-"));
     const storePath = path.join(dir, "sessions.json");
     await fs.writeFile(
       storePath,

@@ -14,7 +14,7 @@ function resolveTeamsSdkVersion(): string {
   }
 }
 
-function resolveOpenClawVersion(): string {
+function resolveNodoAssistVersion(): string {
   try {
     return getMSTeamsRuntime().version;
   } catch {
@@ -24,10 +24,10 @@ function resolveOpenClawVersion(): string {
 
 /**
  * Build a combined User-Agent string that preserves the Teams SDK identity
- * and appends the OpenClaw version.
+ * and appends the NodoAssist version.
  *
- * Format: "teams.ts[apps]/<sdk-version> OpenClaw/<openclaw-version>"
- * Example: "teams.ts[apps]/2.0.5 OpenClaw/2026.3.22"
+ * Format: "teams.ts[apps]/<sdk-version> NodoAssist/<nodoassist-version>"
+ * Example: "teams.ts[apps]/2.0.5 NodoAssist/2026.3.22"
  *
  * This lets the Teams backend track SDK usage while also identifying the
  * host application.
@@ -41,20 +41,20 @@ export function buildUserAgent(): string {
   if (cachedUserAgent) {
     return cachedUserAgent;
   }
-  cachedUserAgent = `teams.ts[apps]/${resolveTeamsSdkVersion()} OpenClaw/${resolveOpenClawVersion()}`;
+  cachedUserAgent = `teams.ts[apps]/${resolveTeamsSdkVersion()} NodoAssist/${resolveNodoAssistVersion()}`;
   return cachedUserAgent;
 }
 
 /**
  * User-Agent fragment for the Teams SDK App's client. The SDK's Client.clone
  * merges this with its own `teams.ts[apps]/<sdk-version>` identifier, so we
- * only contribute the OpenClaw piece — passing the full `buildUserAgent()`
+ * only contribute the NodoAssist piece — passing the full `buildUserAgent()`
  * would double-print the SDK token.
  *
- * Format: "OpenClaw/<openclaw-version>"
+ * Format: "NodoAssist/<nodoassist-version>"
  */
-export function buildOpenClawUserAgentFragment(): string {
-  return `OpenClaw/${resolveOpenClawVersion()}`;
+export function buildNodoAssistUserAgentFragment(): string {
+  return `NodoAssist/${resolveNodoAssistVersion()}`;
 }
 
 export function ensureUserAgentHeader(headers?: HeadersInit): Headers {

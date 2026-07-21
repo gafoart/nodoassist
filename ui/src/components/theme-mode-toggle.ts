@@ -44,7 +44,7 @@ class ThemeModeToggle extends LitElement {
     const tooltip = t("common.colorModeOption", { mode: label });
 
     return html`
-      <openclaw-tooltip .content=${tooltip}>
+      <nodoassist-tooltip .content=${tooltip}>
         <button
           type="button"
           class="theme-mode-toggle"
@@ -53,11 +53,11 @@ class ThemeModeToggle extends LitElement {
         >
           ${this.mode === "system" ? icons.monitor : this.mode === "light" ? icons.sun : icons.moon}
         </button>
-      </openclaw-tooltip>
+      </nodoassist-tooltip>
     `;
   }
 }
 
-if (!customElements.get("openclaw-theme-mode-toggle")) {
-  customElements.define("openclaw-theme-mode-toggle", ThemeModeToggle);
+if (!customElements.get("nodoassist-theme-mode-toggle")) {
+  customElements.define("nodoassist-theme-mode-toggle", ThemeModeToggle);
 }

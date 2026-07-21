@@ -1,15 +1,15 @@
 // Discord plugin module implements send.outbound behavior.
 import { ChannelType } from "discord-api-types/v10";
-import { recordChannelActivity } from "openclaw/plugin-sdk/channel-activity-runtime";
-import type { MarkdownTableMode, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-import type { OutboundMediaAccess, PollInput } from "openclaw/plugin-sdk/media-runtime";
-import { requireRuntimeConfig } from "openclaw/plugin-sdk/plugin-config-runtime";
-import { resolveChunkMode, type ChunkMode } from "openclaw/plugin-sdk/reply-chunking";
-import type { RetryConfig } from "openclaw/plugin-sdk/retry-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { convertMarkdownTables } from "openclaw/plugin-sdk/text-chunking";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+import { recordChannelActivity } from "nodoassist/plugin-sdk/channel-activity-runtime";
+import type { MarkdownTableMode, NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { resolveMarkdownTableMode } from "nodoassist/plugin-sdk/markdown-table-runtime";
+import type { OutboundMediaAccess, PollInput } from "nodoassist/plugin-sdk/media-runtime";
+import { requireRuntimeConfig } from "nodoassist/plugin-sdk/plugin-config-runtime";
+import { resolveChunkMode, type ChunkMode } from "nodoassist/plugin-sdk/reply-chunking";
+import type { RetryConfig } from "nodoassist/plugin-sdk/retry-runtime";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { convertMarkdownTables } from "nodoassist/plugin-sdk/text-chunking";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import { resolveDiscordAccount } from "./accounts.js";
 import { createChannelMessage, createThread, type RequestClient } from "./internal/discord.js";
 import { rewriteDiscordKnownMentions } from "./mentions.js";
@@ -40,7 +40,7 @@ import {
 } from "./send.shared.js";
 import type { DiscordSendResult } from "./send.types.js";
 type DiscordSendOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   token?: string;
   accountId?: string;
   mediaUrl?: string;

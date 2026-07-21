@@ -1,17 +1,17 @@
 // Feishu plugin module implements reply dispatcher behavior.
-import { formatReasoningMessage } from "openclaw/plugin-sdk/agent-runtime";
-import { logTypingFailure } from "openclaw/plugin-sdk/channel-feedback";
-import { createChannelMessageReplyPipeline } from "openclaw/plugin-sdk/channel-outbound";
+import { formatReasoningMessage } from "nodoassist/plugin-sdk/agent-runtime";
+import { logTypingFailure } from "nodoassist/plugin-sdk/channel-feedback";
+import { createChannelMessageReplyPipeline } from "nodoassist/plugin-sdk/channel-outbound";
 import {
   formatChannelProgressDraftLineForEntry,
   isChannelProgressDraftWorkToolName,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "nodoassist/plugin-sdk/channel-outbound";
 import {
   resolveSendableOutboundReplyParts,
   resolveTextChunksWithFallback,
   sendMediaWithLeadingCaption,
-} from "openclaw/plugin-sdk/reply-payload";
-import { stripReasoningTagsFromText } from "openclaw/plugin-sdk/text-chunking";
+} from "nodoassist/plugin-sdk/reply-payload";
+import { stripReasoningTagsFromText } from "nodoassist/plugin-sdk/text-chunking";
 import { resolveFeishuRuntimeAccount } from "./accounts.js";
 import { createFeishuClient } from "./client.js";
 import { resolveFeishuIdentityEmoji } from "./identity-header.js";
@@ -291,10 +291,10 @@ export function createFeishuReplyDispatcher(params: CreateFeishuReplyDispatcherP
     if (!thinking) {
       return "";
     }
-    const withoutLabel = thinking.replace(/^(?:Reasoning:|Thinking\.{0,3})\s*/u, "");
+    const withoutLabel = thinking.replace(/^(?:Reasoning:|\.nodoassist\.{0,3})\s*/u, "");
     const plain = withoutLabel.replace(/^_(.*)_$/gm, "$1");
     const lines = plain.split("\n").map((line) => `> ${line}`);
-    return `> 💭 **Thinking**\n${lines.join("\n")}`;
+    return `> 💭 **.nodoassist**\n${lines.join("\n")}`;
   };
 
   const buildCombinedStreamText = (thinking: string, answer: string): string => {

@@ -1,11 +1,11 @@
-import OpenClawKit
+import NodoAssistKit
 import SwiftUI
 
 struct AgentProTab: View {
     @Environment(NodeAppModel.self) var appModel
     @Environment(\.scenePhase) var scenePhase
     let directRoute: AgentRoute?
-    let headerLeadingAction: OpenClawSidebarHeaderAction?
+    let headerLeadingAction: NodoAssistSidebarHeaderAction?
     let headerTitle: String
     let openSettings: (() -> Void)?
     @State var navigationPath: [AgentRoute] = []
@@ -91,7 +91,7 @@ struct AgentProTab: View {
     }
 
     enum AgentLayout {
-        static let cardRadius: CGFloat = OpenClawProMetric.cardRadius
+        static let cardRadius: CGFloat = NodoAssistProMetric.cardRadius
         static let filterHeight: CGFloat = 34
         static let metricTileHeight: CGFloat = 94
     }
@@ -102,8 +102,8 @@ struct AgentProTab: View {
 
         var color: Color {
             switch self {
-            case .online: OpenClawBrand.ok
-            case .ready: OpenClawBrand.info
+            case .online: NodoAssistBrand.ok
+            case .ready: NodoAssistBrand.info
             }
         }
     }
@@ -124,7 +124,7 @@ struct AgentProTab: View {
 
     init(
         directRoute: AgentRoute? = nil,
-        headerLeadingAction: OpenClawSidebarHeaderAction? = nil,
+        headerLeadingAction: NodoAssistSidebarHeaderAction? = nil,
         headerTitle: String = "Agents",
         openSettings: (() -> Void)? = nil)
     {
@@ -157,7 +157,7 @@ struct AgentProTab: View {
     private var overviewNavigation: some View {
         NavigationStack(path: self.$navigationPath) {
             ZStack {
-                OpenClawProBackground()
+                NodoAssistProBackground()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
                         self.rosterHeader

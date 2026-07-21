@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/senseaudio-provider",
+  "name": "@nodoassist/senseaudio-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw SenseAudio media-understanding provider",
+  "description": "NodoAssist SenseAudio media-understanding provider",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

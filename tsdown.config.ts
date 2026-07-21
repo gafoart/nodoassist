@@ -39,7 +39,7 @@ const env = {
   NODE_ENV: "production",
 };
 const OUTPUT_SOURCE_MAPS = process.env.OUTPUT_SOURCE_MAPS === "1";
-const RUN_NODE_SKIP_DTS_BUILD = process.env.OPENCLAW_RUN_NODE_SKIP_DTS_BUILD === "1";
+const RUN_NODE_SKIP_DTS_BUILD = process.env.NODOASSIST_RUN_NODE_SKIP_DTS_BUILD === "1";
 const TSDOWN_DECLARATIONS = RUN_NODE_SKIP_DTS_BUILD ? false : true;
 
 const SUPPRESSED_EVAL_WARNING_PATHS = [
@@ -77,7 +77,7 @@ function matchesExternalOption(
 }
 
 function buildInputOptions(options: InputOptionsArg): InputOptionsReturn {
-  if (process.env.OPENCLAW_BUILD_VERBOSE === "1") {
+  if (process.env.NODOASSIST_BUILD_VERBOSE === "1") {
     return undefined;
   }
 
@@ -158,7 +158,7 @@ function nodeWorkspacePackageBuildConfig(config: UserConfig): UserConfig {
 }
 
 const bundledPluginBuildEntries = collectBundledPluginBuildEntries();
-const shouldBuildPrivateQaEntries = process.env.OPENCLAW_BUILD_PRIVATE_QA === "1";
+const shouldBuildPrivateQaEntries = process.env.NODOASSIST_BUILD_PRIVATE_QA === "1";
 const productionPluginSdkEntrypoints = shouldBuildPrivateQaEntries
   ? pluginSdkEntrypoints
   : publicPluginSdkEntrypoints;
@@ -200,7 +200,7 @@ const explicitNeverBundleDependencies = [
   "@lancedb/lancedb",
   "@larksuiteoapi/node-sdk",
   "@matrix-org/matrix-sdk-crypto-nodejs",
-  "@openclaw/ai",
+  "@nodoassist/ai",
   "@vitest/expect",
   "jimp",
   "matrix-js-sdk",
@@ -221,12 +221,12 @@ function shouldAlwaysBundleDependency(id: string): boolean {
   return (
     id === "@openclaw/fs-safe" ||
     id.startsWith("@openclaw/fs-safe/") ||
-    id === "@openclaw/normalization-core" ||
-    id.startsWith("@openclaw/normalization-core/") ||
-    id === "@openclaw/media-core" ||
-    id.startsWith("@openclaw/media-core/") ||
-    id === "@openclaw/acp-core" ||
-    id.startsWith("@openclaw/acp-core/") ||
+    id === "@nodoassist/normalization-core" ||
+    id.startsWith("@nodoassist/normalization-core/") ||
+    id === "@nodoassist/media-core" ||
+    id.startsWith("@nodoassist/media-core/") ||
+    id === "@nodoassist/acp-core" ||
+    id.startsWith("@nodoassist/acp-core/") ||
     id === "zod" ||
     id.startsWith("zod/")
   );
@@ -301,7 +301,7 @@ function buildCoreDistEntries(): Record<string, string> {
     "plugins/runtime/index": "src/plugins/runtime/index.ts",
     "llm-slug-generator": "src/hooks/llm-slug-generator.ts",
     "mcp/plugin-tools-serve": "src/mcp/plugin-tools-serve.ts",
-    "mcp/openclaw-tools-serve": "src/mcp/openclaw-tools-serve.ts",
+    "mcp/nodoassist-tools-serve": "src/mcp/nodoassist-tools-serve.ts",
   };
 }
 
@@ -561,13 +561,13 @@ function buildModelCatalogCoreDistEntries(): Record<string, string> {
 
 function shouldExternalizeAgentCoreDependency(id: string): boolean {
   return (
-    id === "@openclaw/ai" ||
-    id.startsWith("@openclaw/ai/") ||
-    id === "@openclaw/llm-core" ||
-    id.startsWith("@openclaw/llm-core/") ||
+    id === "@nodoassist/ai" ||
+    id.startsWith("@nodoassist/ai/") ||
+    id === "@nodoassist/llm-core" ||
+    id.startsWith("@nodoassist/llm-core/") ||
     id === "ignore" ||
-    id === "openclaw" ||
-    id.startsWith("openclaw/") ||
+    id === "nodoassist" ||
+    id.startsWith("nodoassist/") ||
     id === "typebox" ||
     id.startsWith("typebox/") ||
     id === "yaml" ||
@@ -583,8 +583,8 @@ function shouldExternalizeGatewayClientDependency(id: string): boolean {
   return (
     id === "ws" ||
     id.startsWith("ws/") ||
-    id === "@openclaw/gateway-protocol" ||
-    id.startsWith("@openclaw/gateway-protocol/")
+    id === "@nodoassist/gateway-protocol" ||
+    id.startsWith("@nodoassist/gateway-protocol/")
   );
 }
 
@@ -593,7 +593,7 @@ function shouldExternalizeNetPolicyDependency(id: string): boolean {
 }
 
 function shouldExternalizeSpeechCoreDependency(id: string): boolean {
-  return id === "openclaw" || id.startsWith("openclaw/");
+  return id === "nodoassist" || id.startsWith("nodoassist/");
 }
 
 function shouldExternalizeLlmCoreDependency(id: string): boolean {

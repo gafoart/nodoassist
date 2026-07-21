@@ -1,9 +1,9 @@
 // Feishu tests cover app registration plugin behavior.
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
-import { readProviderJsonResponse } from "openclaw/plugin-sdk/provider-http";
-import type { LookupFn } from "openclaw/plugin-sdk/ssrf-runtime";
-import { withFetchPreconnect } from "openclaw/plugin-sdk/test-env";
+import { MAX_TIMER_TIMEOUT_MS } from "nodoassist/plugin-sdk/number-runtime";
+import { readProviderJsonResponse } from "nodoassist/plugin-sdk/provider-http";
+import type { LookupFn } from "nodoassist/plugin-sdk/ssrf-runtime";
+import { withFetchPreconnect } from "nodoassist/plugin-sdk/test-env";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   beginAppRegistration,

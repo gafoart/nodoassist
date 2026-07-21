@@ -1,11 +1,11 @@
 import Foundation
-import OpenClawChatUI
-import OpenClawKit
-import OpenClawProtocol
+import NodoAssistChatUI
+import NodoAssistKit
+import NodoAssistProtocol
 import OSLog
 
-struct IOSGatewayChatTransport: OpenClawChatTransport {
-    static let logger = Logger(subsystem: "ai.openclawfoundation.app", category: "ios.chat.transport")
+struct IOSGatewayChatTransport: NodoAssistChatTransport {
+    static let logger = Logger(subsystem: "ai.nodoassistfoundation.app", category: "ios.chat.transport")
     static let defaultChatSendTimeoutMs = 30000
     static let compactionRequestTimeoutSeconds = 0
     private let gateway: GatewayNodeSession
@@ -96,7 +96,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
         var expectedSessionRoutingContract: String?
         var message: String
         var thinking: String
-        var attachments: [OpenClawChatAttachmentPayload]?
+        var attachments: [NodoAssistChatAttachmentPayload]?
         var timeoutMs: Int
         var idempotencyKey: String
     }
@@ -145,7 +145,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
         self.outboxGatewayID = normalizedGatewayID?.isEmpty == false ? normalizedGatewayID : nil
     }
 
-    func acquireOutboxRouteLease() async -> OpenClawChatTransportRouteLeaseResult {
+    func acquireOutboxRouteLease() async -> NodoAssistChatTransportRouteLeaseResult {
         guard let outboxGatewayID,
               let route = await gateway.currentRoute(ifGatewayID: outboxGatewayID)
         else { return .unavailable(reason: nil) }
@@ -154,12 +154,12 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             ifCurrentRoute: route)
         else { return .unavailable(reason: nil) }
         guard supportsRoutingContract else {
-            return .unavailable(reason: OpenClawChatTransportUpgradeMessage.routingContract)
+            return .unavailable(reason: NodoAssistChatTransportUpgradeMessage.routingContract)
         }
         let transport = self
         guard let routingContract = try? await transport.sessionRoutingContract(ifCurrentRoute: route)
         else { return .unavailable(reason: nil) }
-        return .available(OpenClawChatTransportRouteLease(
+        return .available(NodoAssistChatTransportRouteLease(
             sendTargetedMessage: { sessionKey, agentID, message, thinking, idempotencyKey, attachments in
                 try await transport.sendMessage(
                     sessionKey: sessionKey,
@@ -194,7 +194,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
 
     static func decodeSessionRoutingContract(_ data: Data) throws -> String {
         let result = try JSONDecoder().decode(AgentsListResult.self, from: data)
-        guard let contract = OpenClawChatSessionRoutingContract.make(
+        guard let contract = NodoAssistChatSessionRoutingContract.make(
             scope: result.scope.value as? String,
             mainKey: result.mainkey,
             defaultAgentID: result.defaultid)
@@ -253,7 +253,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
         message: String,
         thinking: String,
         idempotencyKey: String,
-        attachments: [OpenClawChatAttachmentPayload]) throws -> String
+        attachments: [NodoAssistChatAttachmentPayload]) throws -> String
     {
         let params = ChatSendParams(
             sessionKey: sessionKey,
@@ -295,11 +295,11 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             completed: self.isAgentWaitCompletionStatus(status))
     }
 
-    static func decodeModelChoices(_ data: Data) throws -> [OpenClawChatModelChoice] {
+    static func decodeModelChoices(_ data: Data) throws -> [NodoAssistChatModelChoice] {
         let decoded = try JSONDecoder().decode(ModelsListResponse.self, from: data)
         return decoded.models.map { model in
             let name = model.name.trimmingCharacters(in: .whitespacesAndNewlines)
-            return OpenClawChatModelChoice(
+            return NodoAssistChatModelChoice(
                 modelID: model.id,
                 name: name.isEmpty ? model.id : model.name,
                 provider: model.provider,
@@ -428,7 +428,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
         key: String,
         label: String?,
         parentSessionKey: String?,
-        worktree: Bool?) async throws -> OpenClawChatCreateSessionResponse
+        worktree: Bool?) async throws -> NodoAssistChatCreateSessionResponse
     {
         let target = self.sessionTarget(for: key)
         let parentTarget = parentSessionKey.map { self.sessionTarget(for: $0) }
@@ -439,7 +439,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             parentSessionKey: parentTarget?.sessionKey,
             worktree: worktree)
         let res = try await self.gateway.request(method: "sessions.create", paramsJSON: json, timeoutSeconds: 15)
-        return try JSONDecoder().decode(OpenClawChatCreateSessionResponse.self, from: res)
+        return try JSONDecoder().decode(NodoAssistChatCreateSessionResponse.self, from: res)
     }
 
     func abortRun(sessionKey: String, runId: String) async throws {
@@ -454,14 +454,14 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
     func listSessions(
         limit: Int?,
         search: String?,
-        archived: Bool) async throws -> OpenClawChatSessionsListResponse
+        archived: Bool) async throws -> NodoAssistChatSessionsListResponse
     {
         let json = try Self.makeListSessionsParamsJSON(limit: limit, search: search, archived: archived)
         let res = try await self.gateway.request(method: "sessions.list", paramsJSON: json, timeoutSeconds: 15)
-        return try JSONDecoder().decode(OpenClawChatSessionsListResponse.self, from: res)
+        return try JSONDecoder().decode(NodoAssistChatSessionsListResponse.self, from: res)
     }
 
-    func listModels() async throws -> [OpenClawChatModelChoice] {
+    func listModels() async throws -> [NodoAssistChatModelChoice] {
         let response = try await self.gateway.request(
             method: "models.list",
             paramsJSON: nil,
@@ -510,7 +510,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             parentKey: parentKey,
             agentId: Self.agentID(fromSessionKey: parentKey) ?? self.selectedGlobalAgentId(for: parentKey))
         let response = try await self.gateway.request(method: "sessions.create", paramsJSON: json, timeoutSeconds: 15)
-        return try JSONDecoder().decode(OpenClawChatCreateSessionResponse.self, from: response).key
+        return try JSONDecoder().decode(NodoAssistChatCreateSessionResponse.self, from: response).key
     }
 
     func setActiveSessionKey(_ sessionKey: String) async throws {
@@ -540,17 +540,17 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             method: "sessions.compact",
             paramsJSON: json,
             timeoutSeconds: Self.compactionRequestTimeoutSeconds)
-        try OpenClawSessionsCompactResponse.requireSuccess(from: response)
+        try NodoAssistSessionsCompactResponse.requireSuccess(from: response)
     }
 
-    func requestHistory(sessionKey: String) async throws -> OpenClawChatHistoryPayload {
+    func requestHistory(sessionKey: String) async throws -> NodoAssistChatHistoryPayload {
         try await self.requestHistory(sessionKey: sessionKey, agentID: nil, ifCurrentRoute: nil)
     }
 
     func requestHistory(
         sessionKey: String,
         agentID: String? = nil,
-        ifCurrentRoute expectedRoute: GatewayNodeSessionRoute?) async throws -> OpenClawChatHistoryPayload
+        ifCurrentRoute expectedRoute: GatewayNodeSessionRoute?) async throws -> NodoAssistChatHistoryPayload
     {
         let target = self.sessionTarget(for: sessionKey, overrideAgentID: agentID)
         let json = try Self.makeHistoryParamsJSON(
@@ -561,14 +561,14 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             paramsJSON: json,
             timeoutSeconds: 15,
             ifCurrentRoute: expectedRoute)
-        return try JSONDecoder().decode(OpenClawChatHistoryPayload.self, from: res)
+        return try JSONDecoder().decode(NodoAssistChatHistoryPayload.self, from: res)
     }
 
     var supportsSlashCommandCatalog: Bool {
         true
     }
 
-    func listCommands(sessionKey: String) async throws -> [OpenClawChatCommandChoice] {
+    func listCommands(sessionKey: String) async throws -> [NodoAssistChatCommandChoice] {
         let json = try Self.makeCommandsListParamsJSON(
             sessionKey: sessionKey,
             agentId: Self.agentID(fromSessionKey: sessionKey) ?? self.globalAgentId)
@@ -582,7 +582,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
         message: String,
         thinking: String,
         idempotencyKey: String,
-        attachments: [OpenClawChatAttachmentPayload]) async throws -> OpenClawChatSendResponse
+        attachments: [NodoAssistChatAttachmentPayload]) async throws -> NodoAssistChatSendResponse
     {
         try await self.sendMessage(
             sessionKey: sessionKey,
@@ -601,7 +601,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
         message: String,
         thinking: String,
         idempotencyKey: String,
-        attachments: [OpenClawChatAttachmentPayload]) async throws -> OpenClawChatSendResponse
+        attachments: [NodoAssistChatAttachmentPayload]) async throws -> NodoAssistChatSendResponse
     {
         let route: GatewayNodeSessionRoute? = if let outboxGatewayID {
             await self.gateway.currentRoute(ifGatewayID: outboxGatewayID)
@@ -612,12 +612,12 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
               let supportsRoutingContract = await gateway.supportsServerCapability(
                   .chatSendRoutingContract,
                   ifCurrentRoute: route)
-        else { throw OpenClawChatTransportSendError.notDispatched }
+        else { throw NodoAssistChatTransportSendError.notDispatched }
         // Durable replay requires the atomic server guard and is blocked in
         // acquireOutboxRouteLease. Keep ordinary live chat compatible with
         // older gateways by retaining the captured route but omitting the
         // unsupported request field.
-        let guardedContract = OpenClawChatSessionRoutingContract.expectedValue(
+        let guardedContract = NodoAssistChatSessionRoutingContract.expectedValue(
             expectedSessionRoutingContract,
             serverSupportsGuard: supportsRoutingContract)
         return try await self.sendMessage(
@@ -639,9 +639,9 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
         message: String,
         thinking: String,
         idempotencyKey: String,
-        attachments: [OpenClawChatAttachmentPayload],
+        attachments: [NodoAssistChatAttachmentPayload],
         ifCurrentRoute expectedRoute: GatewayNodeSessionRoute?,
-        distinguishPreDispatchRouteChange: Bool = false) async throws -> OpenClawChatSendResponse
+        distinguishPreDispatchRouteChange: Bool = false) async throws -> NodoAssistChatSendResponse
     {
         let target = self.sessionTarget(for: sessionKey, overrideAgentID: agentID)
         let startLogMessage =
@@ -665,14 +665,14 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
                 timeoutSeconds: 35,
                 ifCurrentRoute: expectedRoute,
                 distinguishPreDispatchRouteChange: distinguishPreDispatchRouteChange)
-            let decoded = try JSONDecoder().decode(OpenClawChatSendResponse.self, from: res)
+            let decoded = try JSONDecoder().decode(NodoAssistChatSendResponse.self, from: res)
             Self.logger.info("chat.send ok runId=\(decoded.runId, privacy: .public)")
             GatewayDiagnostics.log("chat.send ok runId=\(decoded.runId) status=\(decoded.status)")
             return decoded
         } catch is GatewayNodeSessionRequestError {
             Self.logger.info("chat.send skipped because the captured route changed before dispatch")
             GatewayDiagnostics.log("chat.send skipped before dispatch: route changed")
-            throw OpenClawChatTransportSendError.notDispatched
+            throw NodoAssistChatTransportSendError.notDispatched
         } catch {
             Self.logger.error("chat.send failed \(error.localizedDescription, privacy: .public)")
             GatewayDiagnostics.log("chat.send failed error=\(error.localizedDescription)")
@@ -680,11 +680,11 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
         }
     }
 
-    private static func mapCommandChoice(_ entry: CommandEntry) -> OpenClawChatCommandChoice {
+    private static func mapCommandChoice(_ entry: CommandEntry) -> NodoAssistChatCommandChoice {
         let sourceValue = (entry.source.value as? String)?
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .lowercased()
-        let source: OpenClawChatCommandChoice.Source = switch sourceValue {
+        let source: NodoAssistChatCommandChoice.Source = switch sourceValue {
         case "native":
             .command
         case "skill":
@@ -702,7 +702,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             entry.name.trimmingCharacters(in: .whitespacesAndNewlines),
             aliases.first ?? "",
         ].joined(separator: ":")
-        return OpenClawChatCommandChoice(
+        return NodoAssistChatCommandChoice(
             id: id,
             name: entry.name,
             textAliases: aliases,
@@ -752,10 +752,10 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
     func requestHealth(timeoutMs: Int) async throws -> Bool {
         let seconds = max(1, Int(ceil(Double(timeoutMs) / 1000.0)))
         let res = try await gateway.request(method: "health", paramsJSON: nil, timeoutSeconds: seconds)
-        return (try? JSONDecoder().decode(OpenClawGatewayHealthOK.self, from: res))?.ok ?? true
+        return (try? JSONDecoder().decode(NodoAssistGatewayHealthOK.self, from: res))?.ok ?? true
     }
 
-    func events() -> AsyncStream<OpenClawChatTransportEvent> {
+    func events() -> AsyncStream<NodoAssistChatTransportEvent> {
         AsyncStream { continuation in
             let task = Task {
                 let stream = await self.gateway.subscribeServerEvents()
@@ -773,7 +773,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
         }
     }
 
-    static func mapEventFrame(_ evt: EventFrame) -> OpenClawChatTransportEvent? {
+    static func mapEventFrame(_ evt: EventFrame) -> NodoAssistChatTransportEvent? {
         switch evt.event {
         case "tick":
             return .tick
@@ -783,13 +783,13 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             guard let payload = evt.payload else { return nil }
             let ok = (try? GatewayPayloadDecoding.decode(
                 payload,
-                as: OpenClawGatewayHealthOK.self))?.ok ?? true
+                as: NodoAssistGatewayHealthOK.self))?.ok ?? true
             return .health(ok: ok)
         case "chat":
             guard let payload = evt.payload else { return nil }
             guard let chatPayload = try? GatewayPayloadDecoding.decode(
                 payload,
-                as: OpenClawChatEventPayload.self)
+                as: NodoAssistChatEventPayload.self)
             else {
                 return nil
             }
@@ -798,7 +798,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             guard let payload = evt.payload else { return nil }
             guard let message = try? GatewayPayloadDecoding.decode(
                 payload,
-                as: OpenClawSessionMessageEventPayload.self)
+                as: NodoAssistSessionMessageEventPayload.self)
             else {
                 return nil
             }
@@ -807,7 +807,7 @@ struct IOSGatewayChatTransport: OpenClawChatTransport {
             guard let payload = evt.payload else { return nil }
             guard let agentPayload = try? GatewayPayloadDecoding.decode(
                 payload,
-                as: OpenClawAgentEventPayload.self)
+                as: NodoAssistAgentEventPayload.self)
             else {
                 return nil
             }

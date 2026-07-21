@@ -1,20 +1,20 @@
 // Microsoft Foundry image provider routes MAI image deployments to the MAI API.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { ProviderRuntimeModel } from "openclaw/plugin-sdk/core";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import type { ProviderRuntimeModel } from "nodoassist/plugin-sdk/core";
 import type {
   ImageGenerationProvider,
   ImageGenerationRequest,
   ImageGenerationResult,
   ImageGenerationSourceImage,
-} from "openclaw/plugin-sdk/image-generation";
+} from "nodoassist/plugin-sdk/image-generation";
 import {
   imageSourceUploadFileName,
   parseOpenAiCompatibleImageResponse,
   resolveInlineImageJsonResponseMaxBytes,
-} from "openclaw/plugin-sdk/image-generation";
-import { MAX_IMAGE_BYTES } from "openclaw/plugin-sdk/media-runtime";
-import { isProviderApiKeyConfigured } from "openclaw/plugin-sdk/provider-auth";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth-runtime";
+} from "nodoassist/plugin-sdk/image-generation";
+import { MAX_IMAGE_BYTES } from "nodoassist/plugin-sdk/media-runtime";
+import { isProviderApiKeyConfigured } from "nodoassist/plugin-sdk/provider-auth";
+import { resolveApiKeyForProvider } from "nodoassist/plugin-sdk/provider-auth-runtime";
 import {
   assertOkOrThrowHttpError,
   createProviderOperationDeadline,
@@ -24,11 +24,11 @@ import {
   resolveProviderHttpRequestConfig,
   resolveProviderOperationTimeoutMs,
   sanitizeConfiguredModelProviderRequest,
-} from "openclaw/plugin-sdk/provider-http";
+} from "nodoassist/plugin-sdk/provider-http";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { prepareFoundryRuntimeAuth } from "./runtime.js";
 import { extractFoundryEndpoint } from "./shared-runtime.js";
 import {
@@ -48,7 +48,9 @@ const MAI_IMAGE_OUTPUT_MIME = "image/png";
 const MB = 1024 * 1024;
 const MAI_IMAGE_UPLOAD_MIME_TYPES = new Set(["image/jpeg", "image/jpg", "image/png"]);
 
-type ModelProviderConfig = NonNullable<NonNullable<OpenClawConfig["models"]>["providers"]>[string];
+type ModelProviderConfig = NonNullable<
+  NonNullable<NodoAssistConfig["models"]>["providers"]
+>[string];
 
 function readProviderConfig(req: ImageGenerationRequest): ModelProviderConfig | undefined {
   return req.cfg.models?.providers?.[PROVIDER_ID];

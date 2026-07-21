@@ -1,13 +1,13 @@
 // Whatsapp plugin module implements approval resolver behavior.
-import { resolveApprovalOverGateway } from "openclaw/plugin-sdk/approval-gateway-runtime";
-import type { ExecApprovalReplyDecision } from "openclaw/plugin-sdk/approval-reply-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { isApprovalNotFoundError } from "openclaw/plugin-sdk/error-runtime";
+import { resolveApprovalOverGateway } from "nodoassist/plugin-sdk/approval-gateway-runtime";
+import type { ExecApprovalReplyDecision } from "nodoassist/plugin-sdk/approval-reply-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { isApprovalNotFoundError } from "nodoassist/plugin-sdk/error-runtime";
 
 export { isApprovalNotFoundError };
 
 export async function resolveWhatsAppApproval(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   approvalId: string;
   decision: ExecApprovalReplyDecision;
   senderId?: string | null;

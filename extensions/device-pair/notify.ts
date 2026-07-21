@@ -1,10 +1,10 @@
 // Device Pair plugin module implements notify behavior.
-import type { OpenClawPluginService } from "openclaw/plugin-sdk/core";
-import { listDevicePairing } from "openclaw/plugin-sdk/device-bootstrap";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
-import type { PluginStateKeyedStore } from "openclaw/plugin-sdk/plugin-state-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import type { NodoAssistPluginService } from "nodoassist/plugin-sdk/core";
+import { listDevicePairing } from "nodoassist/plugin-sdk/device-bootstrap";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import type { NodoAssistPluginApi } from "nodoassist/plugin-sdk/plugin-entry";
+import type { PluginStateKeyedStore } from "nodoassist/plugin-sdk/plugin-state-runtime";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   DEVICE_PAIR_NOTIFY_MAX_SEEN_AGE_MS,
   DEVICE_PAIR_NOTIFY_SEEN_REQUEST_MAX_ENTRIES,
@@ -80,7 +80,7 @@ export function formatPendingRequests(pending: PendingPairingRequest[]): string 
 }
 
 function openNotifySubscriberStore(
-  api: OpenClawPluginApi,
+  api: NodoAssistPluginApi,
 ): PluginStateKeyedStore<NotifySubscription> {
   return api.runtime.state.openKeyedStore<NotifySubscription>({
     namespace: DEVICE_PAIR_NOTIFY_SUBSCRIBER_NAMESPACE,
@@ -89,7 +89,7 @@ function openNotifySubscriberStore(
 }
 
 function openNotifySeenRequestStore(
-  api: OpenClawPluginApi,
+  api: NodoAssistPluginApi,
 ): PluginStateKeyedStore<NotifySeenRequest> {
   return api.runtime.state.openKeyedStore<NotifySeenRequest>({
     namespace: DEVICE_PAIR_NOTIFY_SEEN_REQUEST_NAMESPACE,
@@ -98,7 +98,7 @@ function openNotifySeenRequestStore(
   });
 }
 
-async function readNotifyState(api: OpenClawPluginApi): Promise<NotifyStateFile> {
+async function readNotifyState(api: NodoAssistPluginApi): Promise<NotifyStateFile> {
   const subscriberStore = openNotifySubscriberStore(api);
   const seenRequestStore = openNotifySeenRequestStore(api);
   const [subscriberEntries, seenRequestEntries] = await Promise.all([
@@ -122,7 +122,7 @@ async function readNotifyState(api: OpenClawPluginApi): Promise<NotifyStateFile>
   return { subscribers, notifiedRequestIds };
 }
 
-async function writeNotifyState(api: OpenClawPluginApi, state: NotifyStateFile): Promise<void> {
+async function writeNotifyState(api: NodoAssistPluginApi, state: NotifyStateFile): Promise<void> {
   const subscriberStore = openNotifySubscriberStore(api);
   const nextSubscribers = new Map(
     state.subscribers.map((subscriber) => [notifySubscriberStoreKey(subscriber), subscriber]),
@@ -252,7 +252,7 @@ function shouldNotifySubscriberForRequest(
 }
 
 async function notifySubscriber(params: {
-  api: OpenClawPluginApi;
+  api: NodoAssistPluginApi;
   subscriber: NotifySubscription;
   text: string;
 }): Promise<boolean> {
@@ -284,7 +284,7 @@ async function notifySubscriber(params: {
   }
 }
 
-async function notifyPendingPairingRequests(params: { api: OpenClawPluginApi }): Promise<void> {
+async function notifyPendingPairingRequests(params: { api: NodoAssistPluginApi }): Promise<void> {
   const state = await readNotifyState(params.api);
   const pairing = await listDevicePairing();
   const pending: PendingPairingRequest[] = pairing.pending;
@@ -345,7 +345,7 @@ async function notifyPendingPairingRequests(params: { api: OpenClawPluginApi }):
 }
 
 export async function armPairNotifyOnce(params: {
-  api: OpenClawPluginApi;
+  api: NodoAssistPluginApi;
   ctx: {
     channel: string;
     senderId?: string;
@@ -377,7 +377,7 @@ export async function armPairNotifyOnce(params: {
 }
 
 export async function handleNotifyCommand(params: {
-  api: OpenClawPluginApi;
+  api: NodoAssistPluginApi;
   ctx: {
     channel: string;
     senderId?: string;
@@ -454,7 +454,7 @@ export async function handleNotifyCommand(params: {
   return { text: "Usage: /pair notify on|off|once|status" };
 }
 
-export function createPairingNotifierService(api: OpenClawPluginApi): OpenClawPluginService {
+export function createPairingNotifierService(api: NodoAssistPluginApi): NodoAssistPluginService {
   let notifyInterval: ReturnType<typeof setInterval> | null = null;
 
   return {

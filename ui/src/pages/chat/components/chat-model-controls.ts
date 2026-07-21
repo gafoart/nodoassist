@@ -769,7 +769,7 @@ function renderChatModelReasoningSelect(params: {
     const modelLabel = formatCombinedPickerModelOptionLabel(entry, selected);
     return html`
       <div class="chat-controls__combined-model">
-        <openclaw-tooltip .content=${modelLabel}>
+        <nodoassist-tooltip .content=${modelLabel}>
           <button
             class="chat-controls__inline-select-option chat-controls__combined-model-option ${selected
               ? "chat-controls__inline-select-option--selected"
@@ -809,7 +809,7 @@ function renderChatModelReasoningSelect(params: {
               ${icons.check}
             </span>
           </button>
-        </openclaw-tooltip>
+        </nodoassist-tooltip>
       </div>
     `;
   };

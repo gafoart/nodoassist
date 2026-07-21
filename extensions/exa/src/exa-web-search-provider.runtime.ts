@@ -1,6 +1,6 @@
 // Exa provider module implements model/runtime integration.
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
+import { parseStrictPositiveInteger } from "nodoassist/plugin-sdk/number-runtime";
+import { readResponseTextLimited } from "nodoassist/plugin-sdk/provider-http";
 import {
   buildSearchCacheKey,
   DEFAULT_SEARCH_COUNT,
@@ -19,12 +19,12 @@ import {
   withTrustedWebSearchEndpoint,
   wrapWebContent,
   writeCachedSearchPayload,
-} from "openclaw/plugin-sdk/provider-web-search";
-import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
+} from "nodoassist/plugin-sdk/provider-web-search";
+import { readResponseWithLimit } from "nodoassist/plugin-sdk/response-limit-runtime";
 import {
   normalizeOptionalLowercaseString,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 
 const EXA_SEARCH_ENDPOINT = "https://api.exa.ai/search";
 const EXA_SEARCH_TYPES = ["auto", "neural", "fast", "deep", "deep-reasoning", "instant"] as const;
@@ -419,7 +419,7 @@ async function runExaSearch(params: {
           Accept: "application/json",
           "Content-Type": "application/json",
           "x-api-key": params.apiKey,
-          "x-exa-integration": "openclaw",
+          "x-exa-integration": "nodoassist",
         },
         body: JSON.stringify(body),
       },

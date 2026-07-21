@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/anthropic-provider",
+  "name": "@nodoassist/anthropic-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw Anthropic provider plugin",
+  "description": "NodoAssist Anthropic provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

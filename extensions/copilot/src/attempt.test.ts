@@ -9,13 +9,13 @@ import {
   queueAgentHarnessMessage,
   type AgentHarnessAttemptParams,
   type AgentHarnessAttemptResult,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
-import type { SandboxContext } from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "nodoassist/plugin-sdk/agent-harness-runtime";
+import type { SandboxContext } from "nodoassist/plugin-sdk/agent-harness-runtime";
 import {
   initializeGlobalHookRunner,
   resetGlobalHookRunner,
-} from "openclaw/plugin-sdk/hook-runtime";
-import { createMockPluginRegistry } from "openclaw/plugin-sdk/plugin-test-runtime";
+} from "nodoassist/plugin-sdk/hook-runtime";
+import { createMockPluginRegistry } from "nodoassist/plugin-sdk/plugin-test-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { runCopilotAttempt } from "./attempt.js";
 import type { CopilotClientPool } from "./runtime.js";
@@ -35,7 +35,7 @@ const dualWriteMock = vi.hoisted(() => ({
     const record = message as unknown as Record<string, unknown>;
     return {
       ...record,
-      __openclaw: { ...(record["__openclaw"] as object | undefined), mirrorIdentity: identity },
+      __nodoassist: { ...(record["__nodoassist"] as object | undefined), mirrorIdentity: identity },
     } as unknown as T;
   },
 }));
@@ -736,7 +736,7 @@ describe("runCopilotAttempt", () => {
     const mediaId = "telegram-photo.png";
     await fsp.mkdir(inboundDir, { recursive: true });
     await fsp.writeFile(path.join(inboundDir, mediaId), Buffer.from(TINY_PNG_BASE64, "base64"));
-    vi.stubEnv("OPENCLAW_STATE_DIR", stateDir);
+    vi.stubEnv("NODOASSIST_STATE_DIR", stateDir);
     const sdk = makeFakeSdk();
     const pool = makeFakePool(sdk);
 
@@ -1481,7 +1481,7 @@ describe("runCopilotAttempt", () => {
     expect(result.feedback).toContain("no permission policy installed");
   });
 
-  it("registers ask_user and resolves it from the active OpenClaw queue", async () => {
+  it("registers ask_user and resolves it from the active NodoAssist queue", async () => {
     const onBlockReply = vi.fn();
     const sdk = makeFakeSdk({
       onCreateSession: (session, cfg) => {
@@ -1616,7 +1616,7 @@ describe("runCopilotAttempt", () => {
       // receives it as system context without having to read the file
       // via its read tool. The SDK's `append` mode keeps the SDK
       // foundation (identity/safety/tool-instruction sections) intact
-      // while layering OpenClaw context after it. See
+      // while layering NodoAssist context after it. See
       // workspace-bootstrap.ts and @github/copilot-sdk types.d.ts
       // L1052 (SystemMessageConfig).
       const cfg = (sdk.createSession.mock.calls[0] as unknown[] | undefined)?.[0] as {
@@ -1772,7 +1772,7 @@ describe("runCopilotAttempt", () => {
 
       // SystemMessage is in ResumeSessionConfig's Pick set (per SDK
       // types.d.ts:1198), so it must be propagated on resume too,
-      // otherwise resumed sessions would silently lose OpenClaw
+      // otherwise resumed sessions would silently lose NodoAssist
       // persona/identity context after every reconnect.
       const cfg = sdk.resumeSession.mock.calls[0]?.[1] as {
         systemMessage?: { mode?: string; content?: string };
@@ -2601,17 +2601,17 @@ describe("runCopilotAttempt", () => {
 
       // No env tokens, no contract token, no explicit token: falls
       // through to default useLoggedInUser mode.
-      const prevOpenclaw = process.env.OPENCLAW_GITHUB_TOKEN;
+      const prevNodoAssist = process.env.NODOASSIST_GITHUB_TOKEN;
       const prevGithub = process.env.GITHUB_TOKEN;
-      delete process.env.OPENCLAW_GITHUB_TOKEN;
+      delete process.env.NODOASSIST_GITHUB_TOKEN;
       delete process.env.GITHUB_TOKEN;
       try {
         await runCopilotAttempt(makeParams({ auth: {} as never }), { pool });
         const cfg = sdk.createSession.mock.calls[0]?.[0];
         expect("gitHubToken" in cfg).toBe(false);
       } finally {
-        if (prevOpenclaw !== undefined) {
-          process.env.OPENCLAW_GITHUB_TOKEN = prevOpenclaw;
+        if (prevNodoAssist !== undefined) {
+          process.env.NODOASSIST_GITHUB_TOKEN = prevNodoAssist;
         }
         if (prevGithub !== undefined) {
           process.env.GITHUB_TOKEN = prevGithub;
@@ -2684,7 +2684,7 @@ describe("runCopilotAttempt", () => {
         messages: Array<{
           role: string;
           idempotencyKey?: string;
-          __openclaw?: { mirrorIdentity?: string };
+          __nodoassist?: { mirrorIdentity?: string };
         }>;
       };
       for (const [index, message] of args.messages.entries()) {
@@ -2695,7 +2695,7 @@ describe("runCopilotAttempt", () => {
         ) {
           continue;
         }
-        const identity = message["__openclaw"]?.mirrorIdentity ?? "";
+        const identity = message["__nodoassist"]?.mirrorIdentity ?? "";
         // The current user and terminal assistant carry turn-stable identities.
         // Caller-passed history without an identity falls through to
         // the positional `${scope}:role:idx`.
@@ -2729,11 +2729,11 @@ describe("runCopilotAttempt", () => {
 
     // ---------------------------------------------------------------
     // Dogfood finding #3: synthetic current-turn user message in the
-    // OpenClaw audit transcript (mirrors codex event-projector pattern).
+    // NodoAssist audit transcript (mirrors codex event-projector pattern).
     //
     // Without this synthesis the dashboard / CLI history shows only
     // assistant bubbles — the user's typed turn is lost — because the
-    // OpenClaw shell's `persistTextTurnTranscript` skips its own user
+    // NodoAssist shell's `persistTextTurnTranscript` skips its own user
     // write when `embeddedAssistantGapFill` is true, trusting the
     // harness to mirror the user turn.
     // ---------------------------------------------------------------
@@ -2758,16 +2758,16 @@ describe("runCopilotAttempt", () => {
           role: string;
           content: unknown;
           idempotencyKey?: string;
-          __openclaw?: { mirrorIdentity?: string };
+          __nodoassist?: { mirrorIdentity?: string };
         }>;
       };
       expect(args.messages.length).toBe(2);
       expect(args.messages[0]?.role).toBe("user");
       expect(args.messages[0]?.content).toBe("what's my name?");
       expect(args.messages[0]?.idempotencyKey).toBe("run-A:user");
-      expect(args.messages[0]?.["__openclaw"]?.mirrorIdentity).toBe("run-A:prompt");
+      expect(args.messages[0]?.["__nodoassist"]?.mirrorIdentity).toBe("run-A:prompt");
       expect(args.messages[1]?.role).toBe("assistant");
-      expect(args.messages[1]?.["__openclaw"]?.mirrorIdentity).toBe("run-A:assistant:final");
+      expect(args.messages[1]?.["__nodoassist"]?.mirrorIdentity).toBe("run-A:assistant:final");
     });
 
     it("does not duplicate synthetic user when caller passed the same prompt as the messages tail", async () => {
@@ -2854,19 +2854,19 @@ describe("runCopilotAttempt", () => {
       const calls = dualWriteMock.dualWriteCopilotTranscriptBestEffort.mock.calls;
       expect(calls.length).toBe(2);
       const turn1 = calls[0]?.[0] as {
-        messages: Array<{ role: string; __openclaw?: { mirrorIdentity?: string } }>;
+        messages: Array<{ role: string; __nodoassist?: { mirrorIdentity?: string } }>;
       };
       const turn2 = calls[1]?.[0] as {
-        messages: Array<{ role: string; __openclaw?: { mirrorIdentity?: string } }>;
+        messages: Array<{ role: string; __nodoassist?: { mirrorIdentity?: string } }>;
       };
       const turn1User = turn1.messages.find((m) => m.role === "user");
       const turn2User = turn2.messages.find((m) => m.role === "user");
       const turn1Assistant = turn1.messages.find((m) => m.role === "assistant");
       const turn2Assistant = turn2.messages.find((m) => m.role === "assistant");
-      expect(turn1User?.["__openclaw"]?.mirrorIdentity).toBe("run-1:prompt");
-      expect(turn2User?.["__openclaw"]?.mirrorIdentity).toBe("run-2:prompt");
-      expect(turn1Assistant?.["__openclaw"]?.mirrorIdentity).toBe("run-1:assistant:final");
-      expect(turn2Assistant?.["__openclaw"]?.mirrorIdentity).toBe("run-2:assistant:final");
+      expect(turn1User?.["__nodoassist"]?.mirrorIdentity).toBe("run-1:prompt");
+      expect(turn2User?.["__nodoassist"]?.mirrorIdentity).toBe("run-2:prompt");
+      expect(turn1Assistant?.["__nodoassist"]?.mirrorIdentity).toBe("run-1:assistant:final");
+      expect(turn2Assistant?.["__nodoassist"]?.mirrorIdentity).toBe("run-2:assistant:final");
     });
 
     it("two attempts with identical prompts but different runIds remain distinct (no content-fingerprint collapse)", async () => {
@@ -2898,14 +2898,14 @@ describe("runCopilotAttempt", () => {
       const calls = dualWriteMock.dualWriteCopilotTranscriptBestEffort.mock.calls;
       const id1 = (
         calls[0][0] as {
-          messages: Array<{ role: string; __openclaw?: { mirrorIdentity?: string } }>;
+          messages: Array<{ role: string; __nodoassist?: { mirrorIdentity?: string } }>;
         }
-      ).messages.find((m) => m.role === "user")?.["__openclaw"]?.mirrorIdentity;
+      ).messages.find((m) => m.role === "user")?.["__nodoassist"]?.mirrorIdentity;
       const id2 = (
         calls[1][0] as {
-          messages: Array<{ role: string; __openclaw?: { mirrorIdentity?: string } }>;
+          messages: Array<{ role: string; __nodoassist?: { mirrorIdentity?: string } }>;
         }
-      ).messages.find((m) => m.role === "user")?.["__openclaw"]?.mirrorIdentity;
+      ).messages.find((m) => m.role === "user")?.["__nodoassist"]?.mirrorIdentity;
       expect(id1).toBe("run-X:prompt");
       expect(id2).toBe("run-Y:prompt");
       expect(id1).not.toBe(id2);
@@ -3316,7 +3316,7 @@ describe("runCopilotAttempt", () => {
   // (`@github/copilot-sdk/dist/types.d.ts:1059-1066`). Without it, the
   // CLI keeps its native read/write/shell/url/mcp/memory/hook tools
   // visible to the model alongside our bridged overrides, which would
-  // bypass OpenClaw's wrapped-tool enforcement under any permissive
+  // bypass NodoAssist's wrapped-tool enforcement under any permissive
   // permission policy and pollute the catalog under the default reject
   // policy. `createSessionConfig` derives `availableTools` from the
   // post-filter `sdkTools` so create- and resume-session always carry

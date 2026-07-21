@@ -1,5 +1,5 @@
 #!/usr/bin/env -S pnpm tsx
-// Linux Smoke script supports OpenClaw repository automation.
+// Linux Smoke script supports NodoAssist repository automation.
 import { mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -44,7 +44,7 @@ import {
   buildCommonSmokeSummary,
   expectedPackageBuildCommit,
   expectedPackageTargetVersion,
-  extractLastOpenClawVersion,
+  extractLastNodoAssistVersion,
   packAndServeSmokeArtifact,
   printSmokeTargetSummary,
   SmokeRunController,
@@ -59,13 +59,13 @@ const BAD_PLUGIN_DIAGNOSTIC_MIN_VERSION = "2026.5.7";
 const APT_LOCK_RETRY_SECONDS = 900;
 const BOOTSTRAP_TIMEOUT_SECONDS = 1200;
 
-function parseOpenClawPackageVersion(value: string): string | null {
+function parseNodoAssistPackageVersion(value: string): string | null {
   return value.match(/\b(\d{4}\.\d{1,2}\.\d{1,2}(?:-[A-Za-z0-9.]+)?)\b/u)?.[1] ?? null;
 }
 
-function compareOpenClawPackageVersions(left: string, right: string): number {
+function compareNodoAssistPackageVersions(left: string, right: string): number {
   const parse = (value: string): [number, number, number] => {
-    const match = parseOpenClawPackageVersion(value)?.match(/^(\d{4})\.(\d+)\.(\d+)/u);
+    const match = parseNodoAssistPackageVersion(value)?.match(/^(\d{4})\.(\d+)\.(\d+)/u);
     if (!match) {
       return [0, 0, 0];
     }
@@ -245,9 +245,9 @@ function stripLeadingPackageManagerSeparator(argv: string[]): string[] {
 
 class LinuxSmoke extends SmokeRunController<LinuxOptions> {
   private auth: ProviderAuth;
-  private disableBonjour = parseBoolEnv(process.env.OPENCLAW_PARALLELS_LINUX_DISABLE_BONJOUR);
+  private disableBonjour = parseBoolEnv(process.env.NODOASSIST_PARALLELS_LINUX_DISABLE_BONJOUR);
   private agentTimeoutSeconds = readPositiveIntEnv(
-    "OPENCLAW_PARALLELS_LINUX_AGENT_TIMEOUT_S",
+    "NODOASSIST_PARALLELS_LINUX_AGENT_TIMEOUT_S",
     1500,
   );
   private artifact: PackageArtifact | null = null;
@@ -279,9 +279,9 @@ class LinuxSmoke extends SmokeRunController<LinuxOptions> {
   }
 
   async run(): Promise<void> {
-    this.runDir = await makeTempDir("openclaw-parallels-linux.");
+    this.runDir = await makeTempDir("nodoassist-parallels-linux.");
     this.phases = new PhaseRunner(this.runDir);
-    this.tgzDir = await makeTempDir("openclaw-parallels-linux-tgz.");
+    this.tgzDir = await makeTempDir("nodoassist-parallels-linux-tgz.");
     try {
       this.options.vmName = this.resolveVmName();
       validateSnapshotRestoreMode(this.options.mode, "Linux smoke");
@@ -327,7 +327,7 @@ class LinuxSmoke extends SmokeRunController<LinuxOptions> {
     await this.phase("fresh.preflight", 90, () => this.logGuestPreflight());
     await this.phase("fresh.install-latest-bootstrap", 420, () => this.installLatestRelease());
     await this.phase("fresh.install-main", 420, () =>
-      this.installMainTgz("openclaw-main-fresh.tgz"),
+      this.installMainTgz("nodoassist-main-fresh.tgz"),
     );
     this.status.freshVersion = await this.extractLastVersion("fresh.install-main");
     await this.phase("fresh.verify-main-version", 90, () => this.verifyTargetVersion());
@@ -359,7 +359,7 @@ class LinuxSmoke extends SmokeRunController<LinuxOptions> {
       this.verifyVersionContains(this.latestVersion),
     );
     await this.phase("upgrade.install-main", 420, () =>
-      this.installMainTgz("openclaw-main-upgrade.tgz"),
+      this.installMainTgz("nodoassist-main-upgrade.tgz"),
     );
     this.status.upgradeVersion = await this.extractLastVersion("upgrade.install-main");
     await this.phase("upgrade.verify-main-version", 90, () => this.verifyTargetVersion());
@@ -483,13 +483,13 @@ run_apt_with_lock_retry apt-get -o DPkg::Lock::Timeout=30 install -y curl ca-cer
   }
 
   private installLatestRelease(): void {
-    this.downloadGuestFile(this.options.installUrl, "/tmp/openclaw-install.sh");
+    this.downloadGuestFile(this.options.installUrl, "/tmp/nodoassist-install.sh");
     if (this.options.installVersion) {
       this.guestExec([
         "/usr/bin/env",
-        "OPENCLAW_NO_ONBOARD=1",
+        "NODOASSIST_NO_ONBOARD=1",
         "bash",
-        "/tmp/openclaw-install.sh",
+        "/tmp/nodoassist-install.sh",
         "--version",
         this.options.installVersion,
         "--no-onboard",
@@ -497,13 +497,13 @@ run_apt_with_lock_retry apt-get -o DPkg::Lock::Timeout=30 install -y curl ca-cer
     } else {
       this.guestExec([
         "/usr/bin/env",
-        "OPENCLAW_NO_ONBOARD=1",
+        "NODOASSIST_NO_ONBOARD=1",
         "bash",
-        "/tmp/openclaw-install.sh",
+        "/tmp/nodoassist-install.sh",
         "--no-onboard",
       ]);
     }
-    this.guestExec(["openclaw", "--version"]);
+    this.guestExec(["nodoassist", "--version"]);
   }
 
   private downloadGuestFile(url: string, outputPath: string): void {
@@ -525,7 +525,7 @@ fi`);
     const tgzUrl = this.server.urlFor(this.artifact.path);
     this.downloadGuestFile(tgzUrl, `/tmp/${tempName}`);
     this.guestExec(["npm", "install", "-g", `/tmp/${tempName}`, "--no-fund", "--no-audit"]);
-    this.guestExec(["openclaw", "--version"]);
+    this.guestExec(["nodoassist", "--version"]);
   }
 
   private async verifyTargetVersion(): Promise<void> {
@@ -540,7 +540,7 @@ fi`);
   }
 
   private verifyVersionContains(needle: string): void {
-    const version = this.guestExec(["openclaw", "--version"]);
+    const version = this.guestExec(["nodoassist", "--version"]);
     if (!version.includes(needle)) {
       throw new Error(`version mismatch: expected substring ${needle}`);
     }
@@ -550,7 +550,7 @@ fi`);
     this.guestExec([
       "/usr/bin/env",
       `${this.auth.apiKeyEnv}=${this.auth.apiKeyValue}`,
-      "openclaw",
+      "nodoassist",
       "onboard",
       "--non-interactive",
       "--mode",
@@ -572,12 +572,12 @@ fi`);
 
   private injectBadPluginFixture(): void {
     this.guestBash(String.raw`set -euo pipefail
-plugin_dir=/root/.openclaw/test-bad-plugin
+plugin_dir=/root/.nodoassist/test-bad-plugin
 mkdir -p "$plugin_dir"
 cat >"$plugin_dir/package.json" <<'JSON'
-{"name":"@openclaw/test-bad-plugin","version":"1.0.0","openclaw":{"extensions":["./index.cjs"],"setupEntry":"./setup-entry.cjs"}}
+{"name":"@nodoassist/test-bad-plugin","version":"1.0.0","nodoassist":{"extensions":["./index.cjs"],"setupEntry":"./setup-entry.cjs"}}
 JSON
-cat >"$plugin_dir/openclaw.plugin.json" <<'JSON'
+cat >"$plugin_dir/nodoassist.plugin.json" <<'JSON'
 {"id":"test-bad-plugin","configSchema":{"type":"object","additionalProperties":false,"properties":{}},"channels":["test-bad-plugin"]}
 JSON
 cat >"$plugin_dir/index.cjs" <<'JS'
@@ -594,12 +594,12 @@ JS
 python3 - <<'PY'
 import json
 from pathlib import Path
-config_path = Path("/root/.openclaw/openclaw.json")
+config_path = Path("/root/.nodoassist/nodoassist.json")
 config = json.loads(config_path.read_text()) if config_path.exists() else {}
 plugins = config.setdefault("plugins", {})
 load = plugins.setdefault("load", {})
 paths = load.setdefault("paths", [])
-plugin_dir = "/root/.openclaw/test-bad-plugin"
+plugin_dir = "/root/.nodoassist/test-bad-plugin"
 if plugin_dir not in paths:
     paths.append(plugin_dir)
 allow = plugins.get("allow")
@@ -617,11 +617,11 @@ PY`);
   }
 
   private shouldExpectBadPluginDiagnostic(lane: "fresh" | "upgrade"): boolean {
-    const version = parseOpenClawPackageVersion(this.versionForLane(lane));
+    const version = parseNodoAssistPackageVersion(this.versionForLane(lane));
     if (!version) {
       return true;
     }
-    return compareOpenClawPackageVersions(version, BAD_PLUGIN_DIAGNOSTIC_MIN_VERSION) >= 0;
+    return compareNodoAssistPackageVersions(version, BAD_PLUGIN_DIAGNOSTIC_MIN_VERSION) >= 0;
   }
 
   private maybeInjectBadPluginFixture(lane: "fresh" | "upgrade"): void {
@@ -635,15 +635,15 @@ PY`);
   }
 
   private startGatewayBackground(): void {
-    const bonjourEnv = this.disableBonjour ? " OPENCLAW_DISABLE_BONJOUR=1" : "";
+    const bonjourEnv = this.disableBonjour ? " NODOASSIST_DISABLE_BONJOUR=1" : "";
     this.guestBash(
-      String.raw`pkill -f "openclaw gateway run" >/dev/null 2>&1 || true
-rm -f /tmp/openclaw-parallels-linux-gateway.log
+      String.raw`pkill -f "nodoassist gateway run" >/dev/null 2>&1 || true
+rm -f /tmp/nodoassist-parallels-linux-gateway.log
 setsid sh -lc ` +
         shellQuote(
-          `exec env OPENCLAW_HOME=/root OPENCLAW_STATE_DIR=/root/.openclaw OPENCLAW_CONFIG_PATH=/root/.openclaw/openclaw.json OPENCLAW_ALLOW_ROOT=1${bonjourEnv} ${this.auth.apiKeyEnv}=${shellQuote(
+          `exec env NODOASSIST_HOME=/root NODOASSIST_STATE_DIR=/root/.nodoassist NODOASSIST_CONFIG_PATH=/root/.nodoassist/nodoassist.json NODOASSIST_ALLOW_ROOT=1${bonjourEnv} ${this.auth.apiKeyEnv}=${shellQuote(
             this.auth.apiKeyValue,
-          )} openclaw gateway run --bind loopback --port 18789 --force >/tmp/openclaw-parallels-linux-gateway.log 2>&1`,
+          )} nodoassist gateway run --bind loopback --port 18789 --force >/tmp/nodoassist-parallels-linux-gateway.log 2>&1`,
         ) +
         String.raw` >/dev/null 2>&1 < /dev/null &`,
     );
@@ -658,13 +658,20 @@ setsid sh -lc ` +
   }
 
   private showGatewayStatusCompat(check = true): boolean {
-    const help = this.guestExec(["openclaw", "gateway", "status", "--help"], { check: false });
+    const help = this.guestExec(["nodoassist", "gateway", "status", "--help"], { check: false });
     const args = help.includes("--require-rpc")
-      ? ["openclaw", "gateway", "status", "--deep", "--require-rpc"]
-      : ["openclaw", "gateway", "status", "--deep"];
+      ? ["nodoassist", "gateway", "status", "--deep", "--require-rpc"]
+      : ["nodoassist", "gateway", "status", "--deep"];
     const result = run(
       "prlctl",
-      ["exec", this.options.vmName, "/usr/bin/env", "HOME=/root", "OPENCLAW_ALLOW_ROOT=1", ...args],
+      [
+        "exec",
+        this.options.vmName,
+        "/usr/bin/env",
+        "HOME=/root",
+        "NODOASSIST_ALLOW_ROOT=1",
+        ...args,
+      ],
       {
         check: false,
         quiet: true,
@@ -688,8 +695,8 @@ setsid sh -lc ` +
           this.options.vmName,
           "/usr/bin/env",
           "HOME=/root",
-          "OPENCLAW_ALLOW_ROOT=1",
-          "openclaw",
+          "NODOASSIST_ALLOW_ROOT=1",
+          "nodoassist",
           "gateway",
           "status",
           "--deep",
@@ -733,19 +740,19 @@ setsid sh -lc ` +
 python3 - <<'PY'
 import json
 from pathlib import Path
-config_path = Path("/root/.openclaw/openclaw.json")
+config_path = Path("/root/.nodoassist/nodoassist.json")
 config = json.loads(config_path.read_text()) if config_path.exists() else {}
 plugins = config.setdefault("plugins", {})
 load = plugins.setdefault("load", {})
 paths = load.get("paths")
 if isinstance(paths, list):
-    load["paths"] = [path for path in paths if path != "/root/.openclaw/test-bad-plugin"]
+    load["paths"] = [path for path in paths if path != "/root/.nodoassist/test-bad-plugin"]
 allow = plugins.get("allow")
 if isinstance(allow, list):
     plugins["allow"] = [plugin_id for plugin_id in allow if plugin_id != "test-bad-plugin"]
 config_path.write_text(json.dumps(config, indent=2) + "\n")
 PY
-rm -rf /root/.openclaw/test-bad-plugin`);
+rm -rf /root/.nodoassist/test-bad-plugin`);
   }
 
   private restrictAgentTurnPlugins(): void {
@@ -758,25 +765,25 @@ rm -rf /root/.openclaw/test-bad-plugin`);
   }
 
   private verifyLocalTurn(): void {
-    this.guestExec(["openclaw", "models", "set", this.auth.modelId]);
+    this.guestExec(["nodoassist", "models", "set", this.auth.modelId]);
     const modelProviderConfigBatch = modelProviderConfigBatchJson(this.auth.modelId, "linux");
     if (modelProviderConfigBatch) {
       this.guestBash(`provider_config_batch="$(mktemp)"
 cat >"$provider_config_batch" <<'JSON'
 ${modelProviderConfigBatch}
 JSON
-openclaw config set --batch-file "$provider_config_batch" --strict-json
+nodoassist config set --batch-file "$provider_config_batch" --strict-json
 rm -f "$provider_config_batch"`);
     }
     this.guestExec([
-      "openclaw",
+      "nodoassist",
       "config",
       "set",
       "agents.defaults.skipBootstrap",
       "true",
       "--strict-json",
     ]);
-    this.guestExec(["openclaw", "config", "set", "tools.profile", "minimal"]);
+    this.guestExec(["nodoassist", "config", "set", "tools.profile", "minimal"]);
     this.restrictAgentTurnPlugins();
     this.prepareAgentWorkspace();
     this.guestBash(
@@ -785,10 +792,10 @@ agent_ok=false
 for attempt in 1 2; do
   session_id="parallels-linux-smoke"
   if [ "$attempt" -gt 1 ]; then session_id="parallels-linux-smoke-retry-$attempt"; fi
-  rm -f "$HOME/.openclaw/agents/main/sessions/$session_id.jsonl"
+  rm -f "$HOME/.nodoassist/agents/main/sessions/$session_id.jsonl"
   output_file="$(mktemp)"
   set +e
-  /usr/bin/env OPENCLAW_ALLOW_ROOT=1 ${shellQuote(`${this.auth.apiKeyEnv}=${this.auth.apiKeyValue}`)} openclaw agent --local --agent main --session-id "$session_id" --message ${shellQuote(
+  /usr/bin/env NODOASSIST_ALLOW_ROOT=1 ${shellQuote(`${this.auth.apiKeyEnv}=${this.auth.apiKeyValue}`)} nodoassist agent --local --agent main --session-id "$session_id" --message ${shellQuote(
     "Reply with exact ASCII text OK only.",
   )} --thinking off --timeout ${resolveParallelsModelTimeoutSeconds("linux")} --json >"$output_file" 2>&1
   rc=$?
@@ -815,7 +822,7 @@ for attempt in 1 2; do
   fi
 done
 if [ "$agent_ok" != true ]; then
-  echo "openclaw agent finished without OK response" >&2
+  echo "nodoassist agent finished without OK response" >&2
   exit 1
 fi`,
     );
@@ -826,10 +833,10 @@ fi`,
   }
 
   private async extractLastVersion(phaseId: string): Promise<string> {
-    return await extractLastOpenClawVersion(
+    return await extractLastNodoAssistVersion(
       this.runDir,
       phaseId,
-      /(OpenClaw [^\r\n]+ \([0-9a-f]{7,}\))/g,
+      /(NodoAssist [^\r\n]+ \([0-9a-f]{7,}\))/g,
     );
   }
 

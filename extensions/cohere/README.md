@@ -1,13 +1,13 @@
-# OpenClaw Cohere Provider
+# NodoAssist Cohere Provider
 
-Official OpenClaw provider plugin for Cohere's OpenAI-compatible Compatibility
+Official NodoAssist provider plugin for Cohere's OpenAI-compatible Compatibility
 API.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/cohere-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/cohere-provider
+nodoassist gateway restart
 ```
 
 Configure a Cohere API key, then select `cohere/command-a-03-2025`.

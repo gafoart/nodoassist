@@ -1,8 +1,8 @@
 // Discord plugin module implements native command behavior.
-import { resolveDirectStatusReplyForSession } from "openclaw/plugin-sdk/command-status-runtime";
-import * as pluginRuntime from "openclaw/plugin-sdk/plugin-runtime";
-import { dispatchReplyWithDispatcher } from "openclaw/plugin-sdk/reply-dispatch-runtime";
-import { getSessionEntry } from "openclaw/plugin-sdk/session-store-runtime";
+import { resolveDirectStatusReplyForSession } from "nodoassist/plugin-sdk/command-status-runtime";
+import * as pluginRuntime from "nodoassist/plugin-sdk/plugin-runtime";
+import { dispatchReplyWithDispatcher } from "nodoassist/plugin-sdk/reply-dispatch-runtime";
+import { getSessionEntry } from "nodoassist/plugin-sdk/session-store-runtime";
 import { resolveDiscordNativeInteractionRouteState } from "./native-command-route.js";
 
 export const nativeCommandRuntime = {

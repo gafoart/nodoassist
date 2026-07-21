@@ -3,15 +3,15 @@ import {
   expectStopPendingUntilAbort,
   startAccountAndTrackLifecycle,
   waitForStartedMocks,
-} from "openclaw/plugin-sdk/channel-test-helpers";
+} from "nodoassist/plugin-sdk/channel-test-helpers";
 import {
   createPluginSetupWizardAdapter,
   createPluginSetupWizardStatus,
   createTestWizardPrompter,
   promptSetupWizardAllowFrom,
   runSetupWizardConfigure,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
-import type { WizardPrompter } from "openclaw/plugin-sdk/plugin-test-runtime";
+} from "nodoassist/plugin-sdk/plugin-test-runtime";
+import type { WizardPrompter } from "nodoassist/plugin-sdk/plugin-test-runtime";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import {
   listIrcAccountIds,
@@ -73,9 +73,9 @@ function buildAccount(): ResolvedIrcAccount {
     host: "irc.example.com",
     port: 6697,
     tls: true,
-    nick: "openclaw",
-    username: "openclaw",
-    realname: "OpenClaw",
+    nick: "nodoassist",
+    username: "nodoassist",
+    realname: "NodoAssist",
     password: "",
     passwordSource: "none",
     config: {} as ResolvedIrcAccount["config"],
@@ -215,7 +215,7 @@ describe("irc setup", () => {
     expect(
       updateIrcAccountConfig(cfg, "work", {
         host: "irc.libera.chat",
-        nick: "openclaw-work",
+        nick: "nodoassist-work",
       }),
     ).toStrictEqual({
       channels: {
@@ -223,7 +223,7 @@ describe("irc setup", () => {
           accounts: {
             work: {
               host: "irc.libera.chat",
-              nick: "openclaw-work",
+              nick: "nodoassist-work",
             },
           },
         },
@@ -239,7 +239,7 @@ describe("irc setup", () => {
         cfg,
         "default",
         "allowlist",
-        ["openclaw", "#ops", "openclaw", "*"],
+        ["nodoassist", "#ops", "nodoassist", "*"],
         (raw) => {
           const trimmed = raw.trim();
           if (!trimmed) {
@@ -257,7 +257,7 @@ describe("irc setup", () => {
           enabled: true,
           groupPolicy: "allowlist",
           groups: {
-            "#openclaw": {},
+            "#nodoassist": {},
             "#ops": {},
             "*": {},
           },
@@ -286,7 +286,7 @@ describe("irc setup", () => {
 
     expect(
       validateInput({
-        input: { host: "", nick: "openclaw" },
+        input: { host: "", nick: "nodoassist" },
       } as never),
     ).toBe("IRC requires host.");
 
@@ -298,25 +298,25 @@ describe("irc setup", () => {
 
     expect(
       validateInput({
-        input: { host: "irc.libera.chat", nick: "openclaw" },
+        input: { host: "irc.libera.chat", nick: "nodoassist" },
       } as never),
     ).toBeNull();
 
     expect(
       validateInput({
-        input: { host: "irc.libera.chat", nick: "openclaw", port: "+07000" },
+        input: { host: "irc.libera.chat", nick: "nodoassist", port: "+07000" },
       } as never),
     ).toBeNull();
 
     expect(
       validateInput({
-        input: { host: "irc.libera.chat", nick: "openclaw", port: "7000x" },
+        input: { host: "irc.libera.chat", nick: "nodoassist", port: "7000x" },
       } as never),
     ).toBe("IRC port must be between 1 and 65535.");
 
     expect(
       validateInput({
-        input: { host: "irc.libera.chat", nick: "openclaw", port: "70000" },
+        input: { host: "irc.libera.chat", nick: "nodoassist", port: "70000" },
       } as never),
     ).toBe("IRC port must be between 1 and 65535.");
 
@@ -329,11 +329,11 @@ describe("irc setup", () => {
           host: " irc.libera.chat ",
           port: "7000",
           tls: true,
-          nick: " openclaw ",
+          nick: " nodoassist ",
           username: " claw ",
-          realname: " OpenClaw Bot ",
+          realname: " NodoAssist Bot ",
           password: " secret ",
-          channels: ["#openclaw"],
+          channels: ["#nodoassist"],
         },
       } as never),
     ).toEqual({
@@ -344,11 +344,11 @@ describe("irc setup", () => {
           host: "irc.libera.chat",
           port: 7000,
           tls: true,
-          nick: "openclaw",
+          nick: "nodoassist",
           username: "claw",
-          realname: "OpenClaw Bot",
+          realname: "NodoAssist Bot",
           password: "secret",
-          channels: ["#openclaw"],
+          channels: ["#nodoassist"],
         },
       },
     });
@@ -364,19 +364,19 @@ describe("irc setup", () => {
           return "6697";
         }
         if (message === "IRC nick") {
-          return "openclaw-bot";
+          return "nodoassist-bot";
         }
         if (message === "IRC username") {
-          return "openclaw";
+          return "nodoassist";
         }
         if (message === "IRC real name") {
-          return "OpenClaw Bot";
+          return "NodoAssist Bot";
         }
         if (message.startsWith("Auto-join IRC channels")) {
-          return "#openclaw, #ops";
+          return "#nodoassist, #ops";
         }
         if (message.startsWith("IRC channels allowlist")) {
-          return "#openclaw, #ops";
+          return "#nodoassist, #ops";
         }
         throw new Error(`Unexpected prompt: ${message}`);
       }) as WizardPrompter["text"],
@@ -401,11 +401,11 @@ describe("irc setup", () => {
     expect(result.accountId).toBe("default");
     expect(result.cfg.channels?.irc?.enabled).toBe(true);
     expect(result.cfg.channels?.irc?.host).toBe("irc.libera.chat");
-    expect(result.cfg.channels?.irc?.nick).toBe("openclaw-bot");
+    expect(result.cfg.channels?.irc?.nick).toBe("nodoassist-bot");
     expect(result.cfg.channels?.irc?.tls).toBe(true);
-    expect(result.cfg.channels?.irc?.channels).toEqual(["#openclaw", "#ops"]);
+    expect(result.cfg.channels?.irc?.channels).toEqual(["#nodoassist", "#ops"]);
     expect(result.cfg.channels?.irc?.groupPolicy).toBe("allowlist");
-    expect(Object.keys(result.cfg.channels?.irc?.groups ?? {})).toEqual(["#openclaw", "#ops"]);
+    expect(Object.keys(result.cfg.channels?.irc?.groups ?? {})).toEqual(["#nodoassist", "#ops"]);
   });
 
   it("rejects partial IRC setup wizard ports", async () => {
@@ -441,7 +441,7 @@ describe("irc setup", () => {
           accounts: {
             work: {
               host: "irc.libera.chat",
-              nick: "openclaw-work",
+              nick: "nodoassist-work",
             },
           },
         },

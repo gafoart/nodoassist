@@ -30,20 +30,22 @@ describe("gh-read helpers", () => {
     }
 
     expect(stderr).toContain("usage: scripts/gh-read <gh args...>");
-    expect(stderr).toContain("OPENCLAW_GH_READ_APP_ID");
+    expect(stderr).toContain("NODOASSIST_GH_READ_APP_ID");
   });
 
   it("finds repo from gh args", () => {
-    expect(parseRepoArg(["pr", "view", "42", "-R", "openclaw/openclaw"])).toBe("openclaw/openclaw");
-    expect(parseRepoArg(["run", "list", "--repo=openclaw/docs"])).toBe("openclaw/docs");
+    expect(parseRepoArg(["pr", "view", "42", "-R", "nodoassist/nodoassist"])).toBe(
+      "nodoassist/nodoassist",
+    );
+    expect(parseRepoArg(["run", "list", "--repo=nodoassist/docs"])).toBe("nodoassist/docs");
     expect(parseRepoArg(["pr", "view", "42"])).toBeNull();
   });
 
   it("normalizes repo strings from common git formats", () => {
-    expect(normalizeRepo("openclaw/openclaw")).toBe("openclaw/openclaw");
-    expect(normalizeRepo("github.com/openclaw/openclaw")).toBe("openclaw/openclaw");
-    expect(normalizeRepo("https://github.com/openclaw/openclaw.git")).toBe("openclaw/openclaw");
-    expect(normalizeRepo("git@github.com:openclaw/openclaw.git")).toBe("openclaw/openclaw");
+    expect(normalizeRepo("nodoassist/nodoassist")).toBe("nodoassist/nodoassist");
+    expect(normalizeRepo("github.com/openclaw/openclaw")).toBe("nodoassist/nodoassist");
+    expect(normalizeRepo("https://github.com/openclaw/openclaw.git")).toBe("nodoassist/nodoassist");
+    expect(normalizeRepo("git@github.com:nodoassist/nodoassist.git")).toBe("nodoassist/nodoassist");
     expect(normalizeRepo("invalid")).toBeNull();
   });
 
@@ -193,7 +195,7 @@ describe("gh-read helpers", () => {
   it("rejects invalid GitHub API timeout values", () => {
     expect(resolveGitHubFetchTimeoutMs("1000")).toBe(1000);
     expect(() => resolveGitHubFetchTimeoutMs("1s")).toThrow(
-      /OPENCLAW_GH_READ_FETCH_TIMEOUT_MS must be an integer/u,
+      /NODOASSIST_GH_READ_FETCH_TIMEOUT_MS must be an integer/u,
     );
   });
 });

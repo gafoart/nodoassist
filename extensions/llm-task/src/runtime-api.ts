@@ -1,2 +1,5 @@
 // Llm Task API module exposes the plugin public contract.
-export { resolvePreferredOpenClawTmpDir, withTempWorkspace } from "openclaw/plugin-sdk/temp-path";
+export {
+  resolvePreferredNodoAssistTmpDir,
+  withTempWorkspace,
+} from "nodoassist/plugin-sdk/temp-path";

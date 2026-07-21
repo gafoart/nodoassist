@@ -939,7 +939,7 @@ function renderPresetsCard(props: QuickSettingsProps) {
       )}
       <div class="qs-card__body qs-profiles">
         <p class="qs-profiles__intro">
-          Choose how much workspace context OpenClaw injects into each run. Profiles only change
+          Choose how much workspace context NodoAssist injects into each run. Profiles only change
           bootstrap size and follow-up reinjection — never your model, tools, channels, or theme.
         </p>
         <div class="qs-presets-grid">

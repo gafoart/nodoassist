@@ -57,7 +57,7 @@ export const AgentSummarySchema = Type.Object(
       Type.Object(
         {
           id: NonEmptyString,
-          fallback: Type.Optional(Type.Union([Type.Literal("openclaw"), Type.Literal("none")])),
+          fallback: Type.Optional(Type.Union([Type.Literal("nodoassist"), Type.Literal("none")])),
           source: Type.Union([
             Type.Literal("env"),
             Type.Literal("agent"),
@@ -499,7 +499,7 @@ export const SkillsDetailResultSchema = Type.Object(
 /** Security verdict report for installed/requested skills. */
 export const SkillsSecurityVerdictsResultSchema = Type.Object(
   {
-    schema: Type.Literal("openclaw.skills.security-verdicts.v1"),
+    schema: Type.Literal("nodoassist.skills.security-verdicts.v1"),
     items: Type.Array(
       Type.Object(
         {
@@ -549,7 +549,7 @@ export const SkillsSkillCardParamsSchema = Type.Object(
 /** Rendered skill card content and file metadata. */
 export const SkillsSkillCardResultSchema = Type.Object(
   {
-    schema: Type.Literal("openclaw.skills.skill-card.v1"),
+    schema: Type.Literal("nodoassist.skills.skill-card.v1"),
     skillKey: NonEmptyString,
     path: NonEmptyString,
     sizeBytes: Type.Integer({ minimum: 0 }),
@@ -654,7 +654,7 @@ const SkillProposalOriginSchema = Type.Object(
 /** Full persisted skill proposal record. */
 const SkillProposalRecordSchema = Type.Object(
   {
-    schema: Type.Literal("openclaw.skill-workshop.proposal.v1"),
+    schema: Type.Literal("nodoassist.skill-workshop.proposal.v1"),
     id: NonEmptyString,
     kind: SkillProposalKindSchema,
     status: SkillProposalStatusSchema,
@@ -709,7 +709,7 @@ export const SkillsProposalsListParamsSchema = Type.Object(
 /** Proposal manifest response for dashboard/workshop list views. */
 export const SkillsProposalsListResultSchema = Type.Object(
   {
-    schema: Type.Literal("openclaw.skill-workshop.proposals-manifest.v1"),
+    schema: Type.Literal("nodoassist.skill-workshop.proposals-manifest.v1"),
     updatedAt: NonEmptyString,
     proposals: Type.Array(SkillProposalManifestEntrySchema),
   },

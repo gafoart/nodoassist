@@ -23,8 +23,8 @@ function buildSourcePage(raw: string, updatedAt: string): string {
       renderMarkdownFence(raw, "text"),
       "",
       "## Notes",
-      "<!-- openclaw:human:start -->",
-      "<!-- openclaw:human:end -->",
+      "<!-- nodoassist:human:start -->",
+      "<!-- nodoassist:human:end -->",
       "",
     ].join("\n"),
   });
@@ -97,8 +97,8 @@ describe("writeImportedSourcePage", () => {
     const absPage = path.join(suiteRoot, pagePath);
     const userNote = "IMPORTED PAGE NOTE";
     const edited = (await fs.readFile(absPage, "utf8")).replace(
-      "<!-- openclaw:human:start -->\n<!-- openclaw:human:end -->",
-      `<!-- openclaw:human:start -->\n${userNote}\n<!-- openclaw:human:end -->`,
+      "<!-- nodoassist:human:start -->\n<!-- nodoassist:human:end -->",
+      `<!-- nodoassist:human:start -->\n${userNote}\n<!-- nodoassist:human:end -->`,
     );
     await fs.writeFile(absPage, edited, "utf8");
 
@@ -132,9 +132,9 @@ describe("writeImportedSourcePage", () => {
 
     const sourceWithMarkers = [
       "first imported body",
-      "<!-- openclaw:human:start -->",
+      "<!-- nodoassist:human:start -->",
       "OLD IMPORTED SOURCE MARKER PAYLOAD",
-      "<!-- openclaw:human:end -->",
+      "<!-- nodoassist:human:end -->",
       "",
     ].join("\n");
     await fs.writeFile(sourcePath, sourceWithMarkers, "utf8");
@@ -154,8 +154,8 @@ describe("writeImportedSourcePage", () => {
     const absPage = path.join(suiteRoot, pagePath);
     const userNote = "CRLF IMPORTED PAGE NOTE";
     const edited = (await fs.readFile(absPage, "utf8")).replace(
-      "<!-- openclaw:human:start -->\n<!-- openclaw:human:end -->",
-      `<!-- openclaw:human:start -->\n${userNote}\n<!-- openclaw:human:end -->`,
+      "<!-- nodoassist:human:start -->\n<!-- nodoassist:human:end -->",
+      `<!-- nodoassist:human:start -->\n${userNote}\n<!-- nodoassist:human:end -->`,
     );
     await fs.writeFile(absPage, edited.replace(/\n/g, "\r\n"), "utf8");
 

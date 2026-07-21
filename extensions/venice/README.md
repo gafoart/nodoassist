@@ -1,13 +1,13 @@
-# Venice OpenClaw provider
+# Venice NodoAssist provider
 
-Official OpenClaw provider plugin for Venice.
+Official NodoAssist provider plugin for Venice.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/venice-provider
+nodoassist plugins install @nodoassist/venice-provider
 ```
 
 ## Docs
 
-See `docs/providers/venice.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/providers/venice`.
+See `docs/providers/venice.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/providers/venice`.

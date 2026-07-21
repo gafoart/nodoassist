@@ -11,7 +11,7 @@ const report: HookStatusReport = {
     {
       name: "session-memory",
       description: "Save session context to memory",
-      source: "openclaw-bundled",
+      source: "nodoassist-bundled",
       pluginId: undefined,
       filePath: "/tmp/hooks/session-memory/HOOK.md",
       baseDir: "/tmp/hooks/session-memory",
@@ -40,7 +40,7 @@ function createPluginManagedHookReport(): HookStatusReport {
       {
         name: "plugin-hook",
         description: "Hook from plugin",
-        source: "openclaw-plugin",
+        source: "nodoassist-plugin",
         pluginId: "voice-call",
         filePath: "/tmp/hooks/plugin-hook/HOOK.md",
         baseDir: "/tmp/hooks/plugin-hook",

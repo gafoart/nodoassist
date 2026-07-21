@@ -138,18 +138,18 @@ export const hi: TranslationMap = {
     pairing: {
       button: "मोबाइल डिवाइस पेयर करें",
       adminRequired: "सेटअप कोड बनाने के लिए एडमिनिस्ट्रेटर एक्सेस आवश्यक है।",
-      title: "OpenClaw मोबाइल",
+      title: "NodoAssist मोबाइल",
       subtitle: "नया फ़ोन कनेक्ट करने के लिए मोबाइल ऐप में इस QR कोड को स्कैन करें।",
       generating: "सुरक्षित सेटअप कोड बनाया जा रहा है…",
       failed: "सेटअप कोड नहीं बनाया जा सका।",
-      qrAlt: "OpenClaw मोबाइल पेयरिंग QR कोड",
+      qrAlt: "NodoAssist मोबाइल पेयरिंग QR कोड",
       qrUnavailable: "QR उपलब्ध नहीं है। इसके बजाय सेटअप कोड कॉपी करें।",
       copySetupCode: "सेटअप कोड कॉपी करें",
       newCode: "नया कोड",
       showSetupCode: "सेटअप कोड दिखाएँ",
       pending: "समीक्षा की प्रतीक्षा में डिवाइस अनुरोध: {count}",
       review: "समीक्षा",
-      waiting: "आधिकारिक OpenClaw मोबाइल ऐप स्कैन करने के बाद अपने आप कनेक्ट हो जाते हैं।",
+      waiting: "आधिकारिक NodoAssist मोबाइल ऐप स्कैन करने के बाद अपने आप कनेक्ट हो जाते हैं।",
       help: "पेयरिंग सहायता",
       manageDevices: "डिवाइस प्रबंधित करें",
     },
@@ -175,7 +175,7 @@ export const hi: TranslationMap = {
   },
   worktrees: {
     title: "प्रबंधित Worktrees",
-    subtitle: "OpenClaw के स्वामित्व वाले पृथक repository checkouts.",
+    subtitle: "NodoAssist के स्वामित्व वाले पृथक repository checkouts.",
     cleanNow: "अभी साफ़ करें",
     name: "नाम",
     repo: "Repository",
@@ -539,7 +539,7 @@ export const hi: TranslationMap = {
     skillWorkshop: "प्रस्तावों के लाइव स्किल्स बनने से पहले उनकी समीक्षा करें, उन्हें परिष्कृत करें और लागू करें।",
     nodes: "पेयर किए गए डिवाइस और कमांड्स।",
     chat: "त्वरित हस्तक्षेपों के लिए गेटवे चैट।",
-    config: "openclaw.json संपादित करें।",
+    config: "nodoassist.json संपादित करें।",
     communications: "चैनल, संदेश, और ऑडियो सेटिंग्स।",
     appearance: "थीम, UI, और सेटअप विज़ार्ड सेटिंग्स।",
     automation: "कमांड, हुक, cron, और प्लगइन।",
@@ -971,7 +971,7 @@ export const hi: TranslationMap = {
       metadataUpgradeSummary:
         "यह डिवाइस पहले से paired है, लेकिन metadata change approval की प्रतीक्षा कर रहा है।",
       mobileHint:
-        "Mobile पर हैं? अपने desktop पर openclaw dashboard --no-open से पूरा URL (including #token=...) कॉपी करें।",
+        "Mobile पर हैं? अपने desktop पर nodoassist dashboard --no-open से पूरा URL (including #token=...) कॉपी करें।",
       docsTitle: "Device pairing docs (नए tab में खुलता है)",
       docsLink: "Docs: Device pairing",
     },
@@ -1009,7 +1009,7 @@ export const hi: TranslationMap = {
       modelAuthExpiresIn: "{when} में समाप्त होगा",
       modelAuthAttentionExpiredTitle: "मॉडल प्रमाणीकरण समाप्त हो गया",
       modelAuthAttentionExpiringTitle: "मॉडल प्रमाणीकरण जल्द समाप्त होगा",
-      modelAuthAttentionExpiredDesc: "{providers} — openclaw models auth के साथ पुनः प्रमाणीकरण करें",
+      modelAuthAttentionExpiredDesc: "{providers} — nodoassist models auth के साथ पुनः प्रमाणीकरण करें",
       modelAuthAttentionExpiringEntry: "{provider} ({when})",
     },
     attention: {
@@ -1458,16 +1458,17 @@ export const hi: TranslationMap = {
         title: "ऑथ आवश्यक",
         summary:
           "Gateway पहुँच योग्य है, लेकिन इस ब्राउज़र के कनेक्ट होने से पहले इसे मिलान करने वाले टोकन या पासवर्ड की आवश्यकता है।",
-        stepPaste: "openclaw dashboard --no-open से टोकन पेस्ट करें या कॉन्फ़िगर किया गया पासवर्ड दर्ज करें।",
+        stepPaste:
+          "nodoassist dashboard --no-open से टोकन पेस्ट करें या कॉन्फ़िगर किया गया पासवर्ड दर्ज करें।",
         stepGenerate:
-          "यदि कोई टोकन कॉन्फ़िगर नहीं है, तो gateway होस्ट पर openclaw doctor --generate-gateway-token चलाएँ।",
+          "यदि कोई टोकन कॉन्फ़िगर नहीं है, तो gateway होस्ट पर nodoassist doctor --generate-gateway-token चलाएँ।",
         stepConnect: "क्रेडेंशियल अपडेट करने के बाद फिर से कनेक्ट करें पर क्लिक करें।",
       },
       authFailed: {
         title: "ऑथ मेल नहीं खाया",
         summary:
           "प्रदान किया गया क्रेडेंशियल अस्वीकार कर दिया गया। सबसे आम कारण पुराना टोकन या किसी अन्य Gateway URL से कॉपी किया गया टोकन है।",
-        stepDashboard: "openclaw dashboard --no-open चलाएँ और नया URL खोलें या उसका टोकन पेस्ट करें।",
+        stepDashboard: "nodoassist dashboard --no-open चलाएँ और नया URL खोलें या उसका टोकन पेस्ट करें।",
         stepReplace: "पुराने टोकन/पासवर्ड मान बदलें; किसी अन्य Gateway URL से टोकन दोबारा उपयोग न करें।",
         stepMode:
           "एक समय में एक मेल खाने वाला auth mode उपयोग करें: token mode के लिए gateway token, password mode के लिए password।",
@@ -1487,8 +1488,8 @@ export const hi: TranslationMap = {
         summary:
           "Control UI का उपयोग करने से पहले इस ब्राउज़र को Gateway host से एक बार की स्वीकृति चाहिए।",
         upgradeSummary: "यह ब्राउज़र पहले से ज्ञात है, लेकिन अनुरोधित access बदल गया है और नई स्वीकृति चाहिए।",
-        stepList: "Gateway host पर openclaw devices list चलाएँ।",
-        stepApproveId: "इस request को स्वीकृत करें: openclaw devices approve {requestId}.",
+        stepList: "Gateway host पर nodoassist devices list चलाएँ।",
+        stepApproveId: "इस request को स्वीकृत करें: nodoassist devices approve {requestId}.",
         stepApprove: "उस सूची से लंबित browser/device request को स्वीकृत करें।",
         stepReconnect: "स्वीकृति पूरी होने के बाद फिर से कनेक्ट करें।",
       },
@@ -1514,21 +1515,22 @@ export const hi: TranslationMap = {
         title: "प्रोटोकॉल मेल नहीं खाता",
         summary: "सर्व किया गया Control UI और चल रहा Gateway समर्थित कनेक्शन प्रोटोकॉल पर सहमत नहीं हैं।",
         stepDashboard:
-          "openclaw dashboard के साथ सर्व किया गया dashboard फिर से खोलें ताकि UI और Gateway एक ही install से आएँ।",
+          "nodoassist dashboard के साथ सर्व किया गया dashboard फिर से खोलें ताकि UI और Gateway एक ही install से आएँ।",
         stepDevUi:
           "यदि pnpm ui:dev का उपयोग कर रहे हैं, तो वर्तमान checkout के विरुद्ध dev UI को फिर से build या restart करें।",
         stepRestart:
-          "OpenClaw अपडेट करने के बाद Gateway को रीस्टार्ट करें ताकि वह वर्तमान प्रोटोकॉल सर्व करे।",
+          "NodoAssist अपडेट करने के बाद Gateway को रीस्टार्ट करें ताकि वह वर्तमान प्रोटोकॉल सर्व करे।",
       },
       network: {
         title: "कनेक्ट नहीं हो सका",
         summary:
           "ब्राउज़र Gateway कनेक्शन पूरा नहीं कर सका। credentials दोबारा आज़माने से पहले target और transport जाँचें।",
-        stepGateway: "openclaw status या openclaw gateway run के साथ पुष्टि करें कि Gateway चल रहा है।",
+        stepGateway:
+          "nodoassist status या nodoassist gateway run के साथ पुष्टि करें कि Gateway चल रहा है।",
         stepUrl:
           "WebSocket URL जांचें और जब Gateway HTTPS/Tailscale Serve के पीछे हो, तो wss:// का उपयोग करें।",
         stepDashboard:
-          "मौजूदा URL और auth विवरण फिर से कॉपी करने के लिए openclaw dashboard --no-open के साथ dashboard फिर से खोलें।",
+          "मौजूदा URL और auth विवरण फिर से कॉपी करने के लिए nodoassist dashboard --no-open के साथ dashboard फिर से खोलें।",
       },
     },
   },

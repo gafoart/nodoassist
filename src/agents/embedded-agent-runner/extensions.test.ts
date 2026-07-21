@@ -1,8 +1,8 @@
 // Coverage for embedded extension factory selection and runtime wiring.
-import type { SessionManager } from "openclaw/plugin-sdk/agent-sessions";
-import type { Model } from "openclaw/plugin-sdk/llm";
+import type { SessionManager } from "nodoassist/plugin-sdk/agent-sessions";
+import type { Model } from "nodoassist/plugin-sdk/llm";
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { NodoAssistConfig } from "../../config/config.js";
 import { getCompactionSafeguardRuntime } from "../agent-hooks/compaction-safeguard-runtime.js";
 import compactionSafeguardExtension from "../agent-hooks/compaction-safeguard.js";
 import contextPruningExtension from "../agent-hooks/context-pruning.js";
@@ -19,7 +19,7 @@ vi.mock("../../plugins/provider-hook-runtime.js", () => ({
   resolveProviderRuntimePlugin: () => undefined,
 }));
 
-function buildSafeguardFactories(cfg: OpenClawConfig, workspaceDir?: string) {
+function buildSafeguardFactories(cfg: NodoAssistConfig, workspaceDir?: string) {
   // The safeguard runtime attaches to the session manager, so tests keep the
   // same manager instance around for both factory construction and inspection.
   const sessionManager = {} as SessionManager;
@@ -41,7 +41,7 @@ function buildSafeguardFactories(cfg: OpenClawConfig, workspaceDir?: string) {
 }
 
 function expectSafeguardRuntime(
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
   expectedRuntime: { qualityGuardEnabled: boolean; qualityGuardMaxRetries?: number },
 ) {
   const { factories, sessionManager } = buildSafeguardFactories(cfg);
@@ -63,7 +63,7 @@ describe("buildEmbeddedExtensionFactories", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     expectSafeguardRuntime(cfg, {
       qualityGuardEnabled: true,
     });
@@ -81,7 +81,7 @@ describe("buildEmbeddedExtensionFactories", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     expectSafeguardRuntime(cfg, {
       qualityGuardEnabled: false,
     });
@@ -100,7 +100,7 @@ describe("buildEmbeddedExtensionFactories", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     expectSafeguardRuntime(cfg, {
       qualityGuardEnabled: true,
       qualityGuardMaxRetries: 2,
@@ -117,12 +117,12 @@ describe("buildEmbeddedExtensionFactories", () => {
             },
           },
         },
-      } as OpenClawConfig,
-      "/tmp/openclaw-workspace",
+      } as NodoAssistConfig,
+      "/tmp/nodoassist-workspace",
     );
 
     expect(getCompactionSafeguardRuntime(sessionManager)?.workspaceDir).toBe(
-      "/tmp/openclaw-workspace",
+      "/tmp/nodoassist-workspace",
     );
   });
 
@@ -136,7 +136,7 @@ describe("buildEmbeddedExtensionFactories", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       sessionManager: {} as SessionManager,
       provider: "litellm",
       modelId: "claude-sonnet-4-6",

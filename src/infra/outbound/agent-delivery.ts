@@ -1,12 +1,12 @@
 // Agent delivery planning resolves final reply destinations from explicit
 // options, session history, turn source, bindings, and channel route hooks.
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
 import { resolveChannelDefaultAccountId } from "../../channels/plugins/helpers.js";
 import type { ChannelOutboundTargetMode } from "../../channels/plugins/types.public.js";
 import type { ChannelId } from "../../channels/plugins/types.public.js";
 import { listRouteBindings } from "../../config/bindings.js";
 import type { SessionEntry } from "../../config/sessions.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { normalizeRouteBindingChannelId } from "../../routing/binding-scope.js";
 import { resolveAgentRoute } from "../../routing/resolve-route.js";
 import { buildAgentMainSessionKey, normalizeAgentId } from "../../routing/session-key.js";
@@ -167,7 +167,7 @@ export function resolveAgentDeliveryPlan(params: {
 
 export async function resolveAgentDeliveryPlanWithSessionRoute(
   params: Parameters<typeof resolveAgentDeliveryPlan>[0] & {
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     agentId: string;
     currentSessionKey?: string;
     sessionRouteMode?: "plugin-only" | "allow-fallback";
@@ -338,7 +338,7 @@ export async function resolveAgentDeliveryPlanWithSessionRoute(
 
 /** Resolves an explicit recipient into its canonical or stable provider-owned session. */
 export async function resolveAgentExplicitRecipientSession(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   agentId: string;
   channel: string;
   to: string;
@@ -378,7 +378,7 @@ export async function resolveAgentExplicitRecipientSession(params: {
 }
 
 export function resolveAgentOutboundTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   plan: AgentDeliveryPlan;
   targetMode?: ChannelOutboundTargetMode;
   validateExplicitTarget?: boolean;

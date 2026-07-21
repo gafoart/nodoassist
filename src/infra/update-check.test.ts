@@ -33,7 +33,7 @@ describe("compareSemverStrings", () => {
     expect(compareSemverStrings("1.0.0", "1.0.0.beta.1")).toBe(1);
   });
 
-  it("treats OpenClaw stable correction releases as newer than their base release", () => {
+  it("treats NodoAssist stable correction releases as newer than their base release", () => {
     expect(compareSemverStrings("2026.5.3", "2026.5.3-1")).toBe(-1);
     expect(compareSemverStrings("2026.5.3-1", "2026.5.3")).toBe(1);
     expect(compareSemverStrings("2026.5.3-2", "2026.5.3-1")).toBe(1);
@@ -81,15 +81,15 @@ describe("resolveNpmChannelTag", () => {
 
   it("delegates package target metadata to npm view with global config scope", async () => {
     versionByTag.latest = "1.0.4";
-    const env = { ...process.env, NPM_CONFIG_USERCONFIG: "/tmp/openclaw-user-npmrc" };
+    const env = { ...process.env, NPM_CONFIG_USERCONFIG: "/tmp/nodoassist-user-npmrc" };
 
     await expect(
       fetchNpmPackageTargetStatus({
         target: "latest",
-        spec: "openclaw@latest",
-        command: "/opt/openclaw/node/bin/npm",
+        spec: "nodoassist@latest",
+        command: "/opt/nodoassist/node/bin/npm",
         timeoutMs: 1000,
-        cwd: "/tmp/openclaw-project",
+        cwd: "/tmp/nodoassist-project",
         env,
         runCommand,
       }),
@@ -101,9 +101,9 @@ describe("resolveNpmChannelTag", () => {
 
     expect(runCommandMock).toHaveBeenCalledWith(
       [
-        "/opt/openclaw/node/bin/npm",
+        "/opt/nodoassist/node/bin/npm",
         "view",
-        "openclaw@latest",
+        "nodoassist@latest",
         "version",
         "engines.node",
         "--json",
@@ -111,14 +111,14 @@ describe("resolveNpmChannelTag", () => {
       ],
       expect.objectContaining({
         timeoutMs: 1000,
-        cwd: "/tmp/openclaw-project",
+        cwd: "/tmp/nodoassist-project",
         env,
       }),
     );
   });
 
   it("uses npm global scope, user config auth, and ignores project npmrc for real metadata", async () => {
-    await withTempDir({ prefix: "openclaw-update-check-npm-view-" }, async (base) => {
+    await withTempDir({ prefix: "nodoassist-update-check-npm-view-" }, async (base) => {
       const requests: Array<{ url: string; authorization?: string }> = [];
       const server = http.createServer((req, res) => {
         requests.push({
@@ -128,11 +128,11 @@ describe("resolveNpmChannelTag", () => {
         res.setHeader("content-type", "application/json");
         res.end(
           JSON.stringify({
-            name: "openclaw",
+            name: "nodoassist",
             "dist-tags": { latest: "2026.6.6" },
             versions: {
               "2026.6.6": {
-                name: "openclaw",
+                name: "nodoassist",
                 version: "2026.6.6",
                 engines: { node: ">=22.19.0" },
                 dist: {
@@ -182,7 +182,7 @@ describe("resolveNpmChannelTag", () => {
           nodeEngine: ">=22.19.0",
         });
 
-        expect(requests.some((request) => request.url.startsWith("/user/openclaw"))).toBe(true);
+        expect(requests.some((request) => request.url.startsWith("/user/nodoassist"))).toBe(true);
         expect(requests.some((request) => request.url.startsWith("/project/"))).toBe(false);
         expect(requests.some((request) => request.authorization === "Bearer test-token")).toBe(
           true,
@@ -401,7 +401,7 @@ describe("resolveNpmChannelTag", () => {
     }));
 
     const result = await fetchNpmPackageTargetStatus({
-      target: "openclaw",
+      target: "nodoassist",
       timeoutMs: 1000,
       runCommand: badRunCommand as unknown as typeof runCommandWithTimeout,
     });
@@ -441,7 +441,7 @@ describe("resolveExtendedStablePackage", () => {
       status: "resolved",
       selector: "extended-stable",
       version: "2026.6.33",
-      packageSpec: "openclaw@2026.6.33",
+      packageSpec: "nodoassist@2026.6.33",
     });
     expect(fetch.mock.calls.map((call) => call[0])).toEqual([
       "https://registry.npmjs.org/openclaw/extended-stable",
@@ -470,9 +470,9 @@ describe("resolveExtendedStablePackage", () => {
       resolveExtendedStablePackage({
         installKind: "package",
         timeoutMs: 1000,
-        packageName: "@kevins8/openclaw",
+        packageName: "@kevins8/nodoassist",
         env: {
-          OPENCLAW_UPDATE_PACKAGE_SPEC: "@kevins8/openclaw",
+          NODOASSIST_UPDATE_PACKAGE_SPEC: "@kevins8/nodoassist",
           NPM_CONFIG_REGISTRY: "http://127.0.0.1:4873/",
         },
       }),
@@ -480,7 +480,7 @@ describe("resolveExtendedStablePackage", () => {
       status: "resolved",
       selector: "extended-stable",
       version: "2000.4.34",
-      packageSpec: "@kevins8/openclaw@2000.4.34",
+      packageSpec: "@kevins8/nodoassist@2000.4.34",
     });
     expect(fetch.mock.calls.map((call) => call[0])).toEqual([
       "http://127.0.0.1:4873/%40kevins8%2Fopenclaw/extended-stable",
@@ -509,15 +509,15 @@ describe("resolveExtendedStablePackage", () => {
       resolveExtendedStablePackage({
         installKind: "package",
         timeoutMs: 1000,
-        packageName: "@kevins8/openclaw",
+        packageName: "@kevins8/nodoassist",
         env: {
-          OPENCLAW_UPDATE_PACKAGE_SPEC: "@kevins8/openclaw",
+          NODOASSIST_UPDATE_PACKAGE_SPEC: "@kevins8/nodoassist",
           NPM_CONFIG_REGISTRY: "https://registry.example.com/",
         },
       }),
     ).resolves.toMatchObject({
       status: "resolved",
-      packageSpec: "openclaw@2026.6.33",
+      packageSpec: "nodoassist@2026.6.33",
     });
     expect(fetch.mock.calls.map((call) => call[0])).toEqual([
       "https://registry.npmjs.org/openclaw/extended-stable",
@@ -639,7 +639,7 @@ describe("formatGitInstallLabel", () => {
 
 describe("checkDepsStatus", () => {
   it("reports unknown, missing, stale, and ok states from lockfile markers", async () => {
-    await withTempDir({ prefix: "openclaw-update-check-" }, async (base) => {
+    await withTempDir({ prefix: "nodoassist-update-check-" }, async (base) => {
       await expect(checkDepsStatus({ root: base, manager: "unknown" })).resolves.toEqual({
         manager: "unknown",
         status: "unknown",
@@ -676,7 +676,7 @@ describe("checkDepsStatus", () => {
   });
 
   it("uses npm-shrinkwrap as the npm dependency lock marker when present", async () => {
-    await withTempDir({ prefix: "openclaw-update-check-shrinkwrap-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-update-check-shrinkwrap-" }, async (root) => {
       const shrinkwrapPath = path.join(root, "npm-shrinkwrap.json");
       await fs.writeFile(shrinkwrapPath, "{}", "utf8");
       await fs.mkdir(path.join(root, "node_modules"), { recursive: true });
@@ -703,7 +703,7 @@ describe("checkUpdateStatus", () => {
   });
 
   it("detects package installs for non-git roots", async () => {
-    await withTempDir({ prefix: "openclaw-update-check-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-update-check-" }, async (root) => {
       await fs.writeFile(
         path.join(root, "package.json"),
         JSON.stringify({ packageManager: "npm@10.0.0" }),
@@ -728,10 +728,10 @@ describe("checkUpdateStatus", () => {
   });
 
   it("detects npm package installs that ship pnpm package metadata with shrinkwrap", async () => {
-    await withTempDir({ prefix: "openclaw-update-check-npm-shrinkwrap-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-update-check-npm-shrinkwrap-" }, async (root) => {
       await fs.writeFile(
         path.join(root, "package.json"),
-        JSON.stringify({ name: "openclaw", packageManager: "pnpm@11.2.2" }),
+        JSON.stringify({ name: "nodoassist", packageManager: "pnpm@11.2.2" }),
         "utf8",
       );
       await fs.writeFile(path.join(root, "npm-shrinkwrap.json"), "{}", "utf8");
@@ -752,13 +752,13 @@ describe("checkUpdateStatus", () => {
   });
 
   it("treats symlinked git installs as git roots", async () => {
-    await withTempDir({ prefix: "openclaw-update-check-git-" }, async (base) => {
+    await withTempDir({ prefix: "nodoassist-update-check-git-" }, async (base) => {
       const repoRoot = path.join(base, "repo");
-      const linkedRoot = path.join(base, "linked-openclaw");
+      const linkedRoot = path.join(base, "linked-nodoassist");
       await fs.mkdir(repoRoot, { recursive: true });
       await fs.writeFile(
         path.join(repoRoot, "package.json"),
-        JSON.stringify({ name: "openclaw", packageManager: "pnpm@10.0.0" }),
+        JSON.stringify({ name: "nodoassist", packageManager: "pnpm@10.0.0" }),
         "utf8",
       );
       await runCommandWithTimeout(["git", "init"], { cwd: repoRoot, timeoutMs: 1000 });
@@ -777,10 +777,10 @@ describe("checkUpdateStatus", () => {
   });
 
   it("reports unsupported_git_channel for Git status without querying npm", async () => {
-    await withTempDir({ prefix: "openclaw-update-check-git-channel-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-update-check-git-channel-" }, async (root) => {
       await fs.writeFile(
         path.join(root, "package.json"),
-        JSON.stringify({ name: "openclaw", packageManager: "pnpm@10.0.0" }),
+        JSON.stringify({ name: "nodoassist", packageManager: "pnpm@10.0.0" }),
         "utf8",
       );
       await runCommandWithTimeout(["git", "init"], { cwd: root, timeoutMs: 1000 });

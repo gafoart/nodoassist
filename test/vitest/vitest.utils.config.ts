@@ -7,7 +7,7 @@ export function createUtilsVitestConfig(env?: Record<string, string | undefined>
     dir: "src",
     env,
     exclude: getUnitFastTestFiles(),
-    includeOpenClawRuntimeSetup: false,
+    includeNodoAssistRuntimeSetup: false,
     name: "utils",
     passWithNoTests: true,
   });

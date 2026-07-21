@@ -1,15 +1,15 @@
 import { readFileSync } from "node:fs";
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
-import type { Context, Model } from "openclaw/plugin-sdk/llm";
-import { registerSingleProviderPlugin } from "openclaw/plugin-sdk/plugin-test-runtime";
-import { buildOpenAICompletionsParams } from "openclaw/plugin-sdk/provider-transport-runtime";
+import type { StreamFn } from "nodoassist/plugin-sdk/agent-core";
+import type { Context, Model } from "nodoassist/plugin-sdk/llm";
+import { registerSingleProviderPlugin } from "nodoassist/plugin-sdk/plugin-test-runtime";
+import { buildOpenAICompletionsParams } from "nodoassist/plugin-sdk/provider-transport-runtime";
 import { describe, expect, it } from "vitest";
 import plugin from "./index.js";
 import { buildCohereProvider } from "./provider-catalog.js";
 import { createCohereCompletionsWrapper } from "./stream.js";
 
 function readManifest() {
-  return JSON.parse(readFileSync(new URL("./openclaw.plugin.json", import.meta.url), "utf8")) as {
+  return JSON.parse(readFileSync(new URL("./nodoassist.plugin.json", import.meta.url), "utf8")) as {
     providerAuthChoices?: Array<{ choiceId?: string; optionKey?: string; cliFlag?: string }>;
     setup?: { providers?: Array<{ id?: string; envVars?: string[] }> };
   };

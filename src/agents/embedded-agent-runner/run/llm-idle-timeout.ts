@@ -1,4 +1,4 @@
-import { onLlmRequestActivity } from "@openclaw/ai/internal/runtime";
+import { onLlmRequestActivity } from "@nodoassist/ai/internal/runtime";
 /**
  * Wraps LLM streams with idle-timeout detection and diagnostics.
  */
@@ -6,8 +6,8 @@ import {
   finiteSecondsToTimerSafeMilliseconds,
   clampTimerTimeoutMs,
   MAX_TIMER_TIMEOUT_MS,
-} from "@openclaw/normalization-core/number-coercion";
-import type { OpenClawConfig } from "../../../config/types.openclaw.js";
+} from "@nodoassist/normalization-core/number-coercion";
+import type { NodoAssistConfig } from "../../../config/types.nodoassist.js";
 import { toErrorObject } from "../../../infra/errors.js";
 import type { StreamFn } from "../../runtime/index.js";
 import type { MutableAssistantMessageEventStream } from "../../stream-compat.js";
@@ -148,7 +148,7 @@ function isSelfHostedProviderId(provider: string | undefined): boolean {
 }
 
 function findConfiguredProviderConfig(
-  cfg: OpenClawConfig | undefined,
+  cfg: NodoAssistConfig | undefined,
   provider: string | undefined,
 ): IdleTimeoutProviderConfig | undefined {
   const normalizedProvider = provider?.trim().toLowerCase();
@@ -172,7 +172,7 @@ function hasLocalProviderAuthMarker(apiKey: unknown): boolean {
 }
 
 function hasConfiguredLocalProviderSignal(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: NodoAssistConfig | undefined;
   provider: string | undefined;
 }): boolean {
   const providerConfig = findConfiguredProviderConfig(params.cfg, params.provider);
@@ -209,7 +209,7 @@ type RuntimeModelLocality = {
  * watchdogs. Ollama `*:cloud` models stay "cloud" even behind a local proxy.
  */
 function resolveRuntimeModelLocality(params?: {
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   model?: { baseUrl?: string; id?: string; provider?: string };
 }): RuntimeModelLocality {
   const baseUrl = params?.model?.baseUrl;
@@ -241,7 +241,7 @@ function resolveRuntimeModelLocality(params?: {
  * local provider base URLs disable the implicit cloud-provider default.
  */
 export function resolveLlmIdleTimeoutMs(params?: {
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   trigger?: EmbeddedRunTrigger;
   runTimeoutMs?: number;
   modelRequestTimeoutMs?: number;
@@ -333,7 +333,7 @@ export function resolveLlmIdleTimeoutMs(params?: {
 }
 
 export function resolveLlmFirstEventTimeoutMs(params?: {
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   runTimeoutMs?: number;
   modelRequestTimeoutMs?: number;
   model?: { baseUrl?: string; id?: string; provider?: string };

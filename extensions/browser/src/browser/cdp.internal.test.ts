@@ -548,7 +548,7 @@ describe("cdp internal", () => {
           socket.send(
             JSON.stringify({
               id: msg.id,
-              result: { node: { backendNodeId: 44, attributes: ["data-openclaw-cdp-ci", "0"] } },
+              result: { node: { backendNodeId: 44, attributes: ["data-nodoassist-cdp-ci", "0"] } },
             }),
           );
           return;

@@ -35,13 +35,13 @@ describe("release-beta-smoke", () => {
   });
 
   it("rejects malformed positive integer environment limits", () => {
-    expect(readPositiveInt(undefined, 60, "OPENCLAW_RELEASE_BETA_SMOKE_COMMAND_MS")).toBe(60);
-    expect(readPositiveInt("", 60, "OPENCLAW_RELEASE_BETA_SMOKE_COMMAND_MS")).toBe(60);
-    expect(readPositiveInt("25", 60, "OPENCLAW_RELEASE_BETA_SMOKE_COMMAND_MS")).toBe(25);
+    expect(readPositiveInt(undefined, 60, "NODOASSIST_RELEASE_BETA_SMOKE_COMMAND_MS")).toBe(60);
+    expect(readPositiveInt("", 60, "NODOASSIST_RELEASE_BETA_SMOKE_COMMAND_MS")).toBe(60);
+    expect(readPositiveInt("25", 60, "NODOASSIST_RELEASE_BETA_SMOKE_COMMAND_MS")).toBe(25);
 
     for (const raw of ["1e3", "25ms", "1.5", "0", "-1", String(Number.MAX_SAFE_INTEGER + 1)]) {
-      expect(() => readPositiveInt(raw, 60, "OPENCLAW_RELEASE_BETA_SMOKE_COMMAND_MS")).toThrow(
-        "OPENCLAW_RELEASE_BETA_SMOKE_COMMAND_MS must be a positive integer",
+      expect(() => readPositiveInt(raw, 60, "NODOASSIST_RELEASE_BETA_SMOKE_COMMAND_MS")).toThrow(
+        "NODOASSIST_RELEASE_BETA_SMOKE_COMMAND_MS must be a positive integer",
       );
     }
   });
@@ -134,7 +134,7 @@ describe("release-beta-smoke", () => {
     const sleeps: number[] = [];
 
     await expect(
-      pollRun("openclaw/openclaw", "123", {
+      pollRun("nodoassist/nodoassist", "123", {
         now: () => now,
         pollIntervalMs: 400,
         readRun: () => ({
@@ -155,7 +155,7 @@ describe("release-beta-smoke", () => {
 
   it("returns when the Telegram workflow succeeds", async () => {
     await expect(
-      pollRun("openclaw/openclaw", "123", {
+      pollRun("nodoassist/nodoassist", "123", {
         readRun: () => ({
           conclusion: "success",
           html_url: "https://github.com/openclaw/openclaw/actions/runs/123",

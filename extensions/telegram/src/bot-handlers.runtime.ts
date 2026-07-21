@@ -1,54 +1,54 @@
 // Telegram plugin module implements bot handlers behavior.
 import { randomUUID } from "node:crypto";
 import type { Message, ReactionTypeEmoji } from "grammy/types";
-import { parseExecApprovalCommandText } from "openclaw/plugin-sdk/approval-reply-runtime";
-import { resolveChannelConfigWrites } from "openclaw/plugin-sdk/channel-config-helpers";
+import { parseExecApprovalCommandText } from "nodoassist/plugin-sdk/approval-reply-runtime";
+import { resolveChannelConfigWrites } from "nodoassist/plugin-sdk/channel-config-helpers";
 import {
   buildMentionRegexes,
   implicitMentionKindWhen,
   matchesMentionWithExplicit,
   resolveInboundMentionDecision,
   shouldDebounceTextInbound,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "nodoassist/plugin-sdk/channel-inbound";
 import {
   createInboundDebouncer,
   resolveInboundDebounceMs,
-} from "openclaw/plugin-sdk/channel-inbound-debounce";
-import { resolveStoredModelOverride } from "openclaw/plugin-sdk/command-auth-native";
-import { hasControlCommand } from "openclaw/plugin-sdk/command-detection";
-import { isAbortRequestText } from "openclaw/plugin-sdk/command-primitives-runtime";
-import { buildCommandsMessagePaginated } from "openclaw/plugin-sdk/command-status";
-import type { DmPolicy, OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "nodoassist/plugin-sdk/channel-inbound-debounce";
+import { resolveStoredModelOverride } from "nodoassist/plugin-sdk/command-auth-native";
+import { hasControlCommand } from "nodoassist/plugin-sdk/command-detection";
+import { isAbortRequestText } from "nodoassist/plugin-sdk/command-primitives-runtime";
+import { buildCommandsMessagePaginated } from "nodoassist/plugin-sdk/command-status";
+import type { DmPolicy, NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import type {
   TelegramGroupConfig,
   TelegramTopicConfig,
-} from "openclaw/plugin-sdk/config-contracts";
-import { mutateConfigFile } from "openclaw/plugin-sdk/config-mutation";
-import { resolveChannelContextVisibilityMode } from "openclaw/plugin-sdk/context-visibility-runtime";
+} from "nodoassist/plugin-sdk/config-contracts";
+import { mutateConfigFile } from "nodoassist/plugin-sdk/config-mutation";
+import { resolveChannelContextVisibilityMode } from "nodoassist/plugin-sdk/context-visibility-runtime";
 import {
   buildPluginBindingResolvedText,
   parsePluginBindingApprovalCustomId,
   resolvePluginConversationBindingApproval,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { isApprovalNotFoundError } from "openclaw/plugin-sdk/error-runtime";
-import { KeyedAsyncQueue } from "openclaw/plugin-sdk/keyed-async-queue";
-import { applyModelOverrideToSessionEntry } from "openclaw/plugin-sdk/model-session-runtime";
-import { formatModelsAvailableHeader } from "openclaw/plugin-sdk/models-provider-runtime";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { DEFAULT_GROUP_HISTORY_LIMIT } from "openclaw/plugin-sdk/reply-history";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import { resolveThreadSessionKeys } from "openclaw/plugin-sdk/routing";
-import { danger, logVerbose, warn } from "openclaw/plugin-sdk/runtime-env";
-import { evaluateSupplementalContextVisibility } from "openclaw/plugin-sdk/security-runtime";
+} from "nodoassist/plugin-sdk/conversation-runtime";
+import { isApprovalNotFoundError } from "nodoassist/plugin-sdk/error-runtime";
+import { KeyedAsyncQueue } from "nodoassist/plugin-sdk/keyed-async-queue";
+import { applyModelOverrideToSessionEntry } from "nodoassist/plugin-sdk/model-session-runtime";
+import { formatModelsAvailableHeader } from "nodoassist/plugin-sdk/models-provider-runtime";
+import { parseStrictPositiveInteger } from "nodoassist/plugin-sdk/number-runtime";
+import { DEFAULT_GROUP_HISTORY_LIMIT } from "nodoassist/plugin-sdk/reply-history";
+import { resolveAgentRoute } from "nodoassist/plugin-sdk/routing";
+import { resolveThreadSessionKeys } from "nodoassist/plugin-sdk/routing";
+import { danger, logVerbose, warn } from "nodoassist/plugin-sdk/runtime-env";
+import { evaluateSupplementalContextVisibility } from "nodoassist/plugin-sdk/security-runtime";
 import {
   getSessionEntry,
   listSessionEntries,
   patchSessionEntry,
   readAmbientTranscriptWatermark,
   resolveAmbientTranscriptWatermarkKey,
-} from "openclaw/plugin-sdk/session-store-runtime";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { stripInlineDirectiveTagsForDelivery } from "openclaw/plugin-sdk/text-chunking";
+} from "nodoassist/plugin-sdk/session-store-runtime";
+import { normalizeStringEntries } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { stripInlineDirectiveTagsForDelivery } from "nodoassist/plugin-sdk/text-chunking";
 import { expandTelegramAllowFromWithAccessGroups } from "./access-groups.js";
 import { resolveTelegramAccount, resolveTelegramMediaRuntimeOptions } from "./accounts.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
@@ -751,7 +751,7 @@ export const registerTelegramHandlers = ({
     resolvedThreadId?: number;
     botHasTopicsEnabled?: boolean;
     senderId?: string | number;
-    runtimeCfg?: OpenClawConfig;
+    runtimeCfg?: NodoAssistConfig;
   }): {
     agentId: string;
     sessionEntry: ReturnType<typeof getSessionEntry>;
@@ -1952,7 +1952,7 @@ export const registerTelegramHandlers = ({
     senderId: string;
     senderUsername: string;
     context: TelegramEventAuthorizationContext;
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
   }): Promise<boolean> => {
     const { chatId, isGroup, senderId, senderUsername, context, cfg: cfgLocal } = params;
     const dmAllowFrom = context.groupAllowOverride ?? allowFrom;
@@ -3204,7 +3204,7 @@ export const registerTelegramHandlers = ({
               : `changed to <b>${escapeHtml(selection.provider)}/${escapeHtml(selection.model)}</b>`;
             const scopeText = isDefaultSelection
               ? "Session selection cleared. Runtime unchanged. New replies use the agent's configured default."
-              : `Session-only model selection. Runtime unchanged. Use /model ${escapeHtml(selection.provider)}/${escapeHtml(selection.model)} --runtime &lt;runtime&gt; to switch harnesses. The agent default in openclaw.json is unchanged; /reset or a new session may return to that default.`;
+              : `Session-only model selection. Runtime unchanged. Use /model ${escapeHtml(selection.provider)}/${escapeHtml(selection.model)} --runtime &lt;runtime&gt; to switch harnesses. The agent default in nodoassist.json is unchanged; /reset or a new session may return to that default.`;
             await editMessageWithButtons(
               `✅ Model ${actionText}\n\n${scopeText}`,
               [], // Empty buttons = remove inline keyboard

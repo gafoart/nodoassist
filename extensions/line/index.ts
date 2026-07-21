@@ -1,14 +1,14 @@
-// Line plugin entrypoint registers its OpenClaw integration.
+// Line plugin entrypoint registers its NodoAssist integration.
 import {
   defineBundledChannelEntry,
-  type OpenClawPluginCommandDefinition,
-  type OpenClawPluginApi,
-} from "openclaw/plugin-sdk/channel-entry-contract";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
+  type NodoAssistPluginCommandDefinition,
+  type NodoAssistPluginApi,
+} from "nodoassist/plugin-sdk/channel-entry-contract";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
 
-type RegisteredLineCardCommand = OpenClawPluginCommandDefinition;
+type RegisteredLineCardCommand = NodoAssistPluginCommandDefinition;
 
-function createLineCardCommandLoader(api: OpenClawPluginApi) {
+function createLineCardCommandLoader(api: NodoAssistPluginApi) {
   return createLazyRuntimeModule<RegisteredLineCardCommand>(async () => {
     let registered: RegisteredLineCardCommand | null = null;
     const { registerLineCardCommand } = await import("./src/card-command.js");

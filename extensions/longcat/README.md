@@ -1,13 +1,13 @@
-# OpenClaw LongCat Provider
+# NodoAssist LongCat Provider
 
-Official OpenClaw provider plugin for LongCat-2.0 through LongCat's hosted
+Official NodoAssist provider plugin for LongCat-2.0 through LongCat's hosted
 OpenAI-compatible API.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/longcat-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/longcat-provider
+nodoassist gateway restart
 ```
 
 Configure `LONGCAT_API_KEY`, then select `longcat/LongCat-2.0`.

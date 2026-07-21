@@ -9,26 +9,26 @@ import {
   type MessageReceipt,
   type MessageReceiptPartKind,
   type MessageReceiptSourceResult,
-} from "openclaw/plugin-sdk/channel-outbound";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { withTrustedEnvProxyGuardedFetchMode } from "openclaw/plugin-sdk/fetch-runtime";
-import { KeyedAsyncQueue } from "openclaw/plugin-sdk/keyed-async-queue";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-import { requireRuntimeConfig } from "openclaw/plugin-sdk/plugin-config-runtime";
+} from "nodoassist/plugin-sdk/channel-outbound";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { withTrustedEnvProxyGuardedFetchMode } from "nodoassist/plugin-sdk/fetch-runtime";
+import { KeyedAsyncQueue } from "nodoassist/plugin-sdk/keyed-async-queue";
+import { resolveMarkdownTableMode } from "nodoassist/plugin-sdk/markdown-table-runtime";
+import { requireRuntimeConfig } from "nodoassist/plugin-sdk/plugin-config-runtime";
 import {
   chunkMarkdownTextWithMode,
   isSilentReplyText,
   resolveChunkMode,
   resolveTextChunkLimit,
-} from "openclaw/plugin-sdk/reply-chunking";
-import { resolveTextChunksWithFallback } from "openclaw/plugin-sdk/reply-payload";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "nodoassist/plugin-sdk/reply-chunking";
+import { resolveTextChunksWithFallback } from "nodoassist/plugin-sdk/reply-payload";
+import { logVerbose } from "nodoassist/plugin-sdk/runtime-env";
+import { fetchWithSsrFGuard } from "nodoassist/plugin-sdk/ssrf-runtime";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
   normalizeOptionalString as normalizeSlackApiString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import type { SlackTokenSource } from "./accounts.js";
 import { resolveSlackAccount, resolveSlackOperationToken } from "./accounts.js";
 import { buildSlackBlocksFallbackText } from "./blocks-fallback.js";
@@ -50,11 +50,11 @@ const SLACK_DM_CHANNEL_CACHE_MAX = 1024;
 const SLACK_DNS_RETRY_CODES = new Set(["EAI_AGAIN", "ENOTFOUND", "UND_ERR_DNS_RESOLVE_FAILED"]);
 const SLACK_DNS_RETRY_ATTEMPTS = 2;
 const SLACK_DNS_RETRY_BASE_DELAY_MS = 250;
-const SLACK_DELIVERY_METADATA_EVENT = "openclaw_delivery";
-const SLACK_DELIVERY_METADATA_KEY = "openclaw_delivery_id";
-const SLACK_DELIVERY_METADATA_PART_INDEX_KEY = "openclaw_delivery_part_index";
-const SLACK_DELIVERY_METADATA_PART_COUNT_KEY = "openclaw_delivery_part_count";
-const SLACK_DELIVERY_METADATA_SIGNATURE_KEY = "openclaw_delivery_signature";
+const SLACK_DELIVERY_METADATA_EVENT = "nodoassist_delivery";
+const SLACK_DELIVERY_METADATA_KEY = "nodoassist_delivery_id";
+const SLACK_DELIVERY_METADATA_PART_INDEX_KEY = "nodoassist_delivery_part_index";
+const SLACK_DELIVERY_METADATA_PART_COUNT_KEY = "nodoassist_delivery_part_count";
+const SLACK_DELIVERY_METADATA_SIGNATURE_KEY = "nodoassist_delivery_signature";
 const SLACK_RECONCILE_LOOKBACK_MS = 30_000;
 const SLACK_RECONCILE_CLOCK_SKEW_MS = 5 * 60_000;
 const SLACK_RECONCILE_LIMIT = 100;
@@ -109,7 +109,7 @@ type SlackBasePostMessagePayload = SlackPostThreadPayload & {
 };
 
 type SlackSendOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   token?: string;
   accountId?: string;
   mediaUrl?: string;
@@ -662,7 +662,7 @@ function createSlackDeliveryMetadataId(queueId?: string): string | undefined {
     return undefined;
   }
   // Slack metadata is visible to workspace apps and members. Keep the durable
-  // store key inside OpenClaw while retaining a stable provider-side marker.
+  // store key inside NodoAssist while retaining a stable provider-side marker.
   return createHash("sha256").update(normalized).digest("base64url");
 }
 
@@ -1208,7 +1208,7 @@ export async function sendMessageSlack(
 async function sendMessageSlackQueued(params: {
   trimmedMessage: string;
   opts: SlackSendOpts;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   account: ReturnType<typeof resolveSlackAccount>;
   token: string;
   recipient: SlackRecipient;
@@ -1224,7 +1224,7 @@ async function sendMessageSlackQueued(params: {
 async function sendMessageSlackQueuedInner(params: {
   trimmedMessage: string;
   opts: SlackSendOpts;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   account: ReturnType<typeof resolveSlackAccount>;
   token: string;
   recipient: SlackRecipient;

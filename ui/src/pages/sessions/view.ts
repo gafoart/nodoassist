@@ -235,12 +235,12 @@ function renderSessionStatusBadge(row: GatewaySessionRow) {
   const badge = resolveSessionStatusBadge(row);
   const title = `${t("sessionsView.status")}: ${badge.label}`;
   return html`
-    <openclaw-tooltip .content=${title}>
+    <nodoassist-tooltip .content=${title}>
       <span class="session-status-badge session-status-badge--${badge.tone}" aria-label=${title}>
         <span class="session-status-badge__dot" aria-hidden="true"></span>
         <span class="session-status-badge__label">${badge.label}</span>
       </span>
-    </openclaw-tooltip>
+    </nodoassist-tooltip>
   `;
 }
 
@@ -421,12 +421,12 @@ function renderSessionGoalChip(goal: GatewaySessionRow["goal"]) {
   }
   const title = formatGoalDetail(goal);
   return html`
-    <openclaw-tooltip .content=${title}>
+    <nodoassist-tooltip .content=${title}>
       <span class="session-goal-chip session-goal-chip--${goal.status}" aria-label=${title}>
         <span class="session-goal-chip__label">${formatGoalSummary(goal)}</span>
         <span class="session-goal-chip__objective">${goal.objective}</span>
       </span>
-    </openclaw-tooltip>
+    </nodoassist-tooltip>
   `;
 }
 
@@ -659,7 +659,7 @@ function renderFilterToggle(params: {
     .filter(Boolean)
     .join(" ");
   return html`
-    <openclaw-tooltip .content=${params.title}>
+    <nodoassist-tooltip .content=${params.title}>
       <label class=${className}>
         <input
           name=${params.name}
@@ -671,7 +671,7 @@ function renderFilterToggle(params: {
         <span class="session-filter-check__mark" aria-hidden="true">${icons.check}</span>
         <span class="session-filter-check__label">${params.label}</span>
       </label>
-    </openclaw-tooltip>
+    </nodoassist-tooltip>
   `;
 }
 
@@ -763,7 +763,9 @@ export function renderSessions(props: SessionsProps) {
           </div>
           ${props.result
             ? html`
-                <openclaw-tooltip .content=${t("sessionsView.store", { path: props.result.path })}>
+                <nodoassist-tooltip
+                  .content=${t("sessionsView.store", { path: props.result.path })}
+                >
                   <div class="card-sub sessions-header__meta">
                     <span>${loadedLabel}</span>
                     ${liveCount > 0
@@ -775,7 +777,7 @@ export function renderSessions(props: SessionsProps) {
                         `
                       : nothing}
                   </div>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
               `
             : html`<div class="card-sub">${t("sessionsView.subtitle")}</div>`}
         </div>
@@ -800,7 +802,7 @@ export function renderSessions(props: SessionsProps) {
             />
           </div>
           <div class="session-filter-primary-row">
-            <openclaw-tooltip .content=${activeTooltip}>
+            <nodoassist-tooltip .content=${activeTooltip}>
               <label class="session-filter-field">
                 <span class="session-filter-label">${t("sessionsView.active")}</span>
                 <input
@@ -818,8 +820,8 @@ export function renderSessions(props: SessionsProps) {
                     })}
                 />
               </label>
-            </openclaw-tooltip>
-            <openclaw-tooltip .content=${limitTooltip}>
+            </nodoassist-tooltip>
+            <nodoassist-tooltip .content=${limitTooltip}>
               <label class="session-filter-field">
                 <span class="session-filter-label">${t("sessionsView.limit")}</span>
                 <input
@@ -835,7 +837,7 @@ export function renderSessions(props: SessionsProps) {
                     })}
                 />
               </label>
-            </openclaw-tooltip>
+            </nodoassist-tooltip>
           </div>
           <div
             class="session-filter-toggle-group"
@@ -1132,7 +1134,7 @@ function renderRows(row: GatewaySessionRow, props: SessionsProps) {
         />
       </td>
       <td class="data-table-key-col">
-        <openclaw-tooltip .content=${keyCellTitle}>
+        <nodoassist-tooltip .content=${keyCellTitle}>
           <div class=${friendlyKeyLabel ? "session-key-cell" : "mono session-key-cell"}>
             <span class="session-key-cell__primary">
               ${row.unread === true
@@ -1175,7 +1177,7 @@ function renderRows(row: GatewaySessionRow, props: SessionsProps) {
               ? html`<span class="muted session-key-display-name">${displayName}</span>`
               : nothing}
           </div>
-        </openclaw-tooltip>
+        </nodoassist-tooltip>
       </td>
       ${categoryMode ? renderCategoryCell(row, props) : nothing}
       <td>
@@ -1268,7 +1270,7 @@ function renderRows(row: GatewaySessionRow, props: SessionsProps) {
           </button>
           ${props.onAddToWorkboard && canLink
             ? html`
-                <openclaw-tooltip
+                <nodoassist-tooltip
                   .content=${captured
                     ? t("sessionsView.openWorkboardCard")
                     : t("sessionsView.addToWorkboard")}
@@ -1286,7 +1288,7 @@ function renderRows(row: GatewaySessionRow, props: SessionsProps) {
                   >
                     ${captured ? icons.check : icons.plus}
                   </button>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
               `
             : nothing}
         </div>
@@ -1442,9 +1444,9 @@ function renderSessionDetailsRow(params: {
             (item) => html`
               <div class="session-detail-stat">
                 <div class="session-detail-stat__label">${item.label}</div>
-                <openclaw-tooltip .content=${item.value}>
+                <nodoassist-tooltip .content=${item.value}>
                   <div class="session-detail-stat__value">${item.value}</div>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
               </div>
             `,
           )}

@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { EmbeddedAgentQueueMessageOutcome } from "../../agents/embedded-agent-runner/runs.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import type { TemplateContext } from "../templating.js";
 import type { FollowupRun, QueueSettings } from "./queue.js";
 import {
@@ -58,7 +58,7 @@ vi.mock("../../agents/model-selection.js", async () => {
   );
   return {
     ...actual,
-    isCliProvider: (provider: string, cfg?: OpenClawConfig) => {
+    isCliProvider: (provider: string, cfg?: NodoAssistConfig) => {
       const normalized = provider.trim().toLowerCase();
       return (
         normalized === "claude-cli" ||
@@ -355,7 +355,7 @@ describe("runReplyAgent media path normalization", () => {
     }));
     resolveOutboundAttachmentFromUrlMock.mockReset();
     createReplyMediaContextRuntimeMock.mockReset();
-    vi.stubEnv("OPENCLAW_TEST_FAST", "1");
+    vi.stubEnv("NODOASSIST_TEST_FAST", "1");
     resolveOutboundAttachmentFromUrlMock.mockImplementation(async (mediaUrl: string) => ({
       path: path.join("/tmp/outbound-media", path.basename(mediaUrl)),
     }));
@@ -608,7 +608,7 @@ describe("runReplyAgent media path normalization", () => {
   }
 
   it("reuses the provided media context inside runAgentTurnWithFallback", async () => {
-    // Regression test for openclaw/openclaw#68056.
+    // Regression test for nodoassist/nodoassist#68056.
     // runAgentTurnWithFallback must use the caller-provided context so block
     // replies and final replies can share one media cache.
     runEmbeddedAgentMock.mockResolvedValue({
@@ -677,8 +677,8 @@ describe("runReplyAgent media path normalization", () => {
     expect(createReplyMediaContextRuntimeMock).not.toHaveBeenCalled();
   });
 
-  it("passes current inbound media paths as native OpenClaw images", async () => {
-    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "openclaw-native-agent-media-"));
+  it("passes current inbound media paths as native NodoAssist images", async () => {
+    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "nodoassist-native-agent-media-"));
     cleanupPaths.push(tmpDir);
     const imagePath = path.join(tmpDir, "photo.png");
     await writeFile(
@@ -729,8 +729,8 @@ describe("runReplyAgent media path normalization", () => {
     expect(call?.imageOrder).toEqual(["inline"]);
   });
 
-  it("does not pass recent history images as unlabeled native OpenClaw images", async () => {
-    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "openclaw-native-agent-history-"));
+  it("does not pass recent history images as unlabeled native NodoAssist images", async () => {
+    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "nodoassist-native-agent-history-"));
     cleanupPaths.push(tmpDir);
     const imagePath = path.join(tmpDir, "recent.png");
     await writeFile(
@@ -784,7 +784,7 @@ describe("runReplyAgent media path normalization", () => {
   });
 
   it("falls back to prompt refs instead of forwarding partial current media", async () => {
-    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "openclaw-native-agent-partial-"));
+    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "nodoassist-native-agent-partial-"));
     cleanupPaths.push(tmpDir);
     const imagePath = path.join(tmpDir, "present.png");
     await writeFile(

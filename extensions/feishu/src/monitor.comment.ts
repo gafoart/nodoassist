@@ -1,7 +1,7 @@
 // Feishu plugin module implements monitor.comment behavior.
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { asBoolean as readBoolean } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { sliceUtf16Safe, truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import { asBoolean as readBoolean } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { sliceUtf16Safe, truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import type { ClawdbotConfig } from "../runtime-api.js";
 import { raceWithTimeoutAndAbort } from "./async.js";
 import { createFeishuClient } from "./client.js";

@@ -243,13 +243,13 @@ describe("normalizeApiKeyInput", () => {
 
 describe("validateApiKeyInput", () => {
   it.each([
-    "openclaw onboard --auth-choice zai-coding-global",
-    "openclaw onboard --auth-choice=zai-coding-global",
-    "openclaw onboard --non-interactive --auth-choice zai-coding-global --zai-api-key $ZAI_API_KEY",
-    "openclaw onboard --non-interactive --auth-choice=zai-coding-global --zai-api-key $ZAI_API_KEY",
-  ])("rejects pasted OpenClaw onboarding command %p", (value) => {
+    "nodoassist onboard --auth-choice zai-coding-global",
+    "nodoassist onboard --auth-choice=zai-coding-global",
+    "nodoassist onboard --non-interactive --auth-choice zai-coding-global --zai-api-key $ZAI_API_KEY",
+    "nodoassist onboard --non-interactive --auth-choice=zai-coding-global --zai-api-key $ZAI_API_KEY",
+  ])("rejects pasted NodoAssist onboarding command %p", (value) => {
     expect(validateApiKeyInput(value)).toBe(
-      "Paste the API key value, not an OpenClaw onboarding command.",
+      "Paste the API key value, not an NodoAssist onboarding command.",
     );
   });
 });
@@ -286,14 +286,14 @@ describe("maybeApplyApiKeyFromOption", () => {
     await expect(
       maybeApplyApiKeyFromOption({
         token:
-          "openclaw onboard --non-interactive --auth-choice=zai-coding-global --zai-api-key $ZAI_API_KEY",
+          "nodoassist onboard --non-interactive --auth-choice=zai-coding-global --zai-api-key $ZAI_API_KEY",
         tokenProvider: "zai",
         expectedProviders: ["zai"],
         normalize: normalizeApiKeyInput,
         validate: validateApiKeyInput,
         setCredential,
       }),
-    ).rejects.toThrow("Paste the API key value, not an OpenClaw onboarding command.");
+    ).rejects.toThrow("Paste the API key value, not an NodoAssist onboarding command.");
     expect(setCredential).not.toHaveBeenCalled();
   });
 });
@@ -437,7 +437,7 @@ describe("ensureApiKeyFromEnvOrPrompt", () => {
       "Reference check failed",
     );
     expect(note).toHaveBeenCalledWith(
-      "Validated environment variable MINIMAX_API_KEY. OpenClaw will store a reference, not the key value.",
+      "Validated environment variable MINIMAX_API_KEY. NodoAssist will store a reference, not the key value.",
       "Reference validated",
     );
   });

@@ -2,15 +2,15 @@
 import {
   buildChannelInboundEventContext,
   toInboundMediaFacts,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { hasFinalInboundReplyDispatch } from "openclaw/plugin-sdk/channel-inbound";
-import type { ChannelBotLoopProtectionFacts } from "openclaw/plugin-sdk/channel-inbound";
+} from "nodoassist/plugin-sdk/channel-inbound";
+import { hasFinalInboundReplyDispatch } from "nodoassist/plugin-sdk/channel-inbound";
+import type { ChannelBotLoopProtectionFacts } from "nodoassist/plugin-sdk/channel-inbound";
 import {
   createPreviewMessageReceipt,
   defineFinalizableLivePreviewAdapter,
   deliverWithFinalizableLivePreviewAdapter,
   type MessageReceipt,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "nodoassist/plugin-sdk/channel-outbound";
 import {
   buildChannelProgressDraftLineForEntry,
   createChannelProgressDraftGate,
@@ -21,29 +21,29 @@ import {
   mergeChannelProgressDraftLine,
   normalizeChannelProgressDraftLineIdentity,
   resolveChannelProgressDraftMaxLines,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "nodoassist/plugin-sdk/channel-outbound";
 import {
   evaluateSupplementalContextVisibility,
   resolveChannelContextVisibilityMode,
-} from "openclaw/plugin-sdk/context-visibility-runtime";
-import { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/dangerous-name-runtime";
-import { KeyedAsyncQueue } from "openclaw/plugin-sdk/keyed-async-queue";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
+} from "nodoassist/plugin-sdk/context-visibility-runtime";
+import { isDangerousNameMatchingEnabled } from "nodoassist/plugin-sdk/dangerous-name-runtime";
+import { KeyedAsyncQueue } from "nodoassist/plugin-sdk/keyed-async-queue";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
 import {
   isFutureDateTimestampMs,
   resolveExpiresAtMsFromDurationMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { mergePairLoopGuardConfig } from "openclaw/plugin-sdk/pair-loop-guard-runtime";
-import { buildInboundHistoryFromEntries } from "openclaw/plugin-sdk/reply-history";
+} from "nodoassist/plugin-sdk/number-runtime";
+import { mergePairLoopGuardConfig } from "nodoassist/plugin-sdk/pair-loop-guard-runtime";
+import { buildInboundHistoryFromEntries } from "nodoassist/plugin-sdk/reply-history";
 import {
   buildTtsSupplementMediaPayload,
   getReplyPayloadTtsSupplement,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { GetReplyOptions } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveInboundLastRouteSessionKey } from "openclaw/plugin-sdk/routing";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
-import { getSessionEntry } from "openclaw/plugin-sdk/session-store-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/reply-payload";
+import type { GetReplyOptions } from "nodoassist/plugin-sdk/reply-runtime";
+import { resolveInboundLastRouteSessionKey } from "nodoassist/plugin-sdk/routing";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "nodoassist/plugin-sdk/security-runtime";
+import { getSessionEntry } from "nodoassist/plugin-sdk/session-store-runtime";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import type {
   CoreConfig,
   MatrixConfig,
@@ -73,7 +73,7 @@ import {
   parsePollStartContent,
 } from "../poll-types.js";
 import type { LocationMessageEventContent, MatrixClient } from "../sdk.js";
-import { MATRIX_OPENCLAW_FINALIZED_PREVIEW_KEY } from "../send/types.js";
+import { MATRIX_NODOASSIST_FINALIZED_PREVIEW_KEY } from "../send/types.js";
 import { resolveMatrixStoredSessionMeta } from "../session-store-metadata.js";
 import {
   resolveMatrixMonitorAccessState,
@@ -130,11 +130,11 @@ const MATRIX_TOOL_PROGRESS_MAX_CHARS = 300;
 const loadMatrixSendModule = createLazyRuntimeModule(() => import("../send.js"));
 
 const loadAcpBindingRuntime = createLazyRuntimeModule(
-  () => import("openclaw/plugin-sdk/acp-binding-runtime"),
+  () => import("nodoassist/plugin-sdk/acp-binding-runtime"),
 );
 
 const loadSessionBindingRuntime = createLazyRuntimeModule(
-  () => import("openclaw/plugin-sdk/session-binding-runtime"),
+  () => import("nodoassist/plugin-sdk/session-binding-runtime"),
 );
 
 const loadMatrixReactionEvents = createLazyRuntimeModule(() => import("./reaction-events.js"));
@@ -180,7 +180,7 @@ async function redactMatrixDraftEvent(
 }
 
 function buildMatrixFinalizedPreviewContent(): Record<string, unknown> {
-  return { [MATRIX_OPENCLAW_FINALIZED_PREVIEW_KEY]: true };
+  return { [MATRIX_NODOASSIST_FINALIZED_PREVIEW_KEY]: true };
 }
 
 export type MatrixMonitorHandlerParams = {

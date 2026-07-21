@@ -1,13 +1,13 @@
 ---
-summary: "How OpenClaw remembers things across sessions"
+summary: "How NodoAssist remembers things across sessions"
 title: "Memory overview"
 read_when:
   - You want to understand how memory works
   - You want to know what memory files to write
 ---
 
-OpenClaw remembers things by writing plain Markdown files in your agent's
-workspace (default `~/.openclaw/workspace`). The model only remembers what gets
+NodoAssist remembers things by writing plain Markdown files in your agent's
+workspace (default `~/.nodoassist/workspace`). The model only remembers what gets
 saved to disk; there is no hidden state.
 
 ## How it works
@@ -45,11 +45,11 @@ Over time, the agent distills useful material from daily notes into
 instructions and the heartbeat flow do this periodically; you do not need to
 manually edit `MEMORY.md` for every detail.
 
-If `MEMORY.md` grows past the bootstrap file budget, OpenClaw keeps the file on
+If `MEMORY.md` grows past the bootstrap file budget, NodoAssist keeps the file on
 disk intact but truncates the copy injected into context. Treat that as a
 signal to move detailed material into `memory/*.md`, keep only a durable
 summary in `MEMORY.md`, or raise the bootstrap limits if you want to spend more
-prompt budget. Use `/context list`, `/context detail`, or `openclaw doctor` to
+prompt budget. Use `/context list`, `/context detail`, or `nodoassist doctor` to
 see raw vs. injected sizes and truncation status.
 
 ## Action-sensitive memories
@@ -77,7 +77,7 @@ A useful action-sensitive memory makes clear:
 - who is the source or owner, if that affects trust or authority.
 
 Memory can preserve approval context, but it does not enforce policy. Use
-OpenClaw approval settings, sandboxing, and scheduled tasks for hard
+NodoAssist approval settings, sandboxing, and scheduled tasks for hard
 operational controls.
 
 Example:
@@ -112,7 +112,7 @@ tomorrow, the useful memory may be "check in after the interview," not "store
 this forever in `MEMORY.md`."
 
 [Commitments](/concepts/commitments) are opt-in, short-lived follow-up
-memories for that case. OpenClaw infers them in a hidden background pass,
+memories for that case. NodoAssist infers them in a hidden background pass,
 scopes them to the same agent and channel, and delivers due check-ins through
 heartbeat. Explicit reminders still use [scheduled tasks](/automation/cron-jobs).
 
@@ -134,7 +134,7 @@ terms like IDs and code symbols). This works out of the box with an API key
 for any supported provider.
 
 <Info>
-OpenClaw uses OpenAI embeddings by default. Set
+NodoAssist uses OpenAI embeddings by default. Set
 `agents.defaults.memorySearch.provider` explicitly to use Gemini, Voyage,
 Mistral, Bedrock, DeepInfra, local GGUF, Ollama, LM Studio, GitHub Copilot, or
 a generic OpenAI-compatible endpoint.
@@ -187,7 +187,7 @@ dashboards, bridge mode, and Obsidian-friendly workflows.
 ## Automatic memory flush
 
 Before [compaction](/concepts/compaction) summarizes your conversation,
-OpenClaw runs a silent turn that reminds the agent to save important context
+NodoAssist runs a silent turn that reminds the agent to save important context
 to memory files. This is on by default; set
 `agents.defaults.compaction.memoryFlush.enabled: false` to turn it off.
 
@@ -246,7 +246,7 @@ Grounded backfill is useful for replaying older notes and inspecting what the
 system considers durable, without manually editing `MEMORY.md`.
 
 ```bash
-openclaw memory rem-backfill --path ./memory --stage-short-term
+nodoassist memory rem-backfill --path ./memory --stage-short-term
 ```
 
 The `--stage-short-term` flag stages grounded durable candidates into the same
@@ -261,16 +261,16 @@ To undo a replay without touching ordinary diary entries or normal recall
 state:
 
 ```bash
-openclaw memory rem-backfill --rollback
-openclaw memory rem-backfill --rollback-short-term
+nodoassist memory rem-backfill --rollback
+nodoassist memory rem-backfill --rollback-short-term
 ```
 
 ## CLI
 
 ```bash
-openclaw memory status          # Check index status and provider
-openclaw memory search "query"  # Search from the command line
-openclaw memory index --force   # Rebuild the index
+nodoassist memory status          # Check index status and provider
+nodoassist memory search "query"  # Search from the command line
+nodoassist memory index --force   # Rebuild the index
 ```
 
 ## Further reading

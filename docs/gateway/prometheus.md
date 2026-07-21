@@ -1,14 +1,14 @@
 ---
-summary: "Expose OpenClaw diagnostics as Prometheus text metrics through the diagnostics-prometheus plugin"
+summary: "Expose NodoAssist diagnostics as Prometheus text metrics through the diagnostics-prometheus plugin"
 title: "Prometheus metrics"
 sidebarTitle: "Prometheus"
 read_when:
-  - You want Prometheus, Grafana, VictoriaMetrics, or another scraper to collect OpenClaw Gateway metrics
+  - You want Prometheus, Grafana, VictoriaMetrics, or another scraper to collect NodoAssist Gateway metrics
   - You need the Prometheus metric names and label policy for dashboards or alerts
   - You want metrics without running an OpenTelemetry collector
 ---
 
-OpenClaw can expose diagnostics metrics through the official
+NodoAssist can expose diagnostics metrics through the official
 `diagnostics-prometheus` plugin. It listens to trusted diagnostics plus
 internally tagged, dispatcher-owned diagnostic events (queue, memory, and
 session-recovery signals), and renders a Prometheus text endpoint at:
@@ -31,7 +31,7 @@ For traces, logs, OTLP push, and OpenTelemetry GenAI semantic attributes, see [O
 <Steps>
   <Step title="Install the plugin">
     ```bash
-    openclaw plugins install clawhub:@openclaw/diagnostics-prometheus
+    nodoassist plugins install clawhub:@nodoassist/diagnostics-prometheus
     ```
   </Step>
   <Step title="Enable the plugin">
@@ -53,7 +53,7 @@ For traces, logs, OTLP push, and OpenTelemetry GenAI semantic attributes, see [O
       </Tab>
       <Tab title="CLI">
         ```bash
-        openclaw plugins enable diagnostics-prometheus
+        nodoassist plugins enable diagnostics-prometheus
         ```
       </Tab>
     </Tabs>
@@ -65,7 +65,7 @@ For traces, logs, OTLP push, and OpenTelemetry GenAI semantic attributes, see [O
     Send the same gateway auth your operator clients use:
 
     ```bash
-    curl -H "Authorization: Bearer $OPENCLAW_GATEWAY_TOKEN" \
+    curl -H "Authorization: Bearer $NODOASSIST_GATEWAY_TOKEN" \
       http://127.0.0.1:18789/api/diagnostics/prometheus
     ```
 
@@ -74,13 +74,13 @@ For traces, logs, OTLP push, and OpenTelemetry GenAI semantic attributes, see [O
     ```yaml
     # prometheus.yml
     scrape_configs:
-      - job_name: openclaw
+      - job_name: nodoassist
         scrape_interval: 30s
         metrics_path: /api/diagnostics/prometheus
         authorization:
-          credentials_file: /etc/prometheus/openclaw-gateway-token
+          credentials_file: /etc/prometheus/nodoassist-gateway-token
         static_configs:
-          - targets: ["openclaw-gateway:18789"]
+          - targets: ["nodoassist-gateway:18789"]
     ```
   </Step>
 </Steps>
@@ -91,62 +91,62 @@ For traces, logs, OTLP push, and OpenTelemetry GenAI semantic attributes, see [O
 
 ## Metrics exported
 
-| Metric                                           | Type      | Labels                                                                                    |
-| ------------------------------------------------ | --------- | ----------------------------------------------------------------------------------------- |
-| `openclaw_run_completed_total`                   | counter   | `channel`, `model`, `outcome`, `provider`, `trigger`                                      |
-| `openclaw_run_duration_seconds`                  | histogram | `channel`, `model`, `outcome`, `provider`, `trigger`                                      |
-| `openclaw_model_call_total`                      | counter   | `api`, `error_category`, `model`, `outcome`, `provider`, `transport`                      |
-| `openclaw_model_call_duration_seconds`           | histogram | `api`, `error_category`, `model`, `outcome`, `provider`, `transport`                      |
-| `openclaw_model_failover_total`                  | counter   | `from_model`, `from_provider`, `lane`, `reason`, `suspended`, `to_model`, `to_provider`   |
-| `openclaw_model_tokens_total`                    | counter   | `agent`, `channel`, `model`, `provider`, `token_type`                                     |
-| `openclaw_gen_ai_client_token_usage`             | histogram | `model`, `provider`, `token_type`                                                         |
-| `openclaw_model_cost_usd_total`                  | counter   | `agent`, `channel`, `model`, `provider`                                                   |
-| `openclaw_model_usage_duration_seconds`          | histogram | `agent`, `channel`, `model`, `provider`                                                   |
-| `openclaw_skill_used_total`                      | counter   | `activation`, `agent`, `skill`, `source`                                                  |
-| `openclaw_tool_execution_total`                  | counter   | `error_category`, `outcome`, `params_kind`, `tool`, `tool_owner`, `tool_source`           |
-| `openclaw_tool_execution_duration_seconds`       | histogram | `error_category`, `outcome`, `params_kind`, `tool`, `tool_owner`, `tool_source`           |
-| `openclaw_tool_execution_blocked_total`          | counter   | `denied_reason`, `params_kind`, `tool`, `tool_owner`, `tool_source`                       |
-| `openclaw_harness_run_total`                     | counter   | `channel`, `error_category`, `harness`, `model`, `outcome`, `phase`, `plugin`, `provider` |
-| `openclaw_harness_run_duration_seconds`          | histogram | `channel`, `error_category`, `harness`, `model`, `outcome`, `phase`, `plugin`, `provider` |
-| `openclaw_webhook_received_total`                | counter   | `channel`, `webhook`                                                                      |
-| `openclaw_webhook_error_total`                   | counter   | `channel`, `webhook`                                                                      |
-| `openclaw_webhook_duration_seconds`              | histogram | `channel`, `webhook`                                                                      |
-| `openclaw_message_received_total`                | counter   | `channel`, `source`                                                                       |
-| `openclaw_message_dispatch_started_total`        | counter   | `channel`, `source`                                                                       |
-| `openclaw_message_dispatch_completed_total`      | counter   | `channel`, `outcome`, `reason`, `source`                                                  |
-| `openclaw_message_dispatch_duration_seconds`     | histogram | `channel`, `outcome`, `reason`, `source`                                                  |
-| `openclaw_message_processed_total`               | counter   | `channel`, `outcome`, `reason`                                                            |
-| `openclaw_message_processed_duration_seconds`    | histogram | `channel`, `outcome`, `reason`                                                            |
-| `openclaw_message_delivery_started_total`        | counter   | `channel`, `delivery_kind`                                                                |
-| `openclaw_message_delivery_total`                | counter   | `channel`, `delivery_kind`, `error_category`, `outcome`                                   |
-| `openclaw_message_delivery_duration_seconds`     | histogram | `channel`, `delivery_kind`, `error_category`, `outcome`                                   |
-| `openclaw_talk_event_total`                      | counter   | `brain`, `event_type`, `mode`, `provider`, `transport`                                    |
-| `openclaw_talk_event_duration_seconds`           | histogram | `brain`, `event_type`, `mode`, `provider`, `transport`                                    |
-| `openclaw_talk_audio_bytes`                      | histogram | `brain`, `event_type`, `mode`, `provider`, `transport`                                    |
-| `openclaw_queue_lane_size`                       | gauge     | `lane`                                                                                    |
-| `openclaw_queue_lane_wait_seconds`               | histogram | `lane`                                                                                    |
-| `openclaw_session_state_total`                   | counter   | `reason`, `state`                                                                         |
-| `openclaw_session_queue_depth`                   | gauge     | `state`                                                                                   |
-| `openclaw_session_turn_created_total`            | counter   | `agent`, `channel`, `trigger`                                                             |
-| `openclaw_session_stuck_total`                   | counter   | `reason`, `state`                                                                         |
-| `openclaw_session_stuck_age_seconds`             | histogram | `reason`, `state`                                                                         |
-| `openclaw_session_recovery_total`                | counter   | `action`, `active_work_kind`, `state`, `status`                                           |
-| `openclaw_session_recovery_age_seconds`          | histogram | `action`, `active_work_kind`, `state`, `status`                                           |
-| `openclaw_liveness_warning_total`                | counter   | `reason`                                                                                  |
-| `openclaw_liveness_sessions`                     | gauge     | `state`                                                                                   |
-| `openclaw_liveness_event_loop_delay_p99_seconds` | histogram | `reason`                                                                                  |
-| `openclaw_liveness_event_loop_delay_max_seconds` | histogram | `reason`                                                                                  |
-| `openclaw_liveness_event_loop_utilization_ratio` | histogram | `reason`                                                                                  |
-| `openclaw_liveness_cpu_core_ratio`               | histogram | `reason`                                                                                  |
-| `openclaw_payload_large_total`                   | counter   | `action`, `channel`, `plugin`, `reason`, `surface`                                        |
-| `openclaw_payload_large_bytes`                   | histogram | `action`, `channel`, `plugin`, `reason`, `surface`                                        |
-| `openclaw_memory_bytes`                          | gauge     | `kind`                                                                                    |
-| `openclaw_memory_rss_bytes`                      | histogram | none                                                                                      |
-| `openclaw_memory_pressure_total`                 | counter   | `level`, `reason`                                                                         |
-| `openclaw_telemetry_exporter_total`              | counter   | `exporter`, `reason`, `signal`, `status`                                                  |
-| `openclaw_prometheus_series_dropped_total`       | counter   | none                                                                                      |
-| `openclaw_diagnostic_async_queue_dropped_total`  | counter   | `drop_class`                                                                              |
-| `openclaw_diagnostic_async_queue_length`         | gauge     | none                                                                                      |
+| Metric                                             | Type      | Labels                                                                                    |
+| -------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------- |
+| `nodoassist_run_completed_total`                   | counter   | `channel`, `model`, `outcome`, `provider`, `trigger`                                      |
+| `nodoassist_run_duration_seconds`                  | histogram | `channel`, `model`, `outcome`, `provider`, `trigger`                                      |
+| `nodoassist_model_call_total`                      | counter   | `api`, `error_category`, `model`, `outcome`, `provider`, `transport`                      |
+| `nodoassist_model_call_duration_seconds`           | histogram | `api`, `error_category`, `model`, `outcome`, `provider`, `transport`                      |
+| `nodoassist_model_failover_total`                  | counter   | `from_model`, `from_provider`, `lane`, `reason`, `suspended`, `to_model`, `to_provider`   |
+| `nodoassist_model_tokens_total`                    | counter   | `agent`, `channel`, `model`, `provider`, `token_type`                                     |
+| `nodoassist_gen_ai_client_token_usage`             | histogram | `model`, `provider`, `token_type`                                                         |
+| `nodoassist_model_cost_usd_total`                  | counter   | `agent`, `channel`, `model`, `provider`                                                   |
+| `nodoassist_model_usage_duration_seconds`          | histogram | `agent`, `channel`, `model`, `provider`                                                   |
+| `nodoassist_skill_used_total`                      | counter   | `activation`, `agent`, `skill`, `source`                                                  |
+| `nodoassist_tool_execution_total`                  | counter   | `error_category`, `outcome`, `params_kind`, `tool`, `tool_owner`, `tool_source`           |
+| `nodoassist_tool_execution_duration_seconds`       | histogram | `error_category`, `outcome`, `params_kind`, `tool`, `tool_owner`, `tool_source`           |
+| `nodoassist_tool_execution_blocked_total`          | counter   | `denied_reason`, `params_kind`, `tool`, `tool_owner`, `tool_source`                       |
+| `nodoassist_harness_run_total`                     | counter   | `channel`, `error_category`, `harness`, `model`, `outcome`, `phase`, `plugin`, `provider` |
+| `nodoassist_harness_run_duration_seconds`          | histogram | `channel`, `error_category`, `harness`, `model`, `outcome`, `phase`, `plugin`, `provider` |
+| `nodoassist_webhook_received_total`                | counter   | `channel`, `webhook`                                                                      |
+| `nodoassist_webhook_error_total`                   | counter   | `channel`, `webhook`                                                                      |
+| `nodoassist_webhook_duration_seconds`              | histogram | `channel`, `webhook`                                                                      |
+| `nodoassist_message_received_total`                | counter   | `channel`, `source`                                                                       |
+| `nodoassist_message_dispatch_started_total`        | counter   | `channel`, `source`                                                                       |
+| `nodoassist_message_dispatch_completed_total`      | counter   | `channel`, `outcome`, `reason`, `source`                                                  |
+| `nodoassist_message_dispatch_duration_seconds`     | histogram | `channel`, `outcome`, `reason`, `source`                                                  |
+| `nodoassist_message_processed_total`               | counter   | `channel`, `outcome`, `reason`                                                            |
+| `nodoassist_message_processed_duration_seconds`    | histogram | `channel`, `outcome`, `reason`                                                            |
+| `nodoassist_message_delivery_started_total`        | counter   | `channel`, `delivery_kind`                                                                |
+| `nodoassist_message_delivery_total`                | counter   | `channel`, `delivery_kind`, `error_category`, `outcome`                                   |
+| `nodoassist_message_delivery_duration_seconds`     | histogram | `channel`, `delivery_kind`, `error_category`, `outcome`                                   |
+| `nodoassist_talk_event_total`                      | counter   | `brain`, `event_type`, `mode`, `provider`, `transport`                                    |
+| `nodoassist_talk_event_duration_seconds`           | histogram | `brain`, `event_type`, `mode`, `provider`, `transport`                                    |
+| `nodoassist_talk_audio_bytes`                      | histogram | `brain`, `event_type`, `mode`, `provider`, `transport`                                    |
+| `nodoassist_queue_lane_size`                       | gauge     | `lane`                                                                                    |
+| `nodoassist_queue_lane_wait_seconds`               | histogram | `lane`                                                                                    |
+| `nodoassist_session_state_total`                   | counter   | `reason`, `state`                                                                         |
+| `nodoassist_session_queue_depth`                   | gauge     | `state`                                                                                   |
+| `nodoassist_session_turn_created_total`            | counter   | `agent`, `channel`, `trigger`                                                             |
+| `nodoassist_session_stuck_total`                   | counter   | `reason`, `state`                                                                         |
+| `nodoassist_session_stuck_age_seconds`             | histogram | `reason`, `state`                                                                         |
+| `nodoassist_session_recovery_total`                | counter   | `action`, `active_work_kind`, `state`, `status`                                           |
+| `nodoassist_session_recovery_age_seconds`          | histogram | `action`, `active_work_kind`, `state`, `status`                                           |
+| `nodoassist_liveness_warning_total`                | counter   | `reason`                                                                                  |
+| `nodoassist_liveness_sessions`                     | gauge     | `state`                                                                                   |
+| `nodoassist_liveness_event_loop_delay_p99_seconds` | histogram | `reason`                                                                                  |
+| `nodoassist_liveness_event_loop_delay_max_seconds` | histogram | `reason`                                                                                  |
+| `nodoassist_liveness_event_loop_utilization_ratio` | histogram | `reason`                                                                                  |
+| `nodoassist_liveness_cpu_core_ratio`               | histogram | `reason`                                                                                  |
+| `nodoassist_payload_large_total`                   | counter   | `action`, `channel`, `plugin`, `reason`, `surface`                                        |
+| `nodoassist_payload_large_bytes`                   | histogram | `action`, `channel`, `plugin`, `reason`, `surface`                                        |
+| `nodoassist_memory_bytes`                          | gauge     | `kind`                                                                                    |
+| `nodoassist_memory_rss_bytes`                      | histogram | none                                                                                      |
+| `nodoassist_memory_pressure_total`                 | counter   | `level`, `reason`                                                                         |
+| `nodoassist_telemetry_exporter_total`              | counter   | `exporter`, `reason`, `signal`, `status`                                                  |
+| `nodoassist_prometheus_series_dropped_total`       | counter   | none                                                                                      |
+| `nodoassist_diagnostic_async_queue_dropped_total`  | counter   | `drop_class`                                                                              |
+| `nodoassist_diagnostic_async_queue_length`         | gauge     | none                                                                                      |
 
 ## Label policy
 
@@ -154,11 +154,11 @@ For traces, logs, OTLP push, and OpenTelemetry GenAI semantic attributes, see [O
   <Accordion title="Bounded, low-cardinality labels">
     Prometheus labels stay bounded and low-cardinality. The exporter does not emit raw diagnostic identifiers such as `runId`, `sessionKey`, `sessionId`, `callId`, `toolCallId`, message IDs, chat IDs, or provider request IDs.
 
-    Label values are redacted and must match OpenClaw's low-cardinality character policy. Values that fail the policy are replaced with `unknown`, `other`, or `none`, depending on the metric. Labels that look like scoped agent session keys are also replaced with `unknown`.
+    Label values are redacted and must match NodoAssist's low-cardinality character policy. Values that fail the policy are replaced with `unknown`, `other`, or `none`, depending on the metric. Labels that look like scoped agent session keys are also replaced with `unknown`.
 
   </Accordion>
   <Accordion title="Series cap and overflow accounting">
-    The exporter caps retained time series in memory at **2048** series across counters, gauges, and histograms combined. New series beyond that cap are dropped, and `openclaw_prometheus_series_dropped_total` increments by one each time.
+    The exporter caps retained time series in memory at **2048** series across counters, gauges, and histograms combined. New series beyond that cap are dropped, and `nodoassist_prometheus_series_dropped_total` increments by one each time.
 
     Watch this counter as a hard signal that an attribute upstream is leaking high-cardinality values. The exporter never lifts the cap automatically; if it climbs, fix the source rather than disabling the cap.
 
@@ -177,38 +177,38 @@ For traces, logs, OTLP push, and OpenTelemetry GenAI semantic attributes, see [O
 
 ```promql
 # Tokens per minute, split by provider
-sum by (provider) (rate(openclaw_model_tokens_total[1m]))
+sum by (provider) (rate(nodoassist_model_tokens_total[1m]))
 
 # Spend (USD) over the last hour, by model
-sum by (model) (increase(openclaw_model_cost_usd_total[1h]))
+sum by (model) (increase(nodoassist_model_cost_usd_total[1h]))
 
 # 95th percentile model run duration
 histogram_quantile(
   0.95,
   sum by (le, provider, model)
-    (rate(openclaw_run_duration_seconds_bucket[5m]))
+    (rate(nodoassist_run_duration_seconds_bucket[5m]))
 )
 
 # Queue wait time SLO (95p under 2s)
 histogram_quantile(
   0.95,
-  sum by (le, lane) (rate(openclaw_queue_lane_wait_seconds_bucket[5m]))
+  sum by (le, lane) (rate(nodoassist_queue_lane_wait_seconds_bucket[5m]))
 ) < 2
 
 # Skill usage, split by bounded source
-sum by (skill, source) (increase(openclaw_skill_used_total[24h]))
+sum by (skill, source) (increase(nodoassist_skill_used_total[24h]))
 
 # Dropped Prometheus series (cardinality alarm)
-increase(openclaw_prometheus_series_dropped_total[15m]) > 0
+increase(nodoassist_prometheus_series_dropped_total[15m]) > 0
 ```
 
 <Tip>
-Prefer `gen_ai_client_token_usage` for cross-provider dashboards: it follows the OpenTelemetry GenAI semantic conventions and is consistent with metrics from non-OpenClaw GenAI services.
+Prefer `gen_ai_client_token_usage` for cross-provider dashboards: it follows the OpenTelemetry GenAI semantic conventions and is consistent with metrics from non-NodoAssist GenAI services.
 </Tip>
 
 ## Choosing between Prometheus and OpenTelemetry export
 
-OpenClaw supports both surfaces independently. You can run either, both, or neither.
+NodoAssist supports both surfaces independently. You can run either, both, or neither.
 
 <Tabs>
   <Tab title="diagnostics-prometheus">
@@ -220,7 +220,7 @@ OpenClaw supports both surfaces independently. You can run either, both, or neit
 
   </Tab>
   <Tab title="diagnostics-otel">
-    - **Push** model: OpenClaw sends OTLP/HTTP to a collector or OTLP-compatible backend.
+    - **Push** model: NodoAssist sends OTLP/HTTP to a collector or OTLP-compatible backend.
     - Surface includes metrics, traces, and logs.
     - Bridges to Prometheus through an OpenTelemetry Collector (`prometheus` or `prometheusremotewrite` exporter) when you need both.
     - See [OpenTelemetry export](/gateway/opentelemetry) for the full catalog.
@@ -233,14 +233,14 @@ OpenClaw supports both surfaces independently. You can run either, both, or neit
 <AccordionGroup>
   <Accordion title="Empty response body">
     - Check that `diagnostics.enabled` is not set to `false` in config (it defaults to `true`).
-    - Confirm the plugin is enabled and loaded with `openclaw plugins list --enabled`.
+    - Confirm the plugin is enabled and loaded with `nodoassist plugins list --enabled`.
     - Generate some traffic; counters and histograms only emit lines after at least one event.
 
   </Accordion>
   <Accordion title="401 / unauthorized">
     The endpoint requires the Gateway operator scope (`auth: "gateway"` with `gatewayRuntimeScopeSurface: "trusted-operator"`). Use the same token or password Prometheus uses for any other Gateway operator route. There is no public unauthenticated mode.
   </Accordion>
-  <Accordion title="`openclaw_prometheus_series_dropped_total` is climbing">
+  <Accordion title="`nodoassist_prometheus_series_dropped_total` is climbing">
     A new attribute is exceeding the **2048**-series cap. Inspect recent metrics for an unexpectedly high-cardinality label and fix it at the source. The exporter intentionally drops new series instead of silently rewriting labels.
   </Accordion>
   <Accordion title="Prometheus shows stale series after a restart">

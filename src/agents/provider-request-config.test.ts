@@ -464,9 +464,9 @@ describe("provider request config", () => {
       precedence: "defaults-win",
     });
 
-    expect(resolved?.originator).toBe("openclaw");
+    expect(resolved?.originator).toBe("nodoassist");
     expect(typeof resolved?.version).toBe("string");
-    expect(resolved?.["User-Agent"]).toMatch(/^openclaw\//);
+    expect(resolved?.["User-Agent"]).toMatch(/^nodoassist\//);
     expect(resolved?.["X-Custom"]).toBe("1");
   });
 
@@ -485,7 +485,7 @@ describe("provider request config", () => {
 
     expect(resolved).toEqual({
       "HTTP-Referer": "https://openclaw.ai",
-      "X-OpenRouter-Title": "OpenClaw",
+      "X-OpenRouter-Title": "NodoAssist",
       "X-OpenRouter-Categories":
         "cli-agent,cloud-agent,programming-app,creative-writing,writing-assistant,general-chat,personal-agent",
       "X-Custom": "1",
@@ -507,7 +507,7 @@ describe("provider request config", () => {
     });
 
     expect(resolved).toEqual({
-      "X-BILLING-INVOKE-ORIGIN": "OpenClaw",
+      "X-BILLING-INVOKE-ORIGIN": "NodoAssist",
       "X-Custom": "1",
     });
   });
@@ -546,7 +546,7 @@ describe("provider request config", () => {
     expect(
       Object.keys(resolved ?? {}).filter((key) => key.toLowerCase() === "user-agent"),
     ).toHaveLength(1);
-    expect(resolved?.["User-Agent"]).toMatch(/^openclaw\//);
+    expect(resolved?.["User-Agent"]).toMatch(/^nodoassist\//);
   });
 
   it("drops forbidden header keys while merging", () => {
@@ -595,9 +595,9 @@ describe("provider request config", () => {
     expect(resolved.policy.endpointClass).toBe("openai-public");
     expect(resolved.capabilities.allowsResponsesStore).toBe(true);
     expect(resolved.headers?.authorization).toBe("Bearer test-key");
-    expect(resolved.headers?.originator).toBe("openclaw");
+    expect(resolved.headers?.originator).toBe("nodoassist");
     expect(typeof resolved.headers?.version).toBe("string");
-    expect(resolved.headers?.["User-Agent"]).toMatch(/^openclaw\//);
+    expect(resolved.headers?.["User-Agent"]).toMatch(/^nodoassist\//);
     expect(resolved.headers?.["X-Custom"]).toBe("1");
   });
 

@@ -34,7 +34,7 @@ let resolveExecApprovalsTranscriptPath: ExecApprovalsModule["resolveExecApproval
 let saveExecApprovals: ExecApprovalsModule["saveExecApprovals"];
 
 const tempDirs: string[] = [];
-const testEnvSnapshot = captureEnv(["OPENCLAW_HOME", "OPENCLAW_STATE_DIR"]);
+const testEnvSnapshot = captureEnv(["NODOASSIST_HOME", "NODOASSIST_STATE_DIR"]);
 
 beforeAll(async () => {
   ({
@@ -73,13 +73,13 @@ afterEach(() => {
 function createHomeDir(): string {
   const dir = makeTempDir();
   tempDirs.push(dir);
-  setTestEnvValue("OPENCLAW_HOME", dir);
-  deleteTestEnvValue("OPENCLAW_STATE_DIR");
+  setTestEnvValue("NODOASSIST_HOME", dir);
+  deleteTestEnvValue("NODOASSIST_STATE_DIR");
   return dir;
 }
 
 function approvalsFilePath(homeDir: string): string {
-  return path.join(homeDir, ".openclaw", "exec-approvals.json");
+  return path.join(homeDir, ".nodoassist", "exec-approvals.json");
 }
 
 function stateApprovalsFilePath(stateDir: string): string {
@@ -124,18 +124,18 @@ describe("exec approvals store helpers", () => {
     const dir = createHomeDir();
 
     expect(path.normalize(resolveExecApprovalsPath())).toBe(
-      path.normalize(path.join(dir, ".openclaw", "exec-approvals.json")),
+      path.normalize(path.join(dir, ".nodoassist", "exec-approvals.json")),
     );
     expect(path.normalize(resolveExecApprovalsSocketPath())).toBe(
-      path.normalize(path.join(dir, ".openclaw", "exec-approvals.sock")),
+      path.normalize(path.join(dir, ".nodoassist", "exec-approvals.sock")),
     );
-    expect(resolveExecApprovalsDisplayPath()).toBe("~/.openclaw/exec-approvals.json");
+    expect(resolveExecApprovalsDisplayPath()).toBe("~/.nodoassist/exec-approvals.json");
   });
 
-  it("uses OPENCLAW_STATE_DIR for default file and socket paths", () => {
+  it("uses NODOASSIST_STATE_DIR for default file and socket paths", () => {
     const dir = createHomeDir();
     const stateDir = path.join(dir, "custom-state");
-    setTestEnvValue("OPENCLAW_STATE_DIR", stateDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", stateDir);
 
     expect(path.normalize(resolveExecApprovalsPath())).toBe(
       path.normalize(stateApprovalsFilePath(stateDir)),
@@ -144,7 +144,7 @@ describe("exec approvals store helpers", () => {
       path.normalize(path.join(stateDir, "exec-approvals.sock")),
     );
     expect(resolveExecApprovalsDisplayPath()).toBe(stateApprovalsFilePath(stateDir));
-    expect(resolveExecApprovalsTranscriptPath()).toBe("$OPENCLAW_STATE_DIR/exec-approvals.json");
+    expect(resolveExecApprovalsTranscriptPath()).toBe("$NODOASSIST_STATE_DIR/exec-approvals.json");
 
     const ensured = ensureExecApprovals();
 
@@ -162,7 +162,7 @@ describe("exec approvals store helpers", () => {
       `${JSON.stringify({
         version: 1,
         socket: {
-          path: path.join(dir, ".openclaw", "exec-approvals.sock"),
+          path: path.join(dir, ".nodoassist", "exec-approvals.sock"),
           token: "legacy-token",
         },
         defaults: {
@@ -173,7 +173,7 @@ describe("exec approvals store helpers", () => {
       })}\n`,
       "utf8",
     );
-    setTestEnvValue("OPENCLAW_STATE_DIR", stateDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", stateDir);
 
     const resolved = resolveExecApprovals("main", {
       security: "full",
@@ -643,17 +643,17 @@ describe("exec approvals store helpers", () => {
     expect(fs.readFileSync(targetPath, "utf8")).toBe('{"sentinel":true}\n');
   });
 
-  it("accepts a symlinked OPENCLAW_HOME as the trusted approvals root", () => {
+  it("accepts a symlinked NODOASSIST_HOME as the trusted approvals root", () => {
     const realHome = makeTempDir();
     const linkedHome = `${realHome}-link`;
     tempDirs.push(realHome, linkedHome);
     fs.symlinkSync(realHome, linkedHome, "dir");
-    setTestEnvValue("OPENCLAW_HOME", linkedHome);
+    setTestEnvValue("NODOASSIST_HOME", linkedHome);
 
     saveExecApprovals({ version: 1, defaults: { security: "full" }, agents: {} });
 
     expect(
-      fs.readFileSync(path.join(realHome, ".openclaw", "exec-approvals.json"), "utf8"),
+      fs.readFileSync(path.join(realHome, ".nodoassist", "exec-approvals.json"), "utf8"),
     ).toContain('"security": "full"');
   });
 
@@ -664,8 +664,8 @@ describe("exec approvals store helpers", () => {
     tempDirs.push(realHome, linkedHome);
     fs.mkdirSync(linkedStateTarget, { recursive: true });
     fs.symlinkSync(realHome, linkedHome, "dir");
-    fs.symlinkSync(linkedStateTarget, path.join(realHome, ".openclaw"), "dir");
-    setTestEnvValue("OPENCLAW_HOME", linkedHome);
+    fs.symlinkSync(linkedStateTarget, path.join(realHome, ".nodoassist"), "dir");
+    setTestEnvValue("NODOASSIST_HOME", linkedHome);
 
     expect(() =>
       saveExecApprovals({ version: 1, defaults: { security: "full" }, agents: {} }),

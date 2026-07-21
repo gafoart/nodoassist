@@ -1,12 +1,8 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveAgentModelPrimaryValue } from "openclaw/plugin-sdk/provider-onboard";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { resolveAgentModelPrimaryValue } from "nodoassist/plugin-sdk/provider-onboard";
 import { describe, expect, it } from "vitest";
 import { buildCohereCatalogModels, COHERE_BASE_URL, COHERE_MODEL_CATALOG } from "./models.js";
-import {
-  applyCohereConfig,
-  COHERE_DEFAULT_MODEL_ID,
-  COHERE_DEFAULT_MODEL_REF,
-} from "./onboard.js";
+import { applyCohereConfig, COHERE_DEFAULT_MODEL_ID, COHERE_DEFAULT_MODEL_REF } from "./onboard.js";
 
 describe("Cohere onboarding", () => {
   it("registers the manifest catalog through the onboarding preset", () => {
@@ -22,7 +18,7 @@ describe("Cohere onboarding", () => {
   });
 
   it("sets Cohere only when there is no primary model", () => {
-    const existing: OpenClawConfig = {
+    const existing: NodoAssistConfig = {
       agents: {
         defaults: {
           model: { primary: "openai/gpt-5.5" },

@@ -380,6 +380,6 @@ class ChannelsPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-channels-page")) {
-  customElements.define("openclaw-channels-page", ChannelsPage);
+if (!customElements.get("nodoassist-channels-page")) {
+  customElements.define("nodoassist-channels-page", ChannelsPage);
 }

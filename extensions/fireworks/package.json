@@ -1,18 +1,18 @@
 {
-  "name": "@openclaw/fireworks-provider",
+  "name": "@nodoassist/fireworks-provider",
   "version": "2026.6.11",
-  "description": "OpenClaw Fireworks provider plugin",
+  "description": "NodoAssist Fireworks provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/fireworks-provider",
-      "npmSpec": "@openclaw/fireworks-provider",
+      "clawhubSpec": "clawhub:@nodoassist/fireworks-provider",
+      "npmSpec": "@nodoassist/fireworks-provider",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.9"
     },
@@ -20,7 +20,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

@@ -1,29 +1,29 @@
 // Signal plugin module implements channel behavior.
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
-import { buildDmGroupAccountAllowlistAdapter } from "openclaw/plugin-sdk/allowlist-config-edit";
-import type { ChannelOutboundAdapter } from "openclaw/plugin-sdk/channel-contract";
-import { createChatChannelPlugin, type ChannelPlugin } from "openclaw/plugin-sdk/channel-core";
-import { defineChannelMessageAdapter } from "openclaw/plugin-sdk/channel-outbound";
-import { resolveOutboundSendDep } from "openclaw/plugin-sdk/channel-outbound";
-import { createPairingPrefixStripper } from "openclaw/plugin-sdk/channel-pairing";
-import { attachChannelToResult } from "openclaw/plugin-sdk/channel-send-result";
-import { PAIRING_APPROVED_MESSAGE } from "openclaw/plugin-sdk/channel-status";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-import { resolveChannelMediaMaxBytes } from "openclaw/plugin-sdk/media-runtime";
-import { chunkText, resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-chunking";
-import { buildOutboundBaseSessionKey, type RoutePeer } from "openclaw/plugin-sdk/routing";
+import { DEFAULT_ACCOUNT_ID } from "nodoassist/plugin-sdk/account-id";
+import { buildDmGroupAccountAllowlistAdapter } from "nodoassist/plugin-sdk/allowlist-config-edit";
+import type { ChannelOutboundAdapter } from "nodoassist/plugin-sdk/channel-contract";
+import { createChatChannelPlugin, type ChannelPlugin } from "nodoassist/plugin-sdk/channel-core";
+import { defineChannelMessageAdapter } from "nodoassist/plugin-sdk/channel-outbound";
+import { resolveOutboundSendDep } from "nodoassist/plugin-sdk/channel-outbound";
+import { createPairingPrefixStripper } from "nodoassist/plugin-sdk/channel-pairing";
+import { attachChannelToResult } from "nodoassist/plugin-sdk/channel-send-result";
+import { PAIRING_APPROVED_MESSAGE } from "nodoassist/plugin-sdk/channel-status";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
+import { resolveMarkdownTableMode } from "nodoassist/plugin-sdk/markdown-table-runtime";
+import { resolveChannelMediaMaxBytes } from "nodoassist/plugin-sdk/media-runtime";
+import { chunkText, resolveTextChunkLimit } from "nodoassist/plugin-sdk/reply-chunking";
+import { buildOutboundBaseSessionKey, type RoutePeer } from "nodoassist/plugin-sdk/routing";
 import {
   buildBaseChannelStatusSummary,
   collectStatusIssuesFromLastError,
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "nodoassist/plugin-sdk/status-helpers";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
-import { sanitizeAssistantVisibleText } from "openclaw/plugin-sdk/text-chunking";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { sanitizeAssistantVisibleText } from "nodoassist/plugin-sdk/text-chunking";
 import {
   resolveSignalAccount,
   resolveSignalReplyToMode,

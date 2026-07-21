@@ -1,0 +1,4 @@
+interface:
+  display_name: "NodoAssist Testing"
+  short_description: "Choose cheap, targeted NodoAssist validation"
+  default_prompt: "Use $nodoassist-testing to choose the cheapest safe test or CI verification path, inspect failures, and rerun only the relevant NodoAssist lane."

@@ -64,12 +64,12 @@ describe("install security scan official bypass", () => {
     getGlobalHookRunnerMock.mockReset();
   });
 
-  it("bypasses plugin install friction for bundled OpenClaw sources", async () => {
+  it("bypasses plugin install friction for bundled NodoAssist sources", async () => {
     const result = await scanBundleInstallSourceRuntime({
       logger: {},
-      pluginId: "openclaw/kitchen-sink",
-      sourceDir: "/tmp/openclaw-bundled-plugin",
-      source: { kind: "bundled", authority: "openclaw", mutable: false, network: false },
+      pluginId: "nodoassist/kitchen-sink",
+      sourceDir: "/tmp/nodoassist-bundled-plugin",
+      source: { kind: "bundled", authority: "nodoassist", mutable: false, network: false },
     });
 
     expect(result).toBeUndefined();
@@ -79,8 +79,8 @@ describe("install security scan official bypass", () => {
   it("bypasses plugin install friction for official ClawHub sources", async () => {
     const result = await scanBundleInstallSourceRuntime({
       logger: {},
-      pluginId: "@openclaw/matrix",
-      sourceDir: "/tmp/openclaw-official-clawhub-plugin",
+      pluginId: "@nodoassist/matrix",
+      sourceDir: "/tmp/nodoassist-official-clawhub-plugin",
       source: { kind: "clawhub", authority: "official", mutable: false, network: true },
     });
 
@@ -88,18 +88,18 @@ describe("install security scan official bypass", () => {
     expectOnlyOperatorPolicyRan();
   });
 
-  it("bypasses skill install friction for bundled OpenClaw sources", async () => {
+  it("bypasses skill install friction for bundled NodoAssist sources", async () => {
     const result = await evaluateSkillInstallPolicyRuntime({
       installId: "node",
       logger: {},
       origin: {
-        type: "openclaw-bundled",
+        type: "nodoassist-bundled",
         skillName: "peekaboo",
         installId: "node",
       },
-      source: { kind: "bundled", authority: "openclaw", mutable: false, network: false },
+      source: { kind: "bundled", authority: "nodoassist", mutable: false, network: false },
       skillName: "peekaboo",
-      sourceDir: "/tmp/openclaw-bundled-skill/peekaboo",
+      sourceDir: "/tmp/nodoassist-bundled-skill/peekaboo",
     });
 
     expect(result).toBeUndefined();
@@ -109,10 +109,10 @@ describe("install security scan official bypass", () => {
   it("runs only operator policy for official immutable npm sources", async () => {
     const result = await preflightPluginNpmInstallPolicyRuntime({
       logger: {},
-      packageName: "@openclaw/matrix",
-      requestedSpecifier: "@openclaw/matrix@latest",
+      packageName: "@nodoassist/matrix",
+      requestedSpecifier: "@nodoassist/matrix@latest",
       source: { kind: "npm", authority: "official", mutable: false, network: true },
-      sourcePath: "/tmp/openclaw-official-npm",
+      sourcePath: "/tmp/nodoassist-official-npm",
       sourcePathKind: "directory",
     });
 
@@ -130,8 +130,8 @@ describe("install security scan official bypass", () => {
 
     const result = await scanBundleInstallSourceRuntime({
       logger: {},
-      pluginId: "@openclaw/matrix",
-      sourceDir: "/tmp/openclaw-official-clawhub-plugin",
+      pluginId: "@nodoassist/matrix",
+      sourceDir: "/tmp/nodoassist-official-clawhub-plugin",
       source: { kind: "clawhub", authority: "official", mutable: false, network: true },
     });
 

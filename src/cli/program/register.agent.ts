@@ -213,14 +213,20 @@ export function registerAgentsCommands(program: Command): void {
         `
 ${theme.heading("Examples:")}
 ${formatHelpExamples([
-  ['openclaw agents set-identity --agent main --name "OpenClaw" --emoji "🦞"', "Set name + emoji."],
-  ["openclaw agents set-identity --agent main --avatar avatars/openclaw.png", "Set avatar path."],
   [
-    "openclaw agents set-identity --workspace ~/.openclaw/workspace --from-identity",
+    'nodoassist agents set-identity --agent main --name "NodoAssist" --emoji "🦞"',
+    "Set name + emoji.",
+  ],
+  [
+    "nodoassist agents set-identity --agent main --avatar avatars/nodoassist.png",
+    "Set avatar path.",
+  ],
+  [
+    "nodoassist agents set-identity --workspace ~/.nodoassist/workspace --from-identity",
     "Load from IDENTITY.md.",
   ],
   [
-    "openclaw agents set-identity --identity-file ~/.openclaw/workspace/IDENTITY.md --agent main",
+    "nodoassist agents set-identity --identity-file ~/.nodoassist/workspace/IDENTITY.md --agent main",
     "Use a specific IDENTITY.md.",
   ],
 ])}

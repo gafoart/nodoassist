@@ -1,26 +1,28 @@
 // Telegram plugin module implements reasoning lane coordinator behavior.
-import { formatReasoningMessage } from "openclaw/plugin-sdk/agent-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { findCodeRegions, isInsideCode } from "openclaw/plugin-sdk/text-chunking";
-import { stripReasoningTagsFromText } from "openclaw/plugin-sdk/text-chunking";
+import { formatReasoningMessage } from "nodoassist/plugin-sdk/agent-runtime";
+import type { ReplyPayload } from "nodoassist/plugin-sdk/reply-runtime";
+import { normalizeLowercaseStringOrEmpty } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { findCodeRegions, isInsideCode } from "nodoassist/plugin-sdk/text-chunking";
+import { stripReasoningTagsFromText } from "nodoassist/plugin-sdk/text-chunking";
 
-// A durable reasoning message already marked channel-side: 🧠 + italic body
-// (see markReasoningMessage). Detect it so a re-split passes it through
+// Inline brand marker shown in front of durable reasoning on Telegram.
+const REASONING_MARKER = ".nodoassist";
+// A durable reasoning message already marked channel-side: `.nodoassist ` + italic
+// body (see markReasoningMessage). Detect it so a re-split passes it through
 // unchanged instead of re-marking.
-const REASONING_MESSAGE_RE = /^🧠\s+_/u;
-// Core's formatReasoningMessage prefixes the italic body with a literal
-// "Thinking" header. Telegram renders durable thoughts with the 🧠 marker
-// (Discord parity), so this header must be rewritten channel-side.
-const CORE_THINKING_HEADER_RE = /^Thinking\.{0,3}\s*\n+/u;
+const REASONING_MESSAGE_RE = /^\.nodoassist\s+_/u;
+// Core's formatReasoningMessage prefixes the italic body with the `.nodoassist`
+// header (REASONING_HEADER). Telegram renders durable thoughts with an inline
+// `.nodoassist ` marker, so this header must be rewritten channel-side.
+const CORE_THINKING_HEADER_RE = /^\.nodoassist\.{0,3}\s*\n+/u;
 const LEGACY_REASONING_MESSAGE_PREFIX = "Reasoning:\n";
 
-// Rewrite core's "Thinking\n\n_body_" into "🧠 _body_": strip the header word
-// and prefix the first italic line with 🧠. Keeps the italic body intact so
-// Telegram HTML renders it as before.
+// Rewrite core's ".nodoassist\n\n_body_" into ".nodoassist _body_": strip the
+// header line and prefix the first italic line with the inline marker. Keeps the
+// italic body intact so Telegram HTML renders it as before.
 function markReasoningMessage(formatted: string): string {
   const withoutHeader = formatted.replace(CORE_THINKING_HEADER_RE, "");
-  return withoutHeader.replace(/^_/u, "🧠 _");
+  return withoutHeader.replace(/^_/u, `${REASONING_MARKER} _`);
 }
 const REASONING_TAG_PREFIXES = [
   "<think",

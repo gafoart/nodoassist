@@ -1,5 +1,5 @@
 import CoreLocation
-import OpenClawKit
+import NodoAssistKit
 import SwiftUI
 import UIKit
 import UserNotifications
@@ -17,15 +17,15 @@ extension SettingsProTab {
                 SettingsIcon(systemName: icon, color: color)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(OpenClawType.headline)
+                        .font(NodoAssistType.headline)
                     Text(detail)
-                        .font(OpenClawType.caption)
+                        .font(NodoAssistType.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 8)
                 Text(value)
-                    .font(OpenClawType.subheadMedium)
+                    .font(NodoAssistType.subheadMedium)
                     .foregroundStyle(color)
             }
         }
@@ -50,7 +50,7 @@ extension SettingsProTab {
                 title: "Discovery",
                 detail: self.gatewayController.discoveryStatusText,
                 value: "\(self.gatewayController.gateways.count)",
-                color: self.gatewayController.gateways.isEmpty ? .secondary : OpenClawBrand.accent)
+                color: self.gatewayController.gateways.isEmpty ? .secondary : NodoAssistBrand.accent)
             self.diagnosticCheckRow(
                 icon: "waveform",
                 title: "Talk Config",
@@ -68,13 +68,13 @@ extension SettingsProTab {
                 title: "Screen Capture",
                 detail: "Live foreground capture state",
                 value: self.appModel.screenRecordActive ? "live" : "idle",
-                color: self.appModel.screenRecordActive ? OpenClawBrand.ok : .secondary)
+                color: self.appModel.screenRecordActive ? NodoAssistBrand.ok : .secondary)
             self.diagnosticCheckRow(
                 icon: "mic",
                 title: "Voice Wake",
                 detail: self.appModel.voiceWake.statusText,
                 value: self.voiceWakeEnabled ? "on" : "off",
-                color: self.voiceWakeEnabled ? OpenClawBrand.ok : .secondary)
+                color: self.voiceWakeEnabled ? NodoAssistBrand.ok : .secondary)
         }
     }
 
@@ -89,15 +89,15 @@ extension SettingsProTab {
             SettingsIcon(systemName: icon, color: color)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(OpenClawType.subheadSemiBold)
+                    .font(NodoAssistType.subheadSemiBold)
                 Text(detail)
-                    .font(OpenClawType.caption)
+                    .font(NodoAssistType.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
             Spacer(minLength: 8)
             Text(value)
-                .font(OpenClawType.subhead)
+                .font(NodoAssistType.subhead)
                 .foregroundStyle(.secondary)
         }
     }
@@ -215,8 +215,8 @@ extension SettingsProTab {
             targetStableID: stableID)
     }
 
-    func refreshLocationPermissionSummary(desiredMode modeOverride: OpenClawLocationMode? = nil) {
-        let mode = modeOverride ?? OpenClawLocationMode(rawValue: self.locationModeRaw) ?? .off
+    func refreshLocationPermissionSummary(desiredMode modeOverride: NodoAssistLocationMode? = nil) {
+        let mode = modeOverride ?? NodoAssistLocationMode(rawValue: self.locationModeRaw) ?? .off
         let manager = CLLocationManager()
         self.locationPermissionRefreshID &+= 1
         let refreshID = self.locationPermissionRefreshID
@@ -230,7 +230,7 @@ extension SettingsProTab {
             let locationServicesEnabled = await Self.locationServicesEnabled()
             guard refreshID == self.locationPermissionRefreshID else { return }
             let latestManager = CLLocationManager()
-            let latestMode = modeOverride ?? OpenClawLocationMode(rawValue: self.locationModeRaw) ?? .off
+            let latestMode = modeOverride ?? NodoAssistLocationMode(rawValue: self.locationModeRaw) ?? .off
             self.locationPermissionSummary = LocationPermissionSummary(
                 desiredMode: latestMode,
                 locationServicesEnabled: locationServicesEnabled,
@@ -561,7 +561,7 @@ extension SettingsProTab {
     func handleLocationModeChange(_ newValue: String) {
         guard !self.isChangingLocationMode else { return }
         guard newValue != self.previousLocationModeRaw else { return }
-        guard let mode = OpenClawLocationMode(rawValue: newValue) else { return }
+        guard let mode = NodoAssistLocationMode(rawValue: newValue) else { return }
         let previous = self.previousLocationModeRaw
         Task {
             await self.applyLocationMode(mode, rawValue: newValue, previous: previous)
@@ -570,7 +570,7 @@ extension SettingsProTab {
 
     @MainActor
     func applyLocationMode(
-        _ mode: OpenClawLocationMode,
+        _ mode: NodoAssistLocationMode,
         rawValue: String,
         previous: String) async
     {
@@ -597,7 +597,7 @@ extension SettingsProTab {
             self.previousLocationModeRaw = previous
             self.locationStatusText = "Location permission was not granted."
             self.refreshLocationPermissionSummary(
-                desiredMode: OpenClawLocationMode(rawValue: previous) ?? .off)
+                desiredMode: NodoAssistLocationMode(rawValue: previous) ?? .off)
         }
     }
 
@@ -618,7 +618,7 @@ extension SettingsProTab {
         }
         guard self.notificationStatus == .notSet else { return }
 
-        if PushBuildConfig.current.usesOpenClawHostedRelay {
+        if PushBuildConfig.current.usesNodoAssistHostedRelay {
             self.showNotificationRelayDisclosure = true
             return
         }
@@ -861,7 +861,7 @@ extension SettingsProTab {
     func friendlyGatewayMessage(from raw: String) -> String? {
         let lower = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         if lower.contains("pairing required") {
-            return "Pairing required. Run /pair approve in your OpenClaw chat, then connect again."
+            return "Pairing required. Run /pair approve in your NodoAssist chat, then connect again."
         }
         if lower.contains("device nonce required") || lower.contains("device nonce mismatch") {
             return "Secure handshake failed. Check Tailscale, then connect again."
@@ -969,8 +969,8 @@ extension SettingsProTab {
     }
 
     var gatewayStatusColor: Color {
-        if self.appModel.isAppleReviewDemoModeEnabled { return OpenClawBrand.accent }
-        return self.gatewayConnected ? OpenClawBrand.ok : .secondary
+        if self.appModel.isAppleReviewDemoModeEnabled { return NodoAssistBrand.accent }
+        return self.gatewayConnected ? NodoAssistBrand.ok : .secondary
     }
 
     var gatewayDiagnosticConnected: Bool {
@@ -986,7 +986,7 @@ extension SettingsProTab {
             return "Live gateway requests are disabled in demo mode."
         }
         if self.notificationsNeedAttention {
-            return "Foreground approvals still appear while OpenClaw is connected."
+            return "Foreground approvals still appear while NodoAssist is connected."
         }
         return self.gatewayConnected ? "Gateway requests will appear here." : "Connect to the gateway."
     }
@@ -1003,7 +1003,7 @@ extension SettingsProTab {
 
     var gatewayTalkConfigColor: Color {
         if self.appModel.isAppleReviewDemoModeEnabled { return .secondary }
-        return self.appModel.talkMode.gatewayTalkConfigLoaded ? OpenClawBrand.ok : .secondary
+        return self.appModel.talkMode.gatewayTalkConfigLoaded ? NodoAssistBrand.ok : .secondary
     }
 
     var gatewayAddress: String {
@@ -1011,7 +1011,7 @@ extension SettingsProTab {
     }
 
     var gatewayServer: String {
-        self.appModel.gatewayServerName ?? "OpenClaw Gateway"
+        self.appModel.gatewayServerName ?? "NodoAssist Gateway"
     }
 
     var pendingApproval: NodeAppModel.ExecApprovalPrompt? {
@@ -1036,14 +1036,14 @@ extension SettingsProTab {
                 title: pendingApproval.commandPreview ?? "Review gateway action",
                 detail: "Agent: \(self.appModel.activeAgentName)",
                 priority: self.appModel.pendingExecApprovalPromptResolving ? "Resolving" : "High",
-                color: OpenClawBrand.danger),
+                color: NodoAssistBrand.danger),
             SettingsApprovalItem(
                 id: "pending-context",
                 icon: "doc.text.fill",
                 title: pendingApproval.allowsAllowAlways ? "Permission can be saved" : "One-time approval",
                 detail: "Gateway request",
                 priority: pendingApproval.allowsAllowAlways ? "Medium" : "Review",
-                color: OpenClawBrand.warn),
+                color: NodoAssistBrand.warn),
         ]
     }
 
@@ -1068,11 +1068,11 @@ extension SettingsProTab {
 
     var diagnosticsRunColor: Color {
         guard let diagnosticsIssueCount else { return .secondary }
-        return diagnosticsIssueCount == 0 ? OpenClawBrand.ok : OpenClawBrand.warn
+        return diagnosticsIssueCount == 0 ? NodoAssistBrand.ok : NodoAssistBrand.warn
     }
 
     var privacyDetail: String {
-        let location = OpenClawLocationMode(rawValue: self.locationModeRaw) ?? .off
+        let location = NodoAssistLocationMode(rawValue: self.locationModeRaw) ?? .off
         return switch (location, self.locationPermissionSummary.effectiveMode) {
         case (.off, _):
             "Location off"
@@ -1117,30 +1117,30 @@ extension SettingsProTab {
         case .checking:
             "Checking iOS notification permission."
         case .allowed:
-            "OpenClaw can show approval prompts and event alerts when the app is not active."
+            "NodoAssist can show approval prompts and event alerts when the app is not active."
         case .notAllowed:
             "Notifications have been denied. Enable them in iOS Settings."
         case .notSet:
             "Enable notifications to receive approval prompts and event alerts outside the app."
         case .unknown:
-            "OpenClaw cannot determine the current notification permission state."
+            "NodoAssist cannot determine the current notification permission state."
         }
     }
 
     var notificationRelayDetail: String {
-        if PushBuildConfig.current.usesOpenClawHostedRelay {
+        if PushBuildConfig.current.usesNodoAssistHostedRelay {
             let host = PushBuildConfig.current.relayBaseURL.flatMap {
                 URLComponents(url: $0, resolvingAgainstBaseURL: false)?.host
             } ?? "ios-push-relay.openclaw.ai"
             return """
-            This build uses OpenClaw's hosted push relay at \(host) for notification \
+            This build uses NodoAssist's hosted push relay at \(host) for notification \
             delivery data.
             """
         }
-        return "This build is not configured to use OpenClaw's hosted push relay."
+        return "This build is not configured to use NodoAssist's hosted push relay."
     }
 
     var notificationRelayDisclosureMessage: String {
-        "Enabling this sends delivery data through OpenClaw's hosted push relay."
+        "Enabling this sends delivery data through NodoAssist's hosted push relay."
     }
 }

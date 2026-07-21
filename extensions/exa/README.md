@@ -1,12 +1,12 @@
-# OpenClaw Exa Plugin
+# NodoAssist Exa Plugin
 
-Official OpenClaw plugin for Exa.
+Official NodoAssist plugin for Exa.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/exa-plugin
-openclaw gateway restart
+nodoassist plugins install @nodoassist/exa-plugin
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/tools/exa-search> for setup and configuration.

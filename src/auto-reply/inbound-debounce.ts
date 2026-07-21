@@ -2,9 +2,9 @@
 import {
   resolveNonNegativeIntegerOption,
   resolveOptionalIntegerOption,
-} from "@openclaw/normalization-core/number-coercion";
+} from "@nodoassist/normalization-core/number-coercion";
 import type { InboundDebounceByProvider } from "../config/types.messages.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 
 const resolveMs = (value: unknown): number | undefined =>
   resolveOptionalIntegerOption(value, { min: 0 });
@@ -21,7 +21,7 @@ const resolveChannelOverride = (params: {
 
 /** Resolve effective inbound debounce milliseconds from explicit, channel, and global config. */
 export function resolveInboundDebounceMs(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   channel: string;
   overrideMs?: number;
 }): number {

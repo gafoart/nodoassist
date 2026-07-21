@@ -45,6 +45,6 @@ class ConnectionBanner extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-connection-banner")) {
-  customElements.define("openclaw-connection-banner", ConnectionBanner);
+if (!customElements.get("nodoassist-connection-banner")) {
+  customElements.define("nodoassist-connection-banner", ConnectionBanner);
 }

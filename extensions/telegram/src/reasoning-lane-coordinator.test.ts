@@ -19,7 +19,7 @@ describe("splitTelegramReasoningText", () => {
 
   it("formats tagged text when the payload is explicitly reasoning", () => {
     expect(splitTelegramReasoningText("<think>example</think>Done", true)).toEqual({
-      reasoningText: "🧠 _example_",
+      reasoningText: ".nodoassist _example_",
     });
   });
 

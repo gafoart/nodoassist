@@ -7,7 +7,7 @@ import {
   removeOAuthTestTempRoot,
 } from "../agents/auth-profiles/oauth-test-utils.js";
 import { upsertAuthProfileWithLock } from "../agents/auth-profiles/profiles.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type { ProviderAuthChoiceMetadata } from "../plugins/provider-auth-choices.js";
 import type { ProviderPlugin } from "../plugins/types.js";
 import {
@@ -20,7 +20,7 @@ vi.mock("../config/config.js", () => ({
   readConfigFileSnapshot: vi.fn(async () => ({
     exists: false,
     valid: false,
-    path: "/tmp/openclaw.json",
+    path: "/tmp/nodoassist.json",
     issues: [],
     config: {},
   })),
@@ -143,7 +143,7 @@ describe("activateSetupInference", () => {
 
   it("persists setup only after the live test succeeds", async () => {
     const applySetup = vi.fn(async (_params: unknown) => ({
-      configPath: "/tmp/openclaw.json",
+      configPath: "/tmp/nodoassist.json",
       lines: ["ok"],
     }));
     const runCliAgent = vi.fn(async (_params: unknown) => ({
@@ -173,7 +173,7 @@ describe("activateSetupInference", () => {
   });
 
   it("does not touch config when the live test fails", async () => {
-    const applySetup = vi.fn(async () => ({ configPath: "/tmp/openclaw.json", lines: [] }));
+    const applySetup = vi.fn(async () => ({ configPath: "/tmp/nodoassist.json", lines: [] }));
     const runCliAgent = vi.fn(async () => {
       throw new Error("401 invalid_api_key");
     });
@@ -195,7 +195,7 @@ describe("activateSetupInference", () => {
   });
 
   it("treats an empty model reply as a failure", async () => {
-    const applySetup = vi.fn(async () => ({ configPath: "/tmp/openclaw.json", lines: [] }));
+    const applySetup = vi.fn(async () => ({ configPath: "/tmp/nodoassist.json", lines: [] }));
     const runEmbeddedAgent = vi.fn(async () => ({ payloads: [] }));
     const result = await activateSetupInference({
       kind: "anthropic-api-key",
@@ -263,7 +263,7 @@ describe("activateSetupInference", () => {
         ],
       };
       const resolvePluginProviders = vi.fn(() => [provider]);
-      const enablePluginInConfig = vi.fn((config: OpenClawConfig, pluginId: string) => ({
+      const enablePluginInConfig = vi.fn((config: NodoAssistConfig, pluginId: string) => ({
         config: {
           ...config,
           plugins: { entries: { [pluginId]: { enabled: true } } },
@@ -273,9 +273,9 @@ describe("activateSetupInference", () => {
       const runEmbeddedAgent = vi.fn(async () => ({
         meta: { finalAssistantVisibleText: "OK" },
       }));
-      const applySetup = vi.fn(async () => ({ configPath: "/tmp/openclaw.json", lines: ["ok"] }));
-      let persistedConfig: OpenClawConfig = {};
-      const updateConfig = vi.fn(async (mutator: (cfg: OpenClawConfig) => OpenClawConfig) => {
+      const applySetup = vi.fn(async () => ({ configPath: "/tmp/nodoassist.json", lines: ["ok"] }));
+      let persistedConfig: NodoAssistConfig = {};
+      const updateConfig = vi.fn(async (mutator: (cfg: NodoAssistConfig) => NodoAssistConfig) => {
         persistedConfig = mutator(persistedConfig);
         return persistedConfig;
       });
@@ -285,7 +285,7 @@ describe("activateSetupInference", () => {
           kind: "api-key",
           authChoice: "groq-api-key",
           apiKey: "test-groq-key",
-          workspace: "/tmp/openclaw-workspace",
+          workspace: "/tmp/nodoassist-workspace",
           surface: "gateway",
           runtime,
           deps: {
@@ -314,7 +314,7 @@ describe("activateSetupInference", () => {
               plugins: { entries: { groq: { enabled: true } } },
             }),
             onlyPluginIds: ["groq"],
-            workspaceDir: "/tmp/openclaw-workspace",
+            workspaceDir: "/tmp/nodoassist-workspace",
           }),
         );
         expect(runAuth).toHaveBeenCalledWith(
@@ -366,7 +366,7 @@ describe("activateSetupInference", () => {
       async (ctx: {
         agentDir?: string;
         opts: { githubCopilotToken?: unknown };
-        config: OpenClawConfig;
+        config: NodoAssistConfig;
       }) => {
         const token =
           typeof ctx.opts.githubCopilotToken === "string" ? ctx.opts.githubCopilotToken : "";
@@ -386,7 +386,7 @@ describe("activateSetupInference", () => {
               },
             },
           },
-        } satisfies OpenClawConfig;
+        } satisfies NodoAssistConfig;
       },
     );
     const provider: ProviderPlugin = {
@@ -410,12 +410,12 @@ describe("activateSetupInference", () => {
     const initialConfig = {
       gateway: { port: 18789 },
       agents: { defaults: { model: { primary: existingModel } } },
-    } satisfies OpenClawConfig;
-    let persistedConfig: OpenClawConfig = {
+    } satisfies NodoAssistConfig;
+    let persistedConfig: NodoAssistConfig = {
       gateway: { port: 19000 },
       agents: { defaults: { model: { primary: existingModel } } },
-    } satisfies OpenClawConfig;
-    const updateConfig = vi.fn(async (mutator: (cfg: OpenClawConfig) => OpenClawConfig) => {
+    } satisfies NodoAssistConfig;
+    const updateConfig = vi.fn(async (mutator: (cfg: NodoAssistConfig) => NodoAssistConfig) => {
       persistedConfig = mutator(persistedConfig);
       return persistedConfig;
     });
@@ -425,14 +425,14 @@ describe("activateSetupInference", () => {
         kind: "api-key",
         authChoice: "github-copilot",
         apiKey: "github-token",
-        workspace: "/tmp/openclaw-workspace",
+        workspace: "/tmp/nodoassist-workspace",
         surface: "gateway",
         runtime,
         deps: {
           readConfigFileSnapshot: vi.fn(async () => ({
             exists: true,
             valid: true,
-            path: "/tmp/openclaw.json",
+            path: "/tmp/nodoassist.json",
             issues: [],
             config: initialConfig,
             runtimeConfig: initialConfig,
@@ -452,7 +452,7 @@ describe("activateSetupInference", () => {
           runEmbeddedAgent: runEmbeddedAgent as never,
           updateConfig: updateConfig as never,
           applySetup: vi.fn(async () => ({
-            configPath: "/tmp/openclaw.json",
+            configPath: "/tmp/nodoassist.json",
             lines: ["ok"],
           })) as never,
           createTempDir: makeTempDir,
@@ -522,7 +522,7 @@ describe("activateSetupInference", () => {
         kind: "api-key",
         authChoice: "groq-api-key",
         apiKey: "bad-groq-key",
-        workspace: "/tmp/openclaw-workspace",
+        workspace: "/tmp/nodoassist-workspace",
         surface: "gateway",
         runtime,
         deps: {
@@ -553,7 +553,7 @@ describe("activateSetupInference", () => {
   });
 
   it("runs the codex plugin ensure step only after a passing test", async () => {
-    const applySetup = vi.fn(async () => ({ configPath: "/tmp/openclaw.json", lines: ["ok"] }));
+    const applySetup = vi.fn(async () => ({ configPath: "/tmp/nodoassist.json", lines: ["ok"] }));
     const ensureCodex = vi.fn(async () => ({
       cfg: {},
       required: false,

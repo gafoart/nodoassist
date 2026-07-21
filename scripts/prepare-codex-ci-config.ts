@@ -1,4 +1,4 @@
-// Prepare Codex Ci Config script supports OpenClaw repository automation.
+// Prepare Codex Ci Config script supports NodoAssist repository automation.
 import fs from "node:fs/promises";
 import path from "node:path";
 

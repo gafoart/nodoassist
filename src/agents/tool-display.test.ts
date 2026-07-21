@@ -11,10 +11,10 @@ describe("tool display details", () => {
   it("summarizes tool-search code targets from described tool ids", () => {
     expect(
       resolveToolSearchCodeDisplayTarget({
-        code: "const tool = await openclaw.tools.describe('openclaw:core:exec'); return await openclaw.tools.call(tool.id, { command: 'echo hi' });",
+        code: "const tool = await nodoassist.tools.describe('nodoassist:core:exec'); return await nodoassist.tools.call(tool.id, { command: 'echo hi' });",
       }),
     ).toEqual({
-      toolName: "openclaw:core:exec",
+      toolName: "nodoassist:core:exec",
       displayToolName: "exec",
       displayArgs: { command: "echo hi" },
       detail: "echo hi",
@@ -25,10 +25,10 @@ describe("tool display details", () => {
   it("normalizes direct tool-search catalog ids to native display names and args", () => {
     expect(
       resolveToolSearchCodeDisplayTarget({
-        code: 'return await openclaw.tools.call("openclaw:core:exec", { command: "echo hi" });',
+        code: 'return await nodoassist.tools.call("nodoassist:core:exec", { command: "echo hi" });',
       }),
     ).toEqual({
-      toolName: "openclaw:core:exec",
+      toolName: "nodoassist:core:exec",
       displayToolName: "exec",
       displayArgs: { command: "echo hi" },
       detail: "echo hi",
@@ -39,10 +39,10 @@ describe("tool display details", () => {
   it("preserves JS numeric literals in tool-search call args", () => {
     expect(
       resolveToolSearchCodeDisplayTarget({
-        code: 'return await openclaw.tools.call("web_search", { query: "OpenClaw", count: 1e3, limit: +3, threshold: .5 });',
+        code: 'return await nodoassist.tools.call("web_search", { query: "NodoAssist", count: 1e3, limit: +3, threshold: .5 });',
       })?.displayArgs,
     ).toEqual({
-      query: "OpenClaw",
+      query: "NodoAssist",
       count: 1000,
       limit: 3,
       threshold: 0.5,
@@ -128,11 +128,11 @@ describe("tool display details", () => {
     const detail = formatToolDetail(
       resolveToolDisplay({
         name: "web_search",
-        args: { query: "OpenClaw docs", count: 3 },
+        args: { query: "NodoAssist docs", count: 3 },
       }),
     );
 
-    expect(detail).toBe('for "OpenClaw docs" (top 3)');
+    expect(detail).toBe('for "NodoAssist docs" (top 3)');
   });
 
   it("formats web_search provider query shapes", () => {
@@ -168,14 +168,14 @@ describe("tool display details", () => {
         resolveToolDisplay({
           name: "web_search",
           args: {
-            objective: "Find the OpenClaw repository on GitHub",
-            search_queries: ["openclaw github", "openclaw repository"],
+            objective: "Find the NodoAssist repository on GitHub",
+            search_queries: ["nodoassist github", "nodoassist repository"],
             count: 5,
           },
         }),
       ),
     ).toBe(
-      'for "Find the OpenClaw repository on GitHub", "openclaw github", "openclaw repository" (top 5)',
+      'for "Find the NodoAssist repository on GitHub", "nodoassist github", "nodoassist repository" (top 5)',
     );
   });
 
@@ -185,8 +185,8 @@ describe("tool display details", () => {
         name: "exec",
         args: {
           command:
-            "set -euo pipefail\ngit -C /Users/adityasingh/.openclaw/workspace status --short | head -n 3",
-          workdir: "/Users/adityasingh/.openclaw/workspace",
+            "set -euo pipefail\ngit -C /Users/adityasingh/.nodoassist/workspace status --short | head -n 3",
+          workdir: "/Users/adityasingh/.nodoassist/workspace",
         },
       }),
     );
@@ -235,7 +235,7 @@ describe("tool display details", () => {
       formatToolDetail(
         resolveToolDisplay({
           name: "bash",
-          args: { command: "git fetch", workdir: "/Users/peter/mantis-workspace/openclaw" },
+          args: { command: "git fetch", workdir: "/Users/peter/mantis-workspace/nodoassist" },
           detailMode: "explain",
         }),
       ),
@@ -245,7 +245,7 @@ describe("tool display details", () => {
       formatToolDetail(
         resolveToolDisplay({
           name: "bash",
-          args: { command: "git status", workdir: "/Users/peter/Projects/openclaw" },
+          args: { command: "git status", workdir: "/Users/peter/Projects/nodoassist" },
           detailMode: "explain",
         }),
       ),
@@ -257,7 +257,7 @@ describe("tool display details", () => {
           name: "bash",
           args: {
             command: "command -v discrawl",
-            workdir: "/root/.openclaw/sandboxes/agent-clawsweeper-sandbox-discor-766423d0",
+            workdir: "/root/.nodoassist/sandboxes/agent-clawsweeper-sandbox-discor-766423d0",
           },
           detailMode: "explain",
         }),
@@ -270,7 +270,7 @@ describe("tool display details", () => {
       formatToolSummary(
         resolveToolDisplay({
           name: "bash",
-          args: { command: "git fetch", workdir: "/Users/peter/mantis-workspace/openclaw" },
+          args: { command: "git fetch", workdir: "/Users/peter/mantis-workspace/nodoassist" },
           detailMode: "explain",
         }),
       ),
@@ -280,10 +280,10 @@ describe("tool display details", () => {
       formatToolSummary(
         resolveToolDisplay({
           name: "web_search",
-          args: { query: "OpenClaw docs" },
+          args: { query: "NodoAssist docs" },
         }),
       ),
-    ).toBe('🔎 Web Search: for "OpenClaw docs"');
+    ).toBe('🔎 Web Search: for "NodoAssist docs"');
   });
 
   it("moves cd path to context suffix with multiple stages and raw command", () => {
@@ -436,7 +436,7 @@ describe("tool display details", () => {
         name: "exec",
         args: {
           command: "python3 <<PY\nprint('x')\nPY",
-          workdir: "/Users/adityasingh/.openclaw/workspace",
+          workdir: "/Users/adityasingh/.nodoassist/workspace",
         },
       }),
     );
@@ -445,7 +445,7 @@ describe("tool display details", () => {
         name: "exec",
         args: {
           command: "node --check /tmp/test.js",
-          workdir: "/Users/adityasingh/.openclaw/workspace",
+          workdir: "/Users/adityasingh/.nodoassist/workspace",
         },
       }),
     );
@@ -454,7 +454,7 @@ describe("tool display details", () => {
         name: "exec",
         args: {
           command: "node -c /tmp/test.js",
-          workdir: "/Users/adityasingh/.openclaw/workspace",
+          workdir: "/Users/adityasingh/.nodoassist/workspace",
         },
       }),
     );
@@ -478,7 +478,7 @@ describe("tool display details", () => {
             "YAML",
             "PY",
           ].join("\n"),
-          workdir: "/Users/example/.openclaw/workspace",
+          workdir: "/Users/example/.nodoassist/workspace",
         },
         detailMode: "explain",
       }),

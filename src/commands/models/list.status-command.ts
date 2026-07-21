@@ -1,7 +1,7 @@
-/** Implementation of `openclaw models status`. */
+/** Implementation of `nodoassist models status`. */
 import path from "node:path";
-import { findNormalizedProviderValue } from "@openclaw/model-catalog-core/provider-id";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { findNormalizedProviderValue } from "@nodoassist/model-catalog-core/provider-id";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
 import { colorize, theme } from "../../../packages/terminal-core/src/theme.js";
 import {
   resolveAgentDir,
@@ -86,7 +86,7 @@ type ProviderUsageRuntime = typeof import("../../infra/provider-usage.js");
 type ProgressRuntime = typeof import("../../cli/progress.js");
 
 function resolveEnvAgentDirOverride(env: NodeJS.ProcessEnv = process.env): string | undefined {
-  const override = env.OPENCLAW_AGENT_DIR?.trim() || env.PI_CODING_AGENT_DIR?.trim();
+  const override = env.NODOASSIST_AGENT_DIR?.trim() || env.PI_CODING_AGENT_DIR?.trim();
   return override ? resolveUserPath(override, env) : undefined;
 }
 type TerminalTableRuntime = typeof import("../../../packages/terminal-core/src/table.js");

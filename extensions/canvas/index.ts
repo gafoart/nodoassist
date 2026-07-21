@@ -4,9 +4,9 @@
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Duplex } from "node:stream";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import { definePluginEntry, type AnyAgentTool } from "openclaw/plugin-sdk/plugin-entry";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
+import { definePluginEntry, type AnyAgentTool } from "nodoassist/plugin-sdk/plugin-entry";
 import { canvasConfigSchema, isCanvasHostEnabled } from "./src/config.js";
 import { A2UI_PATH, CANVAS_HOST_PATH, CANVAS_WS_PATH } from "./src/host/a2ui-shared.js";
 import { CanvasToolSchema } from "./src/tool-schema.js";
@@ -23,7 +23,7 @@ const CANVAS_NODE_COMMANDS = [
 ];
 
 function createLazyCanvasTool(params: {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   workspaceDir?: string;
 }): AnyAgentTool {
   const loadTool = createLazyRuntimeModule(() =>

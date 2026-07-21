@@ -19,7 +19,7 @@ describe("pairing QR reply channel data", () => {
     expect(
       readPairingQrReplyChannelData({
         channelData: {
-          openclawPairingQr: {
+          nodoassistPairingQr: {
             setupCode: "",
             expiresAtMs: 0,
           },

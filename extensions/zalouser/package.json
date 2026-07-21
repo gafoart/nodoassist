@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/zalouser",
+  "name": "@nodoassist/zalouser",
   "version": "2026.6.11",
-  "description": "OpenClaw Zalo Personal Account plugin via native zca-js integration.",
+  "description": "NodoAssist Zalo Personal Account plugin via native zca-js integration.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -13,18 +13,18 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
@@ -49,7 +49,7 @@
       }
     },
     "install": {
-      "npmSpec": "@openclaw/zalouser",
+      "npmSpec": "@nodoassist/zalouser",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.10"
     },
@@ -57,7 +57,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11"
+      "nodoassistVersion": "2026.6.11"
     },
     "release": {
       "publishToClawHub": true,

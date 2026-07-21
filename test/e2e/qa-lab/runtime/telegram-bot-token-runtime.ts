@@ -2,15 +2,15 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime-env";
 import { monitorTelegramProvider } from "../../../../extensions/telegram/runtime-api.js";
 import { formatErrorMessage } from "../../../../src/infra/errors.js";
 import { createQaScriptEvidenceWriter } from "./script-evidence.js";
 
 const STARTUP_TIMEOUT_MS = 30_000;
 const TOKEN_ENV_KEYS = [
-  "OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN",
+  "NODOASSIST_QA_TELEGRAM_SUT_BOT_TOKEN",
   "TELEGRAM_E2E_SUT_BOT_TOKEN",
 ] as const;
 
@@ -23,10 +23,7 @@ type TelegramRuntimeOptions = {
 async function waitForMonitorShutdown(monitorPromise: Promise<void>, timeoutMs: number) {
   let timeout: NodeJS.Timeout | undefined;
   const timeoutPromise = new Promise<never>((_, reject) => {
-    timeout = setTimeout(
-      () => reject(new Error("Telegram runtime shutdown timed out")),
-      timeoutMs,
-    );
+    timeout = setTimeout(() => reject(new Error("Telegram runtime shutdown timed out")), timeoutMs);
   });
   try {
     await Promise.race([monitorPromise.catch(() => undefined), timeoutPromise]);
@@ -162,11 +159,11 @@ export async function runTelegramBotTokenRuntime(
       throw new Error(`Telegram runtime requested exit ${code}`);
     },
   };
-  const config: OpenClawConfig = {
+  const config: NodoAssistConfig = {
     channels: { telegram: { enabled: true } },
   };
-  const previousStateDir = process.env.OPENCLAW_STATE_DIR;
-  process.env.OPENCLAW_STATE_DIR = path.join(options.artifactBase, "state");
+  const previousStateDir = process.env.NODOASSIST_STATE_DIR;
+  process.env.NODOASSIST_STATE_DIR = path.join(options.artifactBase, "state");
   try {
     const monitorPromise = monitorTelegramProvider({
       abortSignal: abortController.signal,
@@ -197,9 +194,9 @@ export async function runTelegramBotTokenRuntime(
     });
   } finally {
     if (previousStateDir === undefined) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.NODOASSIST_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = previousStateDir;
+      process.env.NODOASSIST_STATE_DIR = previousStateDir;
     }
   }
 }

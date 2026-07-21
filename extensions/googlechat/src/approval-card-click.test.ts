@@ -10,7 +10,7 @@ import type { GoogleChatEvent } from "./types.js";
 
 const resolveApprovalOverGateway = vi.hoisted(() => vi.fn());
 
-vi.mock("openclaw/plugin-sdk/approval-gateway-runtime", () => ({
+vi.mock("nodoassist/plugin-sdk/approval-gateway-runtime", () => ({
   resolveApprovalOverGateway,
 }));
 
@@ -45,7 +45,7 @@ function createCardClickEvent(token: string, userName = "users/123"): GoogleChat
     message: { name: "spaces/AAA/messages/msg-1" },
     user: { name: userName },
     action: {
-      actionMethodName: "openclaw.approval",
+      actionMethodName: "nodoassist.approval",
       parameters: buildGoogleChatApprovalActionParameters(token),
     },
   };
@@ -109,7 +109,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
           user: { name: "users/123" },
           commonEventObject: {
             parameters: {
-              openclaw_action: "approval",
+              nodoassist_action: "approval",
               token: "token-addon",
             },
           },
@@ -147,9 +147,9 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
           message: { name: "spaces/AAA/messages/msg-1" },
           user: { name: "users/123" },
           common: {
-            invokedFunction: "openclaw.approval",
+            invokedFunction: "nodoassist.approval",
             parameters: {
-              openclaw_action: "approval",
+              nodoassist_action: "approval",
               token: "token-common",
             },
           },
@@ -190,7 +190,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
           commonEventObject: {
             invokedFunction: "https://chat-app.example.test/googlechat",
             parameters: {
-              openclaw_action: "approval",
+              nodoassist_action: "approval",
               token: "token-url",
             },
           },

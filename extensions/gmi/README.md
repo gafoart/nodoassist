@@ -1,13 +1,13 @@
-# OpenClaw GMI Cloud Provider
+# NodoAssist GMI Cloud Provider
 
-Official OpenClaw provider plugin for hosted GMI Cloud models through an
+Official NodoAssist provider plugin for hosted GMI Cloud models through an
 OpenAI-compatible API.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/gmi-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/gmi-provider
+nodoassist gateway restart
 ```
 
 Configure a GMI Cloud API key, then select models with refs such as

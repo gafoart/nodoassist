@@ -9,7 +9,7 @@ import {
   getRuntimeConfig,
   getRuntimeConfigSourceSnapshot,
   projectConfigOntoRuntimeSourceSnapshot,
-  type OpenClawConfig,
+  type NodoAssistConfig,
 } from "../config/config.js";
 import { createConfigRuntimeEnv } from "../config/env-vars.js";
 import { privateFileStore } from "../infra/private-file-store.js";
@@ -29,7 +29,7 @@ import {
   type ModelsJsonReadyResult,
   type ModelsJsonReadyState,
 } from "./models-config-state.js";
-import { planOpenClawModelsJson } from "./models-config.plan.js";
+import { planNodoAssistModelsJson } from "./models-config.plan.js";
 import {
   decodePluginModelCatalogRelativePathPluginId,
   isGeneratedPluginModelCatalog,
@@ -41,12 +41,12 @@ import { stableStringify } from "./stable-stringify.js";
 
 export { resetModelsJsonReadyCacheForTest } from "./models-config-state.js";
 
-type PreparedOpenClawModelsJsonSource = ModelsJsonReadyResult & {
+type PreparedNodoAssistModelsJsonSource = ModelsJsonReadyResult & {
   fingerprint: string;
   workspaceDir?: string;
 };
 
-type EnsureOpenClawModelsJsonOptions = {
+type EnsureNodoAssistModelsJsonOptions = {
   pluginMetadataSnapshot?: Pick<PluginMetadataSnapshot, "index" | "manifestRegistry" | "owners">;
   workspaceDir?: string;
   providerDiscoveryProviderIds?: readonly string[];
@@ -76,8 +76,8 @@ async function readPluginCatalogMtimes(agentDir: string): Promise<Array<[string,
 }
 
 async function buildModelsJsonFingerprint(params: {
-  config: OpenClawConfig;
-  sourceConfigForSecrets: OpenClawConfig;
+  config: NodoAssistConfig;
+  sourceConfigForSecrets: NodoAssistConfig;
   agentDir: string;
   workspaceDir?: string;
   pluginMetadataSnapshot?: Pick<PluginMetadataSnapshot, "index">;
@@ -260,9 +260,9 @@ async function writePluginCatalogsForModelsJson(params: {
   return wrote || removedStale;
 }
 
-function resolveModelsConfigInput(config?: OpenClawConfig): {
-  config: OpenClawConfig;
-  sourceConfigForSecrets: OpenClawConfig;
+function resolveModelsConfigInput(config?: NodoAssistConfig): {
+  config: NodoAssistConfig;
+  sourceConfigForSecrets: NodoAssistConfig;
 } {
   const runtimeSource = getRuntimeConfigSourceSnapshot();
   if (!config) {
@@ -289,7 +289,7 @@ function resolveModelsConfigInput(config?: OpenClawConfig): {
 
 /** Builds the canonical source freshness fingerprint for generated model catalogs. */
 export async function buildModelsJsonSourceFingerprint(
-  config?: OpenClawConfig,
+  config?: NodoAssistConfig,
   agentDirOverride?: string,
   options: {
     pluginMetadataSnapshot?: Pick<PluginMetadataSnapshot, "index" | "manifestRegistry" | "owners">;
@@ -344,11 +344,11 @@ async function withModelsJsonWriteLock<T>(targetPath: string, run: () => Promise
 }
 
 /** Ensures models.json and plugin catalog sidecars are current for an agent. */
-export async function prepareOpenClawModelsJsonSource(
-  config?: OpenClawConfig,
+export async function prepareNodoAssistModelsJsonSource(
+  config?: NodoAssistConfig,
   agentDirOverride?: string,
-  options: EnsureOpenClawModelsJsonOptions = {},
-): Promise<PreparedOpenClawModelsJsonSource> {
+  options: EnsureNodoAssistModelsJsonOptions = {},
+): Promise<PreparedNodoAssistModelsJsonSource> {
   const resolved = resolveModelsConfigInput(config);
   const cfg = resolved.config;
   const sourceFingerprint = await buildModelsJsonSourceFingerprint(
@@ -390,7 +390,7 @@ export async function prepareOpenClawModelsJsonSource(
       existingParsed: existingModelsFile.parsed,
       ...(pluginMetadataSnapshot ? { pluginMetadataSnapshot } : {}),
     });
-    const plan = await planOpenClawModelsJson({
+    const plan = await planNodoAssistModelsJson({
       cfg,
       sourceConfigForSecrets: resolved.sourceConfigForSecrets,
       agentDir,
@@ -481,11 +481,11 @@ export async function prepareOpenClawModelsJsonSource(
 }
 
 /** Ensures models.json and plugin catalog sidecars are current for an agent. */
-export async function ensureOpenClawModelsJson(
-  config?: OpenClawConfig,
+export async function ensureNodoAssistModelsJson(
+  config?: NodoAssistConfig,
   agentDirOverride?: string,
-  options: EnsureOpenClawModelsJsonOptions = {},
+  options: EnsureNodoAssistModelsJsonOptions = {},
 ): Promise<ModelsJsonReadyResult> {
-  const prepared = await prepareOpenClawModelsJsonSource(config, agentDirOverride, options);
+  const prepared = await prepareNodoAssistModelsJsonSource(config, agentDirOverride, options);
   return { agentDir: prepared.agentDir, wrote: prepared.wrote };
 }

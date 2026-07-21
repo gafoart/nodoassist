@@ -95,9 +95,9 @@ async function startTokenServer(port: number, opts?: { openResponsesEnabled?: bo
 }
 
 async function writeGatewayConfig(config: Record<string, unknown>) {
-  const configPath = process.env.OPENCLAW_CONFIG_PATH;
+  const configPath = process.env.NODOASSIST_CONFIG_PATH;
   if (!configPath) {
-    throw new Error("OPENCLAW_CONFIG_PATH is required for gateway config tests");
+    throw new Error("NODOASSIST_CONFIG_PATH is required for gateway config tests");
   }
   await fs.mkdir(path.dirname(configPath), { recursive: true });
   await fs.writeFile(configPath, JSON.stringify(config, null, 2), "utf-8");
@@ -108,7 +108,7 @@ async function postResponses(port: number, body: unknown, headers?: Record<strin
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "x-openclaw-scopes": "operator.write",
+      "x-nodoassist-scopes": "operator.write",
       ...headers,
     },
     body: JSON.stringify(body),
@@ -279,7 +279,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       const resMissingAuth = await fetch(`http://127.0.0.1:${port}/v1/responses`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ model: "openclaw", input: "hi" }),
+        body: JSON.stringify({ model: "nodoassist", input: "hi" }),
       });
       expect(resMissingAuth.status).toBe(200);
       await ensureResponseConsumed(resMissingAuth);
@@ -300,7 +300,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       };
       expect(invalidModelJson.error?.type).toBe("invalid_request_error");
       expect(invalidModelJson.error?.message).toBe(
-        "Invalid `model`. Use `openclaw` or `openclaw/<agentId>`.",
+        "Invalid `model`. Use `nodoassist` or `nodoassist/<agentId>`.",
       );
       expect(agentCommand).toHaveBeenCalledTimes(0);
       await ensureResponseConsumed(resInvalidModel);
@@ -308,8 +308,8 @@ describe("OpenResponses HTTP API (e2e)", () => {
       mockAgentOnce([{ text: "hello" }]);
       const resHeader = await postResponses(
         port,
-        { model: "openclaw", input: "hi" },
-        { "x-openclaw-agent-id": "beta" },
+        { model: "nodoassist", input: "hi" },
+        { "x-nodoassist-agent-id": "beta" },
       );
       expect(resHeader.status).toBe(200);
       const optsHeader = firstAgentOpts();
@@ -324,10 +324,10 @@ describe("OpenResponses HTTP API (e2e)", () => {
       mockAgentOnce([{ text: "hello" }]);
       const resSessionOverride = await postResponses(
         port,
-        { model: "openclaw", input: "hi" },
+        { model: "nodoassist", input: "hi" },
         {
-          "x-openclaw-agent-id": "beta",
-          "x-openclaw-session-key": "agent:beta:openresponses:custom",
+          "x-nodoassist-agent-id": "beta",
+          "x-nodoassist-session-key": "agent:beta:openresponses:custom",
         },
       );
       expect(resSessionOverride.status).toBe(200);
@@ -339,8 +339,8 @@ describe("OpenResponses HTTP API (e2e)", () => {
       agentCommand.mockClear();
       const resReservedSessionOverride = await postResponses(
         port,
-        { model: "openclaw", input: "hi" },
-        { "x-openclaw-session-key": "agent:main:subagent:spoofed" },
+        { model: "nodoassist", input: "hi" },
+        { "x-nodoassist-session-key": "agent:main:subagent:spoofed" },
       );
       expect(resReservedSessionOverride.status).toBe(400);
       const reservedSessionJson = (await resReservedSessionOverride.json()) as {
@@ -348,12 +348,12 @@ describe("OpenResponses HTTP API (e2e)", () => {
       };
       expect(reservedSessionJson.error?.type).toBe("invalid_request_error");
       expect(reservedSessionJson.error?.message).toBe(
-        "`x-openclaw-session-key` cannot use reserved internal session namespaces.",
+        "`x-nodoassist-session-key` cannot use reserved internal session namespaces.",
       );
       expect(agentCommand).toHaveBeenCalledTimes(0);
 
       mockAgentOnce([{ text: "hello" }]);
-      const resModel = await postResponses(port, { model: "openclaw/beta", input: "hi" });
+      const resModel = await postResponses(port, { model: "nodoassist/beta", input: "hi" });
       expect(resModel.status).toBe(200);
       const optsModel = firstAgentOpts();
       expect((optsModel as { sessionKey?: string } | undefined)?.sessionKey ?? "").toMatch(
@@ -362,7 +362,10 @@ describe("OpenResponses HTTP API (e2e)", () => {
       await ensureResponseConsumed(resModel);
 
       mockAgentOnce([{ text: "hello" }]);
-      const resDefaultAlias = await postResponses(port, { model: "openclaw/default", input: "hi" });
+      const resDefaultAlias = await postResponses(port, {
+        model: "nodoassist/default",
+        input: "hi",
+      });
       expect(resDefaultAlias.status).toBe(200);
       const optsDefaultAlias = firstAgentOpts();
       expect((optsDefaultAlias as { sessionKey?: string } | undefined)?.sessionKey ?? "").toMatch(
@@ -374,8 +377,8 @@ describe("OpenResponses HTTP API (e2e)", () => {
         agentCommand.mockClear();
         const res = await postResponses(
           port,
-          { model: "openclaw", input: "hi" },
-          { "x-openclaw-agent-id": "missing-agent" },
+          { model: "nodoassist", input: "hi" },
+          { "x-nodoassist-agent-id": "missing-agent" },
         );
         expect(res.status).toBe(400);
         const json = (await res.json()) as { error?: { type?: string; message?: string } };
@@ -386,7 +389,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       {
         agentCommand.mockClear();
-        const res = await postResponses(port, { model: "openclaw/missing-agent", input: "hi" });
+        const res = await postResponses(port, { model: "nodoassist/missing-agent", input: "hi" });
         expect(res.status).toBe(400);
         const json = (await res.json()) as { error?: { type?: string; message?: string } };
         expect(json.error?.type).toBe("invalid_request_error");
@@ -397,8 +400,8 @@ describe("OpenResponses HTTP API (e2e)", () => {
       mockAgentOnce([{ text: "hello" }]);
       const resChannelHeader = await postResponses(
         port,
-        { model: "openclaw", input: "hi" },
-        { "x-openclaw-message-channel": "custom-client-channel" },
+        { model: "nodoassist", input: "hi" },
+        { "x-nodoassist-message-channel": "custom-client-channel" },
       );
       expect(resChannelHeader.status).toBe(200);
       const optsChannelHeader = firstAgentOpts();
@@ -411,12 +414,12 @@ describe("OpenResponses HTTP API (e2e)", () => {
       const resModelOverride = await postResponses(
         port,
         {
-          model: "openclaw",
+          model: "nodoassist",
           input: "hi",
         },
         {
-          "x-openclaw-model": "openai/gpt-5.4",
-          "x-openclaw-scopes": "operator.admin, operator.write",
+          "x-nodoassist-model": "openai/gpt-5.4",
+          "x-nodoassist-scopes": "operator.admin, operator.write",
         },
       );
       expect(resModelOverride.status).toBe(200);
@@ -427,10 +430,10 @@ describe("OpenResponses HTTP API (e2e)", () => {
       agentCommand.mockClear();
       const resInvalidOverride = await postResponses(
         port,
-        { model: "openclaw", input: "hi" },
+        { model: "nodoassist", input: "hi" },
         {
-          "x-openclaw-model": "openai/",
-          "x-openclaw-scopes": "operator.admin, operator.write",
+          "x-nodoassist-model": "openai/",
+          "x-nodoassist-scopes": "operator.admin, operator.write",
         },
       );
       expect(resInvalidOverride.status).toBe(400);
@@ -438,15 +441,15 @@ describe("OpenResponses HTTP API (e2e)", () => {
         error?: { type?: string; message?: string };
       };
       expect(invalidOverrideJson.error?.type).toBe("invalid_request_error");
-      expect(invalidOverrideJson.error?.message).toBe("Invalid `x-openclaw-model`.");
+      expect(invalidOverrideJson.error?.message).toBe("Invalid `x-nodoassist-model`.");
       expect(agentCommand).toHaveBeenCalledTimes(0);
       await ensureResponseConsumed(resInvalidOverride);
 
       agentCommand.mockClear();
       const resWriteOnlyOverride = await postResponses(
         port,
-        { model: "openclaw", input: "hi" },
-        { "x-openclaw-model": "openai/gpt-5.4" },
+        { model: "nodoassist", input: "hi" },
+        { "x-nodoassist-model": "openai/gpt-5.4" },
       );
       expect(resWriteOnlyOverride.status).toBe(403);
       const writeOnlyJson = (await resWriteOnlyOverride.json()) as {
@@ -460,7 +463,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       agentCommand.mockClear();
       agentCommand.mockRejectedValueOnce(createClientToolNameConflictError(["exec"]));
       const resToolConflict = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         tools: WEATHER_TOOL,
       });
@@ -475,7 +478,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       mockAgentOnce([{ text: "hello" }]);
       const resUser = await postResponses(port, {
         user: "alice",
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
       });
       expect(resUser.status).toBe(200);
@@ -487,7 +490,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "hello" }]);
       const resString = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hello world",
       });
       expect(resString.status).toBe(200);
@@ -497,7 +500,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "hello" }]);
       const resArray = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: [{ type: "message", role: "user", content: "hello there" }],
       });
       expect(resArray.status).toBe(200);
@@ -507,7 +510,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "hello" }]);
       const resSystemDeveloper = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: [
           { type: "message", role: "system", content: "You are a helpful assistant." },
           { type: "message", role: "developer", content: "Be concise." },
@@ -525,7 +528,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "hello" }]);
       const resInstructions = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         instructions: "Always respond in French.",
       });
@@ -538,7 +541,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "I am Claude" }]);
       const resHistory = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: [
           { type: "message", role: "system", content: "You are a helpful assistant." },
           { type: "message", role: "user", content: "Hello, who are you?" },
@@ -558,7 +561,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "ok" }]);
       const resFunctionOutput = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: [
           { type: "message", role: "user", content: "What's the weather?" },
           { type: "function_call_output", call_id: "call_1", output: "Sunny, 70F." },
@@ -573,7 +576,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "ok" }]);
       const resInputFile = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: [
           {
             type: "message",
@@ -606,7 +609,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "ok" }]);
       const resInputFileWhitespace = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: [
           {
             type: "message",
@@ -638,7 +641,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "ok" }]);
       const resInputFileInjection = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: [
           {
             type: "message",
@@ -675,7 +678,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "ok" }]);
       const resToolNone = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         tools: WEATHER_TOOL,
         tool_choice: "none",
@@ -694,7 +697,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
         pendingToolCalls: [{ id: "call_1", name: "get_time", arguments: "{}" }],
       });
       const resToolChoice = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         tools: [
           {
@@ -731,7 +734,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
         pendingToolCalls: [{ id: "call_1", name: "get_time", arguments: "{}" }],
       });
       const resWrappedToolChoice = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         tools: [
           {
@@ -763,7 +766,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       await ensureResponseConsumed(resWrappedToolChoice);
 
       const resUnknownTool = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         tools: WEATHER_TOOL,
         tool_choice: { type: "function", name: "unknown_tool" },
@@ -773,7 +776,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "ok" }]);
       const resMaxTokens = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         max_output_tokens: 123,
       });
@@ -787,7 +790,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       mockAgentOnce([{ text: "ok" }]);
       const resSampling = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         temperature: 0.2,
         top_p: 0.9,
@@ -802,7 +805,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       agentCommand.mockClear();
       const resInvalidTemperature = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         temperature: 999,
       });
@@ -816,7 +819,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       agentCommand.mockClear();
       const resInvalidTopP = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
         top_p: 5,
       });
@@ -835,7 +838,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       });
       const resUsage = await postResponses(port, {
         stream: false,
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
       });
       expect(resUsage.status).toBe(200);
@@ -846,7 +849,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       mockAgentOnce([{ text: "hello" }]);
       const resShape = await postResponses(port, {
         stream: false,
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
       });
       expect(resShape.status).toBe(200);
@@ -869,7 +872,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       await ensureResponseConsumed(resShape);
 
       const resNoUser = await postResponses(port, {
-        model: "openclaw",
+        model: "nodoassist",
         input: [{ type: "message", role: "system", content: "yo" }],
       });
       expect(resNoUser.status).toBe(400);
@@ -898,7 +901,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       const resDelta = await postResponses(port, {
         stream: true,
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
       });
       expect(resDelta.status).toBe(200);
@@ -942,7 +945,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       const resFallback = await postResponses(port, {
         stream: true,
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
       });
       expect(resFallback.status).toBe(200);
@@ -957,7 +960,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
       const resTypeMatch = await postResponses(port, {
         stream: true,
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
       });
       expect(resTypeMatch.status).toBe(200);
@@ -994,7 +997,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     );
 
     const res = await postResponses(port, {
-      model: "openclaw",
+      model: "nodoassist",
       input: "hi",
     });
     expect(res.status).toBe(400);
@@ -1015,7 +1018,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     agentCommand.mockResolvedValueOnce({ payloads: [{ text: "hello" }] } as never);
 
     const writeScopeResponse = await postResponses(port, {
-      model: "openclaw",
+      model: "nodoassist",
       input: "hi",
     });
     expect(writeScopeResponse.status).toBe(200);
@@ -1026,8 +1029,8 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const adminScopeResponse = await postResponses(
       port,
-      { model: "openclaw", input: "hi" },
-      { "x-openclaw-scopes": "operator.admin, operator.write" },
+      { model: "nodoassist", input: "hi" },
+      { "x-nodoassist-scopes": "operator.admin, operator.write" },
     );
     expect(adminScopeResponse.status).toBe(200);
     await ensureResponseConsumed(adminScopeResponse);
@@ -1043,8 +1046,8 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const streamingResponse = await postResponses(
       port,
-      { stream: true, model: "openclaw", input: "hi" },
-      { "x-openclaw-scopes": "operator.admin, operator.write" },
+      { stream: true, model: "nodoassist", input: "hi" },
+      { "x-nodoassist-scopes": "operator.admin, operator.write" },
     );
     expect(streamingResponse.status).toBe(200);
     const streamingEvents = parseSseEvents(await streamingResponse.text());
@@ -1063,10 +1066,10 @@ describe("OpenResponses HTTP API (e2e)", () => {
         headers: {
           authorization: "Bearer secret",
           "content-type": "application/json",
-          "x-openclaw-scopes": "operator.approvals",
+          "x-nodoassist-scopes": "operator.approvals",
         },
         body: JSON.stringify({
-          model: "openclaw",
+          model: "nodoassist",
           input: "hi",
         }),
       });
@@ -1097,7 +1100,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: WEATHER_TOOL,
     });
@@ -1128,7 +1131,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: WEATHER_TOOL,
       tool_choice: "required",
@@ -1158,7 +1161,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: WEATHER_TOOL,
       tool_choice: "required",
@@ -1188,7 +1191,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: WEATHER_TOOL,
       tool_choice: { type: "function", name: "get_weather" },
@@ -1218,7 +1221,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: [
         {
@@ -1259,7 +1262,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: true,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: WEATHER_TOOL,
       tool_choice: "required",
@@ -1298,7 +1301,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: true,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: [
         {
@@ -1351,7 +1354,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: true,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: WEATHER_TOOL,
       tool_choice: "required",
@@ -1394,7 +1397,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: true,
-      model: "openclaw",
+      model: "nodoassist",
       input: "hi",
     });
 
@@ -1432,7 +1435,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: true,
-      model: "openclaw",
+      model: "nodoassist",
       input: "hi",
     });
 
@@ -1468,7 +1471,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: true,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: WEATHER_TOOL,
     });
@@ -1519,7 +1522,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       input: "call all three tools",
       tools: [
         { type: "function", name: "create_graph", description: "Create graph" },
@@ -1581,7 +1584,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const res = await postResponses(port, {
       stream: true,
-      model: "openclaw",
+      model: "nodoassist",
       input: "call all three tools",
       tools: [
         { type: "function", name: "create_graph", description: "Create graph" },
@@ -1660,7 +1663,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const firstResponse = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       input: "check the weather",
       tools: WEATHER_TOOL,
     });
@@ -1676,7 +1679,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const secondResponse = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       previous_response_id: firstJson.id,
       input: [{ type: "function_call_output", call_id: "call_1", output: "Sunny, 70F." }],
     });
@@ -1695,7 +1698,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const firstResponse = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       user: "alice",
       input: "hello",
     });
@@ -1710,7 +1713,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const secondResponse = await postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       user: "bob",
       previous_response_id: firstJson.id,
       input: "hello again",
@@ -1735,7 +1738,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
 
     const responsePromise = postResponses(port, {
       stream: false,
-      model: "openclaw",
+      model: "nodoassist",
       input: "delayed hello",
     });
 
@@ -1791,7 +1794,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     agentCommand.mockClear();
 
     const blockedPrivate = await postResponses(port, {
-      model: "openclaw",
+      model: "nodoassist",
       input: buildUrlInputMessage({
         kind: "input_file",
         url: "http://127.0.0.1:6379/info",
@@ -1800,7 +1803,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     await expectInvalidRequest(blockedPrivate, /invalid request|private|internal|blocked/i);
 
     const blockedMetadata = await postResponses(port, {
-      model: "openclaw",
+      model: "nodoassist",
       input: buildUrlInputMessage({
         kind: "input_image",
         url: "http://metadata.google.internal/computeMetadata/v1",
@@ -1809,7 +1812,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     await expectInvalidRequest(blockedMetadata, /invalid request|blocked|metadata|internal/i);
 
     const blockedScheme = await postResponses(port, {
-      model: "openclaw",
+      model: "nodoassist",
       input: buildUrlInputMessage({
         kind: "input_file",
         url: "file:///etc/passwd",
@@ -1829,7 +1832,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     agentCommand.mockResolvedValueOnce({ payloads: [{ text: "ok" }] } as never);
 
     const res = await postResponses(port, {
-      model: "openclaw",
+      model: "nodoassist",
       input: [
         {
           type: "message",
@@ -1860,7 +1863,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     agentCommand.mockResolvedValueOnce({ payloads: [{ text: "ok" }] } as never);
 
     const res = await postResponses(port, {
-      model: "openclaw",
+      model: "nodoassist",
       instructions: "Summarize the attached document.",
       input: [
         {
@@ -1896,7 +1899,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     agentCommand.mockClear();
 
     const res = await postResponses(port, {
-      model: "openclaw",
+      model: "nodoassist",
       input: [{ type: "message", role: "user", content: [] }],
     });
 
@@ -1914,7 +1917,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       agentCommand.mockClear();
 
       const allowlistBlocked = await postResponses(allowlistPort, {
-        model: "openclaw",
+        model: "nodoassist",
         input: buildUrlInputMessage({
           kind: "input_file",
           text: "fetch this",
@@ -1934,7 +1937,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     try {
       agentCommand.mockClear();
       const maxUrlBlocked = await postResponses(capPort, {
-        model: "openclaw",
+        model: "nodoassist",
         input: buildUrlInputMessage({
           kind: "input_file",
           text: "fetch this",
@@ -1983,7 +1986,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
     clientReq.end(
       JSON.stringify({
         stream: true,
-        model: "openclaw",
+        model: "nodoassist",
         input: "hi",
       }),
     );
@@ -2039,7 +2042,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       clientReq.on("error", () => {});
       clientReq.end(
         JSON.stringify({
-          model: "openclaw",
+          model: "nodoassist",
           input: "hi",
         }),
       );

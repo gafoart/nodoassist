@@ -3072,7 +3072,7 @@ describe("runAgentTurnWithFallback", () => {
       payloads: [{ text: "handled" }],
       meta: {
         agentMeta: {
-          sessionId: "openclaw-session",
+          sessionId: "nodoassist-session",
           provider: "codex-cli",
           model: "gpt-5.4",
         },
@@ -7551,7 +7551,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toBe(
-        "⚠️ Model login expired on the gateway for openai. Send `/login codex` from a private chat or Web UI session to pair a new Codex login, or re-auth with `openclaw models auth login --provider openai` in a terminal, then try again.",
+        "⚠️ Model login expired on the gateway for openai. Send `/login codex` from a private chat or Web UI session to pair a new Codex login, or re-auth with `nodoassist models auth login --provider openai` in a terminal, then try again.",
       );
     }
   });
@@ -7571,7 +7571,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toBe(
-        "⚠️ Model login expired on the gateway for openai. Send `/login codex` from a private chat or Web UI session to pair a new Codex login, or re-auth with `openclaw models auth login --provider openai --profile-id 'openai:user@example.com'` in a terminal, then try again.",
+        "⚠️ Model login expired on the gateway for openai. Send `/login codex` from a private chat or Web UI session to pair a new Codex login, or re-auth with `nodoassist models auth login --provider openai --profile-id 'openai:user@example.com'` in a terminal, then try again.",
       );
     }
   });
@@ -7665,7 +7665,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toContain(
-        "openclaw models auth login --provider openai` in a terminal",
+        "nodoassist models auth login --provider openai` in a terminal",
       );
       expect(result.payload.text).not.toContain("user@example.com");
     }
@@ -7685,7 +7685,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toBe(
-        "⚠️ Model login expired on the gateway for anthropic. Re-auth with `openclaw models auth login --provider anthropic` in a terminal, then try again.",
+        "⚠️ Model login expired on the gateway for anthropic. Re-auth with `nodoassist models auth login --provider anthropic` in a terminal, then try again.",
       );
       expect(result.payload.text).not.toContain("/login codex");
     }
@@ -7716,7 +7716,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toBe(
-        "⚠️ Model login expired on the gateway for claude-cli. Re-auth with `claude auth login && openclaw models auth login --provider anthropic --method cli` in a terminal, then try again.",
+        "⚠️ Model login expired on the gateway for claude-cli. Re-auth with `claude auth login && nodoassist models auth login --provider anthropic --method cli` in a terminal, then try again.",
       );
     }
   });
@@ -7740,7 +7740,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toBe(
-        "⚠️ Model login expired on the gateway for claude-cli. Re-auth with `claude auth login && openclaw models auth login --provider anthropic --method cli` in a terminal, then try again.",
+        "⚠️ Model login expired on the gateway for claude-cli. Re-auth with `claude auth login && nodoassist models auth login --provider anthropic --method cli` in a terminal, then try again.",
       );
     }
   });
@@ -7798,7 +7798,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toBe(
-        '⚠️ Missing API key for provider "openai". Run `openclaw doctor --fix` to repair stale OpenAI model/session routes, restart the gateway if doctor asks, then try again. If doctor has nothing to repair or the error persists, re-auth with `openclaw models auth login --provider openai` or run `openclaw configure`.',
+        '⚠️ Missing API key for provider "openai". Run `nodoassist doctor --fix` to repair stale OpenAI model/session routes, restart the gateway if doctor asks, then try again. If doctor has nothing to repair or the error persists, re-auth with `nodoassist models auth login --provider openai` or run `nodoassist configure`.',
       );
     }
   });
@@ -7820,7 +7820,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toContain("Couldn't sign in to openai.");
-      expect(result.payload.text).toContain("openclaw configure");
+      expect(result.payload.text).toContain("nodoassist configure");
       expect(result.payload.text).toContain("(invalid_grant)");
       expect(result.payload.text).not.toContain("Auth profile failover exhausted");
     }
@@ -7844,7 +7844,7 @@ describe("runAgentTurnWithFallback", () => {
       expect(result.payload.text).toContain("Couldn't reach openai");
       expect(result.payload.text).toContain("messages must alternate roles");
       expect(result.payload.text).not.toContain("models auth login");
-      expect(result.payload.text).not.toContain("openclaw configure");
+      expect(result.payload.text).not.toContain("nodoassist configure");
     }
   });
 
@@ -7859,7 +7859,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toBe(
-        '⚠️ Missing API key for provider "openai". Run `openclaw doctor --fix` to repair stale OpenAI model/session routes, restart the gateway if doctor asks, then try again. If doctor has nothing to repair or the error persists, re-auth with `openclaw models auth login --provider openai` or run `openclaw configure`.',
+        '⚠️ Missing API key for provider "openai". Run `nodoassist doctor --fix` to repair stale OpenAI model/session routes, restart the gateway if doctor asks, then try again. If doctor has nothing to repair or the error persists, re-auth with `nodoassist models auth login --provider openai` or run `nodoassist configure`.',
       );
     }
   });
@@ -7935,7 +7935,7 @@ describe("runAgentTurnWithFallback", () => {
     expect(result.kind).toBe("final");
     if (result.kind === "final") {
       expect(result.payload.text).toBe(
-        "⚠️ Model login expired on the gateway. Re-auth with `openclaw models auth login` in a terminal, then try again.",
+        "⚠️ Model login expired on the gateway. Re-auth with `nodoassist models auth login` in a terminal, then try again.",
       );
     }
   });
@@ -8082,7 +8082,7 @@ describe("runAgentTurnWithFallback", () => {
     if (result.kind === "final") {
       expect(result.payload.text).toContain("Agent failed before reply");
       expect(result.payload.text).toContain("INVALID_ARGUMENT: some other failure");
-      expect(result.payload.text).toContain("Logs: openclaw logs --follow");
+      expect(result.payload.text).toContain("Logs: nodoassist logs --follow");
     }
   });
 
@@ -8366,7 +8366,7 @@ describe("runAgentTurnWithFallback", () => {
     const followupRun = createFollowupRun();
     followupRun.run.provider = "anthropic";
     followupRun.run.model = "claude-opus";
-    followupRun.run.authProfileId = "anthropic:openclaw";
+    followupRun.run.authProfileId = "anthropic:nodoassist";
     followupRun.run.authProfileIdSource = "user";
 
     const sessionEntry: SessionEntry = {
@@ -8620,7 +8620,7 @@ describe("runAgentTurnWithFallback", () => {
     const entry = {
       sessionId: "session",
       updatedAt: 1,
-      authProfileOverride: "anthropic:openclaw",
+      authProfileOverride: "anthropic:nodoassist",
       authProfileOverrideSource: "user" as const,
     } as SessionEntry;
 
@@ -8629,7 +8629,7 @@ describe("runAgentTurnWithFallback", () => {
       run: {
         provider: "anthropic",
         model: "claude-opus",
-        authProfileId: "anthropic:openclaw",
+        authProfileId: "anthropic:nodoassist",
         authProfileIdSource: "user",
       } as FollowupRun["run"],
       provider: "anthropic",
@@ -8645,7 +8645,7 @@ describe("runAgentTurnWithFallback", () => {
       modelOverrideSource: "auto",
       modelOverrideFallbackOriginProvider: "anthropic",
       modelOverrideFallbackOriginModel: "claude-opus",
-      authProfileOverride: "anthropic:openclaw",
+      authProfileOverride: "anthropic:nodoassist",
       authProfileOverrideSource: "user",
     });
   });

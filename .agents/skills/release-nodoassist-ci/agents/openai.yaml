@@ -1,0 +1,4 @@
+interface:
+  display_name: "NodoAssist Release CI"
+  short_description: "Verify and debug NodoAssist release validation runs"
+  default_prompt: "Use $release-nodoassist-ci to preflight provider secrets, watch full release validation, summarize child runs, and triage only failing release lanes."

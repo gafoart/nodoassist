@@ -5,8 +5,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
-import { createOpenClawTestInstance } from "../../test/helpers/openclaw-test-instance.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { createNodoAssistTestInstance } from "../../test/helpers/nodoassist-test-instance.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import { GatewayChatClient } from "./gateway-chat.js";
 import { sleep, startPty, waitFor, type PtyRun } from "./tui-pty-test-support.js";
 
@@ -239,7 +239,7 @@ function buildTuiCliScript(args: string[]) {
     `const program = new Command();`,
     `program.exitOverride();`,
     `registerTuiCli(program);`,
-    `program.parseAsync([process.execPath, "openclaw", ...${JSON.stringify(args)}], { from: "node" }).catch((error) => {`,
+    `program.parseAsync([process.execPath, "nodoassist", ...${JSON.stringify(args)}], { from: "node" }).catch((error) => {`,
     `  console.error(error);`,
     `  process.exit(1);`,
     `});`,
@@ -263,7 +263,7 @@ function buildLocalModeConfig(params: {
         workspace: params.workspaceDir,
         model: { primary: "tui-pty-mock/gpt-5.5" },
         models: {
-          "tui-pty-mock/gpt-5.5": { agentRuntime: { id: "openclaw" } },
+          "tui-pty-mock/gpt-5.5": { agentRuntime: { id: "nodoassist" } },
         },
         skills: [],
         skipBootstrap: true,
@@ -308,19 +308,19 @@ function buildLocalModeConfig(params: {
       auth: { mode: "token", token: "tui-pty-local" },
     },
     discovery: { mdns: { mode: "off" } },
-  } satisfies OpenClawConfig;
+  } satisfies NodoAssistConfig;
 }
 
 async function startLocalModeTui(opts: { invalidEditLoop?: boolean } = {}) {
   const replyText = "LOCAL_PTY_RESPONSE";
-  const tempDir = await mkdtemp(path.join(tmpdir(), "openclaw-tui-pty-local-"));
+  const tempDir = await mkdtemp(path.join(tmpdir(), "nodoassist-tui-pty-local-"));
   const workspaceDir = path.join(tempDir, "workspace");
   const homeDir = path.join(tempDir, "home");
   const stateDir = path.join(tempDir, "state");
   const xdgConfigHome = path.join(tempDir, "xdg-config");
   const xdgDataHome = path.join(tempDir, "xdg-data");
   const xdgCacheHome = path.join(tempDir, "xdg-cache");
-  const configPath = path.join(tempDir, "openclaw.json");
+  const configPath = path.join(tempDir, "nodoassist.json");
   const mockModel = await startMockModelServer(replyText, {
     invalidEditLoop: opts.invalidEditLoop,
   });
@@ -345,14 +345,14 @@ async function startLocalModeTui(opts: { invalidEditLoop?: boolean } = {}) {
     cwd: process.cwd(),
     env: {
       HOME: homeDir,
-      OPENCLAW_HOME: homeDir,
-      OPENCLAW_CONFIG_PATH: configPath,
-      OPENCLAW_STATE_DIR: stateDir,
+      NODOASSIST_HOME: homeDir,
+      NODOASSIST_CONFIG_PATH: configPath,
+      NODOASSIST_STATE_DIR: stateDir,
       XDG_CONFIG_HOME: xdgConfigHome,
       XDG_DATA_HOME: xdgDataHome,
       XDG_CACHE_HOME: xdgCacheHome,
-      OPENCLAW_THEME: "dark",
-      OPENCLAW_CODEX_DISCOVERY_LIVE: "0",
+      NODOASSIST_THEME: "dark",
+      NODOASSIST_CODEX_DISCOVERY_LIVE: "0",
       NO_COLOR: undefined,
     },
     exitTimeoutMs: LOCAL_EXIT_TIMEOUT_MS,
@@ -378,7 +378,7 @@ async function startGatewayModeTui(params: {
   queueDebounceMs?: number;
   invalidEditLoop?: boolean;
 }) {
-  const tempDir = await mkdtemp(path.join(tmpdir(), "openclaw-tui-pty-gateway-"));
+  const tempDir = await mkdtemp(path.join(tmpdir(), "nodoassist-tui-pty-gateway-"));
   const workspaceDir = path.join(tempDir, "workspace");
   const mockModel = await startMockModelServer(params.firstReplyText ?? "FIRST_RUN_ACTIVE", {
     firstResponseDelayMs: params.firstResponseDelayMs ?? 1_500,
@@ -397,14 +397,14 @@ async function startGatewayModeTui(params: {
         debounceMs: params.queueDebounceMs ?? 25,
       },
     },
-  } satisfies OpenClawConfig;
-  const gateway = await createOpenClawTestInstance({
+  } satisfies NodoAssistConfig;
+  const gateway = await createNodoAssistTestInstance({
     name: `tui-pty-gateway-${params.queueMode}`,
     gatewayToken: "tui-pty-local",
     config,
     env: {
-      OPENCLAW_CODEX_DISCOVERY_LIVE: "0",
-      OPENCLAW_SKIP_PROVIDERS: undefined,
+      NODOASSIST_CODEX_DISCOVERY_LIVE: "0",
+      NODOASSIST_SKIP_PROVIDERS: undefined,
     },
   });
   try {
@@ -424,7 +424,7 @@ async function startGatewayModeTui(params: {
       cwd: process.cwd(),
       env: {
         ...gateway.env,
-        OPENCLAW_THEME: "dark",
+        NODOASSIST_THEME: "dark",
         NO_COLOR: undefined,
       },
       exitTimeoutMs: LOCAL_EXIT_TIMEOUT_MS,

@@ -1,6 +1,6 @@
 // Telegram plugin module implements api fetch behavior.
-import type { TelegramNetworkConfig } from "openclaw/plugin-sdk/config-contracts";
-import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
+import type { TelegramNetworkConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { readResponseWithLimit } from "nodoassist/plugin-sdk/response-limit-runtime";
 import { resolveTelegramApiBase, resolveTelegramFetch } from "./fetch.js";
 import { makeProxyFetch } from "./proxy.js";
 

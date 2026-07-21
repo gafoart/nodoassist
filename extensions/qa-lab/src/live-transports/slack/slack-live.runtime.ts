@@ -7,13 +7,13 @@ import {
   createSlackWebClient,
   createSlackWriteClient,
   listSlackReactions,
-} from "@openclaw/slack/api.js";
+} from "@nodoassist/slack/api.js";
 import type { WebClient } from "@slack/web-api";
-import { normalizeAccountId } from "openclaw/plugin-sdk/account-id";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { normalizeAccountId } from "nodoassist/plugin-sdk/account-id";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import { parseStrictPositiveInteger } from "nodoassist/plugin-sdk/number-runtime";
+import { uniqueStrings } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { z } from "zod";
 import { createQaArtifactRunId } from "../../artifact-run-id.js";
 import { QA_EVIDENCE_FILENAME, buildLiveTransportEvidenceSummary } from "../../evidence-summary.js";
@@ -276,17 +276,17 @@ export type SlackQaRunResult = {
 type SlackCredentialLease = Awaited<ReturnType<typeof acquireQaCredentialLease<SlackQaRuntimeEnv>>>;
 type SlackCredentialHeartbeat = ReturnType<typeof startQaCredentialLeaseHeartbeat>;
 
-const SLACK_QA_CAPTURE_CONTENT_ENV = "OPENCLAW_QA_SLACK_CAPTURE_CONTENT";
-const SLACK_QA_APPROVAL_CHECKPOINT_DIR_ENV = "OPENCLAW_QA_SLACK_APPROVAL_CHECKPOINT_DIR";
+const SLACK_QA_CAPTURE_CONTENT_ENV = "NODOASSIST_QA_SLACK_CAPTURE_CONTENT";
+const SLACK_QA_APPROVAL_CHECKPOINT_DIR_ENV = "NODOASSIST_QA_SLACK_APPROVAL_CHECKPOINT_DIR";
 const SLACK_QA_APPROVAL_CHECKPOINT_TIMEOUT_MS_ENV =
-  "OPENCLAW_QA_SLACK_APPROVAL_CHECKPOINT_TIMEOUT_MS";
-const QA_REDACT_PUBLIC_METADATA_ENV = "OPENCLAW_QA_REDACT_PUBLIC_METADATA";
+  "NODOASSIST_QA_SLACK_APPROVAL_CHECKPOINT_TIMEOUT_MS";
+const QA_REDACT_PUBLIC_METADATA_ENV = "NODOASSIST_QA_REDACT_PUBLIC_METADATA";
 const SLACK_QA_WEB_API_TIMEOUT_MS = 45_000;
 const SLACK_QA_ENV_KEYS = [
-  "OPENCLAW_QA_SLACK_CHANNEL_ID",
-  "OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN",
-  "OPENCLAW_QA_SLACK_SUT_BOT_TOKEN",
-  "OPENCLAW_QA_SLACK_SUT_APP_TOKEN",
+  "NODOASSIST_QA_SLACK_CHANNEL_ID",
+  "NODOASSIST_QA_SLACK_DRIVER_BOT_TOKEN",
+  "NODOASSIST_QA_SLACK_SUT_BOT_TOKEN",
+  "NODOASSIST_QA_SLACK_SUT_APP_TOKEN",
 ] as const;
 
 const slackQaCredentialPayloadSchema = z.object({
@@ -365,8 +365,8 @@ const SLACK_QA_SCENARIOS: SlackQaScenarioDefinition[] = [
     title: "Slack non-allowlisted sender does not trigger",
     timeoutMs: 8_000,
     configOverrides: {
-      allowFrom: ["U_OPENCLAW_QA_NEVER_ALLOWED"],
-      users: ["U_OPENCLAW_QA_NEVER_ALLOWED"],
+      allowFrom: ["U_NODOASSIST_QA_NEVER_ALLOWED"],
+      users: ["U_NODOASSIST_QA_NEVER_ALLOWED"],
     },
     buildRun: (sutUserId) => {
       const token = `SLACK_QA_BLOCK_${randomUUID().slice(0, 8).toUpperCase()}`;
@@ -537,12 +537,12 @@ function validateSlackQaRuntimeEnv(runtimeEnv: SlackQaRuntimeEnv, label: string)
 
 function resolveSlackQaRuntimeEnv(env: NodeJS.ProcessEnv = process.env): SlackQaRuntimeEnv {
   const runtimeEnv = {
-    channelId: resolveEnvValue(env, "OPENCLAW_QA_SLACK_CHANNEL_ID"),
-    driverBotToken: resolveEnvValue(env, "OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN"),
-    sutBotToken: resolveEnvValue(env, "OPENCLAW_QA_SLACK_SUT_BOT_TOKEN"),
-    sutAppToken: resolveEnvValue(env, "OPENCLAW_QA_SLACK_SUT_APP_TOKEN"),
+    channelId: resolveEnvValue(env, "NODOASSIST_QA_SLACK_CHANNEL_ID"),
+    driverBotToken: resolveEnvValue(env, "NODOASSIST_QA_SLACK_DRIVER_BOT_TOKEN"),
+    sutBotToken: resolveEnvValue(env, "NODOASSIST_QA_SLACK_SUT_BOT_TOKEN"),
+    sutAppToken: resolveEnvValue(env, "NODOASSIST_QA_SLACK_SUT_APP_TOKEN"),
   };
-  return validateSlackQaRuntimeEnv(runtimeEnv, "OPENCLAW_QA_SLACK");
+  return validateSlackQaRuntimeEnv(runtimeEnv, "NODOASSIST_QA_SLACK");
 }
 
 function parseSlackQaCredentialPayload(payload: unknown): SlackQaRuntimeEnv {
@@ -571,7 +571,7 @@ function asPlainRecord(value: unknown): Record<string, unknown> {
 }
 
 function buildSlackQaConfig(
-  baseCfg: OpenClawConfig,
+  baseCfg: NodoAssistConfig,
   params: {
     channelId: string;
     driverBotUserId: string;
@@ -581,7 +581,7 @@ function buildSlackQaConfig(
     sutAppToken: string;
     sutBotToken: string;
   },
-): OpenClawConfig {
+): NodoAssistConfig {
   const codexApprovalConfig = params.overrides?.codexApproval === true;
   const primaryModel = params.primaryModel;
   const pluginAllow = uniqueStrings([
@@ -1756,7 +1756,7 @@ function findPendingCodexPluginApprovalRecord(params: {
     }
     const request = asPlainRecord(record.request);
     if (
-      request.pluginId === "openclaw-codex-app-server" &&
+      request.pluginId === "nodoassist-codex-app-server" &&
       request.title === expectedTitle &&
       request.toolName === expectedToolName &&
       request.sessionKey === params.sessionKey &&
@@ -1958,7 +1958,7 @@ async function runSlackCodexApprovalScenario(params: {
 }
 
 function resolveCodexFileApprovalTargetPath(token: string) {
-  return path.join(os.homedir(), `.openclaw-qa-codex-file-approval-${token.toLowerCase()}.txt`);
+  return path.join(os.homedir(), `.nodoassist-qa-codex-file-approval-${token.toLowerCase()}.txt`);
 }
 
 async function runSlackCodexApprovalScenarioInner(params: {
@@ -1992,7 +1992,7 @@ async function runSlackCodexApprovalScenarioInner(params: {
     channelId: params.channelId,
     client: params.context.sutReadClient,
     decision: params.run.decision,
-    extraTextMatches: ["openclaw-codex-app-server", expectedTitle],
+    extraTextMatches: ["nodoassist-codex-app-server", expectedTitle],
     observedMessages: params.observedMessages,
     oldestTs,
     scenarioId: params.scenario.id,
@@ -2056,7 +2056,7 @@ async function runSlackCodexApprovalScenarioInner(params: {
     scenarioTitle: params.scenario.title,
     sutIdentity: params.context.sutIdentity,
     timeoutMs: params.scenario.timeoutMs,
-    extraTextMatches: ["openclaw-codex-app-server", expectedTitle],
+    extraTextMatches: ["nodoassist-codex-app-server", expectedTitle],
   });
   const resolvedCheckpoint = await writeSlackApprovalCheckpoint({
     approvalId,
@@ -2212,7 +2212,7 @@ function resolveSlackChannelReadySince(params: {
 }
 
 function resolveSlackQaReadyTimeoutMs(env: NodeJS.ProcessEnv = process.env) {
-  const raw = env.OPENCLAW_QA_TRANSPORT_READY_TIMEOUT_MS;
+  const raw = env.NODOASSIST_QA_TRANSPORT_READY_TIMEOUT_MS;
   if (!raw) {
     return SLACK_QA_DEFAULT_READY_TIMEOUT_MS;
   }

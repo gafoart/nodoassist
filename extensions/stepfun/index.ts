@@ -1,11 +1,11 @@
-// Stepfun plugin entrypoint registers its OpenClaw integration.
+// Stepfun plugin entrypoint registers its NodoAssist integration.
 import {
   definePluginEntry,
-  type OpenClawConfig,
+  type NodoAssistConfig,
   type ProviderCatalogContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "nodoassist/plugin-sdk/provider-auth-api-key";
+import { normalizeLowercaseStringOrEmpty } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   applyStepFunPlanConfig,
   applyStepFunPlanConfigCn,
@@ -132,7 +132,7 @@ function createStepFunApiKeyMethod(params: {
   choiceId: string;
   choiceLabel: string;
   choiceHint: string;
-  applyConfig: (cfg: OpenClawConfig) => OpenClawConfig;
+  applyConfig: (cfg: NodoAssistConfig) => NodoAssistConfig;
 }) {
   return createProviderApiKeyAuthMethod({
     providerId: params.providerId,

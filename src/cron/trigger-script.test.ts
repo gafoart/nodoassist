@@ -5,7 +5,7 @@ import {
 } from "../agents/agent-tools.before-tool-call.js";
 import type { CodeModeHeadlessResult } from "../agents/code-mode.js";
 import type { AnyAgentTool } from "../agents/tools/common.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import { createCronTriggerEvaluator } from "./trigger-script.js";
 
 type EvaluatorDeps = Parameters<typeof createCronTriggerEvaluator>[0];
@@ -21,7 +21,7 @@ function completed(params: { value: unknown; output?: unknown[] }): CodeModeHead
   };
 }
 
-function createPreparedRuntime(config: OpenClawConfig) {
+function createPreparedRuntime(config: NodoAssistConfig) {
   const tool = wrapToolWithBeforeToolCallHook(
     {
       name: "probe",
@@ -51,7 +51,7 @@ function createEvaluator(
     >[0],
   ) => Promise<CodeModeHeadlessResult>,
 ) {
-  const config = {} as OpenClawConfig;
+  const config = {} as NodoAssistConfig;
   const prepareRuntime = vi.fn(async () => createPreparedRuntime(config));
   return {
     evaluate: createCronTriggerEvaluator({ config, runHeadless, prepareRuntime }),
@@ -145,7 +145,7 @@ describe("cron trigger script evaluator", () => {
   });
 
   it("single-flights concurrent runtime preparation for the same job", async () => {
-    const config = {} as OpenClawConfig;
+    const config = {} as NodoAssistConfig;
     let release: ((runtime: ReturnType<typeof createPreparedRuntime>) => void) | undefined;
     const pending = new Promise<ReturnType<typeof createPreparedRuntime>>((resolve) => {
       release = resolve;
@@ -167,7 +167,7 @@ describe("cron trigger script evaluator", () => {
   });
 
   it("invalidates a cached runtime when toolsAllow changes", async () => {
-    const config = {} as OpenClawConfig;
+    const config = {} as NodoAssistConfig;
     const prepareRuntime = vi.fn(async (_params: PrepareParams) => createPreparedRuntime(config));
     const runHeadless = vi.fn(async () => completed({ value: { fire: false } }));
     const evaluate = createCronTriggerEvaluator({ config, prepareRuntime, runHeadless });
@@ -245,7 +245,7 @@ describe("cron trigger script evaluator", () => {
   });
 
   it("cancels runtime preparation when its only evaluator aborts", async () => {
-    const config = {} as OpenClawConfig;
+    const config = {} as NodoAssistConfig;
     let preparationSignal: AbortSignal | undefined;
     const prepareRuntime = vi.fn(async (params: { signal?: AbortSignal }): Promise<never> => {
       preparationSignal = params.signal;

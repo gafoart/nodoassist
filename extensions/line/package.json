@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/line",
+  "name": "@nodoassist/line",
   "version": "2026.6.11",
-  "description": "OpenClaw LINE channel plugin for LINE Bot API chats.",
+  "description": "NodoAssist LINE channel plugin for LINE Bot API chats.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -12,18 +12,18 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
@@ -41,7 +41,7 @@
       "quickstartAllowFrom": true
     },
     "install": {
-      "npmSpec": "@openclaw/line",
+      "npmSpec": "@nodoassist/line",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.10"
     },
@@ -49,7 +49,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11"
+      "nodoassistVersion": "2026.6.11"
     },
     "release": {
       "publishToClawHub": true,

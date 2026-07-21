@@ -46,7 +46,7 @@ import { chatHandlers } from "./chat.js";
 import { expectSubagentFollowupReactivation } from "./subagent-followup.test-helpers.js";
 import type { GatewayRequestContext } from "./types.js";
 
-const envSnapshot = captureEnv(["OPENCLAW_STATE_DIR"]);
+const envSnapshot = captureEnv(["NODOASSIST_STATE_DIR"]);
 
 const mocks = vi.hoisted(() => ({
   loadSessionEntry: vi.fn(),
@@ -441,7 +441,7 @@ function resetTimeConfig() {
 }
 
 function useTestStateDir(root: string): void {
-  setTestEnvValue("OPENCLAW_STATE_DIR", root);
+  setTestEnvValue("NODOASSIST_STATE_DIR", root);
 }
 
 async function expectResetCall(expectedMessage: string) {
@@ -529,7 +529,7 @@ function operatorWriteGatewayClient(): AgentHandlerArgs["client"] {
       minProtocol: 1,
       maxProtocol: 1,
       client: {
-        id: "openclaw-control-ui",
+        id: "nodoassist-control-ui",
         version: "test",
         platform: "test",
         mode: "ui",
@@ -1542,7 +1542,7 @@ describe("gateway agent handler", () => {
     vi.setSystemTime(new Date("2026-05-07T12:00:00.000Z"));
     const staleEntry = {
       sessionId: "old-session-id",
-      sessionFile: "/tmp/openclaw/agents/main/sessions/old-session-id.jsonl",
+      sessionFile: "/tmp/nodoassist/agents/main/sessions/old-session-id.jsonl",
       updatedAt: 0,
       sessionStartedAt: 0,
     };
@@ -1575,7 +1575,7 @@ describe("gateway agent handler", () => {
     vi.setSystemTime(now);
     const missingTranscriptEntry = {
       sessionId: "failed-missing-session-id",
-      sessionFile: "/tmp/openclaw/missing/failed-missing-session-id.jsonl",
+      sessionFile: "/tmp/nodoassist/missing/failed-missing-session-id.jsonl",
       status: "failed",
       updatedAt: now,
       sessionStartedAt: now,
@@ -1612,7 +1612,7 @@ describe("gateway agent handler", () => {
       dateOnlyFakeClockActive = true;
       vi.setSystemTime(now);
 
-      await withTempDir({ prefix: "openclaw-gateway-terminal-main-newer-" }, async (root) => {
+      await withTempDir({ prefix: "nodoassist-gateway-terminal-main-newer-" }, async (root) => {
         const sessionsDir = `${root}/sessions`;
         await fs.mkdir(sessionsDir, { recursive: true });
         const sessionFile = "terminal-main-session.jsonl";
@@ -1679,64 +1679,67 @@ describe("gateway agent handler", () => {
     dateOnlyFakeClockActive = true;
     vi.setSystemTime(now);
 
-    await withTempDir({ prefix: "openclaw-gateway-terminal-main-fresh-marker-" }, async (root) => {
-      const sessionsDir = `${root}/sessions`;
-      await fs.mkdir(sessionsDir, { recursive: true });
-      const sessionFile = "terminal-main-session.jsonl";
-      const transcriptPath = `${sessionsDir}/${sessionFile}`;
-      await fs.writeFile(
-        transcriptPath,
-        `${JSON.stringify({ type: "session", id: "terminal-main-session" })}\n`,
-        "utf8",
-      );
-      await fs.utimes(transcriptPath, new Date(now - 1_000), new Date(now - 1_000));
-      const staleEntry = {
-        sessionId: "terminal-main-session",
-        sessionFile,
-        status: "done",
-        updatedAt: now - 10_000,
-        cliSessionBindings: {
-          "claude-cli": { sessionId: "existing-claude-cli-session" },
-        },
-        cliSessionIds: {
-          "claude-cli": "existing-claude-cli-session",
-        },
-        claudeCliSessionId: "existing-claude-cli-session",
-      };
-      mocks.loadSessionEntry.mockReturnValue({
-        cfg: {},
-        storePath: `${sessionsDir}/sessions.json`,
-        entry: staleEntry,
-        canonicalKey: "agent:main:main",
-      });
-      let capturedEntry: Record<string, unknown> | undefined;
-      mocks.updateSessionStore.mockImplementation(async (_path, updater) => {
-        const store = {
-          "agent:main:main": {
-            ...staleEntry,
-            updatedAt: now,
+    await withTempDir(
+      { prefix: "nodoassist-gateway-terminal-main-fresh-marker-" },
+      async (root) => {
+        const sessionsDir = `${root}/sessions`;
+        await fs.mkdir(sessionsDir, { recursive: true });
+        const sessionFile = "terminal-main-session.jsonl";
+        const transcriptPath = `${sessionsDir}/${sessionFile}`;
+        await fs.writeFile(
+          transcriptPath,
+          `${JSON.stringify({ type: "session", id: "terminal-main-session" })}\n`,
+          "utf8",
+        );
+        await fs.utimes(transcriptPath, new Date(now - 1_000), new Date(now - 1_000));
+        const staleEntry = {
+          sessionId: "terminal-main-session",
+          sessionFile,
+          status: "done",
+          updatedAt: now - 10_000,
+          cliSessionBindings: {
+            "claude-cli": { sessionId: "existing-claude-cli-session" },
           },
+          cliSessionIds: {
+            "claude-cli": "existing-claude-cli-session",
+          },
+          claudeCliSessionId: "existing-claude-cli-session",
         };
-        const result = await updater(store);
-        capturedEntry = result as Record<string, unknown>;
-        return result;
-      });
-      mocks.agentCommand.mockResolvedValue({
-        payloads: [{ text: "ok" }],
-        meta: { durationMs: 100 },
-      });
+        mocks.loadSessionEntry.mockReturnValue({
+          cfg: {},
+          storePath: `${sessionsDir}/sessions.json`,
+          entry: staleEntry,
+          canonicalKey: "agent:main:main",
+        });
+        let capturedEntry: Record<string, unknown> | undefined;
+        mocks.updateSessionStore.mockImplementation(async (_path, updater) => {
+          const store = {
+            "agent:main:main": {
+              ...staleEntry,
+              updatedAt: now,
+            },
+          };
+          const result = await updater(store);
+          capturedEntry = result as Record<string, unknown>;
+          return result;
+        });
+        mocks.agentCommand.mockResolvedValue({
+          payloads: [{ text: "ok" }],
+          meta: { durationMs: 100 },
+        });
 
-      await runMainAgent("hi", "test-idem-terminal-main-fresh-marker");
+        await runMainAgent("hi", "test-idem-terminal-main-fresh-marker");
 
-      const call = await waitForAgentCommandCall<{ sessionId?: string }>();
-      expect(call.sessionId).toBe("terminal-main-session");
-      expect(capturedEntry?.sessionId).toBe("terminal-main-session");
-      expect(capturedEntry?.sessionFile).toBe(sessionFile);
-      expect(capturedEntry?.cliSessionIds).toEqual({
-        "claude-cli": "existing-claude-cli-session",
-      });
-      expect(capturedEntry?.claudeCliSessionId).toBe("existing-claude-cli-session");
-    });
+        const call = await waitForAgentCommandCall<{ sessionId?: string }>();
+        expect(call.sessionId).toBe("terminal-main-session");
+        expect(capturedEntry?.sessionId).toBe("terminal-main-session");
+        expect(capturedEntry?.sessionFile).toBe(sessionFile);
+        expect(capturedEntry?.cliSessionIds).toEqual({
+          "claude-cli": "existing-claude-cli-session",
+        });
+        expect(capturedEntry?.claudeCliSessionId).toBe("existing-claude-cli-session");
+      },
+    );
   });
 
   it("honors explicit gateway session-id resumes for terminal main rows", async () => {
@@ -1746,7 +1749,7 @@ describe("gateway agent handler", () => {
     vi.setSystemTime(now);
 
     await withTempDir(
-      { prefix: "openclaw-gateway-terminal-main-explicit-resume-" },
+      { prefix: "nodoassist-gateway-terminal-main-explicit-resume-" },
       async (root) => {
         const sessionsDir = `${root}/sessions`;
         await fs.mkdir(sessionsDir, { recursive: true });
@@ -1818,7 +1821,7 @@ describe("gateway agent handler", () => {
       vi.setSystemTime(now);
 
       await withTempDir(
-        { prefix: `openclaw-gateway-terminal-main-${runKind}-reuse-` },
+        { prefix: `nodoassist-gateway-terminal-main-${runKind}-reuse-` },
         async (root) => {
           const sessionsDir = `${root}/sessions`;
           await fs.mkdir(sessionsDir, { recursive: true });
@@ -1910,42 +1913,45 @@ describe("gateway agent handler", () => {
     dateOnlyFakeClockActive = true;
     vi.setSystemTime(now);
 
-    await withTempDir({ prefix: "openclaw-gateway-failed-default-session-file-" }, async (root) => {
-      const sessionsDir = `${root}/sessions`;
-      await fs.mkdir(sessionsDir, { recursive: true });
-      await fs.writeFile(`${sessionsDir}/failed-present-default-session-id.jsonl`, "", "utf8");
-      const failedEntryWithDefaultTranscript = {
-        sessionId: "failed-present-default-session-id",
-        status: "failed",
-        startedAt: now - 1_000,
-        endedAt: now,
-        runtimeMs: 1_000,
-        abortedLastRun: true,
-        updatedAt: now,
-        sessionStartedAt: now,
-        lastInteractionAt: now,
-      };
-      mocks.loadSessionEntry.mockReturnValue({
-        cfg: {},
-        storePath: `${sessionsDir}/sessions.json`,
-        entry: failedEntryWithDefaultTranscript,
-        canonicalKey: "agent:main:main",
-      });
+    await withTempDir(
+      { prefix: "nodoassist-gateway-failed-default-session-file-" },
+      async (root) => {
+        const sessionsDir = `${root}/sessions`;
+        await fs.mkdir(sessionsDir, { recursive: true });
+        await fs.writeFile(`${sessionsDir}/failed-present-default-session-id.jsonl`, "", "utf8");
+        const failedEntryWithDefaultTranscript = {
+          sessionId: "failed-present-default-session-id",
+          status: "failed",
+          startedAt: now - 1_000,
+          endedAt: now,
+          runtimeMs: 1_000,
+          abortedLastRun: true,
+          updatedAt: now,
+          sessionStartedAt: now,
+          lastInteractionAt: now,
+        };
+        mocks.loadSessionEntry.mockReturnValue({
+          cfg: {},
+          storePath: `${sessionsDir}/sessions.json`,
+          entry: failedEntryWithDefaultTranscript,
+          canonicalKey: "agent:main:main",
+        });
 
-      const capturedEntry = await runMainAgentAndCaptureEntry(
-        "test-idem-failed-present-default-transcript",
-      );
+        const capturedEntry = await runMainAgentAndCaptureEntry(
+          "test-idem-failed-present-default-transcript",
+        );
 
-      const call = await waitForAgentCommandCall<{ sessionId?: string }>();
-      expect(call.sessionId).toBe("failed-present-default-session-id");
-      expect(capturedEntry?.sessionId).toBe("failed-present-default-session-id");
-      expect(capturedEntry?.status).toBeUndefined();
-      expect(capturedEntry?.startedAt).toBeUndefined();
-      expect(capturedEntry?.endedAt).toBeUndefined();
-      expect(capturedEntry?.runtimeMs).toBeUndefined();
-      expect(capturedEntry?.abortedLastRun).toBeUndefined();
-      expect(capturedEntry?.sessionFile).toBeUndefined();
-    });
+        const call = await waitForAgentCommandCall<{ sessionId?: string }>();
+        expect(call.sessionId).toBe("failed-present-default-session-id");
+        expect(capturedEntry?.sessionId).toBe("failed-present-default-session-id");
+        expect(capturedEntry?.status).toBeUndefined();
+        expect(capturedEntry?.startedAt).toBeUndefined();
+        expect(capturedEntry?.endedAt).toBeUndefined();
+        expect(capturedEntry?.runtimeMs).toBeUndefined();
+        expect(capturedEntry?.abortedLastRun).toBeUndefined();
+        expect(capturedEntry?.sessionFile).toBeUndefined();
+      },
+    );
   });
 
   it("recovers a failed session when its relative transcript resolves and exists", async () => {
@@ -1954,7 +1960,7 @@ describe("gateway agent handler", () => {
     dateOnlyFakeClockActive = true;
     vi.setSystemTime(now);
 
-    await withTempDir({ prefix: "openclaw-gateway-failed-session-file-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-failed-session-file-" }, async (root) => {
       const sessionsDir = `${root}/sessions`;
       await fs.mkdir(sessionsDir, { recursive: true });
       await fs.writeFile(`${sessionsDir}/relative-present.jsonl`, "", "utf8");
@@ -2565,7 +2571,7 @@ describe("gateway agent handler", () => {
 
   it("recovers terminal failed agent API sessions without rotating the session id", async () => {
     const sessionId = "failed-agent-session";
-    await withTempDir({ prefix: "openclaw-gateway-terminal-recovery-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-terminal-recovery-" }, async (root) => {
       const sessionsDir = `${root}/sessions`;
       await fs.mkdir(sessionsDir, { recursive: true });
       await fs.writeFile(`${sessionsDir}/${sessionId}.jsonl`, "", "utf8");
@@ -3573,8 +3579,8 @@ describe("gateway agent handler", () => {
     await invokeAgent(
       {
         message: [
-          "[Mon 2026-04-06 02:42 GMT+1] <<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>",
-          "OpenClaw runtime context (internal):",
+          "[Mon 2026-04-06 02:42 GMT+1] <<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>",
+          "NodoAssist runtime context (internal):",
           "This context is runtime-generated, not user-authored. Keep internal details private.",
         ].join("\n"),
         sessionKey: "agent:main:main",
@@ -4172,7 +4178,7 @@ describe("gateway agent handler", () => {
   });
 
   it("terminalizes successful async gateway agent runs in the shared task registry", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-agent-task-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       primeMainAgentRun();
@@ -4198,7 +4204,7 @@ describe("gateway agent handler", () => {
   });
 
   it("tracks plugin SDK subagent agent runs through the subagent registry only", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-plugin-subagent-task-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-plugin-subagent-task-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       resetSubagentRegistryForTests({ persist: false });
@@ -4317,7 +4323,7 @@ describe("gateway agent handler", () => {
 
   it("keeps plugin SDK subagent runs best-effort when registry persistence fails", async () => {
     await withTempDir(
-      { prefix: "openclaw-gateway-plugin-subagent-registry-fail-" },
+      { prefix: "nodoassist-gateway-plugin-subagent-registry-fail-" },
       async (root) => {
         useTestStateDir(root);
         resetTaskRegistryForTests();
@@ -4397,7 +4403,7 @@ describe("gateway agent handler", () => {
   });
 
   it("terminalizes failed async gateway agent runs in the shared task registry", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-error-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-agent-task-error-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       primeMainAgentRun();
@@ -4424,7 +4430,7 @@ describe("gateway agent handler", () => {
   });
 
   it("preserves aborted async gateway agent runs as timed out", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-aborted-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-agent-task-aborted-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       primeMainAgentRun();
@@ -4460,7 +4466,7 @@ describe("gateway agent handler", () => {
   });
 
   it("classifies aborted async gateway agent rejections as timed out", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-abort-error-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-agent-task-abort-error-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       primeMainAgentRun();
@@ -4503,7 +4509,7 @@ describe("gateway agent handler", () => {
   });
 
   it("preserves restart ownership for aborted async gateway agent rejections", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-restart-abort-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-agent-task-restart-abort-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       primeMainAgentRun();
@@ -4540,7 +4546,7 @@ describe("gateway agent handler", () => {
   });
 
   it("classifies timeout async gateway agent rejections as timed out", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-timeout-error-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-agent-task-timeout-error-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       primeMainAgentRun();
@@ -4584,7 +4590,7 @@ describe("gateway agent handler", () => {
 
   it("classifies wrapped rejections after gateway timeout as timed out", async () => {
     await withTempDir(
-      { prefix: "openclaw-gateway-agent-task-wrapped-timeout-error-" },
+      { prefix: "nodoassist-gateway-agent-task-wrapped-timeout-error-" },
       async (root) => {
         useTestStateDir(root);
         resetTaskRegistryForTests();
@@ -4634,48 +4640,51 @@ describe("gateway agent handler", () => {
   });
 
   it("does not hide provider timeout async gateway agent rejections", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-provider-timeout-" }, async (root) => {
-      useTestStateDir(root);
-      resetTaskRegistryForTests();
-      primeMainAgentRun();
-      const providerError = new Error("provider request timed out");
-      providerError.name = "TimeoutError";
-      mocks.agentCommand.mockRejectedValueOnce(providerError);
-      const context = makeContext();
+    await withTempDir(
+      { prefix: "nodoassist-gateway-agent-task-provider-timeout-" },
+      async (root) => {
+        useTestStateDir(root);
+        resetTaskRegistryForTests();
+        primeMainAgentRun();
+        const providerError = new Error("provider request timed out");
+        providerError.name = "TimeoutError";
+        mocks.agentCommand.mockRejectedValueOnce(providerError);
+        const context = makeContext();
 
-      await invokeAgent(
-        {
-          message: "background cli task",
-          sessionKey: "agent:main:main",
-          idempotencyKey: "task-registry-agent-run-provider-timeout",
-        },
-        { context, reqId: "task-registry-agent-run-provider-timeout" },
-      );
-
-      await waitForAssertion(() => {
-        expectRecordFields(findTaskByRunId("task-registry-agent-run-provider-timeout"), {
-          runtime: "cli",
-          childSessionKey: "agent:main:main",
-          status: "timed_out",
-          error: "TimeoutError: provider request timed out",
-        });
-        expectRecordFields(
-          context.dedupe.get("agent:task-registry-agent-run-provider-timeout")?.payload,
+        await invokeAgent(
           {
-            runId: "task-registry-agent-run-provider-timeout",
-            status: "error",
-            summary: "TimeoutError: provider request timed out",
+            message: "background cli task",
+            sessionKey: "agent:main:main",
+            idempotencyKey: "task-registry-agent-run-provider-timeout",
           },
+          { context, reqId: "task-registry-agent-run-provider-timeout" },
         );
-        expect(context.dedupe.get("agent:task-registry-agent-run-provider-timeout")?.ok).toBe(
-          false,
-        );
-      });
-    });
+
+        await waitForAssertion(() => {
+          expectRecordFields(findTaskByRunId("task-registry-agent-run-provider-timeout"), {
+            runtime: "cli",
+            childSessionKey: "agent:main:main",
+            status: "timed_out",
+            error: "TimeoutError: provider request timed out",
+          });
+          expectRecordFields(
+            context.dedupe.get("agent:task-registry-agent-run-provider-timeout")?.payload,
+            {
+              runId: "task-registry-agent-run-provider-timeout",
+              status: "error",
+              summary: "TimeoutError: provider request timed out",
+            },
+          );
+          expect(context.dedupe.get("agent:task-registry-agent-run-provider-timeout")?.ok).toBe(
+            false,
+          );
+        });
+      },
+    );
   });
 
   it("does not overwrite operator-cancelled async gateway agent tasks after late completion", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-task-cancelled-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-agent-task-cancelled-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       primeMainAgentRun();
@@ -4783,7 +4792,7 @@ describe("gateway agent handler", () => {
   });
 
   it("uses an agent-scoped to value as the gateway session selector", async () => {
-    const sessionKey = "agent:main:openclaw-weixin:direct:o9cq802hhmfc@im.wechat";
+    const sessionKey = "agent:main:nodoassist-weixin:direct:o9cq802hhmfc@im.wechat";
     mocks.resolveExplicitAgentSessionKey.mockReturnValue("agent:main:main");
     mocks.loadSessionEntry.mockImplementation((key: string) => ({
       cfg: {},
@@ -5624,7 +5633,7 @@ describe("gateway agent handler", () => {
   });
 
   it("dispatches async gateway agent task creation through the detached task runtime seam", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-seam-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-agent-seam-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       primeMainAgentRun();
@@ -5720,7 +5729,7 @@ describe("gateway agent handler", () => {
     };
 
     it("suppresses the gateway CLI task row for confirmed ACP manual-spawn child turns", async () => {
-      await withTempDir({ prefix: "openclaw-gateway-acp-suppress-" }, async (root) => {
+      await withTempDir({ prefix: "nodoassist-gateway-acp-suppress-" }, async (root) => {
         useTestStateDir(root);
         resetTaskRegistryForTests();
         const childSessionKey = "agent:main:acp:child-confirmed";
@@ -5745,7 +5754,7 @@ describe("gateway agent handler", () => {
     });
 
     it("keeps CLI tracking when a non-backend operator-write caller sets acpTurnSource", async () => {
-      await withTempDir({ prefix: "openclaw-gateway-acp-operator-write-" }, async (root) => {
+      await withTempDir({ prefix: "nodoassist-gateway-acp-operator-write-" }, async (root) => {
         useTestStateDir(root);
         resetTaskRegistryForTests();
         const childSessionKey = "agent:main:acp:child-operator-write";
@@ -5785,7 +5794,7 @@ describe("gateway agent handler", () => {
     });
 
     it("keeps CLI tracking for ACP-shaped manual-spawn turns without persisted ACP metadata", async () => {
-      await withTempDir({ prefix: "openclaw-gateway-acp-no-meta-" }, async (root) => {
+      await withTempDir({ prefix: "nodoassist-gateway-acp-no-meta-" }, async (root) => {
         useTestStateDir(root);
         resetTaskRegistryForTests();
         const childSessionKey = "agent:main:acp:child-missing-meta";
@@ -5820,7 +5829,7 @@ describe("gateway agent handler", () => {
     });
 
     it("keeps dispatch and CLI tracking when ACP metadata read fails", async () => {
-      await withTempDir({ prefix: "openclaw-gateway-acp-meta-throw-" }, async (root) => {
+      await withTempDir({ prefix: "nodoassist-gateway-acp-meta-throw-" }, async (root) => {
         useTestStateDir(root);
         resetTaskRegistryForTests();
         const childSessionKey = "agent:main:acp:child-meta-throw";
@@ -5871,7 +5880,7 @@ describe("gateway agent handler", () => {
     });
 
     it("keeps CLI tracking for ACP-shaped turns that are not manual spawns", async () => {
-      await withTempDir({ prefix: "openclaw-gateway-acp-not-manual-spawn-" }, async (root) => {
+      await withTempDir({ prefix: "nodoassist-gateway-acp-not-manual-spawn-" }, async (root) => {
         useTestStateDir(root);
         resetTaskRegistryForTests();
         const childSessionKey = "agent:main:acp:child-not-spawn";
@@ -5901,7 +5910,7 @@ describe("gateway agent handler", () => {
     });
 
     it("does not affect plugin-subagent tracking for confirmed ACP conditions", async () => {
-      await withTempDir({ prefix: "openclaw-gateway-acp-plugin-subagent-" }, async (root) => {
+      await withTempDir({ prefix: "nodoassist-gateway-acp-plugin-subagent-" }, async (root) => {
         useTestStateDir(root);
         resetTaskRegistryForTests();
         resetSubagentRegistryForTests({ persist: false });
@@ -5954,7 +5963,7 @@ describe("gateway agent handler", () => {
   });
 
   it("logs a swallowed finalize error without blocking the background run", async () => {
-    await withTempDir({ prefix: "openclaw-gateway-agent-finalize-throw-" }, async (root) => {
+    await withTempDir({ prefix: "nodoassist-gateway-agent-finalize-throw-" }, async (root) => {
       useTestStateDir(root);
       resetTaskRegistryForTests();
       primeMainAgentRun();
@@ -6535,7 +6544,7 @@ describe("gateway agent handler", () => {
   });
 
   it("uses the selected session target for bare /reset delivery when to is an agent session key", async () => {
-    const sessionKey = "agent:main:openclaw-weixin:direct:o9cq802hhmfc@im.wechat";
+    const sessionKey = "agent:main:nodoassist-weixin:direct:o9cq802hhmfc@im.wechat";
     mockSessionResetSuccess({ reason: "reset", key: sessionKey, sessionId: "wechat-session-id" });
     mocks.loadSessionEntry.mockImplementation((key: string) => ({
       cfg: {},
@@ -6543,15 +6552,15 @@ describe("gateway agent handler", () => {
       entry: {
         sessionId: key === sessionKey ? "wechat-session-id" : "main-session-id",
         updatedAt: Date.now(),
-        lastChannel: "openclaw-weixin",
+        lastChannel: "nodoassist-weixin",
         lastTo: "o9cq802hhmfc@im.wechat",
       },
       canonicalKey: key,
     }));
     mocks.getChannelPlugin.mockImplementation((channel: string) =>
-      channel === "openclaw-weixin"
+      channel === "nodoassist-weixin"
         ? {
-            id: "openclaw-weixin",
+            id: "nodoassist-weixin",
             meta: { label: "WeChat" },
             capabilities: { chatTypes: ["direct"] },
             config: {},
@@ -6601,7 +6610,7 @@ describe("gateway agent handler", () => {
     });
     expect(mocks.sendDurableMessageBatch).toHaveBeenCalledWith(
       expect.objectContaining({
-        channel: "openclaw-weixin",
+        channel: "nodoassist-weixin",
         to: "o9cq802hhmfc@im.wechat",
       }),
     );

@@ -1,16 +1,16 @@
 // Google Meet plugin module implements realtime behavior.
 import { spawn } from "node:child_process";
 import type { Writable } from "node:stream";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import type { PluginRuntime, RuntimeLogger } from "openclaw/plugin-sdk/plugin-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import type { PluginRuntime, RuntimeLogger } from "nodoassist/plugin-sdk/plugin-runtime";
 import {
   getRealtimeTranscriptionProvider,
   listRealtimeTranscriptionProviders,
   type RealtimeTranscriptionProviderConfig,
   type RealtimeTranscriptionProviderPlugin,
   type RealtimeTranscriptionSession,
-} from "openclaw/plugin-sdk/realtime-transcription";
+} from "nodoassist/plugin-sdk/realtime-transcription";
 import {
   createRealtimeVoiceAgentTalkbackQueue,
   createRealtimeVoiceBridgeSession,
@@ -39,9 +39,9 @@ import {
   type TalkEvent,
   type TalkEventInput,
   type TalkSessionController,
-} from "openclaw/plugin-sdk/realtime-voice";
+} from "nodoassist/plugin-sdk/realtime-voice";
 import {
-  consultOpenClawAgentForGoogleMeet,
+  consultNodoAssistAgentForGoogleMeet,
   handleGoogleMeetRealtimeConsultToolCall,
   resolveGoogleMeetRealtimeTools,
 } from "./agent-consult.js";
@@ -320,7 +320,7 @@ function alawByteToLinear(value: number): number {
 
 export function resolveGoogleMeetRealtimeProvider(params: {
   config: GoogleMeetConfig;
-  fullConfig: OpenClawConfig;
+  fullConfig: NodoAssistConfig;
   providers?: RealtimeVoiceProviderPlugin[];
 }): ResolvedRealtimeProvider {
   const providerId = params.config.realtime.voiceProvider ?? params.config.realtime.provider;
@@ -336,7 +336,7 @@ export function resolveGoogleMeetRealtimeProvider(params: {
 
 export function resolveGoogleMeetRealtimeTranscriptionProvider(params: {
   config: GoogleMeetConfig;
-  fullConfig: OpenClawConfig;
+  fullConfig: NodoAssistConfig;
   providers?: RealtimeTranscriptionProviderPlugin[];
 }): ResolvedRealtimeTranscriptionProvider {
   const providers = params.providers ?? listRealtimeTranscriptionProviders(params.fullConfig);
@@ -370,7 +370,7 @@ export function resolveGoogleMeetRealtimeTranscriptionProvider(params: {
 
 export function buildGoogleMeetSpeakExactUserMessage(text: string): string {
   return [
-    "Speak this exact OpenClaw answer to the meeting, without adding, removing, or rephrasing words.",
+    "Speak this exact NodoAssist answer to the meeting, without adding, removing, or rephrasing words.",
     `Answer: ${JSON.stringify(text)}`,
   ].join("\n");
 }
@@ -505,7 +505,7 @@ export function summarizeGoogleMeetTalkEvents(
 
 export async function startCommandAgentAudioBridge(params: {
   config: GoogleMeetConfig;
-  fullConfig: OpenClawConfig;
+  fullConfig: NodoAssistConfig;
   runtime: PluginRuntime;
   meetingSessionId: string;
   requesterSessionKey?: string;
@@ -720,7 +720,7 @@ export async function startCommandAgentAudioBridge(params: {
       responseStyle: "Brief, natural spoken answer for a live meeting.",
       fallbackText: "I hit an error while checking that. Please try again.",
       consult: ({ question, responseStyle }) =>
-        consultOpenClawAgentForGoogleMeet({
+        consultNodoAssistAgentForGoogleMeet({
           config: params.config,
           fullConfig: params.fullConfig,
           runtime: params.runtime,
@@ -834,7 +834,7 @@ export async function startCommandAgentAudioBridge(params: {
 
 export async function startCommandRealtimeAudioBridge(params: {
   config: GoogleMeetConfig;
-  fullConfig: OpenClawConfig;
+  fullConfig: NodoAssistConfig;
   runtime: PluginRuntime;
   meetingSessionId: string;
   requesterSessionKey?: string;
@@ -1121,7 +1121,7 @@ export async function startCommandRealtimeAudioBridge(params: {
       responseStyle: "Brief, natural spoken answer for a live meeting.",
       fallbackText: "I hit an error while checking that. Please try again.",
       consult: ({ question, responseStyle }) =>
-        consultOpenClawAgentForGoogleMeet({
+        consultNodoAssistAgentForGoogleMeet({
           config: params.config,
           fullConfig: params.fullConfig,
           runtime: params.runtime,

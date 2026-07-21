@@ -1,21 +1,21 @@
 {
-  "name": "@openclaw/nostr",
+  "name": "@nodoassist/nostr",
   "version": "2026.6.11",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/nostr",
+      "name": "@nodoassist/nostr",
       "version": "2026.6.11",
       "dependencies": {
         "nostr-tools": "2.23.9",
         "zod": "4.4.3"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.11"
+        "nodoassist": ">=2026.6.11"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "nodoassist": {
           "optional": true
         }
       }

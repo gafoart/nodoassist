@@ -1,8 +1,8 @@
-import { findNormalizedProviderValue } from "@openclaw/model-catalog-core/provider-id";
+import { findNormalizedProviderValue } from "@nodoassist/model-catalog-core/provider-id";
 /**
  * Selects and invokes native agent harnesses for embedded run attempts.
  */
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import {
   createChildDiagnosticTraceContext,
   createDiagnosticTraceContext,
@@ -27,7 +27,7 @@ import {
 } from "../provider-secret-egress.js";
 import { resolveSandboxRuntimeStatus } from "../sandbox/runtime-status.js";
 import { expandToolGroups, mergeAlsoAllowPolicy, normalizeToolName } from "../tool-policy.js";
-import { createOpenClawAgentHarness } from "./builtin-openclaw.js";
+import { createNodoAssistAgentHarness } from "./builtin-nodoassist.js";
 import { MissingAgentHarnessError } from "./errors.js";
 import { runAgentHarnessLifecycleAttempt } from "./lifecycle.js";
 import {
@@ -62,16 +62,16 @@ type AgentHarnessSelectionDecision = {
   policy: AgentHarnessPolicy;
   selectedHarnessId: string;
   selectedReason:
-    | "forced_openclaw"
+    | "forced_nodoassist"
     | "forced_plugin"
-    // Implicit Codex preference found no registered Codex harness, so OpenClaw handled the run.
-    | "implicit_plugin_unavailable_openclaw"
+    // Implicit Codex preference found no registered Codex harness, so NodoAssist handled the run.
+    | "implicit_plugin_unavailable_nodoassist"
     // Provider-owned CLI runtime aliases have no agent harness plugin counterpart.
-    | "cli_runtime_passthrough_openclaw"
+    | "cli_runtime_passthrough_nodoassist"
     // Auto mode chose a registered plugin harness that supports the provider/model.
     | "auto_plugin"
-    // Auto mode found no supporting plugin harness, so OpenClaw handled the run.
-    | "auto_openclaw";
+    // Auto mode found no supporting plugin harness, so NodoAssist handled the run.
+    | "auto_nodoassist";
   candidates: AgentHarnessSelectionCandidate[];
 };
 
@@ -113,7 +113,7 @@ function listPluginAgentHarnesses(): AgentHarness[] {
 export function resolveAvailableAgentHarnessPolicy(params: {
   provider?: string;
   modelId?: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   agentId?: string;
   sessionKey?: string;
   env?: NodeJS.ProcessEnv;
@@ -129,7 +129,7 @@ function applyAgentHarnessAvailabilityPolicy(policy: AgentHarnessPolicy): AgentH
   ) {
     return {
       ...policy,
-      runtime: "openclaw",
+      runtime: "nodoassist",
     };
   }
   return policy;
@@ -150,7 +150,7 @@ function buildAgentHarnessSupportContext(params: {
   provider: string;
   modelId?: string;
   requestedRuntime: AgentHarnessSupportContext["requestedRuntime"];
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
 }): AgentHarnessSupportContext {
   const providerOwnership = resolveProviderRefOwnership({
     provider: params.provider,
@@ -170,7 +170,7 @@ function buildAgentHarnessSupportContext(params: {
 function buildAgentHarnessSupportModelProvider(params: {
   provider: string;
   modelId?: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
 }): AgentHarnessSupportContext["modelProvider"] {
   const providerConfig = findNormalizedProviderValue(
     params.config?.models?.providers,
@@ -199,7 +199,7 @@ function readStringParam(value: unknown): string | undefined {
 export function selectAgentHarness(params: {
   provider: string;
   modelId?: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   agentId?: string;
   sessionKey?: string;
   agentHarnessId?: string;
@@ -208,20 +208,20 @@ export function selectAgentHarness(params: {
   return selectAgentHarnessDecision(params).harness;
 }
 
-/** Returns whether a plugin harness constructs OpenClaw tools inside its runtime. */
-export function agentHarnessBuildsOpenClawTools(harnessId: string): boolean {
+/** Returns whether a plugin harness constructs NodoAssist tools inside its runtime. */
+export function agentHarnessBuildsNodoAssistTools(harnessId: string): boolean {
   return harnessId === "codex" || harnessId === "copilot";
 }
 
-/** Returns whether the selected harness exposes OpenClaw's agent-tool surface. */
-export function agentHarnessExposesOpenClawTools(harnessId: string): boolean {
-  return harnessId === "openclaw" || agentHarnessBuildsOpenClawTools(harnessId);
+/** Returns whether the selected harness exposes NodoAssist's agent-tool surface. */
+export function agentHarnessExposesNodoAssistTools(harnessId: string): boolean {
+  return harnessId === "nodoassist" || agentHarnessBuildsNodoAssistTools(harnessId);
 }
 
 function selectAgentHarnessDecision(params: {
   provider: string;
   modelId?: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   agentId?: string;
   sessionKey?: string;
   agentHarnessId?: string;
@@ -237,16 +237,16 @@ function selectAgentHarnessDecision(params: {
           runtimeSource: "model",
         } as AgentHarnessPolicy)
       : resolvedPolicy;
-  // OpenClaw's built-in harness is intentionally not part of the plugin candidate list. Explicit plugin
-  // runtimes fail closed; only `auto` may route an unmatched turn to OpenClaw.
+  // NodoAssist's built-in harness is intentionally not part of the plugin candidate list. Explicit plugin
+  // runtimes fail closed; only `auto` may route an unmatched turn to NodoAssist.
   const pluginHarnesses = listPluginAgentHarnesses();
-  const openClawHarness = createOpenClawAgentHarness();
+  const nodoAssistHarness = createNodoAssistAgentHarness();
   const runtime = policy.runtime;
-  if (runtime === "openclaw") {
+  if (runtime === "nodoassist") {
     return buildSelectionDecision({
-      harness: openClawHarness,
+      harness: nodoAssistHarness,
       policy,
-      selectedReason: "forced_openclaw",
+      selectedReason: "forced_nodoassist",
       candidates: listHarnessCandidates(pluginHarnesses),
     });
   }
@@ -270,12 +270,12 @@ function selectAgentHarnessDecision(params: {
       }
       if (isCliRuntimeAliasForProvider({ runtime, provider: params.provider })) {
         return buildSelectionDecision({
-          harness: openClawHarness,
+          harness: nodoAssistHarness,
           policy: {
             ...policy,
-            runtime: "openclaw",
+            runtime: "nodoassist",
           },
-          selectedReason: "cli_runtime_passthrough_openclaw",
+          selectedReason: "cli_runtime_passthrough_nodoassist",
           candidates: listHarnessCandidates(pluginHarnesses),
         });
       }
@@ -287,12 +287,12 @@ function selectAgentHarnessDecision(params: {
     }
     if (runtime === "codex" && policy.runtimeSource === "implicit") {
       return buildSelectionDecision({
-        harness: openClawHarness,
+        harness: nodoAssistHarness,
         policy: {
           ...policy,
-          runtime: "openclaw",
+          runtime: "nodoassist",
         },
-        selectedReason: "implicit_plugin_unavailable_openclaw",
+        selectedReason: "implicit_plugin_unavailable_nodoassist",
         candidates: listHarnessCandidates(pluginHarnesses),
       });
     }
@@ -304,12 +304,12 @@ function selectAgentHarnessDecision(params: {
       })
     ) {
       return buildSelectionDecision({
-        harness: openClawHarness,
+        harness: nodoAssistHarness,
         policy: {
           ...policy,
-          runtime: "openclaw",
+          runtime: "nodoassist",
         },
-        selectedReason: "cli_runtime_passthrough_openclaw",
+        selectedReason: "cli_runtime_passthrough_nodoassist",
         candidates: listHarnessCandidates(pluginHarnesses),
       });
     }
@@ -352,9 +352,9 @@ function selectAgentHarnessDecision(params: {
     });
   }
   return buildSelectionDecision({
-    harness: openClawHarness,
+    harness: nodoAssistHarness,
     policy,
-    selectedReason: "auto_openclaw",
+    selectedReason: "auto_nodoassist",
     candidates: candidates.map(toSelectionCandidate),
   });
 }
@@ -376,7 +376,7 @@ export async function runAgentHarnessAttempt(
     agentHarnessRuntimeOverride: params.agentHarnessRuntimeOverride,
   });
   const harness = selection.harness;
-  const attemptParams = harness.id === "openclaw" ? params : preparePluginHarnessParams(params);
+  const attemptParams = harness.id === "nodoassist" ? params : preparePluginHarnessParams(params);
   logAgentHarnessSelection(selection, {
     provider: params.provider,
     modelId: params.modelId,
@@ -384,14 +384,14 @@ export async function runAgentHarnessAttempt(
     agentId: params.agentId,
   });
   const runAttempt = () => runAgentHarnessLifecycleAttempt(harness, attemptParams);
-  if (harness.id === "openclaw") {
+  if (harness.id === "nodoassist") {
     return await runWithDiagnosticTraceContext(harnessTrace, runAttempt);
   }
 
   try {
     return await runWithDiagnosticTraceContext(harnessTrace, runAttempt);
   } catch (error) {
-    log.warn(`${harness.label} failed; not falling back to embedded OpenClaw backend`, {
+    log.warn(`${harness.label} failed; not falling back to embedded NodoAssist backend`, {
       harnessId: harness.id,
       provider: params.provider,
       modelId: params.modelId,

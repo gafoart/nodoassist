@@ -4,15 +4,19 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { Readable, Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { readProviderJsonResponse } from "openclaw/plugin-sdk/provider-http";
-import { runPluginCommandWithTimeout } from "openclaw/plugin-sdk/run-command";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { CONFIG_DIR, extractArchive, resolveBrewExecutable } from "openclaw/plugin-sdk/setup-tools";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
-import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import { readProviderJsonResponse } from "nodoassist/plugin-sdk/provider-http";
+import { runPluginCommandWithTimeout } from "nodoassist/plugin-sdk/run-command";
+import type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime-env";
+import {
+  CONFIG_DIR,
+  extractArchive,
+  resolveBrewExecutable,
+} from "nodoassist/plugin-sdk/setup-tools";
+import { fetchWithSsrFGuard } from "nodoassist/plugin-sdk/ssrf-runtime";
+import { normalizeLowercaseStringOrEmpty } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { resolvePreferredNodoAssistTmpDir } from "nodoassist/plugin-sdk/temp-path";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 
 export type ReleaseAsset = {
   name?: string;
@@ -290,7 +294,7 @@ export async function installSignalCliFromRelease(
     auditContext: "signal-cli-release-info",
     init: {
       headers: {
-        "User-Agent": "openclaw",
+        "User-Agent": "nodoassist",
         Accept: "application/vnd.github+json",
       },
     },
@@ -326,7 +330,9 @@ export async function installSignalCliFromRelease(
     };
   }
 
-  const tmpDir = await fs.mkdtemp(path.join(resolvePreferredOpenClawTmpDir(), "openclaw-signal-"));
+  const tmpDir = await fs.mkdtemp(
+    path.join(resolvePreferredNodoAssistTmpDir(), "nodoassist-signal-"),
+  );
   const archivePath = path.join(tmpDir, asset.name);
 
   runtime.log(`Downloading signal-cli ${version} (${asset.name})…`);

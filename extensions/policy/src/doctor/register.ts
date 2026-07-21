@@ -7,10 +7,10 @@ import {
   type HealthCheck,
   type HealthCheckContext,
   type HealthFinding,
-} from "openclaw/plugin-sdk/health";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import { normalizeAgentId } from "openclaw/plugin-sdk/routing";
-import { isRecord, uniqueStrings } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/health";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
+import { normalizeAgentId } from "nodoassist/plugin-sdk/routing";
+import { isRecord, uniqueStrings } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   collectPolicyEvidence,
   createPolicyAttestation,
@@ -226,7 +226,7 @@ async function evaluatePolicyUncached(ctx: HealthCheckContext): Promise<PolicyEv
       source: "policy",
       path: policyFile.displayName,
       target: `oc://${policyFile.ocDocName}`,
-      requirement: "oc://openclaw.config/plugins/entries/policy/config/expectedHash",
+      requirement: "oc://nodoassist.config/plugins/entries/policy/config/expectedHash",
       fixHint: `Restore the approved policy artifact or update plugins.entries.policy.config.expectedHash after review.`,
     });
     return {
@@ -403,7 +403,7 @@ function channelFindings(
         severity: "error",
         message: `Channel '${channel.id}' uses denied provider '${channel.provider}'.`,
         source: "policy",
-        path: "openclaw config",
+        path: "nodoassist config",
         ocPath: channel.source,
         target: channel.source,
         requirement: rule.requirement,
@@ -445,7 +445,7 @@ function policyAttestationFindings(
       source: "policy",
       path: "policy attestation",
       target: "oc://policy/attestation/current",
-      requirement: "oc://openclaw.config/plugins/entries/policy/config/expectedAttestationHash",
+      requirement: "oc://nodoassist.config/plugins/entries/policy/config/expectedAttestationHash",
       fixHint: `Run policy check, review attestation ${current.attestationHash}, then update plugins.entries.policy.config.expectedAttestationHash and the supervisor/gateway accepted attestation.`,
     },
   ];
@@ -2476,7 +2476,7 @@ function isGroupIngressDisabled(
   groupPolicies: readonly PolicyIngressEvidence[],
 ): boolean {
   const entryParent = ocPathParent(entry.source);
-  const channelDefaultsParent = "oc://openclaw.config/channels/defaults";
+  const channelDefaultsParent = "oc://nodoassist.config/channels/defaults";
   const matches = groupPolicies
     .filter((candidate) => {
       const candidateParent = ocPathParent(candidate.source);
@@ -2526,7 +2526,7 @@ function ingressFinding(
     severity: "error",
     message: params.message,
     source: "policy",
-    path: "openclaw config",
+    path: "nodoassist config",
     ocPath: entry.source,
     target: entry.source,
     requirement: params.requirement,
@@ -2607,7 +2607,7 @@ function agentWorkspaceAccessFindings(
         severity: "error",
         message: `${label} ${observed} is not allowed by policy.`,
         source: "policy",
-        path: "openclaw config",
+        path: "nodoassist config",
         ocPath,
         target: ocPath,
         requirement: `oc://${policyDocName}/${requirementPath}`,
@@ -2644,7 +2644,7 @@ function agentWorkspaceToolDenyFindings(
         severity: "error",
         message: `${label} does not deny required tool '${entry.tool ?? ""}'.`,
         source: "policy",
-        path: "openclaw config",
+        path: "nodoassist config",
         ocPath: entry.source,
         target: entry.source,
         requirement: `oc://${policyDocName}/${requirementPath}`,
@@ -3581,7 +3581,7 @@ function toolPostureFinding(
     severity: "error",
     message: params.message,
     source: "policy",
-    path: "openclaw config",
+    path: "nodoassist config",
     ocPath: entry.source,
     target: entry.source,
     requirement: params.requirement,
@@ -4044,7 +4044,7 @@ function sandboxPostureFinding(
     severity: "error",
     message: params.message,
     source: "policy",
-    path: "openclaw config",
+    path: "nodoassist config",
     ocPath: entry.source,
     target: entry.source,
     requirement: params.requirement,
@@ -4423,7 +4423,7 @@ function dataHandlingFinding(
     severity: "error",
     message: params.message,
     source: "policy",
-    path: "openclaw config",
+    path: "nodoassist config",
     ocPath: entry.source,
     target: entry.source,
     requirement: params.requirement,
@@ -4864,7 +4864,7 @@ function secretPolicyShapeFindings(
           policyPath,
           `oc://${policyDocName}/secrets/denySources/#${invalidIndex}`,
           `${policyPath} secrets.denySources[${invalidIndex}] must be a non-empty source name.`,
-          "Use non-empty source names such as env, file, exec, or openclaw.",
+          "Use non-empty source names such as env, file, exec, or nodoassist.",
         ),
       );
     }
@@ -4944,7 +4944,7 @@ function secretManagedProviderFindings(
         severity: "error",
         message: `SecretRef uses unmanaged provider '${secret.refProvider ?? "default"}'.`,
         source: "policy",
-        path: "openclaw config",
+        path: "nodoassist config",
         ocPath: secret.source,
         target: secret.source,
         requirement: `oc://${policyDocName}/secrets/requireManagedProviders`,
@@ -4975,7 +4975,7 @@ function secretDeniedSourceFindings(
         severity: "error",
         message: `Secret ${secret.kind} '${secret.id}' uses denied source '${source}'.`,
         source: "policy",
-        path: "openclaw config",
+        path: "nodoassist config",
         ocPath: secret.source,
         target: secret.source,
         requirement: `oc://${policyDocName}/secrets/denySources`,
@@ -5000,7 +5000,7 @@ function secretInsecureProviderFindings(
         severity: "error",
         message: `Secret provider '${secret.id}' enables insecure posture: ${(secret.insecure ?? []).join(", ")}.`,
         source: "policy",
-        path: "openclaw config",
+        path: "nodoassist config",
         ocPath: secret.source,
         target: secret.source,
         requirement: `oc://${policyDocName}/secrets/allowInsecureProviders`,
@@ -5031,7 +5031,7 @@ function authProfileMetadataFindings(
         severity: "error",
         message: `Auth profile '${profile.id}' is missing required metadata: ${missing.join(", ")}.`,
         source: "policy",
-        path: "openclaw config",
+        path: "nodoassist config",
         ocPath: profile.source,
         target: profile.source,
         requirement: `oc://${policyDocName}/auth/profiles/requireMetadata`,
@@ -5058,7 +5058,7 @@ function authProfileModeFindings(
         severity: "error",
         message: `Auth profile '${profile.id}' uses mode '${profile.mode}' outside the policy allowlist.`,
         source: "policy",
-        path: "openclaw config",
+        path: "nodoassist config",
         ocPath: profile.source,
         target: profile.source,
         requirement: `oc://${policyDocName}/auth/profiles/allowModes`,
@@ -5251,7 +5251,7 @@ function resolvePolicyArtifactPath(ctx: HealthCheckContext, fileName: string): s
 }
 
 function resolvePolicyArtifactHomeDir(): string | undefined {
-  const explicitHome = normalizedEnvValue(process.env.OPENCLAW_HOME);
+  const explicitHome = normalizedEnvValue(process.env.NODOASSIST_HOME);
   if (explicitHome !== undefined) {
     if (explicitHome === "~" || explicitHome.startsWith("~/") || explicitHome.startsWith("~\\")) {
       return resolvePolicyHomeRelativePath(explicitHome);
@@ -5426,7 +5426,7 @@ function channelIdsFromFindings(findings: readonly HealthFinding[]): readonly st
     ...new Set(
       findings
         .filter((finding) => finding.checkId === CHECK_IDS.policyDeniedChannelProvider)
-        .map((finding) => finding.ocPath?.match(/^oc:\/\/openclaw\.config\/channels\/(.+)$/)?.[1])
+        .map((finding) => finding.ocPath?.match(/^oc:\/\/nodoassist\.config\/channels\/(.+)$/)?.[1])
         .filter((id): id is string => id !== undefined && id !== ""),
     ),
   ];
@@ -5550,14 +5550,14 @@ function normalizePolicyChannelId(value: string): string {
 }
 
 function canonicalExecApprovalsPath(): string {
-  return "~/.openclaw/exec-approvals.json";
+  return "~/.nodoassist/exec-approvals.json";
 }
 
 function execApprovalsArtifactLocation(ctx: HealthCheckContext): {
   readonly path: string;
   readonly displayName: string;
 } {
-  const stateDir = normalizedEnvValue(process.env.OPENCLAW_STATE_DIR);
+  const stateDir = normalizedEnvValue(process.env.NODOASSIST_STATE_DIR);
   if (stateDir !== undefined) {
     const path = resolve(resolvePolicyStateDir(stateDir), "exec-approvals.json");
     return { path, displayName: path };
@@ -5569,7 +5569,7 @@ function execApprovalsArtifactLocation(ctx: HealthCheckContext): {
 }
 
 function execApprovalsDisplayName(): string {
-  const stateDir = normalizedEnvValue(process.env.OPENCLAW_STATE_DIR);
+  const stateDir = normalizedEnvValue(process.env.NODOASSIST_STATE_DIR);
   if (stateDir === undefined) {
     return canonicalExecApprovalsPath();
   }

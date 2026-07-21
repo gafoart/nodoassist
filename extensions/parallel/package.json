@@ -1,22 +1,22 @@
 {
-  "name": "@openclaw/parallel-plugin",
+  "name": "@nodoassist/parallel-plugin",
   "version": "2026.6.11",
-  "description": "OpenClaw Parallel web search plugin.",
+  "description": "NodoAssist Parallel web search plugin.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
   },
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/parallel-plugin",
-      "npmSpec": "@openclaw/parallel-plugin",
+      "clawhubSpec": "clawhub:@nodoassist/parallel-plugin",
+      "npmSpec": "@nodoassist/parallel-plugin",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.8"
     },
@@ -24,7 +24,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

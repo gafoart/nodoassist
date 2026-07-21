@@ -74,7 +74,7 @@ describe("buildDiscordInboundJob", () => {
       },
       preparedMedia: [
         {
-          path: "/tmp/openclaw-discord-test/photo.png",
+          path: "/tmp/nodoassist-discord-test/photo.png",
           contentType: "image/png",
           placeholder: "<media:image>",
         },

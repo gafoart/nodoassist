@@ -1,13 +1,13 @@
 // Device-pairing setup-code method produces the connect QR/setup code a mobile
 // or companion client scans to connect to this gateway. It reuses the same
-// pairing helpers as `openclaw qr` so non-terminal clients can display the
+// pairing helpers as `nodoassist qr` so non-terminal clients can display the
 // connect QR that was previously only renderable in a terminal.
 import {
   ErrorCodes,
   errorShape,
   validateDevicePairSetupCodeParams,
 } from "../../../packages/gateway-protocol/src/index.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { renderQrPngDataUrl } from "../../media/qr-image.js";
 import { encodePairingSetupCode, resolvePairingSetupFromConfig } from "../../pairing/setup-code.js";
 import { runCommandWithTimeout } from "../../process/exec.js";
@@ -21,7 +21,7 @@ import { assertValidParams } from "./validation.js";
 // rather than return a response that violates the protocol schema.
 const MAX_QR_DATA_URL_LENGTH = 16_384;
 
-function readConfiguredDevicePairPublicUrl(config: OpenClawConfig): string | undefined {
+function readConfiguredDevicePairPublicUrl(config: NodoAssistConfig): string | undefined {
   const value = config.plugins?.entries?.["device-pair"]?.config?.["publicUrl"];
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
@@ -49,7 +49,7 @@ export const devicePairSetupHandlers: GatewayRequestHandlers = {
         env: process.env,
         publicUrl,
         preferRemoteUrl: params.preferRemoteUrl === true,
-        // Lets Tailscale serve/funnel URLs resolve, mirroring the `openclaw qr` CLI.
+        // Lets Tailscale serve/funnel URLs resolve, mirroring the `nodoassist qr` CLI.
         runCommandWithTimeout: async (argv, runOpts) =>
           await runCommandWithTimeout(argv, { timeoutMs: runOpts.timeoutMs }),
       });

@@ -4,12 +4,12 @@ import path from "node:path";
 import { createInterface } from "node:readline/promises";
 import { format } from "node:util";
 import type { Command } from "commander";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { callGatewayFromCli } from "openclaw/plugin-sdk/gateway-runtime";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import { callGatewayFromCli } from "nodoassist/plugin-sdk/gateway-runtime";
 import {
   clampTimerTimeoutMs,
   parseStrictPositiveInteger,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "nodoassist/plugin-sdk/number-runtime";
 import {
   buildGoogleMeetCalendarDayWindow,
   findGoogleMeetCalendarEvent,
@@ -1566,7 +1566,7 @@ export function registerGoogleMeetCli(params: {
           if (payload.joined && payload.join?.session?.id) {
             writeStdoutLine("joined: %s", payload.join.session.id);
           } else {
-            writeStdoutLine("joined: no (run `openclaw googlemeet join %s`)", payload.meetingUri);
+            writeStdoutLine("joined: no (run `nodoassist googlemeet join %s`)", payload.meetingUri);
           }
           return;
         }
@@ -1613,7 +1613,7 @@ export function registerGoogleMeetCli(params: {
         if (join) {
           writeStdoutLine("joined: %s", join.session.id);
         } else {
-          writeStdoutLine("joined: no (run `openclaw googlemeet join %s`)", result.meetingUri);
+          writeStdoutLine("joined: no (run `nodoassist googlemeet join %s`)", result.meetingUri);
         }
         return;
       }
@@ -1659,7 +1659,7 @@ export function registerGoogleMeetCli(params: {
       if (join) {
         writeStdoutLine("joined: %s", join.session.id);
       } else {
-        writeStdoutLine("joined: no (run `openclaw googlemeet join %s`)", result.meetingUri);
+        writeStdoutLine("joined: no (run `nodoassist googlemeet join %s`)", result.meetingUri);
       }
     });
 

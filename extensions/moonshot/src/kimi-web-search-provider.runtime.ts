@@ -2,8 +2,8 @@
 import {
   createProviderHttpError,
   readProviderJsonObjectResponse,
-} from "openclaw/plugin-sdk/provider-http";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/provider-onboard";
+} from "nodoassist/plugin-sdk/provider-http";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/provider-onboard";
 import {
   buildSearchCacheKey,
   buildUnsupportedSearchFilterResponse,
@@ -25,12 +25,12 @@ import {
   withTrustedWebSearchEndpoint,
   wrapWebContent,
   writeCachedSearchPayload,
-} from "openclaw/plugin-sdk/provider-web-search";
+} from "nodoassist/plugin-sdk/provider-web-search";
 import {
   isRecord,
   normalizeOptionalString,
   uniqueStrings,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   isNativeMoonshotBaseUrl,
   MOONSHOT_BASE_URL,
@@ -115,13 +115,13 @@ function trimTrailingSlashes(url: string): string {
   return url.replace(/\/+$/, "");
 }
 
-function resolveKimiBaseUrl(kimi?: KimiConfig, openClawConfig?: OpenClawConfig): string {
+function resolveKimiBaseUrl(kimi?: KimiConfig, nodoAssistConfig?: NodoAssistConfig): string {
   const explicitBaseUrl = normalizeOptionalString(kimi?.baseUrl) ?? "";
   if (explicitBaseUrl) {
     return trimTrailingSlashes(explicitBaseUrl) || DEFAULT_KIMI_BASE_URL;
   }
 
-  const moonshotBaseUrl = openClawConfig?.models?.providers?.moonshot?.baseUrl;
+  const moonshotBaseUrl = nodoAssistConfig?.models?.providers?.moonshot?.baseUrl;
   if (typeof moonshotBaseUrl === "string") {
     const normalizedMoonshotBaseUrl = trimTrailingSlashes(moonshotBaseUrl.trim());
     if (normalizedMoonshotBaseUrl && isNativeMoonshotBaseUrl(normalizedMoonshotBaseUrl)) {
@@ -342,7 +342,7 @@ async function runKimiSearch(params: {
 }
 
 export async function executeKimiWebSearchProviderTool(
-  ctx: { config?: OpenClawConfig; searchConfig?: SearchConfigRecord },
+  ctx: { config?: NodoAssistConfig; searchConfig?: SearchConfigRecord },
   args: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
   const searchConfig = mergeScopedSearchConfig(

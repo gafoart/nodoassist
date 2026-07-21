@@ -8,12 +8,12 @@ import {
   getNodeSqliteKysely,
 } from "../infra/kysely-sync.js";
 import { normalizeSqliteNumber } from "../infra/sqlite-number.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as NodoAssistStateKyselyDatabase } from "../state/nodoassist-state-db.generated.js";
 import {
-  openOpenClawStateDatabase,
-  runOpenClawStateWriteTransaction,
-  type OpenClawStateDatabaseOptions,
-} from "../state/openclaw-state-db.js";
+  openNodoAssistStateDatabase,
+  runNodoAssistStateWriteTransaction,
+  type NodoAssistStateDatabaseOptions,
+} from "../state/nodoassist-state-db.js";
 import type {
   AuditEventInput,
   AuditEventListFilters,
@@ -21,8 +21,8 @@ import type {
   AuditEventRecord,
 } from "./audit-event-types.js";
 
-type AuditEventsTable = OpenClawStateKyselyDatabase["audit_events"];
-type AuditDatabase = Pick<OpenClawStateKyselyDatabase, "audit_events">;
+type AuditEventsTable = NodoAssistStateKyselyDatabase["audit_events"];
+type AuditDatabase = Pick<NodoAssistStateKyselyDatabase, "audit_events">;
 type AuditEventRow = Selectable<AuditEventsTable>;
 
 const AUDIT_EVENT_RETENTION_MS = 30 * 24 * 60 * 60_000;
@@ -104,9 +104,9 @@ function pruneAuditEventsAfterInsert(db: DatabaseSync, now: number): void {
 /** Persist one projected event idempotently and prune fixed retention bounds. */
 export function recordAuditEvent(
   input: AuditEventInput,
-  options: OpenClawStateDatabaseOptions = {},
+  options: NodoAssistStateDatabaseOptions = {},
 ): AuditEventRecord | undefined {
-  return runOpenClawStateWriteTransaction(({ db }) => {
+  return runNodoAssistStateWriteTransaction(({ db }) => {
     const insert = executeSqliteQuerySync(
       db,
       getAuditKysely(db)
@@ -136,9 +136,9 @@ export function listAuditEvents(params: {
   cursor?: number;
   limit: number;
   now?: number;
-  database?: OpenClawStateDatabaseOptions;
+  database?: NodoAssistStateDatabaseOptions;
 }): AuditEventListPage {
-  const { db } = openOpenClawStateDatabase(params.database);
+  const { db } = openNodoAssistStateDatabase(params.database);
   const filters = params.filters ?? {};
   const retainedAfter = (params.now ?? Date.now()) - AUDIT_EVENT_RETENTION_MS;
   let query = getAuditKysely(db)
@@ -186,10 +186,10 @@ export function listAuditEvents(params: {
 export function pruneExpiredAuditEvents(
   params: {
     now?: number;
-    database?: OpenClawStateDatabaseOptions;
+    database?: NodoAssistStateDatabaseOptions;
   } = {},
 ): void {
-  runOpenClawStateWriteTransaction(({ db }) => {
+  runNodoAssistStateWriteTransaction(({ db }) => {
     executeSqliteQuerySync(
       db,
       getAuditKysely(db)

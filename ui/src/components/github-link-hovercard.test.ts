@@ -9,7 +9,7 @@ import {
 
 function createLink(href: string, label = "GitHub item") {
   const provider = document.createElement(
-    "openclaw-github-link-hovercard-provider",
+    "nodoassist-github-link-hovercard-provider",
   ) as GitHubLinkHovercardProvider;
   const anchor = document.createElement("a");
   anchor.href = href;
@@ -40,10 +40,10 @@ describe("parseGitHubIssueOrPullRequestLink", () => {
       parseGitHubIssueOrPullRequestLink(
         "https://github.com/openclaw/openclaw/issues/99815#issuecomment-1",
       ),
-    ).toMatchObject({ kind: "issue", number: 99815, owner: "openclaw", repo: "openclaw" });
+    ).toMatchObject({ kind: "issue", number: 99815, owner: "nodoassist", repo: "nodoassist" });
     expect(
       parseGitHubIssueOrPullRequestLink("https://github.com/openclaw/openclaw/pull/99816/files"),
-    ).toMatchObject({ kind: "pull", number: 99816, owner: "openclaw", repo: "openclaw" });
+    ).toMatchObject({ kind: "pull", number: 99816, owner: "nodoassist", repo: "nodoassist" });
   });
 
   it("rejects non-item, non-HTTPS, credentialed, and non-GitHub links", () => {
@@ -60,7 +60,7 @@ describe("parseGitHubIssueOrPullRequestLink", () => {
   });
 });
 
-describe("openclaw-github-link-hovercard-provider", () => {
+describe("nodoassist-github-link-hovercard-provider", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-07-05T10:00:00Z"));
@@ -86,8 +86,8 @@ describe("openclaw-github-link-hovercard-provider", () => {
       login: "steipete",
       mergedAt: "2026-07-04T09:53:52Z",
       number: 99816,
-      owner: "OpenClaw",
-      repo: "OpenClaw",
+      owner: "NodoAssist",
+      repo: "NodoAssist",
       state: "closed",
       title: "fix(agents): derive conversation scope from trusted group facts",
       updatedAt: "2026-07-05T09:55:00Z",
@@ -100,7 +100,7 @@ describe("openclaw-github-link-hovercard-provider", () => {
 
     const card = document.querySelector<HTMLElement>(".github-link-hovercard");
     expect(card?.textContent).toContain("Merged");
-    expect(card?.textContent).toContain("openclaw/openclaw #99816");
+    expect(card?.textContent).toContain("nodoassist/nodoassist #99816");
     expect(card?.textContent).toContain(
       "fix(agents): derive conversation scope from trusted group facts",
     );
@@ -114,8 +114,8 @@ describe("openclaw-github-link-hovercard-provider", () => {
     expect(request).toHaveBeenCalledWith("controlUi.githubPreview", {
       kind: "pull",
       number: 99816,
-      owner: "openclaw",
-      repo: "openclaw",
+      owner: "nodoassist",
+      repo: "nodoassist",
     });
 
     leave(anchor);
@@ -132,8 +132,8 @@ describe("openclaw-github-link-hovercard-provider", () => {
       kind: "issue",
       login: "octocat",
       number: 99815,
-      owner: "openclaw",
-      repo: "openclaw",
+      owner: "nodoassist",
+      repo: "nodoassist",
       state: "open",
       stateReason: null,
       title: "Keep hover previews compact",

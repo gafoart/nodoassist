@@ -10,17 +10,17 @@
  * Issue #69546.
  */
 
-import type { OpenClawConfig } from "openclaw/plugin-sdk/core";
-import { getRuntimeConfig } from "openclaw/plugin-sdk/runtime-config-snapshot";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/core";
+import { getRuntimeConfig } from "nodoassist/plugin-sdk/runtime-config-snapshot";
 
-export type GatewayCfgLoader = () => OpenClawConfig;
+export type GatewayCfgLoader = () => NodoAssistConfig;
 
 interface ActiveCfgProvider {
-  getActiveCfg(): OpenClawConfig;
+  getActiveCfg(): NodoAssistConfig;
 }
 
 interface ActiveCfgProviderOptions {
-  fallback: OpenClawConfig;
+  fallback: NodoAssistConfig;
   load?: GatewayCfgLoader;
 }
 
@@ -28,7 +28,7 @@ export function createActiveCfgProvider(options: ActiveCfgProviderOptions): Acti
   const loader = options.load ?? defaultGatewayCfgLoader;
   const fallback = options.fallback;
   return {
-    getActiveCfg(): OpenClawConfig {
+    getActiveCfg(): NodoAssistConfig {
       return resolveActiveCfg(loader, fallback);
     },
   };
@@ -36,8 +36,8 @@ export function createActiveCfgProvider(options: ActiveCfgProviderOptions): Acti
 
 export function resolveActiveCfg(
   loader: GatewayCfgLoader,
-  fallback: OpenClawConfig,
-): OpenClawConfig {
+  fallback: NodoAssistConfig,
+): NodoAssistConfig {
   try {
     return loader();
   } catch {
@@ -45,6 +45,6 @@ export function resolveActiveCfg(
   }
 }
 
-function defaultGatewayCfgLoader(): OpenClawConfig {
+function defaultGatewayCfgLoader(): NodoAssistConfig {
   return getRuntimeConfig();
 }

@@ -1,10 +1,10 @@
 /**
  * Channel config-write policy facade.
  *
- * Applies shared config write authorization to concrete OpenClaw channel config.
+ * Applies shared config write authorization to concrete NodoAssist channel config.
  */
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { normalizeLowercaseStringOrEmpty } from "@nodoassist/normalization-core/string-coerce";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import {
   authorizeConfigWriteShared,
   canBypassConfigWritePolicyShared,
@@ -41,7 +41,7 @@ function isInternalConfigWriteMessageChannel(channel?: string | null): boolean {
  * Resolves whether config writes are enabled for a channel/account scope.
  */
 export function resolveChannelConfigWrites(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   channelId?: ChannelId | null;
   accountId?: string | null;
 }): boolean {
@@ -52,7 +52,7 @@ export function resolveChannelConfigWrites(params: {
  * Authorizes a channel config write under origin and target policy.
  */
 export function authorizeConfigWrite(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   origin?: ConfigWriteScope;
   target?: ConfigWriteTarget;
   allowBypass?: boolean;

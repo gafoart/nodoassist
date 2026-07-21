@@ -2,7 +2,7 @@
  * Regression coverage for embedded-agent message text utilities.
  * Verifies visible text extraction, reasoning formatting, and thinking-tag promotion.
  */
-import type { AssistantMessage } from "openclaw/plugin-sdk/llm";
+import type { AssistantMessage } from "nodoassist/plugin-sdk/llm";
 import { describe, expect, it } from "vitest";
 import {
   extractAssistantText,
@@ -645,29 +645,29 @@ describe("formatReasoningMessage", () => {
 
   it("wraps single line in italics", () => {
     expect(formatReasoningMessage("Single line of reasoning")).toBe(
-      "Thinking\n\n_Single line of reasoning_",
+      ".nodoassist\n\n_Single line of reasoning_",
     );
   });
 
   it("wraps each line separately for multiline text (Telegram fix)", () => {
     expect(formatReasoningMessage("Line one\nLine two\nLine three")).toBe(
-      "Thinking\n\n_Line one_\n_Line two_\n_Line three_",
+      ".nodoassist\n\n_Line one_\n_Line two_\n_Line three_",
     );
   });
 
   it("preserves empty lines between reasoning text", () => {
     expect(formatReasoningMessage("First block\n\nSecond block")).toBe(
-      "Thinking\n\n_First block_\n\n_Second block_",
+      ".nodoassist\n\n_First block_\n\n_Second block_",
     );
   });
 
   it("handles mixed empty and non-empty lines", () => {
-    expect(formatReasoningMessage("A\n\nB\nC")).toBe("Thinking\n\n_A_\n\n_B_\n_C_");
+    expect(formatReasoningMessage("A\n\nB\nC")).toBe(".nodoassist\n\n_A_\n\n_B_\n_C_");
   });
 
   it("trims leading/trailing whitespace", () => {
     expect(formatReasoningMessage("  \n  Reasoning here  \n  ")).toBe(
-      "Thinking\n\n_Reasoning here_",
+      ".nodoassist\n\n_Reasoning here_",
     );
   });
 });

@@ -1,6 +1,6 @@
-import { resolveClaudeSonnet5ModelIdentity } from "@openclaw/llm-core";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { resolveClaudeSonnet5ModelIdentity } from "@nodoassist/llm-core";
+import { normalizeLowercaseStringOrEmpty } from "@nodoassist/normalization-core/string-coerce";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import {
   lookupCachedContextTokens,
   lookupCachedContextWindow,
@@ -20,8 +20,8 @@ export type ModelsConfig = {
 };
 
 export type ContextTokenResolutionParams = {
-  cfg?: OpenClawConfig;
-  sourceCfg?: OpenClawConfig | null;
+  cfg?: NodoAssistConfig;
+  sourceCfg?: NodoAssistConfig | null;
   provider?: string;
   model?: string;
   contextTokensOverride?: number;
@@ -75,7 +75,7 @@ function resolveProviderModelRef(params: {
 }
 
 function resolveConfiguredProviderContextTokens(
-  cfg: OpenClawConfig | null | undefined,
+  cfg: NodoAssistConfig | null | undefined,
   provider: string,
   model: string,
 ): ConfiguredContextTokens | undefined {

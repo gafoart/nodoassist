@@ -1,45 +1,45 @@
 // Discord plugin module implements message handler.process behavior.
 import { MessageFlags } from "discord-api-types/v10";
 import type { APIAllowedMentions } from "discord-api-types/v10";
-import { resolveAckReaction, resolveHumanDelayConfig } from "openclaw/plugin-sdk/agent-runtime";
+import { resolveAckReaction, resolveHumanDelayConfig } from "nodoassist/plugin-sdk/agent-runtime";
 import {
   createStatusReactionController,
   DEFAULT_TIMING,
   logAckFailure,
   shouldAckReaction as shouldAckReactionGate,
-} from "openclaw/plugin-sdk/channel-feedback";
+} from "nodoassist/plugin-sdk/channel-feedback";
 import {
   dispatchChannelInboundReply,
   hasFinalInboundReplyDispatch,
-} from "openclaw/plugin-sdk/channel-inbound";
+} from "nodoassist/plugin-sdk/channel-inbound";
 import {
   createChannelMessageReplyPipeline,
   defineFinalizableLivePreviewAdapter,
   deliverWithFinalizableLivePreviewAdapter,
   resolveChannelMessageSourceReplyDeliveryMode,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "nodoassist/plugin-sdk/channel-outbound";
 import {
   buildChannelProgressDraftLine,
   buildChannelProgressDraftLineForEntry,
   isChannelProgressDraftWorkToolName,
   resolveChannelStreamingBlockEnabled,
   resolveTranscriptBackedChannelFinalText,
-} from "openclaw/plugin-sdk/channel-outbound";
-import { recordInboundSession } from "openclaw/plugin-sdk/conversation-runtime";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/markdown-table-runtime";
-import { getAgentScopedMediaLocalRoots } from "openclaw/plugin-sdk/media-runtime";
-import { resolveChunkMode } from "openclaw/plugin-sdk/reply-chunking";
-import { createChannelHistoryWindow } from "openclaw/plugin-sdk/reply-history";
+} from "nodoassist/plugin-sdk/channel-outbound";
+import { recordInboundSession } from "nodoassist/plugin-sdk/conversation-runtime";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
+import { resolveMarkdownTableMode } from "nodoassist/plugin-sdk/markdown-table-runtime";
+import { getAgentScopedMediaLocalRoots } from "nodoassist/plugin-sdk/media-runtime";
+import { resolveChunkMode } from "nodoassist/plugin-sdk/reply-chunking";
+import { createChannelHistoryWindow } from "nodoassist/plugin-sdk/reply-history";
 import {
   getReplyPayloadTtsSupplement,
   isReplyPayloadNonTerminalToolErrorWarning,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyDispatchKind, ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import { danger, logVerbose, shouldLogVerbose, sleep } from "openclaw/plugin-sdk/runtime-env";
-import { getSessionEntry, resolveStorePath } from "openclaw/plugin-sdk/session-store-runtime";
-import { readLatestAssistantTextByIdentity } from "openclaw/plugin-sdk/session-transcript-runtime";
+} from "nodoassist/plugin-sdk/reply-payload";
+import type { ReplyDispatchKind, ReplyPayload } from "nodoassist/plugin-sdk/reply-runtime";
+import { danger, logVerbose, shouldLogVerbose, sleep } from "nodoassist/plugin-sdk/runtime-env";
+import { getSessionEntry, resolveStorePath } from "nodoassist/plugin-sdk/session-store-runtime";
+import { readLatestAssistantTextByIdentity } from "nodoassist/plugin-sdk/session-transcript-runtime";
 import { resolveDiscordMaxLinesPerMessage } from "../accounts.js";
 import { chunkDiscordTextWithMode } from "../chunk.js";
 import { createDiscordRestClient } from "../client.js";
@@ -62,7 +62,9 @@ import { deliverDiscordReply } from "./reply-delivery.js";
 import { sanitizeDiscordFrontChannelReplyPayloads } from "./reply-safety.js";
 import { createDiscordReplyTypingFeedback } from "./reply-typing-feedback.js";
 
-const loadReplyRuntime = createLazyRuntimeModule(() => import("openclaw/plugin-sdk/reply-runtime"));
+const loadReplyRuntime = createLazyRuntimeModule(
+  () => import("nodoassist/plugin-sdk/reply-runtime"),
+);
 const TARGETED_ONLY_ALLOWED_MENTIONS = {
   parse: ["users", "roles"],
 } as APIAllowedMentions;

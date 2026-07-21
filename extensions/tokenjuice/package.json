@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/tokenjuice",
+  "name": "@nodoassist/tokenjuice",
   "version": "2026.6.11",
-  "description": "OpenClaw tokenjuice exec output compaction plugin",
+  "description": "NodoAssist tokenjuice exec output compaction plugin",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -11,24 +11,24 @@
     "tokenjuice": "0.8.1"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/tokenjuice",
-      "npmSpec": "@openclaw/tokenjuice",
+      "clawhubSpec": "clawhub:@nodoassist/tokenjuice",
+      "npmSpec": "@nodoassist/tokenjuice",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.5.28"
     },
@@ -36,7 +36,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "release": {

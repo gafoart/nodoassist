@@ -2,7 +2,7 @@
  * Tests shared gateway auth behavior across config method updates.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import type { RestartSentinelPayload } from "../../infra/restart-sentinel.js";
 import { resetPluginRuntimeStateForTest, setActivePluginRegistry } from "../../plugins/runtime.js";
 import { createTestRegistry } from "../../test-utils/channel-plugins.js";
@@ -14,7 +14,7 @@ import {
 
 const readConfigFileSnapshotForWriteMock = vi.fn();
 const writeConfigFileMock = vi.fn();
-const persistedConfigResultMock = vi.fn((config: OpenClawConfig) => config);
+const persistedConfigResultMock = vi.fn((config: NodoAssistConfig) => config);
 const validateConfigObjectWithPluginsMock = vi.fn();
 const prepareSecretsRuntimeSnapshotMock = vi.fn();
 const scheduleGatewaySigusr1RestartMock = vi.fn(() => ({
@@ -31,13 +31,13 @@ vi.mock("../../config/config.js", async () => {
     await vi.importActual<typeof import("../../config/config.js")>("../../config/config.js");
   return {
     ...actual,
-    createConfigIO: () => ({ configPath: "/tmp/openclaw.json" }),
+    createConfigIO: () => ({ configPath: "/tmp/nodoassist.json" }),
     writeConfigFile: writeConfigFileMock,
-    replaceConfigFile: async (params: { nextConfig: OpenClawConfig; writeOptions?: unknown }) => {
+    replaceConfigFile: async (params: { nextConfig: NodoAssistConfig; writeOptions?: unknown }) => {
       await writeConfigFileMock(params.nextConfig, params.writeOptions);
       const persistedConfig = persistedConfigResultMock(params.nextConfig);
       return {
-        path: "/tmp/openclaw.json",
+        path: "/tmp/nodoassist.json",
         previousHash: "base-hash",
         snapshot: createConfigWriteSnapshot(params.nextConfig),
         nextConfig: persistedConfig,
@@ -53,7 +53,7 @@ vi.mock("../../config/io.js", async () => {
   const actual = await vi.importActual<typeof import("../../config/io.js")>("../../config/io.js");
   return {
     ...actual,
-    createConfigIO: () => ({ configPath: "/tmp/openclaw.json" }),
+    createConfigIO: () => ({ configPath: "/tmp/nodoassist.json" }),
     readConfigFileSnapshotForWrite: readConfigFileSnapshotForWriteMock,
   };
 });
@@ -102,7 +102,7 @@ const GATEWAY_CONFIG_WRITE_OPTIONS = {
   },
 };
 
-function tokenAuthConfig(token: string): OpenClawConfig {
+function tokenAuthConfig(token: string): NodoAssistConfig {
   return {
     gateway: {
       auth: {
@@ -117,7 +117,7 @@ function trustedProxyConfig(params: {
   trustedProxies?: string[];
   requiredHeaders?: string[];
   allowUsers?: string[];
-}): OpenClawConfig {
+}): NodoAssistConfig {
   return {
     gateway: {
       auth: {
@@ -133,7 +133,7 @@ function trustedProxyConfig(params: {
   };
 }
 
-function hotReloadConfig(): OpenClawConfig {
+function hotReloadConfig(): NodoAssistConfig {
   return {
     gateway: {
       reload: {
@@ -156,7 +156,7 @@ function installBrowserReloadRegistry(): void {
   setActivePluginRegistry(registry);
 }
 
-function mockPreviousConfig(config: OpenClawConfig): void {
+function mockPreviousConfig(config: NodoAssistConfig): void {
   readConfigFileSnapshotForWriteMock.mockResolvedValue(createConfigWriteSnapshot(config));
 }
 
@@ -190,32 +190,32 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  validateConfigObjectWithPluginsMock.mockImplementation((config: OpenClawConfig) => ({
+  validateConfigObjectWithPluginsMock.mockImplementation((config: NodoAssistConfig) => ({
     ok: true,
     config,
   }));
   prepareSecretsRuntimeSnapshotMock.mockImplementation(
-    async ({ config }: { config: OpenClawConfig }) => ({
+    async ({ config }: { config: NodoAssistConfig }) => ({
       config,
     }),
   );
   restartSentinelMocks.writeRestartSentinel.mockClear();
-  persistedConfigResultMock.mockImplementation((config: OpenClawConfig) => config);
+  persistedConfigResultMock.mockImplementation((config: NodoAssistConfig) => config);
 });
 
 describe("config shared auth disconnects", () => {
   it("returns the persisted config from config.set write results", async () => {
-    const prevConfig: OpenClawConfig = {
+    const prevConfig: NodoAssistConfig = {
       gateway: {
         port: 19000,
       },
     };
-    const submittedConfig: OpenClawConfig = {
+    const submittedConfig: NodoAssistConfig = {
       gateway: {
         port: 19001,
       },
     };
-    const persistedConfig: OpenClawConfig = {
+    const persistedConfig: NodoAssistConfig = {
       gateway: {
         port: 19001,
       },
@@ -242,7 +242,7 @@ describe("config shared auth disconnects", () => {
       true,
       {
         ok: true,
-        path: "/tmp/openclaw.json",
+        path: "/tmp/nodoassist.json",
         config: persistedConfig,
       },
       undefined,
@@ -374,7 +374,7 @@ describe("config shared auth disconnects", () => {
   });
 
   it("marks hot-reloaded config.patch writes as not restart required", async () => {
-    const prevConfig: OpenClawConfig = {
+    const prevConfig: NodoAssistConfig = {
       gateway: {
         channelHealthCheckMinutes: 10,
       },

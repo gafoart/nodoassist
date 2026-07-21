@@ -371,7 +371,7 @@ function renderChatGoalActionButton(options: {
   onClick: () => void;
 }): TemplateResult {
   return html`
-    <openclaw-tooltip content=${options.label}>
+    <nodoassist-tooltip content=${options.label}>
       <button
         class="agent-chat__goal-action ${options.className}"
         type="button"
@@ -380,7 +380,7 @@ function renderChatGoalActionButton(options: {
       >
         ${options.icon}
       </button>
-    </openclaw-tooltip>
+    </nodoassist-tooltip>
   `;
 }
 
@@ -980,7 +980,7 @@ export function renderChatQueue(props: ChatQueueProps) {
                       </button>
                     `
                   : nothing}
-                <openclaw-tooltip content="Remove queued message">
+                <nodoassist-tooltip content="Remove queued message">
                   <button
                     class="btn chat-queue__remove"
                     type="button"
@@ -989,7 +989,7 @@ export function renderChatQueue(props: ChatQueueProps) {
                   >
                     ${icons.x}
                   </button>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
               </div>
             </div>
           `;
@@ -1018,7 +1018,7 @@ export function renderSideResult(
           <span class="chat-side-result__label">BTW</span>
           <span class="chat-side-result__meta">Not saved to chat history</span>
         </div>
-        <openclaw-tooltip content="Dismiss">
+        <nodoassist-tooltip content="Dismiss">
           <button
             class="btn chat-side-result__dismiss"
             type="button"
@@ -1027,7 +1027,7 @@ export function renderSideResult(
           >
             ${icons.x}
           </button>
-        </openclaw-tooltip>
+        </nodoassist-tooltip>
       </div>
       <div class="chat-side-result__question">${sideResult.question}</div>
       <div class="chat-side-result__body" dir=${detectTextDirection(sideResult.text)}>
@@ -1222,16 +1222,16 @@ function renderAttachmentPreview(props: ChatAttachmentControlsProps) {
             ${isImageAttachment(att) && getChatAttachmentPreviewUrl(att)
               ? html`<img src=${getChatAttachmentPreviewUrl(att)!} alt="Attachment preview" />`
               : html`
-                  <openclaw-tooltip .content=${att.fileName ?? "Attached file"}>
+                  <nodoassist-tooltip .content=${att.fileName ?? "Attached file"}>
                     <div class="chat-attachment-file">
                       <span class="chat-attachment-file__icon">${icons.paperclip}</span>
                       <span class="chat-attachment-file__name"
                         >${att.fileName ?? "Attached file"}</span
                       >
                     </div>
-                  </openclaw-tooltip>
+                  </nodoassist-tooltip>
                 `}
-            <openclaw-tooltip content="Remove attachment">
+            <nodoassist-tooltip content="Remove attachment">
               <button
                 class="chat-attachment-remove"
                 type="button"
@@ -1244,7 +1244,7 @@ function renderAttachmentPreview(props: ChatAttachmentControlsProps) {
               >
                 &times;
               </button>
-            </openclaw-tooltip>
+            </nodoassist-tooltip>
           </div>
         `,
       )}
@@ -1356,11 +1356,11 @@ export function renderFallbackIndicator(status: FallbackStatus | null | undefine
       : "compaction-indicator compaction-indicator--fallback";
   const icon = phase === "cleared" ? icons.check : icons.brain;
   return html`
-    <openclaw-tooltip .content=${details}>
+    <nodoassist-tooltip .content=${details}>
       <div class=${className} role="status" aria-live="polite" aria-label=${details}>
         ${icon} ${message}
       </div>
-    </openclaw-tooltip>
+    </nodoassist-tooltip>
   `;
 }
 
@@ -1754,7 +1754,7 @@ function renderChatPrimaryActions(props: ChatRunControlsProps) {
   };
   const abortAction = props.canAbort
     ? html`
-        <openclaw-tooltip .content=${t("chat.runControls.stop")}>
+        <nodoassist-tooltip .content=${t("chat.runControls.stop")}>
           <button
             class="chat-send-btn chat-send-btn--stop"
             @click=${props.onAbort}
@@ -1763,14 +1763,14 @@ function renderChatPrimaryActions(props: ChatRunControlsProps) {
             ${icons.stop}
             <span class="agent-chat__control-label">${t("chat.runControls.stop")}</span>
           </button>
-        </openclaw-tooltip>
+        </nodoassist-tooltip>
       `
     : nothing;
 
   return html`
     ${props.voiceActive && props.onToggleVoice
       ? html`
-          <openclaw-tooltip .content=${t("chat.composer.stopVoiceInput")}>
+          <nodoassist-tooltip .content=${t("chat.composer.stopVoiceInput")}>
             <button
               class="chat-send-btn chat-send-btn--stop"
               @click=${props.onToggleVoice}
@@ -1779,14 +1779,14 @@ function renderChatPrimaryActions(props: ChatRunControlsProps) {
               ${icons.stop}
               <span class="agent-chat__control-label">${t("chat.composer.stopVoiceInput")}</span>
             </button>
-          </openclaw-tooltip>
+          </nodoassist-tooltip>
           ${abortAction}
         `
       : props.canAbort
         ? html`
             ${hasComposedContent
               ? html`
-                  <openclaw-tooltip .content=${t("chat.runControls.queue")}>
+                  <nodoassist-tooltip .content=${t("chat.runControls.queue")}>
                     <button
                       class="chat-send-btn"
                       @click=${storeDraftAndSend}
@@ -1796,10 +1796,10 @@ function renderChatPrimaryActions(props: ChatRunControlsProps) {
                       ${icons.send}
                       <span class="agent-chat__control-label">${t("chat.runControls.queue")}</span>
                     </button>
-                  </openclaw-tooltip>
+                  </nodoassist-tooltip>
                 `
               : nothing}
-            <openclaw-tooltip .content=${t("chat.runControls.stop")}>
+            <nodoassist-tooltip .content=${t("chat.runControls.stop")}>
               <button
                 class="chat-send-btn chat-send-btn--stop"
                 @click=${props.onAbort}
@@ -1808,11 +1808,11 @@ function renderChatPrimaryActions(props: ChatRunControlsProps) {
                 ${icons.stop}
                 <span class="agent-chat__control-label">${t("chat.runControls.stop")}</span>
               </button>
-            </openclaw-tooltip>
+            </nodoassist-tooltip>
           `
         : hasComposedContent || !props.onToggleVoice
           ? html`
-              <openclaw-tooltip
+              <nodoassist-tooltip
                 .content=${props.isBusy ? t("chat.runControls.queue") : t("chat.runControls.send")}
               >
                 <button
@@ -1830,10 +1830,10 @@ function renderChatPrimaryActions(props: ChatRunControlsProps) {
                       : t("chat.runControls.send")}</span
                   >
                 </button>
-              </openclaw-tooltip>
+              </nodoassist-tooltip>
             `
           : html`
-              <openclaw-tooltip .content=${t("chat.composer.startVoiceInput")}>
+              <nodoassist-tooltip .content=${t("chat.composer.startVoiceInput")}>
                 <button
                   class="chat-send-btn chat-send-btn--voice"
                   @click=${props.onToggleVoice}
@@ -1845,7 +1845,7 @@ function renderChatPrimaryActions(props: ChatRunControlsProps) {
                     >${t("chat.composer.startVoiceInput")}</span
                   >
                 </button>
-              </openclaw-tooltip>
+              </nodoassist-tooltip>
             `}
   `;
 }
@@ -1858,7 +1858,7 @@ export function renderChatRunControls(props: ChatRunControlsProps) {
     <div class="agent-chat__toolbar-right">
       ${showSecondary && !props.canAbort
         ? html`
-            <openclaw-tooltip .content=${t("chat.runControls.newSession")}>
+            <nodoassist-tooltip .content=${t("chat.runControls.newSession")}>
               <button
                 class="btn btn--ghost"
                 @click=${props.onNewSession}
@@ -1867,12 +1867,12 @@ export function renderChatRunControls(props: ChatRunControlsProps) {
                 ${icons.plus}
                 <span class="agent-chat__control-label">${t("chat.runControls.newSession")}</span>
               </button>
-            </openclaw-tooltip>
+            </nodoassist-tooltip>
           `
         : nothing}
       ${showSecondary
         ? html`
-            <openclaw-tooltip .content=${t("chat.runControls.export")}>
+            <nodoassist-tooltip .content=${t("chat.runControls.export")}>
               <button
                 class="btn btn--ghost"
                 @click=${props.onExport}
@@ -1882,7 +1882,7 @@ export function renderChatRunControls(props: ChatRunControlsProps) {
                 ${icons.download}
                 <span class="agent-chat__control-label">${t("chat.runControls.export")}</span>
               </button>
-            </openclaw-tooltip>
+            </nodoassist-tooltip>
           `
         : nothing}
       ${showPrimary ? renderChatPrimaryActions(props) : nothing}
@@ -1927,7 +1927,7 @@ export function renderChatComposer(props: ChatComposerProps) {
     },
   );
   const composerControls = props.composerControls ?? nothing;
-  const assistantName = props.assistantName || "OpenClaw";
+  const assistantName = props.assistantName || "NodoAssist";
   const inProgressLabel =
     submittedProgress?.sendState === "waiting-model"
       ? "Preparing model..."
@@ -2293,14 +2293,14 @@ export function renderChatComposer(props: ChatComposerProps) {
                 <span class="agent-chat__talk-status-text">
                   ${props.realtimeTalkDetail ??
                   (props.realtimeTalkStatus === "thinking"
-                    ? "Asking OpenClaw..."
+                    ? "Asking NodoAssist..."
                     : props.realtimeTalkStatus === "connecting"
                       ? "Connecting voice input..."
                       : "Listening...")}
                 </span>
                 ${props.realtimeTalkStatus === "error" && props.onDismissRealtimeTalkError
                   ? html`
-                      <openclaw-tooltip .content=${t("chat.composer.dismissVoiceInputError")}>
+                      <nodoassist-tooltip .content=${t("chat.composer.dismissVoiceInputError")}>
                         <button
                           class="callout__dismiss"
                           type="button"
@@ -2309,7 +2309,7 @@ export function renderChatComposer(props: ChatComposerProps) {
                         >
                           ${icons.x}
                         </button>
-                      </openclaw-tooltip>
+                      </nodoassist-tooltip>
                     `
                   : nothing}
               </div>

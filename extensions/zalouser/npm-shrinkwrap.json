@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/zalouser",
+  "name": "@nodoassist/zalouser",
   "version": "2026.6.11",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@openclaw/zalouser",
+      "name": "@nodoassist/zalouser",
       "version": "2026.6.11",
       "dependencies": {
         "typebox": "1.3.3",
@@ -13,10 +13,10 @@
         "zod": "4.4.3"
       },
       "peerDependencies": {
-        "openclaw": ">=2026.6.11"
+        "nodoassist": ">=2026.6.11"
       },
       "peerDependenciesMeta": {
-        "openclaw": {
+        "nodoassist": {
           "optional": true
         }
       }

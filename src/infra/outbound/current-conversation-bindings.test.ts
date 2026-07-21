@@ -5,11 +5,11 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { setActivePluginRegistry } from "../../plugins/runtime.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../../state/openclaw-state-db.generated.js";
+import type { DB as NodoAssistStateKyselyDatabase } from "../../state/nodoassist-state-db.generated.js";
 import {
-  closeOpenClawStateDatabaseForTest,
-  runOpenClawStateWriteTransaction,
-} from "../../state/openclaw-state-db.js";
+  closeNodoAssistStateDatabaseForTest,
+  runNodoAssistStateWriteTransaction,
+} from "../../state/nodoassist-state-db.js";
 import { createTestRegistry } from "../../test-utils/channel-plugins.js";
 import { executeSqliteQuerySync, getNodeSqliteKysely } from "../kysely-sync.js";
 import {
@@ -24,7 +24,7 @@ import {
 import type { SessionBindingRecord } from "./session-binding.types.js";
 
 type CurrentConversationBindingDatabase = Pick<
-  OpenClawStateKyselyDatabase,
+  NodoAssistStateKyselyDatabase,
   "current_conversation_bindings"
 >;
 
@@ -63,7 +63,7 @@ function buildConversationKey(ref: SessionBindingRecord["conversation"]): string
 }
 
 function seedPersistedBinding(record: SessionBindingRecord): void {
-  runOpenClawStateWriteTransaction(({ db }) => {
+  runNodoAssistStateWriteTransaction(({ db }) => {
     const bindingDb = getNodeSqliteKysely<CurrentConversationBindingDatabase>(db);
     executeSqliteQuerySync(
       db,
@@ -113,9 +113,9 @@ describe("generic current-conversation bindings", () => {
   let testStateDir = "";
 
   beforeEach(async () => {
-    previousStateDir = process.env.OPENCLAW_STATE_DIR;
-    testStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-current-bindings-"));
-    process.env.OPENCLAW_STATE_DIR = testStateDir;
+    previousStateDir = process.env.NODOASSIST_STATE_DIR;
+    testStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-current-bindings-"));
+    process.env.NODOASSIST_STATE_DIR = testStateDir;
     setMinimalCurrentConversationRegistry();
     testing.resetCurrentConversationBindingsForTests({
       deletePersistedFile: true,
@@ -127,11 +127,11 @@ describe("generic current-conversation bindings", () => {
     testing.resetCurrentConversationBindingsForTests({
       deletePersistedFile: true,
     });
-    closeOpenClawStateDatabaseForTest();
+    closeNodoAssistStateDatabaseForTest();
     if (previousStateDir == null) {
-      delete process.env.OPENCLAW_STATE_DIR;
+      delete process.env.NODOASSIST_STATE_DIR;
     } else {
-      process.env.OPENCLAW_STATE_DIR = previousStateDir;
+      process.env.NODOASSIST_STATE_DIR = previousStateDir;
     }
     await fs.rm(testStateDir, { recursive: true, force: true });
   });

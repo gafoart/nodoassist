@@ -7,13 +7,13 @@ read_when:
 title: "Installer internals"
 ---
 
-OpenClaw ships three installer scripts, served from `openclaw.ai`.
+NodoAssist ships three installer scripts, served from `openclaw.ai`.
 
-| Script                             | Platform             | What it does                                                                                   |
-| ---------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------- |
-| [`install.sh`](#installsh)         | macOS / Linux / WSL  | Installs Node if needed, installs OpenClaw via npm (default) or git, can run onboarding.       |
-| [`install-cli.sh`](#install-clish) | macOS / Linux / WSL  | Installs Node + OpenClaw into a local prefix (`~/.openclaw`) via npm or git. No root required. |
-| [`install.ps1`](#installps1)       | Windows (PowerShell) | Installs Node if needed, installs OpenClaw via npm (default) or git, can run onboarding.       |
+| Script                             | Platform             | What it does                                                                                       |
+| ---------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------- |
+| [`install.sh`](#installsh)         | macOS / Linux / WSL  | Installs Node if needed, installs NodoAssist via npm (default) or git, can run onboarding.         |
+| [`install-cli.sh`](#install-clish) | macOS / Linux / WSL  | Installs Node + NodoAssist into a local prefix (`~/.nodoassist`) via npm or git. No root required. |
+| [`install.ps1`](#installps1)       | Windows (PowerShell) | Installs Node if needed, installs NodoAssist via npm (default) or git, can run onboarding.         |
 
 All three support Node **22.19+, 23.11+, or 24+**; Node 24 is the default target for fresh installs.
 
@@ -53,7 +53,7 @@ All three support Node **22.19+, 23.11+, or 24+**; Node 24 is the default target
 </Tabs>
 
 <Note>
-If install succeeds but `openclaw` is not found in a new terminal, see [Node.js troubleshooting](/install/node#troubleshooting).
+If install succeeds but `nodoassist` is not found in a new terminal, see [Node.js troubleshooting](/install/node#troubleshooting).
 </Note>
 
 ---
@@ -79,13 +79,13 @@ Recommended for most interactive installs on macOS/Linux/WSL.
   <Step title="Ensure Git">
     Installs Git if missing using the detected package manager, including Homebrew on macOS and apk on Alpine.
   </Step>
-  <Step title="Install OpenClaw">
+  <Step title="Install NodoAssist">
     - `npm` method (default): global npm install
-    - `git` method: clone/update repo, install deps with pnpm, build, then install wrapper at `~/.local/bin/openclaw`
+    - `git` method: clone/update repo, install deps with pnpm, build, then install wrapper at `~/.local/bin/nodoassist`
 
   </Step>
   <Step title="Post-install tasks">
-    - Resolves the just-installed `openclaw` binary for follow-up commands
+    - Resolves the just-installed `nodoassist` binary for follow-up commands
     - For an unconfigured install, starts onboarding before doctor or gateway probes. With `--no-onboard` or no TTY, it prints the command to finish setup later.
     - For a configured install, refreshes and restarts a loaded gateway service best-effort and runs doctor. Upgrades update plugins when possible, or print the manual command in a headless prompt-enabled run.
     - When `--verify` runs, it checks the installed version and checks gateway health only after configuration exists.
@@ -95,7 +95,7 @@ Recommended for most interactive installs on macOS/Linux/WSL.
 
 ### Source checkout detection
 
-If run inside an OpenClaw checkout (`package.json` + `pnpm-workspace.yaml`), the script offers:
+If run inside an NodoAssist checkout (`package.json` + `pnpm-workspace.yaml`), the script offers:
 
 - use checkout (`git`), or
 - use global install (`npm`)
@@ -149,7 +149,7 @@ The script exits with code `2` for invalid method selection or invalid `--instal
 | `--git \| --github`                     | Shortcut for git method                                                 |
 | `--version <version\|dist-tag\|spec>`   | npm version, dist-tag, or package spec (default: `latest`)              |
 | `--beta`                                | Use beta dist-tag if available, else fall back to `latest`              |
-| `--git-dir \| --dir <path>`             | Checkout directory (default: `~/openclaw`)                              |
+| `--git-dir \| --dir <path>`             | Checkout directory (default: `~/nodoassist`)                            |
 | `--no-git-update`                       | Skip `git pull` for existing checkout                                   |
 | `--no-prompt`                           | Disable prompts                                                         |
 | `--no-onboard`                          | Skip onboarding                                                         |
@@ -163,20 +163,20 @@ The script exits with code `2` for invalid method selection or invalid `--instal
 
   <Accordion title="Environment variables reference">
 
-| Variable                                          | Description                                                        |
-| ------------------------------------------------- | ------------------------------------------------------------------ |
-| `OPENCLAW_INSTALL_METHOD=git\|npm`                | Install method                                                     |
-| `OPENCLAW_VERSION=latest\|next\|<semver>\|<spec>` | npm version, dist-tag, or package spec                             |
-| `OPENCLAW_BETA=0\|1`                              | Use beta if available                                              |
-| `OPENCLAW_HOME=<path>`                            | Base directory for OpenClaw state and default git/onboarding paths |
-| `OPENCLAW_GIT_DIR=<path>`                         | Checkout directory                                                 |
-| `OPENCLAW_GIT_UPDATE=0\|1`                        | Toggle git updates                                                 |
-| `OPENCLAW_NO_PROMPT=1`                            | Disable prompts                                                    |
-| `OPENCLAW_VERIFY_INSTALL=1`                       | Run the post-install smoke verify                                  |
-| `OPENCLAW_NO_ONBOARD=1`                           | Skip onboarding                                                    |
-| `OPENCLAW_DRY_RUN=1`                              | Dry run mode                                                       |
-| `OPENCLAW_VERBOSE=1`                              | Debug mode                                                         |
-| `OPENCLAW_NPM_LOGLEVEL=error\|warn\|notice`       | npm log level (default: `error`, hides npm deprecation noise)      |
+| Variable                                            | Description                                                          |
+| --------------------------------------------------- | -------------------------------------------------------------------- |
+| `NODOASSIST_INSTALL_METHOD=git\|npm`                | Install method                                                       |
+| `NODOASSIST_VERSION=latest\|next\|<semver>\|<spec>` | npm version, dist-tag, or package spec                               |
+| `NODOASSIST_BETA=0\|1`                              | Use beta if available                                                |
+| `NODOASSIST_HOME=<path>`                            | Base directory for NodoAssist state and default git/onboarding paths |
+| `NODOASSIST_GIT_DIR=<path>`                         | Checkout directory                                                   |
+| `NODOASSIST_GIT_UPDATE=0\|1`                        | Toggle git updates                                                   |
+| `NODOASSIST_NO_PROMPT=1`                            | Disable prompts                                                      |
+| `NODOASSIST_VERIFY_INSTALL=1`                       | Run the post-install smoke verify                                    |
+| `NODOASSIST_NO_ONBOARD=1`                           | Skip onboarding                                                      |
+| `NODOASSIST_DRY_RUN=1`                              | Dry run mode                                                         |
+| `NODOASSIST_VERBOSE=1`                              | Debug mode                                                           |
+| `NODOASSIST_NPM_LOGLEVEL=error\|warn\|notice`       | npm log level (default: `error`, hides npm deprecation noise)        |
 
   </Accordion>
 </AccordionGroup>
@@ -189,7 +189,7 @@ The script exits with code `2` for invalid method selection or invalid `--instal
 
 <Info>
 Designed for environments where you want everything under a local prefix
-(default `~/.openclaw`) and no system Node dependency. Supports npm installs
+(default `~/.nodoassist`) and no system Node dependency. Supports npm installs
 by default, plus git-checkout installs under the same prefix flow.
 </Info>
 
@@ -203,14 +203,14 @@ by default, plus git-checkout installs under the same prefix flow.
   <Step title="Ensure Git">
     If Git is missing, attempts install via apt/dnf/yum/apk on Linux or Homebrew on macOS.
   </Step>
-  <Step title="Install OpenClaw under prefix">
-    - `npm` method (default): installs under the prefix with npm, then writes wrapper to `<prefix>/bin/openclaw`
-    - `git` method: clones/updates a checkout (default `~/openclaw`) and still writes the wrapper to `<prefix>/bin/openclaw`
+  <Step title="Install NodoAssist under prefix">
+    - `npm` method (default): installs under the prefix with npm, then writes wrapper to `<prefix>/bin/nodoassist`
+    - `git` method: clones/updates a checkout (default `~/nodoassist`) and still writes the wrapper to `<prefix>/bin/nodoassist`
 
   </Step>
   <Step title="Refresh loaded gateway service">
     If a gateway service is already loaded from that same prefix, the script runs
-    `openclaw gateway install --force`, then `openclaw gateway restart`, and
+    `nodoassist gateway install --force`, then `nodoassist gateway restart`, and
     probes gateway health best-effort.
   </Step>
 </Steps>
@@ -225,17 +225,17 @@ by default, plus git-checkout installs under the same prefix flow.
   </Tab>
   <Tab title="Custom prefix + version">
     ```bash
-    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install-cli.sh | bash -s -- --prefix /opt/openclaw --version latest
+    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install-cli.sh | bash -s -- --prefix /opt/nodoassist --version latest
     ```
   </Tab>
   <Tab title="Git install">
     ```bash
-    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install-cli.sh | bash -s -- --install-method git --git-dir ~/openclaw
+    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install-cli.sh | bash -s -- --install-method git --git-dir ~/nodoassist
     ```
   </Tab>
   <Tab title="Automation JSON output">
     ```bash
-    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install-cli.sh | bash -s -- --json --prefix /opt/openclaw
+    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install-cli.sh | bash -s -- --json --prefix /opt/nodoassist
     ```
   </Tab>
   <Tab title="Run onboarding">
@@ -250,15 +250,15 @@ by default, plus git-checkout installs under the same prefix flow.
 
 | Flag                                    | Description                                                                     |
 | --------------------------------------- | ------------------------------------------------------------------------------- |
-| `--prefix <path>`                       | Install prefix (default: `~/.openclaw`)                                         |
+| `--prefix <path>`                       | Install prefix (default: `~/.nodoassist`)                                       |
 | `--install-method \| --method npm\|git` | Choose install method (default: `npm`)                                          |
 | `--npm`                                 | Shortcut for npm method                                                         |
 | `--git \| --github`                     | Shortcut for git method                                                         |
-| `--git-dir \| --dir <path>`             | Git checkout directory (default: `~/openclaw`)                                  |
-| `--version <ver>`                       | OpenClaw version or dist-tag (default: `latest`)                                |
+| `--git-dir \| --dir <path>`             | Git checkout directory (default: `~/nodoassist`)                                |
+| `--version <ver>`                       | NodoAssist version or dist-tag (default: `latest`)                              |
 | `--node-version <ver>`                  | Node version (default: `22.22.0`)                                               |
 | `--json`                                | Emit NDJSON events                                                              |
-| `--onboard`                             | Run `openclaw onboard` after install                                            |
+| `--onboard`                             | Run `nodoassist onboard` after install                                          |
 | `--no-onboard`                          | Skip onboarding (default)                                                       |
 | `--set-npm-prefix`                      | On Linux, force npm prefix to `~/.npm-global` if current prefix is not writable |
 | `--help \| -h`                          | Show usage                                                                      |
@@ -267,23 +267,23 @@ by default, plus git-checkout installs under the same prefix flow.
 
   <Accordion title="Environment variables reference">
 
-| Variable                                    | Description                                                        |
-| ------------------------------------------- | ------------------------------------------------------------------ |
-| `OPENCLAW_PREFIX=<path>`                    | Install prefix                                                     |
-| `OPENCLAW_INSTALL_METHOD=git\|npm`          | Install method                                                     |
-| `OPENCLAW_VERSION=<ver>`                    | OpenClaw version or dist-tag                                       |
-| `OPENCLAW_NODE_VERSION=<ver>`               | Node version                                                       |
-| `OPENCLAW_HOME=<path>`                      | Base directory for OpenClaw state and default git/onboarding paths |
-| `OPENCLAW_GIT_DIR=<path>`                   | Git checkout directory for git installs                            |
-| `OPENCLAW_GIT_UPDATE=0\|1`                  | Toggle git updates for existing checkouts                          |
-| `OPENCLAW_NO_ONBOARD=1`                     | Skip onboarding                                                    |
-| `OPENCLAW_NPM_LOGLEVEL=error\|warn\|notice` | npm log level (default: `error`)                                   |
+| Variable                                      | Description                                                          |
+| --------------------------------------------- | -------------------------------------------------------------------- |
+| `NODOASSIST_PREFIX=<path>`                    | Install prefix                                                       |
+| `NODOASSIST_INSTALL_METHOD=git\|npm`          | Install method                                                       |
+| `NODOASSIST_VERSION=<ver>`                    | NodoAssist version or dist-tag                                       |
+| `NODOASSIST_NODE_VERSION=<ver>`               | Node version                                                         |
+| `NODOASSIST_HOME=<path>`                      | Base directory for NodoAssist state and default git/onboarding paths |
+| `NODOASSIST_GIT_DIR=<path>`                   | Git checkout directory for git installs                              |
+| `NODOASSIST_GIT_UPDATE=0\|1`                  | Toggle git updates for existing checkouts                            |
+| `NODOASSIST_NO_ONBOARD=1`                     | Skip onboarding                                                      |
+| `NODOASSIST_NPM_LOGLEVEL=error\|warn\|notice` | npm log level (default: `error`)                                     |
 
   </Accordion>
 </AccordionGroup>
 
 <Note>
-`openclaw@main` and other GitHub source specs are not valid `--version` targets for npm installs. Use `--install-method git --version main` instead.
+`nodoassist@main` and other GitHub source specs are not valid `--version` targets for npm installs. Use `--install-method git --version main` instead.
 </Note>
 
 ---
@@ -299,17 +299,17 @@ by default, plus git-checkout installs under the same prefix flow.
     Requires PowerShell 5+.
   </Step>
   <Step title="Ensure Node.js 24 by default">
-    If missing, attempts install via winget, then Chocolatey, then Scoop. If no package manager is available, the script downloads the official Node.js 24 Windows zip into `%LOCALAPPDATA%\OpenClaw\deps\portable-node` and adds it to the current process and user PATH. Node 22.19+ and 23.11+ remain supported for compatibility.
+    If missing, attempts install via winget, then Chocolatey, then Scoop. If no package manager is available, the script downloads the official Node.js 24 Windows zip into `%LOCALAPPDATA%\NodoAssist\deps\portable-node` and adds it to the current process and user PATH. Node 22.19+ and 23.11+ remain supported for compatibility.
   </Step>
-  <Step title="Install OpenClaw">
+  <Step title="Install NodoAssist">
     - `npm` method (default): global npm install using the selected `-Tag`, launched from a writable installer temp directory so shells opened in protected folders such as `C:\` still work
-    - `git` method: clone/update repo, install/build with pnpm, and install wrapper at `%USERPROFILE%\.local\bin\openclaw.cmd`. If Git is missing, the script bootstraps user-local MinGit under `%LOCALAPPDATA%\OpenClaw\deps\portable-git` and adds it to the current process and user PATH.
+    - `git` method: clone/update repo, install/build with pnpm, and install wrapper at `%USERPROFILE%\.local\bin\nodoassist.cmd`. If Git is missing, the script bootstraps user-local MinGit under `%LOCALAPPDATA%\NodoAssist\deps\portable-git` and adds it to the current process and user PATH.
 
   </Step>
   <Step title="Post-install tasks">
     - Adds needed bin directory to user PATH when possible
-    - Refreshes a loaded gateway service best-effort (`openclaw gateway install --force`, then restart)
-    - Runs `openclaw doctor --non-interactive` on upgrades and git installs (best effort)
+    - Refreshes a loaded gateway service best-effort (`nodoassist gateway install --force`, then restart)
+    - Runs `nodoassist doctor --non-interactive` on upgrades and git installs (best effort)
 
   </Step>
   <Step title="Handle failures">
@@ -337,7 +337,7 @@ by default, plus git-checkout installs under the same prefix flow.
   </Tab>
   <Tab title="Custom git directory">
     ```powershell
-    & ([scriptblock]::Create((iwr -useb https://openclaw.ai/install.ps1))) -InstallMethod git -GitDir "C:\openclaw"
+    & ([scriptblock]::Create((iwr -useb https://openclaw.ai/install.ps1))) -InstallMethod git -GitDir "C:\nodoassist"
     ```
   </Tab>
   <Tab title="Dry run">
@@ -354,7 +354,7 @@ by default, plus git-checkout installs under the same prefix flow.
 | --------------------------- | ---------------------------------------------------------- |
 | `-InstallMethod npm\|git`   | Install method (default: `npm`)                            |
 | `-Tag <tag\|version\|spec>` | npm dist-tag, version, or package spec (default: `latest`) |
-| `-GitDir <path>`            | Checkout directory (default: `%USERPROFILE%\openclaw`)     |
+| `-GitDir <path>`            | Checkout directory (default: `%USERPROFILE%\nodoassist`)   |
 | `-NoOnboard`                | Skip onboarding                                            |
 | `-NoGitUpdate`              | Skip `git pull`                                            |
 | `-DryRun`                   | Print actions only                                         |
@@ -363,13 +363,13 @@ by default, plus git-checkout installs under the same prefix flow.
 
   <Accordion title="Environment variables reference">
 
-| Variable                           | Description        |
-| ---------------------------------- | ------------------ |
-| `OPENCLAW_INSTALL_METHOD=git\|npm` | Install method     |
-| `OPENCLAW_GIT_DIR=<path>`          | Checkout directory |
-| `OPENCLAW_NO_ONBOARD=1`            | Skip onboarding    |
-| `OPENCLAW_GIT_UPDATE=0`            | Disable git pull   |
-| `OPENCLAW_DRY_RUN=1`               | Dry run mode       |
+| Variable                             | Description        |
+| ------------------------------------ | ------------------ |
+| `NODOASSIST_INSTALL_METHOD=git\|npm` | Install method     |
+| `NODOASSIST_GIT_DIR=<path>`          | Checkout directory |
+| `NODOASSIST_NO_ONBOARD=1`            | Skip onboarding    |
+| `NODOASSIST_GIT_UPDATE=0`            | Disable git pull   |
+| `NODOASSIST_DRY_RUN=1`               | Dry run mode       |
 
   </Accordion>
 </AccordionGroup>
@@ -392,13 +392,13 @@ Use non-interactive flags/env vars for predictable runs.
   </Tab>
   <Tab title="install.sh (non-interactive git)">
     ```bash
-    OPENCLAW_INSTALL_METHOD=git OPENCLAW_NO_PROMPT=1 \
+    NODOASSIST_INSTALL_METHOD=git NODOASSIST_NO_PROMPT=1 \
       curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install.sh | bash
     ```
   </Tab>
   <Tab title="install-cli.sh (JSON)">
     ```bash
-    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install-cli.sh | bash -s -- --json --prefix /opt/openclaw
+    curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install-cli.sh | bash -s -- --json --prefix /opt/nodoassist
     ```
   </Tab>
   <Tab title="install.ps1 (skip onboarding)">
@@ -425,7 +425,7 @@ Use non-interactive flags/env vars for predictable runs.
     Rerun the installer so it can bootstrap user-local MinGit, or install Git for Windows and reopen PowerShell.
   </Accordion>
 
-  <Accordion title='Windows: "openclaw is not recognized"'>
+  <Accordion title='Windows: "nodoassist is not recognized"'>
     Run `npm config get prefix` and add that directory to your user PATH (no `\bin` suffix needed on Windows), then reopen PowerShell.
   </Accordion>
 
@@ -441,7 +441,7 @@ Use non-interactive flags/env vars for predictable runs.
 
   </Accordion>
 
-  <Accordion title="openclaw not found after install">
+  <Accordion title="nodoassist not found after install">
     Usually a PATH issue. See [Node.js troubleshooting](/install/node#troubleshooting).
   </Accordion>
 </AccordionGroup>

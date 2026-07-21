@@ -1,36 +1,36 @@
 #!/usr/bin/env bash
-# One-time host setup for rootless OpenClaw in Podman. Uses the current
+# One-time host setup for rootless NodoAssist in Podman. Uses the current
 # non-root user throughout, builds or pulls the image into that user's Podman
-# store, writes config under ~/.openclaw by default, and uses the repo-local
-# launch script at ./scripts/run-openclaw-podman.sh.
+# store, writes config under ~/.nodoassist by default, and uses the repo-local
+# launch script at ./scripts/run-nodoassist-podman.sh.
 #
 # Usage: ./scripts/podman/setup.sh [--quadlet|--container]
 #   --quadlet   Install a Podman Quadlet as the current user's systemd service
 #   --container Only install image + config; you start the container manually (default)
-#   Or set OPENCLAW_PODMAN_QUADLET=1 (or 0) to choose without a flag.
+#   Or set NODOASSIST_PODMAN_QUADLET=1 (or 0) to choose without a flag.
 #
 # After this, start the gateway manually:
-#   ./scripts/run-openclaw-podman.sh launch
-#   ./scripts/run-openclaw-podman.sh launch setup
+#   ./scripts/run-nodoassist-podman.sh launch
+#   ./scripts/run-nodoassist-podman.sh launch setup
 # Or, if you used --quadlet:
-#   systemctl --user start openclaw.service
+#   systemctl --user start nodoassist.service
 set -euo pipefail
 
-REPO_PATH="${OPENCLAW_REPO_PATH:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+REPO_PATH="${NODOASSIST_REPO_PATH:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 source "$REPO_PATH/scripts/lib/host-timeout.sh"
-RUN_SCRIPT_SRC="$REPO_PATH/scripts/run-openclaw-podman.sh"
-QUADLET_TEMPLATE="$REPO_PATH/scripts/podman/openclaw.container.in"
-OPENCLAW_USER="$(id -un)"
-OPENCLAW_HOME="${HOME:-}"
-OPENCLAW_CONFIG_DIR="${OPENCLAW_CONFIG_DIR:-}"
-OPENCLAW_WORKSPACE_DIR="${OPENCLAW_WORKSPACE_DIR:-}"
-OPENCLAW_IMAGE="${OPENCLAW_PODMAN_IMAGE:-${OPENCLAW_IMAGE:-openclaw:local}}"
-OPENCLAW_CONTAINER_NAME="${OPENCLAW_PODMAN_CONTAINER:-openclaw}"
+RUN_SCRIPT_SRC="$REPO_PATH/scripts/run-nodoassist-podman.sh"
+QUADLET_TEMPLATE="$REPO_PATH/scripts/podman/nodoassist.container.in"
+NODOASSIST_USER="$(id -un)"
+NODOASSIST_HOME="${HOME:-}"
+NODOASSIST_CONFIG_DIR="${NODOASSIST_CONFIG_DIR:-}"
+NODOASSIST_WORKSPACE_DIR="${NODOASSIST_WORKSPACE_DIR:-}"
+NODOASSIST_IMAGE="${NODOASSIST_PODMAN_IMAGE:-${NODOASSIST_IMAGE:-nodoassist:local}}"
+NODOASSIST_CONTAINER_NAME="${NODOASSIST_PODMAN_CONTAINER:-nodoassist}"
 PLATFORM_NAME="$(uname -s 2>/dev/null || echo unknown)"
-HOST_GATEWAY_PORT="${OPENCLAW_PODMAN_GATEWAY_HOST_PORT:-${OPENCLAW_GATEWAY_PORT:-18789}}"
+HOST_GATEWAY_PORT="${NODOASSIST_PODMAN_GATEWAY_HOST_PORT:-${NODOASSIST_GATEWAY_PORT:-18789}}"
 QUADLET_GATEWAY_PORT="18789"
-PODMAN_PULL_TIMEOUT="${OPENCLAW_PODMAN_SETUP_PULL_TIMEOUT:-600s}"
-PODMAN_BUILD_TIMEOUT="${OPENCLAW_PODMAN_SETUP_BUILD_TIMEOUT:-1800s}"
+PODMAN_PULL_TIMEOUT="${NODOASSIST_PODMAN_SETUP_PULL_TIMEOUT:-600s}"
+PODMAN_BUILD_TIMEOUT="${NODOASSIST_PODMAN_SETUP_BUILD_TIMEOUT:-1800s}"
 
 require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -48,11 +48,11 @@ fail() {
 
 run_podman_pull() {
   local image="$1"
-  openclaw_host_timeout_cmd "$PODMAN_PULL_TIMEOUT" podman pull "$image"
+  nodoassist_host_timeout_cmd "$PODMAN_PULL_TIMEOUT" podman pull "$image"
 }
 
 run_podman_build() {
-  openclaw_host_timeout_cmd "$PODMAN_BUILD_TIMEOUT" podman build "$@"
+  nodoassist_host_timeout_cmd "$PODMAN_BUILD_TIMEOUT" podman build "$@"
 }
 
 validate_single_line_value() {
@@ -207,7 +207,7 @@ PY
     od -An -N32 -tx1 /dev/urandom | tr -d " \n"
     return 0
   fi
-  echo "Missing dependency: need openssl or python3 (or od) to generate OPENCLAW_GATEWAY_TOKEN." >&2
+  echo "Missing dependency: need openssl or python3 (or od) to generate NODOASSIST_GATEWAY_TOKEN." >&2
   exit 1
 }
 
@@ -316,8 +316,8 @@ for arg in "$@"; do
     --container) INSTALL_QUADLET=false ;;
   esac
 done
-if [[ -n "${OPENCLAW_PODMAN_QUADLET:-}" ]]; then
-  case "${OPENCLAW_PODMAN_QUADLET,,}" in
+if [[ -n "${NODOASSIST_PODMAN_QUADLET:-}" ]]; then
+  case "${NODOASSIST_PODMAN_QUADLET,,}" in
     1|yes|true) INSTALL_QUADLET=true ;;
     0|no|false) INSTALL_QUADLET=false ;;
   esac
@@ -336,8 +336,8 @@ if is_root; then
   echo "Run scripts/podman/setup.sh as your normal user so Podman stays rootless." >&2
   exit 1
 fi
-if [[ "$OPENCLAW_IMAGE" == "openclaw:local" ]] && [[ ! -f "$REPO_PATH/Dockerfile" ]]; then
-  echo "Dockerfile not found at $REPO_PATH. Set OPENCLAW_REPO_PATH to the repo root." >&2
+if [[ "$NODOASSIST_IMAGE" == "nodoassist:local" ]] && [[ ! -f "$REPO_PATH/Dockerfile" ]]; then
+  echo "Dockerfile not found at $REPO_PATH. Set NODOASSIST_REPO_PATH to the repo root." >&2
   exit 1
 fi
 if [[ ! -f "$RUN_SCRIPT_SRC" ]]; then
@@ -345,74 +345,74 @@ if [[ ! -f "$RUN_SCRIPT_SRC" ]]; then
   exit 1
 fi
 
-if [[ -z "$OPENCLAW_HOME" ]]; then
-  OPENCLAW_HOME="$(resolve_user_home "$OPENCLAW_USER")"
+if [[ -z "$NODOASSIST_HOME" ]]; then
+  NODOASSIST_HOME="$(resolve_user_home "$NODOASSIST_USER")"
 fi
-if [[ -z "$OPENCLAW_HOME" ]]; then
-  echo "Unable to resolve HOME for user $OPENCLAW_USER." >&2
+if [[ -z "$NODOASSIST_HOME" ]]; then
+  echo "Unable to resolve HOME for user $NODOASSIST_USER." >&2
   exit 1
 fi
-if [[ -z "$OPENCLAW_CONFIG_DIR" ]]; then
-  OPENCLAW_CONFIG_DIR="$OPENCLAW_HOME/.openclaw"
+if [[ -z "$NODOASSIST_CONFIG_DIR" ]]; then
+  NODOASSIST_CONFIG_DIR="$NODOASSIST_HOME/.nodoassist"
 fi
-if [[ -z "$OPENCLAW_WORKSPACE_DIR" ]]; then
-  OPENCLAW_WORKSPACE_DIR="$OPENCLAW_CONFIG_DIR/workspace"
+if [[ -z "$NODOASSIST_WORKSPACE_DIR" ]]; then
+  NODOASSIST_WORKSPACE_DIR="$NODOASSIST_CONFIG_DIR/workspace"
 fi
-validate_absolute_path "home directory" "$OPENCLAW_HOME"
-validate_mount_source_path "config directory" "$OPENCLAW_CONFIG_DIR"
-validate_mount_source_path "workspace directory" "$OPENCLAW_WORKSPACE_DIR"
-validate_container_name "$OPENCLAW_CONTAINER_NAME"
-validate_image_name "$OPENCLAW_IMAGE"
+validate_absolute_path "home directory" "$NODOASSIST_HOME"
+validate_mount_source_path "config directory" "$NODOASSIST_CONFIG_DIR"
+validate_mount_source_path "workspace directory" "$NODOASSIST_WORKSPACE_DIR"
+validate_container_name "$NODOASSIST_CONTAINER_NAME"
+validate_image_name "$NODOASSIST_IMAGE"
 validate_port "gateway host port" "$HOST_GATEWAY_PORT"
 validate_port "seed gateway port" "$SEED_GATEWAY_PORT"
 
-install -d -m 700 "$OPENCLAW_CONFIG_DIR" "$OPENCLAW_WORKSPACE_DIR"
-ensure_private_existing_dir_owned_by_user "config directory" "$OPENCLAW_CONFIG_DIR"
-ensure_private_existing_dir_owned_by_user "workspace directory" "$OPENCLAW_WORKSPACE_DIR"
+install -d -m 700 "$NODOASSIST_CONFIG_DIR" "$NODOASSIST_WORKSPACE_DIR"
+ensure_private_existing_dir_owned_by_user "config directory" "$NODOASSIST_CONFIG_DIR"
+ensure_private_existing_dir_owned_by_user "workspace directory" "$NODOASSIST_WORKSPACE_DIR"
 
-OPENCLAW_IMAGE_APT_PACKAGES="${OPENCLAW_IMAGE_APT_PACKAGES-${OPENCLAW_DOCKER_APT_PACKAGES:-}}"
-OPENCLAW_IMAGE_PIP_PACKAGES="${OPENCLAW_IMAGE_PIP_PACKAGES:-}"
+NODOASSIST_IMAGE_APT_PACKAGES="${NODOASSIST_IMAGE_APT_PACKAGES-${NODOASSIST_DOCKER_APT_PACKAGES:-}}"
+NODOASSIST_IMAGE_PIP_PACKAGES="${NODOASSIST_IMAGE_PIP_PACKAGES:-}"
 BUILD_ARGS=()
-if [[ -n "$OPENCLAW_IMAGE_APT_PACKAGES" ]]; then
-  BUILD_ARGS+=(--build-arg "OPENCLAW_IMAGE_APT_PACKAGES=${OPENCLAW_IMAGE_APT_PACKAGES}")
+if [[ -n "$NODOASSIST_IMAGE_APT_PACKAGES" ]]; then
+  BUILD_ARGS+=(--build-arg "NODOASSIST_IMAGE_APT_PACKAGES=${NODOASSIST_IMAGE_APT_PACKAGES}")
 fi
-if [[ -n "$OPENCLAW_IMAGE_PIP_PACKAGES" ]]; then
-  BUILD_ARGS+=(--build-arg "OPENCLAW_IMAGE_PIP_PACKAGES=${OPENCLAW_IMAGE_PIP_PACKAGES}")
+if [[ -n "$NODOASSIST_IMAGE_PIP_PACKAGES" ]]; then
+  BUILD_ARGS+=(--build-arg "NODOASSIST_IMAGE_PIP_PACKAGES=${NODOASSIST_IMAGE_PIP_PACKAGES}")
 fi
-if [[ -n "${OPENCLAW_EXTENSIONS:-}" ]]; then
-  BUILD_ARGS+=(--build-arg "OPENCLAW_EXTENSIONS=${OPENCLAW_EXTENSIONS}")
+if [[ -n "${NODOASSIST_EXTENSIONS:-}" ]]; then
+  BUILD_ARGS+=(--build-arg "NODOASSIST_EXTENSIONS=${NODOASSIST_EXTENSIONS}")
 fi
-if [[ -n "${OPENCLAW_INSTALL_BROWSER:-}" ]]; then
-  BUILD_ARGS+=(--build-arg "OPENCLAW_INSTALL_BROWSER=${OPENCLAW_INSTALL_BROWSER}")
+if [[ -n "${NODOASSIST_INSTALL_BROWSER:-}" ]]; then
+  BUILD_ARGS+=(--build-arg "NODOASSIST_INSTALL_BROWSER=${NODOASSIST_INSTALL_BROWSER}")
 fi
 
-if [[ "$OPENCLAW_IMAGE" == "openclaw:local" ]]; then
-  echo "Building image $OPENCLAW_IMAGE ..."
-  run_podman_build -t "$OPENCLAW_IMAGE" -f "$REPO_PATH/Dockerfile" "${BUILD_ARGS[@]+"${BUILD_ARGS[@]}"}" "$REPO_PATH"
+if [[ "$NODOASSIST_IMAGE" == "nodoassist:local" ]]; then
+  echo "Building image $NODOASSIST_IMAGE ..."
+  run_podman_build -t "$NODOASSIST_IMAGE" -f "$REPO_PATH/Dockerfile" "${BUILD_ARGS[@]+"${BUILD_ARGS[@]}"}" "$REPO_PATH"
 else
-  if podman image exists "$OPENCLAW_IMAGE" >/dev/null 2>&1; then
-    echo "Using existing image $OPENCLAW_IMAGE"
+  if podman image exists "$NODOASSIST_IMAGE" >/dev/null 2>&1; then
+    echo "Using existing image $NODOASSIST_IMAGE"
   else
-    echo "Pulling image $OPENCLAW_IMAGE ..."
-    run_podman_pull "$OPENCLAW_IMAGE"
+    echo "Pulling image $NODOASSIST_IMAGE ..."
+    run_podman_pull "$NODOASSIST_IMAGE"
   fi
 fi
 
-ENV_FILE="$OPENCLAW_CONFIG_DIR/.env"
+ENV_FILE="$NODOASSIST_CONFIG_DIR/.env"
 if [[ ! -f "$ENV_FILE" ]]; then
   TOKEN="$(generate_token_hex_32)"
   (
     umask 077
     write_file_atomically "$ENV_FILE" 600 <<EOF
-OPENCLAW_GATEWAY_TOKEN=$TOKEN
+NODOASSIST_GATEWAY_TOKEN=$TOKEN
 EOF
   )
-  echo "Generated OPENCLAW_GATEWAY_TOKEN and wrote it to $ENV_FILE"
+  echo "Generated NODOASSIST_GATEWAY_TOKEN and wrote it to $ENV_FILE"
 fi
-upsert_env_var "$ENV_FILE" "OPENCLAW_PODMAN_CONTAINER" "$OPENCLAW_CONTAINER_NAME"
-upsert_env_var "$ENV_FILE" "OPENCLAW_PODMAN_IMAGE" "$OPENCLAW_IMAGE"
+upsert_env_var "$ENV_FILE" "NODOASSIST_PODMAN_CONTAINER" "$NODOASSIST_CONTAINER_NAME"
+upsert_env_var "$ENV_FILE" "NODOASSIST_PODMAN_IMAGE" "$NODOASSIST_IMAGE"
 
-CONFIG_JSON="$OPENCLAW_CONFIG_DIR/openclaw.json"
+CONFIG_JSON="$NODOASSIST_CONFIG_DIR/nodoassist.json"
 if [[ ! -f "$CONFIG_JSON" ]]; then
   (
     umask 077
@@ -435,31 +435,31 @@ fi
 seed_local_control_ui_origins "$CONFIG_JSON" "$SEED_GATEWAY_PORT"
 
 if [[ "$INSTALL_QUADLET" == true ]]; then
-  QUADLET_DIR="$OPENCLAW_HOME/.config/containers/systemd"
-  QUADLET_DST="$QUADLET_DIR/openclaw.container"
+  QUADLET_DIR="$NODOASSIST_HOME/.config/containers/systemd"
+  QUADLET_DST="$QUADLET_DIR/nodoassist.container"
   echo "Installing Quadlet to $QUADLET_DST ..."
   mkdir -p "$QUADLET_DIR"
   ensure_safe_existing_dir "quadlet directory" "$QUADLET_DIR"
-  OPENCLAW_HOME_ESCAPED="$(escape_sed_replacement_pipe_delim "$OPENCLAW_HOME")"
-  OPENCLAW_CONFIG_ESCAPED="$(escape_sed_replacement_pipe_delim "$OPENCLAW_CONFIG_DIR")"
-  OPENCLAW_WORKSPACE_ESCAPED="$(escape_sed_replacement_pipe_delim "$OPENCLAW_WORKSPACE_DIR")"
-  OPENCLAW_IMAGE_ESCAPED="$(escape_sed_replacement_pipe_delim "$OPENCLAW_IMAGE")"
-  OPENCLAW_CONTAINER_ESCAPED="$(escape_sed_replacement_pipe_delim "$OPENCLAW_CONTAINER_NAME")"
+  NODOASSIST_HOME_ESCAPED="$(escape_sed_replacement_pipe_delim "$NODOASSIST_HOME")"
+  NODOASSIST_CONFIG_ESCAPED="$(escape_sed_replacement_pipe_delim "$NODOASSIST_CONFIG_DIR")"
+  NODOASSIST_WORKSPACE_ESCAPED="$(escape_sed_replacement_pipe_delim "$NODOASSIST_WORKSPACE_DIR")"
+  NODOASSIST_IMAGE_ESCAPED="$(escape_sed_replacement_pipe_delim "$NODOASSIST_IMAGE")"
+  NODOASSIST_CONTAINER_ESCAPED="$(escape_sed_replacement_pipe_delim "$NODOASSIST_CONTAINER_NAME")"
   sed \
-    -e "s|{{OPENCLAW_HOME}}|$OPENCLAW_HOME_ESCAPED|g" \
-    -e "s|{{OPENCLAW_CONFIG_DIR}}|$OPENCLAW_CONFIG_ESCAPED|g" \
-    -e "s|{{OPENCLAW_WORKSPACE_DIR}}|$OPENCLAW_WORKSPACE_ESCAPED|g" \
-    -e "s|{{IMAGE_NAME}}|$OPENCLAW_IMAGE_ESCAPED|g" \
-    -e "s|{{CONTAINER_NAME}}|$OPENCLAW_CONTAINER_ESCAPED|g" \
+    -e "s|{{NODOASSIST_HOME}}|$NODOASSIST_HOME_ESCAPED|g" \
+    -e "s|{{NODOASSIST_CONFIG_DIR}}|$NODOASSIST_CONFIG_ESCAPED|g" \
+    -e "s|{{NODOASSIST_WORKSPACE_DIR}}|$NODOASSIST_WORKSPACE_ESCAPED|g" \
+    -e "s|{{IMAGE_NAME}}|$NODOASSIST_IMAGE_ESCAPED|g" \
+    -e "s|{{CONTAINER_NAME}}|$NODOASSIST_CONTAINER_ESCAPED|g" \
     "$QUADLET_TEMPLATE" | write_file_atomically "$QUADLET_DST" 644
 
   if command -v systemctl >/dev/null 2>&1; then
     echo "Reloading and starting user service..."
-    if systemctl --user daemon-reload && systemctl --user start openclaw.service; then
+    if systemctl --user daemon-reload && systemctl --user start nodoassist.service; then
       echo "Quadlet installed and service started."
     else
       echo "Quadlet installed, but automatic start failed." >&2
-      echo "Try: systemctl --user daemon-reload && systemctl --user start openclaw.service" >&2
+      echo "Try: systemctl --user daemon-reload && systemctl --user start nodoassist.service" >&2
       if command -v loginctl >/dev/null 2>&1; then
         echo "For boot persistence on headless hosts, you may also need: sudo loginctl enable-linger $(whoami)" >&2
       fi
@@ -473,6 +473,6 @@ fi
 
 echo
 echo "Next:"
-echo "  ./scripts/run-openclaw-podman.sh launch"
-echo "  ./scripts/run-openclaw-podman.sh launch setup"
-echo "  openclaw --container $OPENCLAW_CONTAINER_NAME dashboard --no-open"
+echo "  ./scripts/run-nodoassist-podman.sh launch"
+echo "  ./scripts/run-nodoassist-podman.sh launch setup"
+echo "  nodoassist --container $NODOASSIST_CONTAINER_NAME dashboard --no-open"

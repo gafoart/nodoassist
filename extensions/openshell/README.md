@@ -1,13 +1,13 @@
-# @openclaw/openshell-sandbox
+# @nodoassist/openshell-sandbox
 
-Official NVIDIA OpenShell sandbox backend for OpenClaw.
+Official NVIDIA OpenShell sandbox backend for NodoAssist.
 
-This plugin lets OpenClaw use OpenShell-managed sandboxes with mirrored local workspaces and SSH command execution.
+This plugin lets NodoAssist use OpenShell-managed sandboxes with mirrored local workspaces and SSH command execution.
 
 ## Install
 
 ```bash
-openclaw plugins install @openclaw/openshell-sandbox
+nodoassist plugins install @nodoassist/openshell-sandbox
 ```
 
 Restart the Gateway after installing or updating the plugin.
@@ -21,5 +21,5 @@ Use the OpenShell docs for credentials, workspace mirroring, runtime selection, 
 ## Package
 
 - Plugin id: `openshell`
-- Package: `@openclaw/openshell-sandbox`
-- Minimum OpenClaw host: `2026.5.12-beta.1`
+- Package: `@nodoassist/openshell-sandbox`
+- Minimum NodoAssist host: `2026.5.12-beta.1`

@@ -93,7 +93,7 @@ type SidebarSessionGroupMenuState = {
 
 type SidebarSessionSortMode = "created" | "updated";
 
-const SIDEBAR_SESSION_GROUPING_STORAGE_KEY = "openclaw:sidebar:sessions:grouping";
+const SIDEBAR_SESSION_GROUPING_STORAGE_KEY = "nodoassist:sidebar:sessions:grouping";
 
 const PALETTE_SHORTCUT = /Mac|iP(hone|ad|od)/i.test(globalThis.navigator?.platform ?? "")
   ? "⌘K"
@@ -299,11 +299,11 @@ class AppSidebar extends LitElement {
             alt=""
             aria-hidden="true"
           />
-          ${this.collapsed ? nothing : html`<span class="sidebar-brand__title">OpenClaw</span>`}
+          ${this.collapsed ? nothing : html`<span class="sidebar-brand__title">NodoAssist</span>`}
         </div>
         <div class="sidebar-brand__actions">
           ${this.renderSearch()}
-          <openclaw-tooltip .content=${collapseTooltip}>
+          <nodoassist-tooltip .content=${collapseTooltip}>
             <button
               class="sidebar-brand__icon"
               type="button"
@@ -313,7 +313,7 @@ class AppSidebar extends LitElement {
             >
               ${this.collapsed ? icons.panelLeftOpen : icons.panelLeftClose}
             </button>
-          </openclaw-tooltip>
+          </nodoassist-tooltip>
         </div>
       </div>
     `;
@@ -1211,7 +1211,7 @@ class AppSidebar extends LitElement {
       </a>
     `;
     return this.collapsed
-      ? html`<openclaw-tooltip .content=${label}>${link}</openclaw-tooltip>`
+      ? html`<nodoassist-tooltip .content=${label}>${link}</nodoassist-tooltip>`
       : link;
   }
 
@@ -1246,7 +1246,7 @@ class AppSidebar extends LitElement {
       </a>
     `;
     return this.collapsed
-      ? html`<openclaw-tooltip .content=${tab.label}>${link}</openclaw-tooltip>`
+      ? html`<nodoassist-tooltip .content=${tab.label}>${link}</nodoassist-tooltip>`
       : link;
   }
 
@@ -1414,8 +1414,8 @@ class AppSidebar extends LitElement {
     return html`
       <section class="sidebar-sessions ${this.collapsed ? "sidebar-sessions--collapsed" : ""}">
         ${this.collapsed
-          ? html`<openclaw-tooltip .content=${newSessionTitle}
-              >${newSessionControl}</openclaw-tooltip
+          ? html`<nodoassist-tooltip .content=${newSessionTitle}
+              >${newSessionControl}</nodoassist-tooltip
             >`
           : newSessionControl}
         ${this.collapsed
@@ -1570,7 +1570,7 @@ class AppSidebar extends LitElement {
   private renderSearch() {
     const tooltip = `${t("chat.openCommandPalette")} (${PALETTE_SHORTCUT})`;
     return html`
-      <openclaw-tooltip .content=${tooltip}>
+      <nodoassist-tooltip .content=${tooltip}>
         <button
           type="button"
           class="sidebar-brand__icon sidebar-search"
@@ -1580,7 +1580,7 @@ class AppSidebar extends LitElement {
         >
           ${icons.search}
         </button>
-      </openclaw-tooltip>
+      </nodoassist-tooltip>
     `;
   }
 
@@ -1650,12 +1650,12 @@ class AppSidebar extends LitElement {
       this.activeRouteId !== undefined && isSettingsNavigationRoute(this.activeRouteId);
     return html`
       <aside class="sidebar ${this.collapsed ? "sidebar--collapsed" : ""}">
-        <!-- macOS app only (CSS-gated on html.openclaw-native-macos): use the
+        <!-- macOS app only (CSS-gated on html.nodoassist-native-macos): use the
              otherwise-empty native titlebar strip instead of a sidebar row. -->
         <img
           class="sidebar-native-brand"
           src="${controlUiPublicAssetPath("favicon.svg", this.basePath)}"
-          alt="OpenClaw"
+          alt="NodoAssist"
         />
         <div class="sidebar-shell">
           ${this.renderBrand()}
@@ -1671,7 +1671,7 @@ class AppSidebar extends LitElement {
           </div>
           <div class="sidebar-shell__footer">
             <div class="sidebar-footer-bar">
-              <openclaw-tooltip .content=${gatewayStatus}>
+              <nodoassist-tooltip .content=${gatewayStatus}>
                 <span
                   class="sidebar-status__dot ${this.connected
                     ? "sidebar-connection-status--online"
@@ -1680,9 +1680,9 @@ class AppSidebar extends LitElement {
                   aria-live="polite"
                   aria-label=${gatewayStatus}
                 ></span>
-              </openclaw-tooltip>
+              </nodoassist-tooltip>
               <span class="sidebar-footer-bar__spacer"></span>
-              <openclaw-tooltip .content=${titleForRoute("config")}>
+              <nodoassist-tooltip .content=${titleForRoute("config")}>
                 <a
                   href=${pathForRoute("config", this.basePath)}
                   class="sidebar-footer-icon ${settingsActive ? "sidebar-footer-icon--active" : ""}"
@@ -1703,8 +1703,8 @@ class AppSidebar extends LitElement {
                 >
                   ${icons.settings}
                 </a>
-              </openclaw-tooltip>
-              <openclaw-tooltip
+              </nodoassist-tooltip>
+              <nodoassist-tooltip
                 .content=${t("chat.docsOpensInNewTab", { label: t("common.docs") })}
               >
                 <a
@@ -1716,8 +1716,8 @@ class AppSidebar extends LitElement {
                 >
                   ${icons.book}
                 </a>
-              </openclaw-tooltip>
-              <openclaw-tooltip
+              </nodoassist-tooltip>
+              <nodoassist-tooltip
                 .content=${this.canPairDevice
                   ? t("nodes.pairing.button")
                   : t("nodes.pairing.adminRequired")}
@@ -1731,9 +1731,11 @@ class AppSidebar extends LitElement {
                 >
                   ${icons.smartphone}
                 </button>
-              </openclaw-tooltip>
+              </nodoassist-tooltip>
               <span class="sidebar-mode-switch">
-                <openclaw-theme-mode-toggle .mode=${this.themeMode}></openclaw-theme-mode-toggle>
+                <nodoassist-theme-mode-toggle
+                  .mode=${this.themeMode}
+                ></nodoassist-theme-mode-toggle>
               </span>
             </div>
           </div>
@@ -1745,6 +1747,6 @@ class AppSidebar extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-app-sidebar")) {
-  customElements.define("openclaw-app-sidebar", AppSidebar);
+if (!customElements.get("nodoassist-app-sidebar")) {
+  customElements.define("nodoassist-app-sidebar", AppSidebar);
 }

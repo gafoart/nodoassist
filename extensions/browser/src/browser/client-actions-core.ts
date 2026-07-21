@@ -8,7 +8,7 @@ import {
   addTimerTimeoutGraceMs,
   clampPositiveTimerTimeoutMs,
   resolveTimerTimeoutMs,
-} from "openclaw/plugin-sdk/number-runtime";
+} from "nodoassist/plugin-sdk/number-runtime";
 import type {
   BrowserActionOk,
   BrowserActionPathResult,

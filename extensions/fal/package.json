@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/fal-provider",
+  "name": "@nodoassist/fal-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw fal provider plugin",
+  "description": "NodoAssist fal provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

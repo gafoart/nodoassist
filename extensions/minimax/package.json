@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/minimax-provider",
+  "name": "@nodoassist/minimax-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw MiniMax provider and OAuth plugin",
+  "description": "NodoAssist MiniMax provider and OAuth plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

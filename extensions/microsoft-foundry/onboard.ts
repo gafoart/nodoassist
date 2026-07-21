@@ -1,12 +1,12 @@
 // Microsoft Foundry setup module handles plugin onboarding behavior.
-import type { ProviderAuthContext } from "openclaw/plugin-sdk/core";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { ProviderAuthContext } from "nodoassist/plugin-sdk/core";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import { readResponseTextLimited } from "nodoassist/plugin-sdk/provider-http";
+import { fetchWithSsrFGuard } from "nodoassist/plugin-sdk/ssrf-runtime";
 import {
   normalizeOptionalString,
   normalizeStringifiedOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   azLoginDeviceCode,
   azLoginDeviceCodeWithOptions,

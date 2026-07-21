@@ -2,8 +2,8 @@
 import { createHash } from "node:crypto";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { setTimeout as sleep } from "node:timers/promises";
-import { escapeRegExp } from "openclaw/plugin-sdk/text-utility-runtime";
-import { readRequestBodyWithLimit } from "openclaw/plugin-sdk/webhook-ingress";
+import { escapeRegExp } from "nodoassist/plugin-sdk/text-utility-runtime";
+import { readRequestBodyWithLimit } from "nodoassist/plugin-sdk/webhook-ingress";
 import { closeQaHttpServer } from "../../bus-server.js";
 import { QA_LAB_WEB_SEARCH_DENIED_INPUT_QUERY } from "../../qa-web-search-provider.js";
 import { writeJson } from "../shared/http-json.js";
@@ -115,8 +115,8 @@ type MockOpenAiRequestSnapshot = {
 
 // Runtime-context delimiters are owned by src/agents/internal-runtime-context.ts.
 // This mock mirrors the wire shape so delimiter drift fails through QA timeouts.
-const INTERNAL_RUNTIME_CONTEXT_BEGIN = "<<<BEGIN_OPENCLAW_INTERNAL_CONTEXT>>>";
-const INTERNAL_RUNTIME_CONTEXT_END = "<<<END_OPENCLAW_INTERNAL_CONTEXT>>>";
+const INTERNAL_RUNTIME_CONTEXT_BEGIN = "<<<BEGIN_NODOASSIST_INTERNAL_CONTEXT>>>";
+const INTERNAL_RUNTIME_CONTEXT_END = "<<<END_NODOASSIST_INTERNAL_CONTEXT>>>";
 
 // Anthropic /v1/messages request/response shapes the mock actually needs.
 // This is a subset of the real Anthropic Messages API — just enough so the
@@ -184,7 +184,7 @@ const QA_WHATSAPP_PENDING_HISTORY_TRIGGER_MARKER_RE =
   /\bWHATSAPP_QA_PENDING_HISTORY_TRIGGER_([A-Z0-9]+)\b/u;
 const QA_WHATSAPP_PENDING_HISTORY_STRUCTURED_LABEL =
   "Chat history since last reply (untrusted, for context):";
-const QA_WHATSAPP_BROADCAST_PROMPT_RE = /\bopenclawqa broadcast fanout check\s+([A-Z0-9_]+)\b/i;
+const QA_WHATSAPP_BROADCAST_PROMPT_RE = /\bnodoassistqa broadcast fanout check\s+([A-Z0-9_]+)\b/i;
 const QA_WHATSAPP_RUNTIME_AGENT_RE = /\bRuntime:\s*[^\n]*\bagent=([A-Za-z0-9_-]+)/i;
 const QA_WHATSAPP_ACTIVATION_ALWAYS_MARKER_RE = /\bWHATSAPP_QA_ACTIVATION_ALWAYS_([A-Z0-9]+)\b/u;
 const QA_WHATSAPP_REPLY_TO_BOT_SEED_MARKER_RE = /\bWHATSAPP_QA_REPLY_TO_BOT_SEED_[A-Z0-9]+\b/u;
@@ -210,8 +210,8 @@ const QA_MCP_CODE_MODE_PROMPT_RE = /mcp code mode qa check/i;
 const QA_AUDIO_TRANSCRIPTION_TEXT =
   "Reply with only this exact marker: WHATSAPP_QA_AUDIO_TRANSCRIPT_OK";
 const QA_GROUP_AUDIO_TRANSCRIPTION_TEXT =
-  "openclawqa reply with only this exact marker after group audio preflight: WHATSAPP_QA_GROUP_AUDIO_TRANSCRIPT_OK";
-const QA_GROUP_AUDIO_TRIGGER_SENTINEL = "OPENCLAW_QA_GROUP_AUDIO_TRIGGER";
+  "nodoassistqa reply with only this exact marker after group audio preflight: WHATSAPP_QA_GROUP_AUDIO_TRANSCRIPT_OK";
+const QA_GROUP_AUDIO_TRIGGER_SENTINEL = "NODOASSIST_QA_GROUP_AUDIO_TRIGGER";
 const QA_MCP_CODE_MODE_API_FILE_PROMPT_RE = /mcp code mode api file qa check/i;
 
 type MockScenarioState = {
@@ -1028,7 +1028,7 @@ function buildQaToolSearchArgs(targetTool: string, failureMode: boolean): Record
     };
   }
   if (targetTool === "web_search") {
-    return { query: "OpenClaw runtime parity fixed query", count: 1 };
+    return { query: "NodoAssist runtime parity fixed query", count: 1 };
   }
   if (targetTool === "web_fetch") {
     return { url: "https://example.com/", maxChars: 500 };
@@ -1495,7 +1495,7 @@ function buildAssistantText(
     ].join(" ");
   }
   if (/tool continuity check/i.test(prompt) && toolOutput) {
-    return `Protocol note: model switch handoff confirmed on ${model || "the requested model"}. QA mission from QA_KICKOFF_TASK.md still applies: understand this OpenClaw repo from source + docs before acting.`;
+    return `Protocol note: model switch handoff confirmed on ${model || "the requested model"}. QA mission from QA_KICKOFF_TASK.md still applies: understand this NodoAssist repo from source + docs before acting.`;
   }
   if (toolOutput && promptExactReplyDirective) {
     return promptExactReplyDirective;
@@ -2156,10 +2156,10 @@ async function buildResponsesPayload(
     if (targetTool && hasDeclaredTool(body, "tool_search_code")) {
       return buildToolCallEventsWithArgs("tool_search_code", {
         code: [
-          `const hits = await openclaw.tools.search(${JSON.stringify(targetTool)}, { limit: 1 });`,
+          `const hits = await nodoassist.tools.search(${JSON.stringify(targetTool)}, { limit: 1 });`,
           "const match = hits.find((tool) => tool.name === " + JSON.stringify(targetTool) + ");",
           "if (!match) throw new Error('target tool not found');",
-          `return await openclaw.tools.call(match.id, ${JSON.stringify(plannedArgs)});`,
+          `return await nodoassist.tools.call(match.id, ${JSON.stringify(plannedArgs)});`,
         ].join("\n"),
       });
     }
@@ -2628,7 +2628,7 @@ async function buildResponsesPayload(
         path: "dreaming-shadow-trial-report.md",
         content: [
           "Candidate: The user prefers release reports that include exact verification commands and remaining risk.",
-          "Trial prompt: Prepare a release readiness reply for a local OpenClaw QA change.",
+          "Trial prompt: Prepare a release readiness reply for a local NodoAssist QA change.",
           "Baseline outcome: mentions tests passed but omits the exact command and remaining risk.",
           "Candidate outcome: includes the exact verification command and calls out the remaining review risk.",
           "Verdict: helpful",
@@ -3061,12 +3061,12 @@ async function buildResponsesPayload(
     if (
       !taskEvidenceText ||
       (!taskEvidenceText.includes("# Personal task ledger") &&
-        !taskEvidenceText.includes("Task: prepare a local OpenClaw PR readiness note."))
+        !taskEvidenceText.includes("Task: prepare a local NodoAssist PR readiness note."))
     ) {
       return buildToolCallEventsWithArgs("read", { path: "PERSONAL_TASK_LEDGER.md" });
     }
     if (
-      taskEvidenceText.includes("Task: prepare a local OpenClaw PR readiness note.") &&
+      taskEvidenceText.includes("Task: prepare a local NodoAssist PR readiness note.") &&
       taskEvidenceText.includes("Done: local evidence captured in personal-task-status.txt.")
     ) {
       return buildToolCallEventsWithArgs("write", {

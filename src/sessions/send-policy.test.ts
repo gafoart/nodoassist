@@ -1,13 +1,13 @@
 // Session send policy tests cover message send eligibility decisions.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { NodoAssistConfig } from "../config/config.js";
 import type { SessionEntry } from "../config/sessions.js";
 import { buildAgentPeerSessionKey } from "../routing/session-key.js";
 import { resolveSendPolicy } from "./send-policy.js";
 
 describe("resolveSendPolicy", () => {
   const cfgWithRules = (
-    rules: NonNullable<NonNullable<OpenClawConfig["session"]>["sendPolicy"]>["rules"],
+    rules: NonNullable<NonNullable<NodoAssistConfig["session"]>["sendPolicy"]>["rules"],
   ) =>
     ({
       session: {
@@ -16,17 +16,17 @@ describe("resolveSendPolicy", () => {
           rules,
         },
       },
-    }) as OpenClawConfig;
+    }) as NodoAssistConfig;
 
   it("defaults to allow", () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as NodoAssistConfig;
     expect(resolveSendPolicy({ cfg })).toBe("allow");
   });
 
   it("entry override wins", () => {
     const cfg = {
       session: { sendPolicy: { default: "allow" } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     const entry: SessionEntry = {
       sessionId: "s",
       updatedAt: 0,
@@ -168,7 +168,7 @@ describe("resolveSendPolicy", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     expect(
       resolveSendPolicy({
@@ -201,7 +201,7 @@ describe("resolveSendPolicy", () => {
           ],
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     expect(resolveSendPolicy({ cfg, sessionKey })).toBe("deny");
   });

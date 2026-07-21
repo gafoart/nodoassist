@@ -15,7 +15,7 @@
  *   Normalize the prefix away to one key per call, POST one row on the first
  *   frame, and PATCH it when a later frame carries a strictly longer body.
  */
-import { buildChannelProgressDraftLine } from "openclaw/plugin-sdk/channel-outbound";
+import { buildChannelProgressDraftLine } from "nodoassist/plugin-sdk/channel-outbound";
 import type { ClickClackMessage, ClickClackMessageProvenance } from "./types.js";
 
 /** Debounce window for PATCHing streaming commentary snapshots. */
@@ -84,7 +84,7 @@ function commentaryBody(payload: ClickClackItemEventPayload): string {
   }
   const kind = normalizedItemKind(payload);
   if (THINKING_ITEM_KINDS.has(kind)) {
-    return `**Thinking**\n\n${text}`;
+    return `**.nodoassist**\n\n${text}`;
   }
   return text;
 }

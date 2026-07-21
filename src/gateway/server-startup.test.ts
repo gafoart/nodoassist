@@ -2,16 +2,16 @@
  * Gateway startup orchestration tests.
  */
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { NodoAssistConfig } from "../config/config.js";
 
-const ensureOpenClawModelsJsonMock = vi.fn<
+const ensureNodoAssistModelsJsonMock = vi.fn<
   (
     config: unknown,
     agentDir: unknown,
     options?: unknown,
   ) => Promise<{ agentDir: string; wrote: boolean }>
 >(async () => ({ agentDir: "/tmp/agent", wrote: false }));
-const resolveConfiguredModelRefMock = vi.fn(({ cfg }: { cfg: OpenClawConfig }) => {
+const resolveConfiguredModelRefMock = vi.fn(({ cfg }: { cfg: NodoAssistConfig }) => {
   const configured = cfg.agents?.defaults?.model;
   const primary = typeof configured === "string" ? configured : configured?.primary;
   const [provider = "openai", ...modelParts] = (primary ?? "openai/gpt-5.5").split("/");
@@ -25,22 +25,22 @@ vi.mock("../agents/agent-scope.js", () => ({
 }));
 
 vi.mock("../agents/models-config.js", () => ({
-  ensureOpenClawModelsJson: (config: unknown, agentDir: unknown, options?: unknown) =>
-    ensureOpenClawModelsJsonMock(config, agentDir, options),
+  ensureNodoAssistModelsJson: (config: unknown, agentDir: unknown, options?: unknown) =>
+    ensureNodoAssistModelsJsonMock(config, agentDir, options),
 }));
 
 vi.mock("../agents/model-selection.js", () => ({
   isCliProvider: () => false,
-  resolveConfiguredModelRef: (params: { cfg: OpenClawConfig }) =>
+  resolveConfiguredModelRef: (params: { cfg: NodoAssistConfig }) =>
     resolveConfiguredModelRefMock(params),
 }));
 
 let prewarmConfiguredPrimaryModel: typeof import("./server-startup-post-attach.js").testing.prewarmConfiguredPrimaryModel;
 let shouldSkipStartupModelPrewarm: typeof import("./server-startup-post-attach.js").testing.shouldSkipStartupModelPrewarm;
 
-function expectModelsJsonPrewarmCall(cfg: OpenClawConfig) {
-  expect(ensureOpenClawModelsJsonMock).toHaveBeenCalledTimes(1);
-  const [calledConfig, agentDir, options] = ensureOpenClawModelsJsonMock.mock.calls.at(0) ?? [];
+function expectModelsJsonPrewarmCall(cfg: NodoAssistConfig) {
+  expect(ensureNodoAssistModelsJsonMock).toHaveBeenCalledTimes(1);
+  const [calledConfig, agentDir, options] = ensureNodoAssistModelsJsonMock.mock.calls.at(0) ?? [];
   expect(calledConfig).toBe(cfg);
   expect(agentDir).toBe("/tmp/agent");
   expect(options).toEqual({
@@ -59,7 +59,7 @@ describe("gateway startup primary model warmup", () => {
   });
 
   beforeEach(() => {
-    ensureOpenClawModelsJsonMock.mockClear();
+    ensureNodoAssistModelsJsonMock.mockClear();
     resolveConfiguredModelRefMock.mockClear();
   });
 
@@ -72,7 +72,7 @@ describe("gateway startup primary model warmup", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await prewarmConfiguredPrimaryModel({
       cfg,
@@ -85,11 +85,11 @@ describe("gateway startup primary model warmup", () => {
 
   it("skips warmup when no explicit primary model is configured", async () => {
     await prewarmConfiguredPrimaryModel({
-      cfg: {} as OpenClawConfig,
+      cfg: {} as NodoAssistConfig,
       log: { warn: vi.fn() },
     });
 
-    expect(ensureOpenClawModelsJsonMock).not.toHaveBeenCalled();
+    expect(ensureNodoAssistModelsJsonMock).not.toHaveBeenCalled();
     expect(resolveConfiguredModelRefMock).not.toHaveBeenCalled();
   });
 
@@ -97,12 +97,12 @@ describe("gateway startup primary model warmup", () => {
     expect(shouldSkipStartupModelPrewarm({})).toBe(false);
     expect(
       shouldSkipStartupModelPrewarm({
-        OPENCLAW_SKIP_STARTUP_MODEL_PREWARM: "1",
+        NODOASSIST_SKIP_STARTUP_MODEL_PREWARM: "1",
       }),
     ).toBe(true);
     expect(
       shouldSkipStartupModelPrewarm({
-        OPENCLAW_SKIP_STARTUP_MODEL_PREWARM: "true",
+        NODOASSIST_SKIP_STARTUP_MODEL_PREWARM: "true",
       }),
     ).toBe(true);
   });
@@ -123,16 +123,16 @@ describe("gateway startup primary model warmup", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       log: { warn: vi.fn() },
     });
 
-    expect(ensureOpenClawModelsJsonMock).not.toHaveBeenCalled();
+    expect(ensureNodoAssistModelsJsonMock).not.toHaveBeenCalled();
     expect(resolveConfiguredModelRefMock).not.toHaveBeenCalled();
   });
 
   it("warns when scoped models.json preparation fails", async () => {
-    ensureOpenClawModelsJsonMock.mockRejectedValueOnce(new Error("models write failed"));
+    ensureNodoAssistModelsJsonMock.mockRejectedValueOnce(new Error("models write failed"));
     const warn = vi.fn();
 
     await prewarmConfiguredPrimaryModel({
@@ -144,7 +144,7 @@ describe("gateway startup primary model warmup", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       log: { warn },
     });
 

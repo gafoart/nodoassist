@@ -1,11 +1,11 @@
-# OpenClaw Matrix
+# NodoAssist Matrix
 
-Official OpenClaw channel plugin for Matrix rooms and direct messages.
+Official NodoAssist channel plugin for Matrix rooms and direct messages.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugin add @openclaw/matrix
+nodoassist plugin add @nodoassist/matrix
 ```
 
-Configure the Matrix homeserver and bot credentials in OpenClaw. The plugin lets agents join configured rooms, receive messages, and reply through Matrix.
+Configure the Matrix homeserver and bot credentials in NodoAssist. The plugin lets agents join configured rooms, receive messages, and reply through Matrix.

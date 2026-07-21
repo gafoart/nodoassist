@@ -34,7 +34,7 @@ export type {
   MSTeamsConfig,
   MSTeamsReplyStyle,
   MSTeamsTeamConfig,
-  OpenClawConfig,
+  NodoAssistConfig,
   ReplyToMode,
   ResolvedTtsPersona,
   SignalReactionNotificationMode,

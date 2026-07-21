@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { resolveTerminalLaunch } from "../terminal/launch.js";
 import { terminalHandlers } from "./terminal.js";
 
 function makeOpts(
   params: unknown,
   terminalConfig: { enabled?: boolean } | undefined,
-  terminalPolicyConfig?: OpenClawConfig,
+  terminalPolicyConfig?: NodoAssistConfig,
 ) {
   const sessions = {
     open: vi.fn(),
@@ -33,7 +33,7 @@ function makeOpts(
     snapshot: vi.fn(() => "10%\r100%"),
   };
   const respond = vi.fn();
-  const runtimeConfig = { gateway: { terminal: terminalConfig } } as OpenClawConfig;
+  const runtimeConfig = { gateway: { terminal: terminalConfig } } as NodoAssistConfig;
   const policyConfig = terminalPolicyConfig ?? runtimeConfig;
   const context = {
     getRuntimeConfig: () => runtimeConfig,

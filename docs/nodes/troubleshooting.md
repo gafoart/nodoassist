@@ -11,19 +11,19 @@ Use this page when a node is visible in status but node tools fail.
 ## Command ladder
 
 ```bash
-openclaw status
-openclaw gateway status
-openclaw logs --follow
-openclaw doctor
-openclaw channels status --probe
+nodoassist status
+nodoassist gateway status
+nodoassist logs --follow
+nodoassist doctor
+nodoassist channels status --probe
 ```
 
 Then run node-specific checks:
 
 ```bash
-openclaw nodes status
-openclaw nodes describe --node <idOrNameOrIp>
-openclaw approvals get --node <idOrNameOrIp>
+nodoassist nodes status
+nodoassist nodes describe --node <idOrNameOrIp>
+nodoassist approvals get --node <idOrNameOrIp>
 ```
 
 Healthy signals:
@@ -39,9 +39,9 @@ Healthy signals:
 Quick check and fix:
 
 ```bash
-openclaw nodes describe --node <idOrNameOrIp>
-openclaw nodes canvas snapshot --node <idOrNameOrIp>
-openclaw logs --follow
+nodoassist nodes describe --node <idOrNameOrIp>
+nodoassist nodes canvas snapshot --node <idOrNameOrIp>
+nodoassist logs --follow
 ```
 
 If you see `NODE_BACKGROUND_UNAVAILABLE`, bring the node app to the foreground and retry.
@@ -63,15 +63,15 @@ Three separate gates control whether a node command succeeds:
 2. **Gateway node command policy**: is the RPC command ID allowed by `gateway.nodes.allowCommands` / `denyCommands` and platform defaults?
 3. **Exec approvals**: can this node run a specific shell command locally?
 
-Node pairing is an identity/trust gate, not a per-command approval surface. For `system.run`, the per-node policy lives in that node's exec approvals file (`openclaw approvals get --node ...`), not in the gateway pairing record.
+Node pairing is an identity/trust gate, not a per-command approval surface. For `system.run`, the per-node policy lives in that node's exec approvals file (`nodoassist approvals get --node ...`), not in the gateway pairing record.
 
 Quick checks:
 
 ```bash
-openclaw devices list
-openclaw nodes status
-openclaw approvals get --node <idOrNameOrIp>
-openclaw approvals allowlist add --node <idOrNameOrIp> "/usr/bin/uname"
+nodoassist devices list
+nodoassist nodes status
+nodoassist approvals get --node <idOrNameOrIp>
+nodoassist approvals allowlist add --node <idOrNameOrIp> "/usr/bin/uname"
 ```
 
 - Pairing missing: approve the node device first.
@@ -96,10 +96,10 @@ For approval-backed `host=node` runs, the gateway also binds execution to the pr
 ## Fast recovery loop
 
 ```bash
-openclaw nodes status
-openclaw nodes describe --node <idOrNameOrIp>
-openclaw approvals get --node <idOrNameOrIp>
-openclaw logs --follow
+nodoassist nodes status
+nodoassist nodes describe --node <idOrNameOrIp>
+nodoassist approvals get --node <idOrNameOrIp>
+nodoassist logs --follow
 ```
 
 If still stuck:

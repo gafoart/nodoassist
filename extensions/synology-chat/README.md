@@ -1,11 +1,11 @@
-# OpenClaw Synology Chat
+# NodoAssist Synology Chat
 
-Official OpenClaw channel plugin for Synology Chat conversations and direct messages.
+Official NodoAssist channel plugin for Synology Chat conversations and direct messages.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugin add @openclaw/synology-chat
+nodoassist plugin add @nodoassist/synology-chat
 ```
 
-Configure Synology Chat credentials and allowed conversations in OpenClaw, then use the plugin to route messages between Synology Chat and OpenClaw agents.
+Configure Synology Chat credentials and allowed conversations in NodoAssist, then use the plugin to route messages between Synology Chat and NodoAssist agents.

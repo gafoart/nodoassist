@@ -1,10 +1,10 @@
 // Codex plugin module implements command handlers behavior.
 import crypto from "node:crypto";
-import { resolveAgentDir, resolveSessionAgentIds } from "openclaw/plugin-sdk/agent-runtime";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import type { PluginCommandContext, PluginCommandResult } from "openclaw/plugin-sdk/plugin-entry";
-import { parseAgentSessionKey } from "openclaw/plugin-sdk/routing";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+import { resolveAgentDir, resolveSessionAgentIds } from "nodoassist/plugin-sdk/agent-runtime";
+import { parseStrictPositiveInteger } from "nodoassist/plugin-sdk/number-runtime";
+import type { PluginCommandContext, PluginCommandResult } from "nodoassist/plugin-sdk/plugin-entry";
+import { parseAgentSessionKey } from "nodoassist/plugin-sdk/routing";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { resolveCodexAppServerAuthProfileIdForAgent } from "./app-server/auth-bridge.js";
 import { CODEX_CONTROL_METHODS, type CodexControlMethod } from "./app-server/capabilities.js";
 import {
@@ -217,7 +217,7 @@ type PendingCodexDiagnosticsConfirmation = {
   createdAt: number;
 };
 
-const CODEX_DIAGNOSTICS_SOURCE = "openclaw-diagnostics";
+const CODEX_DIAGNOSTICS_SOURCE = "nodoassist-diagnostics";
 const CODEX_DIAGNOSTICS_REASON_MAX_CHARS = 2048;
 const CODEX_DIAGNOSTICS_COOLDOWN_MS = 60_000;
 const CODEX_DIAGNOSTICS_ERROR_MAX_CHARS = 500;
@@ -405,7 +405,7 @@ export async function handleCodexSubcommand(
       return {
         text:
           "Codex sub-plugin management is not wired up (codexPluginsManagementIo dep is undefined). " +
-          "Edit ~/.openclaw/openclaw.json or use `openclaw config patch` until the runtime exposes the IO.",
+          "Edit ~/.nodoassist/nodoassist.json or use `nodoassist config patch` until the runtime exposes the IO.",
       };
     }
     return await handleCodexPluginsSubcommand(ctx, rest, deps.codexPluginsManagementIo);
@@ -864,7 +864,7 @@ async function resumeThread(
     return "Usage: /codex resume <thread-id>";
   }
   if (!ctx.sessionId) {
-    return "Cannot attach a Codex thread because this command did not include an OpenClaw session id.";
+    return "Cannot attach a Codex thread because this command did not include an NodoAssist session id.";
   }
   const scope = resolveCodexConversationControlScope(ctx);
   const identity = sessionBindingIdentity({
@@ -935,7 +935,7 @@ async function resumeThread(
     if (!committed) {
       throw new Error("Codex thread binding changed while attaching the resumed thread.");
     }
-    return `Attached this OpenClaw session to Codex thread ${formatCodexDisplayText(
+    return `Attached this NodoAssist session to Codex thread ${formatCodexDisplayText(
       effectiveThreadId,
     )}.`;
   });
@@ -1236,7 +1236,7 @@ async function requestCodexDiagnosticsFeedbackApproval(
   if (targets.length === 0) {
     return {
       text: [
-        "No Codex thread is attached to this OpenClaw session yet.",
+        "No Codex thread is attached to this NodoAssist session yet.",
         "Use /codex threads to find a thread, then /codex resume <thread-id> before sending diagnostics.",
       ].join("\n"),
     };
@@ -1313,7 +1313,7 @@ async function previewCodexDiagnosticsFeedbackApproval(
   const targets = await resolveCodexDiagnosticsTargets(deps, ctx);
   if (targets.length === 0) {
     return [
-      "No Codex thread is attached to this OpenClaw session yet.",
+      "No Codex thread is attached to this NodoAssist session yet.",
       "Use /codex threads to find a thread, then /codex resume <thread-id> before sending diagnostics.",
     ].join("\n");
   }
@@ -1328,7 +1328,7 @@ async function previewCodexDiagnosticsFeedbackApproval(
   return [
     targets.length === 1 ? "Codex runtime thread detected." : "Codex runtime threads detected.",
     `Approving diagnostics will also send ${targets.length === 1 ? "this thread's feedback bundle" : "these threads' feedback bundles"} to OpenAI servers.`,
-    "The completed diagnostics reply will list the OpenClaw session ids and Codex thread ids that were sent.",
+    "The completed diagnostics reply will list the NodoAssist session ids and Codex thread ids that were sent.",
     ...(displayReason ? [`Note: ${displayReason}`] : []),
     "Included: Codex logs and spawned Codex subthreads when available.",
   ].join("\n");
@@ -1415,7 +1415,7 @@ async function sendCodexDiagnosticsFeedbackForContext(
   const targets = await resolveCodexDiagnosticsTargets(deps, ctx);
   if (targets.length === 0) {
     return [
-      "No Codex thread is attached to this OpenClaw session yet.",
+      "No Codex thread is attached to this NodoAssist session yet.",
       "Use /codex threads to find a thread, then /codex resume <thread-id> before sending diagnostics.",
     ].join("\n");
   }
@@ -1432,7 +1432,7 @@ async function sendCodexDiagnosticsFeedbackForTargets(
 ): Promise<string> {
   if (targets.length === 0) {
     return [
-      "No Codex thread is attached to this OpenClaw session yet.",
+      "No Codex thread is attached to this NodoAssist session yet.",
       "Use /codex threads to find a thread, then /codex resume <thread-id> before sending diagnostics.",
     ].join("\n");
   }
@@ -1644,10 +1644,10 @@ function formatCodexDiagnosticsTargetBlock(
     lines.push(`Channel: ${formatCodexValueForDisplay(target.channel)}`);
   }
   if (target.sessionKey) {
-    lines.push(`OpenClaw session key: ${formatCodexCopyableValueForDisplay(target.sessionKey)}`);
+    lines.push(`NodoAssist session key: ${formatCodexCopyableValueForDisplay(target.sessionKey)}`);
   }
   if (target.sessionId) {
-    lines.push(`OpenClaw session id: ${formatCodexCopyableValueForDisplay(target.sessionId)}`);
+    lines.push(`NodoAssist session id: ${formatCodexCopyableValueForDisplay(target.sessionId)}`);
   }
   lines.push(`Codex thread id: ${formatCodexCopyableValueForDisplay(target.threadId)}`);
   lines.push(`Inspect locally: ${formatCodexResumeCommandForDisplay(target.threadId)}`);
@@ -1661,7 +1661,7 @@ function formatCodexDiagnosticsTargetLine(target: CodexDiagnosticsTarget): strin
   }
   const sessionLabel = target.sessionId || target.sessionKey;
   if (sessionLabel) {
-    parts.push(`OpenClaw session ${formatCodexValueForDisplay(sessionLabel)}`);
+    parts.push(`NodoAssist session ${formatCodexValueForDisplay(sessionLabel)}`);
   }
   parts.push(`Codex thread ${formatCodexThreadIdForDisplay(target.threadId)}`);
   return `- ${parts.join(", ")}`;
@@ -2107,7 +2107,7 @@ async function startThreadAction(
   }
   const binding = await deps.bindingStore.read(target.identity);
   if (!binding?.threadId) {
-    return `No Codex thread is attached to this OpenClaw session yet.`;
+    return `No Codex thread is attached to this NodoAssist session yet.`;
   }
   await deps.codexControlRequest(
     pluginConfig,

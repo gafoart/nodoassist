@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { CliBackendPlugin } from "openclaw/plugin-sdk/cli-backend";
-import type { ProviderPlugin } from "openclaw/plugin-sdk/provider-model-shared";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
-import { withTempDir } from "openclaw/plugin-sdk/test-env";
+import type { CliBackendPlugin } from "nodoassist/plugin-sdk/cli-backend";
+import type { ProviderPlugin } from "nodoassist/plugin-sdk/provider-model-shared";
+import { resolvePreferredNodoAssistTmpDir } from "nodoassist/plugin-sdk/temp-path";
+import { withTempDir } from "nodoassist/plugin-sdk/test-env";
 import { describe, expect, it, vi } from "vitest";
 import { buildGoogleGeminiCliBackend } from "./cli-backend.js";
 import setupEntry from "./setup-api.js";
@@ -145,9 +145,9 @@ describe("google gemini cli backend config", () => {
 });
 
 describe("google gemini cli backend auth bridge", () => {
-  it("materializes selected OpenClaw OAuth credentials into a persistent profile-scoped Gemini CLI home", async () => {
+  it("materializes selected NodoAssist OAuth credentials into a persistent profile-scoped Gemini CLI home", async () => {
     const backend = buildGoogleGeminiCliBackend();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-workspace-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-test-workspace-"));
     let home: string | undefined;
     const cleanups: Array<() => Promise<void>> = [];
 
@@ -164,8 +164,8 @@ describe("google gemini cli backend auth bridge", () => {
               useExternal: true,
             },
           },
-          mcp: { allowed: ["openclaw"] },
-          mcpServers: { openclaw: { url: "http://127.0.0.1:23119/mcp" } },
+          mcp: { allowed: ["nodoassist"] },
+          mcpServers: { nodoassist: { url: "http://127.0.0.1:23119/mcp" } },
         })}\n`,
         "utf8",
       );
@@ -183,8 +183,8 @@ describe("google gemini cli backend auth bridge", () => {
       expect(systemSettingsPath).not.toBe(inheritedSettingsPath);
       expect(path.dirname(systemSettingsPath ?? "")).not.toBe(home);
       expect(
-        path.relative(resolvePreferredOpenClawTmpDir(), path.dirname(systemSettingsPath ?? "")),
-      ).toMatch(/^openclaw-gemini-cli-/);
+        path.relative(resolvePreferredNodoAssistTmpDir(), path.dirname(systemSettingsPath ?? "")),
+      ).toMatch(/^nodoassist-gemini-cli-/);
       expect(prepared?.env?.GEMINI_FORCE_FILE_STORAGE).toBe("true");
       expect(prepared?.env?.GOOGLE_CLOUD_PROJECT).toBe("profile-project");
       expect(prepared?.env?.GOOGLE_CLOUD_PROJECT_ID).toBe("profile-project");
@@ -221,8 +221,8 @@ describe("google gemini cli backend auth bridge", () => {
             useExternal: true,
           },
         },
-        mcp: { allowed: ["openclaw"] },
-        mcpServers: { openclaw: { url: "http://127.0.0.1:23119/mcp" } },
+        mcp: { allowed: ["nodoassist"] },
+        mcpServers: { nodoassist: { url: "http://127.0.0.1:23119/mcp" } },
       });
 
       const sessionMarker = path.join(home ?? "", ".gemini", "session-state.json");
@@ -247,7 +247,7 @@ describe("google gemini cli backend auth bridge", () => {
   });
 
   it("stages Gemini CLI JSON through same-directory atomic renames", async () => {
-    await withTempDir("openclaw-test-workspace-", async (workspaceDir) => {
+    await withTempDir("nodoassist-test-workspace-", async (workspaceDir) => {
       const backend = buildGoogleGeminiCliBackend();
       const realRename = fs.rename.bind(fs);
       const renameCalls: Array<{ from: string; to: string }> = [];
@@ -291,7 +291,7 @@ describe("google gemini cli backend auth bridge", () => {
 
   it("prepares selected canonical Google API-key credentials and removes stale OAuth state for that profile home", async () => {
     const backend = buildGoogleGeminiCliBackend();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-workspace-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-test-workspace-"));
     let home: string | undefined;
     const cleanups: Array<() => Promise<void>> = [];
 
@@ -349,7 +349,7 @@ describe("google gemini cli backend auth bridge", () => {
 
   it("rejects inherited Gemini system settings that enforce a different auth type", async () => {
     const backend = buildGoogleGeminiCliBackend();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-workspace-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-test-workspace-"));
 
     try {
       const inheritedSettingsPath = path.join(workspaceDir, "generated-mcp-settings.json");
@@ -371,7 +371,7 @@ describe("google gemini cli backend auth bridge", () => {
 
   it("inherits process Gemini system settings when no generated settings path is present", async () => {
     const backend = buildGoogleGeminiCliBackend();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-workspace-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-test-workspace-"));
     const originalSystemSettingsPath = process.env.GEMINI_CLI_SYSTEM_SETTINGS_PATH;
     let prepared:
       | Awaited<ReturnType<NonNullable<typeof backend.prepareExecution>>>
@@ -420,7 +420,7 @@ describe("google gemini cli backend auth bridge", () => {
 
   it("rejects Vercel AI Gateway profiles for the Gemini CLI backend", async () => {
     const backend = buildGoogleGeminiCliBackend();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-workspace-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-test-workspace-"));
 
     try {
       await expect(
@@ -444,7 +444,7 @@ describe("google gemini cli backend auth bridge", () => {
 
   it("rejects selected Gemini token profiles before the CLI can use ambient auth", async () => {
     const backend = buildGoogleGeminiCliBackend();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-workspace-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-test-workspace-"));
 
     try {
       await expect(
@@ -468,7 +468,7 @@ describe("google gemini cli backend auth bridge", () => {
 
   it("rejects selected Gemini profiles with no material before the CLI can use ambient auth", async () => {
     const backend = buildGoogleGeminiCliBackend();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-workspace-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-test-workspace-"));
 
     try {
       await expect(
@@ -487,7 +487,7 @@ describe("google gemini cli backend auth bridge", () => {
 
   it("clears inherited Gemini auth credentials when staging selected OAuth credentials", async () => {
     const backend = buildGoogleGeminiCliBackend();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-workspace-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-test-workspace-"));
     const originalUseGca = process.env.GOOGLE_GENAI_USE_GCA;
     const originalCloudAccessToken = process.env.GOOGLE_CLOUD_ACCESS_TOKEN;
     const originalGoogleApplicationCredentials = process.env.GOOGLE_APPLICATION_CREDENTIALS;
@@ -545,7 +545,7 @@ describe("google gemini cli backend auth bridge", () => {
 
   it("requires an agent directory for profile-owned Gemini CLI state", async () => {
     const backend = buildGoogleGeminiCliBackend();
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-workspace-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-test-workspace-"));
 
     try {
       const { agentDir: _agentDir, ...context } = buildGeminiOAuthPrepareContext(workspaceDir);

@@ -5,14 +5,17 @@ import {
   asSafeIntegerInRange,
   resolveExpiresAtMsFromDurationOrEpoch,
   resolvePositiveTimerTimeoutMs,
-} from "openclaw/plugin-sdk/number-runtime";
-import { generatePkceVerifierChallenge, toFormUrlEncoded } from "openclaw/plugin-sdk/provider-auth";
+} from "nodoassist/plugin-sdk/number-runtime";
+import {
+  generatePkceVerifierChallenge,
+  toFormUrlEncoded,
+} from "nodoassist/plugin-sdk/provider-auth";
 import {
   readProviderJsonResponse,
   readResponseTextLimited,
-} from "openclaw/plugin-sdk/provider-http";
-import { ensureGlobalUndiciEnvProxyDispatcher } from "openclaw/plugin-sdk/runtime-env";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
+} from "nodoassist/plugin-sdk/provider-http";
+import { ensureGlobalUndiciEnvProxyDispatcher } from "nodoassist/plugin-sdk/runtime-env";
+import { fetchWithSsrFGuard } from "nodoassist/plugin-sdk/ssrf-runtime";
 
 export type MiniMaxRegion = "cn" | "global";
 

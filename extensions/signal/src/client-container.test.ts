@@ -1,6 +1,6 @@
 // Signal tests cover client container plugin behavior.
-import * as fetchModule from "openclaw/plugin-sdk/fetch-runtime";
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import * as fetchModule from "nodoassist/plugin-sdk/fetch-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "nodoassist/plugin-sdk/number-runtime";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import {
   containerCheck,

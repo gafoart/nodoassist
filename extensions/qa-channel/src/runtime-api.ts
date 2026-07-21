@@ -3,22 +3,22 @@ export type {
   ChannelMessageActionAdapter,
   ChannelMessageActionName,
   ChannelGatewayContext,
-} from "openclaw/plugin-sdk/channel-contract";
-export type { ChannelPlugin } from "openclaw/plugin-sdk/channel-core";
-export type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-export type { RuntimeEnv } from "openclaw/plugin-sdk/runtime";
-export type { PluginRuntime } from "openclaw/plugin-sdk/runtime-store";
+} from "nodoassist/plugin-sdk/channel-contract";
+export type { ChannelPlugin } from "nodoassist/plugin-sdk/channel-core";
+export type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+export type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime";
+export type { PluginRuntime } from "nodoassist/plugin-sdk/runtime-store";
 export {
   buildChannelConfigSchema,
   buildChannelOutboundSessionRoute,
   createChatChannelPlugin,
   defineChannelPluginEntry,
-} from "openclaw/plugin-sdk/channel-core";
-export { jsonResult, readStringParam } from "openclaw/plugin-sdk/channel-actions";
-export { getChatChannelMeta } from "openclaw/plugin-sdk/channel-plugin-common";
+} from "nodoassist/plugin-sdk/channel-core";
+export { jsonResult, readStringParam } from "nodoassist/plugin-sdk/channel-actions";
+export { getChatChannelMeta } from "nodoassist/plugin-sdk/channel-plugin-common";
 export {
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
-export { createPluginRuntimeStore } from "openclaw/plugin-sdk/runtime-store";
-export { createChannelMessageReplyPipeline } from "openclaw/plugin-sdk/channel-outbound";
+} from "nodoassist/plugin-sdk/status-helpers";
+export { createPluginRuntimeStore } from "nodoassist/plugin-sdk/runtime-store";
+export { createChannelMessageReplyPipeline } from "nodoassist/plugin-sdk/channel-outbound";

@@ -1,5 +1,5 @@
 import Foundation
-import OpenClawKit
+import NodoAssistKit
 
 enum TalkModeExecutionMode: Equatable {
     case native

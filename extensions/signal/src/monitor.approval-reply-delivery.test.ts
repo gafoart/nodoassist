@@ -1,6 +1,6 @@
-import { buildExecApprovalPendingReplyPayload } from "openclaw/plugin-sdk/approval-reply-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+import { buildExecApprovalPendingReplyPayload } from "nodoassist/plugin-sdk/approval-reply-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import type { ReplyPayload } from "nodoassist/plugin-sdk/reply-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   clearSignalApprovalReactionTargetsForTest,
@@ -37,12 +37,12 @@ const cfg = {
       targets: [{ channel: "signal", to: approver }],
     },
   },
-} as OpenClawConfig;
+} as NodoAssistConfig;
 
 async function deliverReplyPayload(
   payload: ReplyPayload,
   options: {
-    config?: OpenClawConfig;
+    config?: NodoAssistConfig;
     account?: string;
     accountUuid?: string;
     accountId?: string;
@@ -131,7 +131,7 @@ describe("Signal monitor approval reply delivery", () => {
         },
       },
       approvals: cfg.approvals,
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await deliverReplyPayload(payload, {
       config: uuidOnlyConfig,

@@ -6,16 +6,16 @@ import {
   logAckFailure,
   logTypingFailure,
   removeAckReactionAfterReply,
-} from "openclaw/plugin-sdk/channel-feedback";
-import { runChannelInboundEvent } from "openclaw/plugin-sdk/channel-inbound";
-import { CURRENT_MESSAGE_MARKER } from "openclaw/plugin-sdk/channel-mention-gating";
+} from "nodoassist/plugin-sdk/channel-feedback";
+import { runChannelInboundEvent } from "nodoassist/plugin-sdk/channel-inbound";
+import { CURRENT_MESSAGE_MARKER } from "nodoassist/plugin-sdk/channel-mention-gating";
 import {
   createChannelMessageReplyPipeline,
   createPreviewMessageReceipt,
   createOutboundPayloadPlan,
   deriveDurableFinalDeliveryRequirements,
   projectOutboundPayloadPlanForDelivery,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "nodoassist/plugin-sdk/channel-outbound";
 import {
   buildChannelProgressDraftLine,
   buildChannelProgressDraftLineForEntry,
@@ -26,35 +26,35 @@ import {
   resolveChannelStreamingBlockEnabled,
   resolveChannelStreamingPreviewToolProgress,
   resolveTranscriptBackedChannelFinalText,
-} from "openclaw/plugin-sdk/channel-outbound";
+} from "nodoassist/plugin-sdk/channel-outbound";
 import type {
-  OpenClawConfig,
+  NodoAssistConfig,
   ReplyToMode,
   TelegramAccountConfig,
-} from "openclaw/plugin-sdk/config-contracts";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import { normalizeMessagePresentation } from "openclaw/plugin-sdk/interactive-runtime";
-import { parseStrictPositiveInteger } from "openclaw/plugin-sdk/number-runtime";
-import { createChannelHistoryWindow } from "openclaw/plugin-sdk/reply-history";
+} from "nodoassist/plugin-sdk/config-contracts";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import { normalizeMessagePresentation } from "nodoassist/plugin-sdk/interactive-runtime";
+import { parseStrictPositiveInteger } from "nodoassist/plugin-sdk/number-runtime";
+import { createChannelHistoryWindow } from "nodoassist/plugin-sdk/reply-history";
 import {
   isFastModeAutoProgressPayload,
   isReplyPayloadNonTerminalToolErrorWarning,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-payload";
-import type { BlockReplyContext } from "openclaw/plugin-sdk/reply-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+} from "nodoassist/plugin-sdk/reply-payload";
+import type { ReplyPayload } from "nodoassist/plugin-sdk/reply-payload";
+import type { BlockReplyContext } from "nodoassist/plugin-sdk/reply-runtime";
+import type { RuntimeEnv } from "nodoassist/plugin-sdk/runtime-env";
 import {
   createSubsystemLogger,
   danger,
   logVerbose,
   sleepWithAbort,
-} from "openclaw/plugin-sdk/runtime-env";
+} from "nodoassist/plugin-sdk/runtime-env";
 import {
   appendAssistantMirrorMessageByIdentity,
   readLatestAssistantTextByIdentity,
-} from "openclaw/plugin-sdk/session-transcript-runtime";
-import { stripInlineDirectiveTagsForDelivery } from "openclaw/plugin-sdk/text-chunking";
+} from "nodoassist/plugin-sdk/session-transcript-runtime";
+import { stripInlineDirectiveTagsForDelivery } from "nodoassist/plugin-sdk/text-chunking";
 import { resolveTelegramConfigReasoningDefault } from "./agent-config.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
 import type { TelegramBotDeps } from "./bot-deps.js";
@@ -203,7 +203,7 @@ function hasExecApprovalPayload(payload: ReplyPayload): boolean {
   return payload.channelData?.execApproval !== undefined;
 }
 
-async function resolveStickerVisionSupport(cfg: OpenClawConfig, agentId: string) {
+async function resolveStickerVisionSupport(cfg: NodoAssistConfig, agentId: string) {
   try {
     const catalog = await loadModelCatalog({ config: cfg });
     const defaultModel = resolveDefaultModelForAgent({ cfg, agentId });
@@ -236,7 +236,7 @@ function includeStickerDescription(body: string | undefined, formattedDescriptio
 type DispatchTelegramMessageParams = {
   context: TelegramMessageContext;
   bot: Bot;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   runtime: RuntimeEnv;
   replyToMode: ReplyToMode;
   streamMode: TelegramStreamMode;
@@ -266,7 +266,7 @@ type FreshTelegramSessionEntryLoader = ((
 };
 
 function createFreshTelegramSessionEntryLoader(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   telegramDeps: TelegramBotDeps;
 }): FreshTelegramSessionEntryLoader {
   const entriesByPathAndKey = new Map<string, SessionEntry | undefined>();
@@ -289,7 +289,7 @@ function createFreshTelegramSessionEntryLoader(params: {
 }
 
 function resolveTelegramReasoningLevel(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   sessionKey?: string;
   agentId: string;
   loadFreshSessionEntry: FreshTelegramSessionEntryLoader;
@@ -340,7 +340,7 @@ function resolveTelegramScopedTranscriptSession(params: {
 }
 
 async function mirrorTelegramAssistantReplyToTranscript(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   idempotencyKey: string;
   loadFreshSessionEntry: FreshTelegramSessionEntryLoader;
   route: TelegramMessageContext["route"];

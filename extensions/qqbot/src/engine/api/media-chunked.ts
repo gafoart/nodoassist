@@ -36,10 +36,10 @@
 
 import * as crypto from "node:crypto";
 import type { FileHandle } from "node:fs/promises";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
-import { sleep } from "openclaw/plugin-sdk/runtime-env";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+import { readResponseTextLimited } from "nodoassist/plugin-sdk/provider-http";
+import { sleep } from "nodoassist/plugin-sdk/runtime-env";
+import { fetchWithSsrFGuard } from "nodoassist/plugin-sdk/ssrf-runtime";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import type { MediaSource, OpenedLocalFile } from "../messaging/media-source.js";
 import { openLocalFile } from "../messaging/media-source.js";
 import {

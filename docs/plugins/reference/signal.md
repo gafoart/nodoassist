@@ -1,5 +1,5 @@
 ---
-summary: "Adds the Signal channel surface for sending and receiving OpenClaw messages."
+summary: "Adds the Signal channel surface for sending and receiving NodoAssist messages."
 read_when:
   - You are installing, configuring, or auditing the signal plugin
 title: "Signal plugin"
@@ -7,12 +7,12 @@ title: "Signal plugin"
 
 # Signal plugin
 
-Adds the Signal channel surface for sending and receiving OpenClaw messages.
+Adds the Signal channel surface for sending and receiving NodoAssist messages.
 
 ## Distribution
 
-- Package: `@openclaw/signal`
-- Install route: npm; ClawHub: `clawhub:@openclaw/signal`
+- Package: `@nodoassist/signal`
+- Install route: npm; ClawHub: `clawhub:@nodoassist/signal`
 
 ## Surface
 

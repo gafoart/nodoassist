@@ -1,10 +1,10 @@
 import Foundation
-import OpenClawKit
+import NodoAssistKit
 
 enum WatchMessagingPayloadCodec {
     private static let durableSnapshotTypes = [
-        OpenClawWatchPayloadType.appSnapshot.rawValue,
-        OpenClawWatchPayloadType.execApprovalSnapshot.rawValue,
+        NodoAssistWatchPayloadType.appSnapshot.rawValue,
+        NodoAssistWatchPayloadType.execApprovalSnapshot.rawValue,
     ]
 
     static let completedChatReplyTextLimit = 4000
@@ -20,15 +20,15 @@ enum WatchMessagingPayloadCodec {
 
     static func encodeNotificationPayload(
         id: String,
-        params: OpenClawWatchNotifyParams,
+        params: NodoAssistWatchNotifyParams,
         gatewayStableID: String?) -> [String: Any]
     {
         var payload: [String: Any] = [
-            "type": OpenClawWatchPayloadType.notify.rawValue,
+            "type": NodoAssistWatchPayloadType.notify.rawValue,
             "id": id,
             "title": params.title,
             "body": params.body,
-            "priority": params.priority?.rawValue ?? OpenClawNotificationPriority.active.rawValue,
+            "priority": params.priority?.rawValue ?? NodoAssistNotificationPriority.active.rawValue,
             "sentAtMs": self.nowMs(),
         ]
         if let promptId = nonEmpty(params.promptId) {
@@ -67,7 +67,7 @@ enum WatchMessagingPayloadCodec {
         return payload
     }
 
-    static func encodeExecApprovalItem(_ item: OpenClawWatchExecApprovalItem) -> [String: Any] {
+    static func encodeExecApprovalItem(_ item: NodoAssistWatchExecApprovalItem) -> [String: Any] {
         var payload: [String: Any] = [
             "id": item.id,
             "commandText": item.commandText,
@@ -98,10 +98,10 @@ enum WatchMessagingPayloadCodec {
     }
 
     static func encodeExecApprovalPromptPayload(
-        _ message: OpenClawWatchExecApprovalPromptMessage) -> [String: Any]
+        _ message: NodoAssistWatchExecApprovalPromptMessage) -> [String: Any]
     {
         var payload: [String: Any] = [
-            "type": OpenClawWatchPayloadType.execApprovalPrompt.rawValue,
+            "type": NodoAssistWatchPayloadType.execApprovalPrompt.rawValue,
             "approval": self.encodeExecApprovalItem(message.approval),
         ]
         if let sentAtMs = message.sentAtMs {
@@ -117,10 +117,10 @@ enum WatchMessagingPayloadCodec {
     }
 
     static func encodeExecApprovalResolvedPayload(
-        _ message: OpenClawWatchExecApprovalResolvedMessage) -> [String: Any]
+        _ message: NodoAssistWatchExecApprovalResolvedMessage) -> [String: Any]
     {
         var payload: [String: Any] = [
-            "type": OpenClawWatchPayloadType.execApprovalResolved.rawValue,
+            "type": NodoAssistWatchPayloadType.execApprovalResolved.rawValue,
             "approvalId": message.approvalId,
         ]
         if let gatewayStableID = nonEmpty(message.gatewayStableID) {
@@ -139,10 +139,10 @@ enum WatchMessagingPayloadCodec {
     }
 
     static func encodeExecApprovalExpiredPayload(
-        _ message: OpenClawWatchExecApprovalExpiredMessage) -> [String: Any]
+        _ message: NodoAssistWatchExecApprovalExpiredMessage) -> [String: Any]
     {
         var payload: [String: Any] = [
-            "type": OpenClawWatchPayloadType.execApprovalExpired.rawValue,
+            "type": NodoAssistWatchPayloadType.execApprovalExpired.rawValue,
             "approvalId": message.approvalId,
             "reason": message.reason.rawValue,
         ]
@@ -156,10 +156,10 @@ enum WatchMessagingPayloadCodec {
     }
 
     static func encodeExecApprovalSnapshotPayload(
-        _ message: OpenClawWatchExecApprovalSnapshotMessage) -> [String: Any]
+        _ message: NodoAssistWatchExecApprovalSnapshotMessage) -> [String: Any]
     {
         var payload: [String: Any] = [
-            "type": OpenClawWatchPayloadType.execApprovalSnapshot.rawValue,
+            "type": NodoAssistWatchPayloadType.execApprovalSnapshot.rawValue,
             "approvals": message.approvals.map(self.encodeExecApprovalItem),
         ]
         if let gatewayStableID = nonEmpty(message.gatewayStableID) {
@@ -175,10 +175,10 @@ enum WatchMessagingPayloadCodec {
     }
 
     static func encodeAppSnapshotPayload(
-        _ message: OpenClawWatchAppSnapshotMessage) -> [String: Any]
+        _ message: NodoAssistWatchAppSnapshotMessage) -> [String: Any]
     {
         var payload: [String: Any] = [
-            "type": OpenClawWatchPayloadType.appSnapshot.rawValue,
+            "type": NodoAssistWatchPayloadType.appSnapshot.rawValue,
             "gatewayStatusText": message.gatewayStatusText,
             "gatewayConnected": message.gatewayConnected,
             "agentName": message.agentName,
@@ -249,7 +249,7 @@ enum WatchMessagingPayloadCodec {
     }
 
     static func encodeChatCompletionPayload(
-        _ message: OpenClawWatchChatCompletionMessage) -> [String: Any]
+        _ message: NodoAssistWatchChatCompletionMessage) -> [String: Any]
     {
         [
             "type": message.type.rawValue,
@@ -268,7 +268,7 @@ enum WatchMessagingPayloadCodec {
         _ payload: [String: Any],
         transport: String) -> WatchQuickReplyEvent?
     {
-        guard (payload["type"] as? String) == OpenClawWatchPayloadType.reply.rawValue else {
+        guard (payload["type"] as? String) == NodoAssistWatchPayloadType.reply.rawValue else {
             return nil
         }
         guard let actionId = nonEmpty(payload["actionId"] as? String) else {
@@ -298,12 +298,12 @@ enum WatchMessagingPayloadCodec {
         _ payload: [String: Any],
         transport: String) -> WatchExecApprovalResolveEvent?
     {
-        guard (payload["type"] as? String) == OpenClawWatchPayloadType.execApprovalResolve.rawValue else {
+        guard (payload["type"] as? String) == NodoAssistWatchPayloadType.execApprovalResolve.rawValue else {
             return nil
         }
         guard let approvalId = nonEmpty(payload["approvalId"] as? String),
               let rawDecision = nonEmpty(payload["decision"] as? String),
-              let decision = OpenClawWatchExecApprovalDecision(rawValue: rawDecision)
+              let decision = NodoAssistWatchExecApprovalDecision(rawValue: rawDecision)
         else {
             return nil
         }
@@ -323,7 +323,7 @@ enum WatchMessagingPayloadCodec {
         _ payload: [String: Any],
         transport: String) -> WatchExecApprovalSnapshotRequestEvent?
     {
-        guard (payload["type"] as? String) == OpenClawWatchPayloadType.execApprovalSnapshotRequest.rawValue else {
+        guard (payload["type"] as? String) == NodoAssistWatchPayloadType.execApprovalSnapshotRequest.rawValue else {
             return nil
         }
         let requestId = self.nonEmpty(payload["requestId"] as? String) ?? UUID().uuidString
@@ -338,7 +338,7 @@ enum WatchMessagingPayloadCodec {
         _ payload: [String: Any],
         transport: String) -> WatchAppSnapshotRequestEvent?
     {
-        guard (payload["type"] as? String) == OpenClawWatchPayloadType.appSnapshotRequest.rawValue else {
+        guard (payload["type"] as? String) == NodoAssistWatchPayloadType.appSnapshotRequest.rawValue else {
             return nil
         }
         let requestId = self.nonEmpty(payload["requestId"] as? String) ?? UUID().uuidString
@@ -353,11 +353,11 @@ enum WatchMessagingPayloadCodec {
         _ payload: [String: Any],
         transport: String) -> WatchAppCommandEvent?
     {
-        guard (payload["type"] as? String) == OpenClawWatchPayloadType.appCommand.rawValue else {
+        guard (payload["type"] as? String) == NodoAssistWatchPayloadType.appCommand.rawValue else {
             return nil
         }
         guard let rawCommand = nonEmpty(payload["command"] as? String),
-              let command = OpenClawWatchAppCommand(rawValue: rawCommand)
+              let command = NodoAssistWatchAppCommand(rawValue: rawCommand)
         else {
             return nil
         }

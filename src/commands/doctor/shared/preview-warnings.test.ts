@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../../config/config.js";
+import type { NodoAssistConfig } from "../../../config/config.js";
 import {
   collectDoctorPreviewNotes,
   collectChannelBoundMessageToolPolicyWarnings,
@@ -44,14 +44,14 @@ const activeToolSchemaState = vi.hoisted(() => ({
 
 const commandSecretState = vi.hoisted(() => ({
   targetIds: new Set<string>(),
-  resolvedConfig: undefined as OpenClawConfig | undefined,
+  resolvedConfig: undefined as NodoAssistConfig | undefined,
   diagnostics: [] as string[],
 }));
 
 const tempRoots = new Set<string>();
 
 vi.mock("../../../cli/command-secret-gateway.js", () => ({
-  resolveCommandSecretRefsViaGateway: vi.fn(async (params: { config: OpenClawConfig }) => ({
+  resolveCommandSecretRefsViaGateway: vi.fn(async (params: { config: NodoAssistConfig }) => ({
     resolvedConfig: commandSecretState.resolvedConfig ?? params.config,
     diagnostics: commandSecretState.diagnostics,
     targetStatesByPath: {},
@@ -208,8 +208,8 @@ vi.mock("./stale-plugin-config.js", () => ({
     const hits = [...(cfg.plugins?.allow ?? []), ...Object.keys(cfg.plugins?.entries ?? {})]
       .filter((id) => !knownIds.has(id))
       .map((id) => ({ id, surface: "plugin" }));
-    if (cfg.channels?.["openclaw-weixin"]) {
-      hits.push({ id: "openclaw-weixin", surface: "channel" });
+    if (cfg.channels?.["nodoassist-weixin"]) {
+      hits.push({ id: "nodoassist-weixin", surface: "channel" });
     }
     return hits.filter(
       (hit, index) => hits.findIndex((candidate) => candidate.id === hit.id) === index,
@@ -335,7 +335,7 @@ describe("doctor preview warnings", () => {
   });
 
   it("routes personal Codex asset notices to info instead of warnings", async () => {
-    const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-preview-codex-assets-"));
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-preview-codex-assets-"));
     tempRoots.add(root);
     const codexHome = path.join(root, ".codex");
     await fs.mkdir(path.join(root, ".agents", "skills", "agent-helper"), { recursive: true });
@@ -355,8 +355,8 @@ describe("doctor preview warnings", () => {
             },
           },
         },
-      } as unknown as OpenClawConfig,
-      doctorFixCommand: "openclaw doctor --fix",
+      } as unknown as NodoAssistConfig,
+      doctorFixCommand: "nodoassist doctor --fix",
       env: { CODEX_HOME: codexHome, HOME: root },
     });
 
@@ -376,7 +376,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     expect(
@@ -397,7 +397,7 @@ describe("doctor preview warnings", () => {
           botToken: { source: "env", provider: "default", id: "TELEGRAM_BOT_TOKEN" },
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
     const resolvedConfig = {
       channels: {
         telegram: {
@@ -405,7 +405,7 @@ describe("doctor preview warnings", () => {
           allowFrom: ["@alice"],
         },
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as NodoAssistConfig;
     commandSecretState.targetIds = new Set(["channels.telegram.botToken"]);
     commandSecretState.resolvedConfig = resolvedConfig;
     commandSecretState.diagnostics = [
@@ -416,7 +416,7 @@ describe("doctor preview warnings", () => {
       await import("../../../cli/command-secret-gateway.js");
     const notes = await collectDoctorPreviewNotes({
       cfg: rawConfig,
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
       env: {},
     });
 
@@ -449,8 +449,8 @@ describe("doctor preview warnings", () => {
             botToken: { source: "exec", provider: "default", id: "telegram/bot-token" },
           },
         },
-      } as unknown as OpenClawConfig,
-      doctorFixCommand: "openclaw doctor --fix",
+      } as unknown as NodoAssistConfig,
+      doctorFixCommand: "nodoassist doctor --fix",
       env: {},
       allowExec: true,
     });
@@ -481,8 +481,8 @@ describe("doctor preview warnings", () => {
             },
           },
         },
-      } as unknown as OpenClawConfig,
-      doctorFixCommand: "openclaw doctor --fix",
+      } as unknown as NodoAssistConfig,
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(
@@ -506,7 +506,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(
@@ -520,7 +520,7 @@ describe("doctor preview warnings", () => {
   it("includes stale plugin config warnings", async () => {
     const warnings = await collectDoctorPreviewWarnings({
       cfg: stalePluginConfig(),
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(
@@ -528,7 +528,7 @@ describe("doctor preview warnings", () => {
       'plugins.allow: stale plugin reference "acpx"',
     );
     expect(warning).toContain("plugins.entries.acpx");
-    expect(warning).toContain('Run "openclaw doctor --fix"');
+    expect(warning).toContain('Run "nodoassist doctor --fix"');
     expect(warning).not.toContain("Auto-removal is paused");
   });
 
@@ -536,19 +536,19 @@ describe("doctor preview warnings", () => {
     const warnings = await collectDoctorPreviewWarnings({
       cfg: {
         channels: {
-          "openclaw-weixin": {
+          "nodoassist-weixin": {
             enabled: true,
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
-    expectSingleWarningContaining(warnings, "channels.openclaw-weixin: dangling channel config");
+    expectSingleWarningContaining(warnings, "channels.nodoassist-weixin: dangling channel config");
   });
 
   it("includes bundled plugin load path migration warnings", async () => {
-    const packageRoot = path.resolve("app-node-modules", "openclaw");
+    const packageRoot = path.resolve("app-node-modules", "nodoassist");
     const legacyPath = path.join(packageRoot, "extensions", "feishu");
     manifestState.plugins = [manifest("feishu")];
 
@@ -560,24 +560,24 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(
       warnings,
       `plugins.load.paths: legacy bundled plugin path "${legacyPath}"`,
     );
-    expect(warning).toContain('Run "openclaw doctor --fix"');
+    expect(warning).toContain('Run "nodoassist doctor --fix"');
   });
 
   it("includes stale OAuth profile shadow warnings", async () => {
     staleOAuthShadowState.warnings = [
-      '- ~/.openclaw/agents/telegram/agent/auth-profiles.json has stale OAuth auth profile openai-codex:default. Run "openclaw doctor --fix".',
+      '- ~/.nodoassist/agents/telegram/agent/auth-profiles.json has stale OAuth auth profile openai-codex:default. Run "nodoassist doctor --fix".',
     ];
 
     const warnings = await collectDoctorPreviewWarnings({
       cfg: {},
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     expectSingleWarningContaining(warnings, "stale OAuth auth profile openai-codex:default");
@@ -590,7 +590,7 @@ describe("doctor preview warnings", () => {
 
     const warnings = await collectDoctorPreviewWarnings({
       cfg: { tools: { allow: ["fuzzplugin_move_angles"] } },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     expect(
@@ -606,7 +606,7 @@ describe("doctor preview warnings", () => {
 
     const warnings = await collectDoctorPreviewWarnings({
       cfg: stalePluginConfig(),
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(
@@ -614,7 +614,7 @@ describe("doctor preview warnings", () => {
       'plugins.allow: stale plugin reference "acpx"',
     );
     expect(warning).toContain("Auto-removal is paused");
-    expect(warning).toContain('rerun "openclaw doctor --fix"');
+    expect(warning).toContain('rerun "nodoassist doctor --fix"');
   });
 
   it("warns when a configured channel plugin is disabled explicitly", async () => {
@@ -636,7 +636,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(
@@ -662,7 +662,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(
@@ -688,7 +688,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     expect(warnings.join("\n")).toContain(
@@ -711,7 +711,7 @@ describe("doctor preview warnings", () => {
         },
       },
       activationSourceConfig: {},
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
       env: {
         DISCORD_BOT_TOKEN: "configured",
       } as NodeJS.ProcessEnv,
@@ -746,7 +746,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(
@@ -772,7 +772,7 @@ describe("doctor preview warnings", () => {
           enabled: false,
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(
@@ -801,7 +801,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     expectSingleWarningContaining(
@@ -821,7 +821,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-      doctorFixCommand: "openclaw doctor --fix",
+      doctorFixCommand: "nodoassist doctor --fix",
     });
 
     const warning = expectSingleWarningContaining(warnings, 'tools.profile is "messaging"');
@@ -1102,7 +1102,7 @@ describe("doctor preview warnings", () => {
       tools: {
         profile: "coding" as const,
       },
-    } satisfies OpenClawConfig;
+    } satisfies NodoAssistConfig;
 
     expect(collectVisibleReplyToolPolicyWarnings(cfg)).toStrictEqual([]);
     expect(collectChannelBoundMessageToolPolicyWarnings(cfg)).toStrictEqual([]);
@@ -1138,7 +1138,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies NodoAssistConfig;
 
     expectWarningsContaining(collectVisibleReplyToolPolicyWarnings(cfg), [
       'messages.groupChat.visibleReplies is set to "message_tool"',
@@ -1178,7 +1178,7 @@ describe("doctor preview warnings", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies NodoAssistConfig;
 
     expect(collectVisibleReplyToolPolicyWarnings(cfg)).toStrictEqual([]);
     expect(collectChannelBoundMessageToolPolicyWarnings(cfg)).toStrictEqual([]);

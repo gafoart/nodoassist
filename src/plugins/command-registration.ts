@@ -2,7 +2,7 @@
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
-} from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/normalization-core/string-coerce";
 import { isOperatorScope } from "../gateway/operator-scopes.js";
 import { logVerbose } from "../globals.js";
 import { isRecord } from "../utils.js";
@@ -19,7 +19,7 @@ import {
   type AgentPromptGuidance,
   type AgentPromptGuidanceEntry,
   type AgentPromptSurfaceKind,
-  type OpenClawPluginCommandDefinition,
+  type NodoAssistPluginCommandDefinition,
 } from "./types.js";
 
 /**
@@ -84,7 +84,7 @@ export type CommandRegistrationResult = {
   error?: string;
 };
 
-/** Returns true when a command name is owned by built-in OpenClaw command handling. */
+/** Returns true when a command name is owned by built-in NodoAssist command handling. */
 export function isReservedCommandName(name: string): boolean {
   const trimmed = normalizeOptionalLowercaseString(name) ?? "";
   return Boolean(trimmed && getReservedCommands().has(trimmed));
@@ -120,7 +120,7 @@ export function validateCommandName(
  * Shared by both the global registration path and snapshot (non-activating) loads.
  */
 export function validatePluginCommandDefinition(
-  command: OpenClawPluginCommandDefinition,
+  command: NodoAssistPluginCommandDefinition,
   opts?: { allowReservedCommandNames?: boolean },
 ): string | null {
   if (typeof command.handler !== "function") {
@@ -283,7 +283,7 @@ function normalizeAgentPromptGuidance(
   });
 }
 
-export function listPluginInvocationKeys(command: OpenClawPluginCommandDefinition): string[] {
+export function listPluginInvocationKeys(command: NodoAssistPluginCommandDefinition): string[] {
   const keys = new Set<string>();
   const push = (value: string | undefined) => {
     const normalized = normalizeOptionalLowercaseString(value);
@@ -304,7 +304,7 @@ export function listPluginInvocationKeys(command: OpenClawPluginCommandDefinitio
 }
 
 export function pluginCommandSupportsChannel(
-  command: OpenClawPluginCommandDefinition,
+  command: NodoAssistPluginCommandDefinition,
   channel?: string,
 ): boolean {
   if (!command.channels || command.channels.length === 0 || !channel) {
@@ -318,7 +318,7 @@ export function pluginCommandSupportsChannel(
 
 export function registerPluginCommand(
   pluginId: string,
-  command: OpenClawPluginCommandDefinition,
+  command: NodoAssistPluginCommandDefinition,
   opts?: {
     pluginName?: string;
     pluginRoot?: string;

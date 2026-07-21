@@ -68,11 +68,15 @@ export function readToolSearchGatewayFetchLimits(
 ): ToolSearchGatewayFetchLimits {
   return {
     bodyMaxBytes: readPositiveIntEnv(
-      "OPENCLAW_TOOL_SEARCH_GATEWAY_E2E_FETCH_BODY_MAX_BYTES",
+      "NODOASSIST_TOOL_SEARCH_GATEWAY_E2E_FETCH_BODY_MAX_BYTES",
       1024 * 1024,
       env,
     ),
-    timeoutMs: readPositiveIntEnv("OPENCLAW_TOOL_SEARCH_GATEWAY_E2E_FETCH_TIMEOUT_MS", 5_000, env),
+    timeoutMs: readPositiveIntEnv(
+      "NODOASSIST_TOOL_SEARCH_GATEWAY_E2E_FETCH_TIMEOUT_MS",
+      5_000,
+      env,
+    ),
   };
 }
 
@@ -138,10 +142,10 @@ async function writeFakePlugin(params: {
     path.join(pluginDir, "package.json"),
     `${JSON.stringify(
       {
-        name: "@openclaw/tool-search-e2e-fixture",
+        name: "@nodoassist/tool-search-e2e-fixture",
         version: "0.0.0",
         type: "module",
-        openclaw: {
+        nodoassist: {
           extensions: ["./index.js"],
         },
       },
@@ -151,7 +155,7 @@ async function writeFakePlugin(params: {
     "utf8",
   );
   await fs.writeFile(
-    path.join(pluginDir, "openclaw.plugin.json"),
+    path.join(pluginDir, "nodoassist.plugin.json"),
     `${JSON.stringify(
       {
         id: FAKE_PLUGIN_ID,
@@ -362,7 +366,7 @@ export async function runToolSearchGatewayLane(params: {
 }): Promise<LaneResult> {
   const providerBaseUrl = params.env.mock?.baseUrl;
   assert(providerBaseUrl, "Tool Search gateway fixture requires mock-openai provider mode");
-  const gatewayToken = params.env.gateway.runtimeEnv.OPENCLAW_GATEWAY_TOKEN;
+  const gatewayToken = params.env.gateway.runtimeEnv.NODOASSIST_GATEWAY_TOKEN;
   assert(gatewayToken, "Tool Search gateway fixture requires QA gateway token");
   await configureLane(params);
   const stateDir = path.join(params.env.gateway.tempRoot, "state");
@@ -378,12 +382,12 @@ export async function runToolSearchGatewayLane(params: {
       headers: {
         authorization: `Bearer ${gatewayToken}`,
         "content-type": "application/json",
-        "x-openclaw-scopes": "operator.write",
-        "x-openclaw-agent": "qa",
-        "x-openclaw-session-key": `tool-search-gateway-${params.lane}`,
+        "x-nodoassist-scopes": "operator.write",
+        "x-nodoassist-agent": "qa",
+        "x-nodoassist-session-key": `tool-search-gateway-${params.lane}`,
       },
       body: JSON.stringify({
-        model: "openclaw/qa",
+        model: "nodoassist/qa",
         input: [
           {
             type: "message",

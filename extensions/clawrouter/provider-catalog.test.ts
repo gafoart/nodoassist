@@ -1,8 +1,8 @@
-import type { ProviderRuntimeModel } from "openclaw/plugin-sdk/plugin-entry";
+import type { ProviderRuntimeModel } from "nodoassist/plugin-sdk/plugin-entry";
 import {
   clearLiveCatalogCacheForTests,
   type LiveModelCatalogFetchGuard,
-} from "openclaw/plugin-sdk/provider-catalog-live-runtime";
+} from "nodoassist/plugin-sdk/provider-catalog-live-runtime";
 import { beforeEach, describe, expect, it, vi, type MockedFunction } from "vitest";
 import {
   buildClawRouterProviderConfig,
@@ -143,7 +143,7 @@ describe("ClawRouter provider catalog", () => {
     clearLiveCatalogCacheForTests();
   });
 
-  it("maps every supported catalog protocol to its OpenClaw transport", async () => {
+  it("maps every supported catalog protocol to its NodoAssist transport", async () => {
     const { fetchGuard, fetchGuardMock } = buildFetchGuard();
     const provider = await buildClawRouterProviderConfig({
       apiKey: "clawrouter-test-key",

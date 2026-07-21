@@ -1,33 +1,33 @@
 ---
 summary: "CLI reference and security model for Crestodian, the configless-safe setup and repair helper"
 read_when:
-  - You run openclaw with no command after setup and want to understand Crestodian
-  - You need a configless-safe way to inspect or repair OpenClaw
+  - You run nodoassist with no command after setup and want to understand Crestodian
+  - You need a configless-safe way to inspect or repair NodoAssist
   - You are designing or enabling message-channel rescue mode
 title: "Crestodian"
 ---
 
-# `openclaw crestodian`
+# `nodoassist crestodian`
 
-Crestodian is OpenClaw's local setup, repair, and configuration helper. It stays reachable when the normal agent path is broken: it can run when `openclaw.json` is missing or invalid, the Gateway is down, plugin command registration is unavailable, or no agent is configured yet.
+Crestodian is NodoAssist's local setup, repair, and configuration helper. It stays reachable when the normal agent path is broken: it can run when `nodoassist.json` is missing or invalid, the Gateway is down, plugin command registration is unavailable, or no agent is configured yet.
 
 ## When it starts
 
-Running `openclaw` with no subcommand routes based on config state:
+Running `nodoassist` with no subcommand routes based on config state:
 
 - Config missing, or exists with no authored settings (empty, or only `$schema`/`meta` keys): starts classic onboarding.
 - Config exists but fails validation: starts Crestodian.
-- Config exists and is valid: opens the normal agent TUI (against a reachable configured Gateway, or locally if none is reachable). Use `/crestodian` inside the TUI, or run `openclaw crestodian` directly, to reach Crestodian.
+- Config exists and is valid: opens the normal agent TUI (against a reachable configured Gateway, or locally if none is reachable). Use `/crestodian` inside the TUI, or run `nodoassist crestodian` directly, to reach Crestodian.
 
-Running `openclaw crestodian` always starts Crestodian explicitly, regardless of config state. `openclaw --help` and `openclaw --version` keep their normal fast paths.
+Running `nodoassist crestodian` always starts Crestodian explicitly, regardless of config state. `nodoassist --help` and `nodoassist --version` keep their normal fast paths.
 
-Noninteractive bare `openclaw` (no TTY) exits with a short message instead of printing root help: it points to non-interactive onboarding on a fresh install, to `openclaw crestodian --message "status"` when config is invalid, or to `openclaw agent --local ...` when config is valid.
+Noninteractive bare `nodoassist` (no TTY) exits with a short message instead of printing root help: it points to non-interactive onboarding on a fresh install, to `nodoassist crestodian --message "status"` when config is invalid, or to `nodoassist agent --local ...` when config is valid.
 
-`openclaw onboard --modern` starts Crestodian as the modern onboarding preview. Plain `openclaw onboard` keeps classic onboarding.
+`nodoassist onboard --modern` starts Crestodian as the modern onboarding preview. Plain `nodoassist onboard` keeps classic onboarding.
 
 ## What Crestodian shows
 
-Interactive Crestodian opens the same TUI shell as `openclaw tui`, with a Crestodian chat backend. The startup greeting covers:
+Interactive Crestodian opens the same TUI shell as `nodoassist tui`, with a Crestodian chat backend. The startup greeting covers:
 
 - config validity and the default agent
 - the model or deterministic planner path Crestodian is using
@@ -43,14 +43,14 @@ Crestodian uses the same reference discovery as regular agents: in a Git checkou
 ## Examples
 
 ```bash
-openclaw
-openclaw crestodian
-openclaw crestodian --json
-openclaw crestodian --message "models"
-openclaw crestodian --message "validate config"
-openclaw crestodian --message "setup workspace ~/Projects/work model openai/gpt-5.5" --yes
-openclaw crestodian --message "set default model openai/gpt-5.5" --yes
-openclaw onboard --modern
+nodoassist
+nodoassist crestodian
+nodoassist crestodian --json
+nodoassist crestodian --message "models"
+nodoassist crestodian --message "validate config"
+nodoassist crestodian --message "setup workspace ~/Projects/work model openai/gpt-5.5" --yes
+nodoassist crestodian --message "set default model openai/gpt-5.5" --yes
+nodoassist onboard --modern
 ```
 
 Inside the Crestodian TUI:
@@ -64,7 +64,7 @@ validate config
 setup
 setup workspace ~/Projects/work model openai/gpt-5.5
 config set gateway.port 19001
-config set-ref gateway.auth.token env OPENCLAW_GATEWAY_TOKEN
+config set-ref gateway.auth.token env NODOASSIST_GATEWAY_TOKEN
 gateway status
 restart gateway
 agents
@@ -74,8 +74,8 @@ configure model provider
 set default model openai/gpt-5.5
 plugins list
 plugins search slack
-plugin install clawhub:openclaw-codex-app-server
-plugin uninstall openclaw-codex-app-server
+plugin install clawhub:nodoassist-codex-app-server
+plugin uninstall nodoassist-codex-app-server
 talk to work agent
 talk to agent for ~/Projects/work
 audit
@@ -94,15 +94,15 @@ Persistent, require conversational approval (or `--yes` for a direct command): w
 
 Approval is given in your own words: unambiguous replies ("yes", "sure", "go ahead", "not now") resolve from a closed deterministic list, and anything else is judged by a separate host-run model call that sees only your message and the pending proposal — never by the conversation model itself, which cannot self-approve. Ambiguous replies keep the proposal pending and the conversation asks again. When no model is usable, only the closed deterministic list applies.
 
-Applied writes are recorded in `~/.openclaw/audit/crestodian.jsonl`. Discovery is not audited; only applied operations and writes are.
+Applied writes are recorded in `~/.nodoassist/audit/crestodian.jsonl`. Discovery is not audited; only applied operations and writes are.
 
 Channel setup can run as a hosted conversation when the host supports masked
 input. The local Crestodian TUI does not accept sensitive wizard answers;
-instead it directs you to `openclaw channels add --channel <channel>`, whose
+instead it directs you to `nodoassist channels add --channel <channel>`, whose
 interactive prompts mask credentials.
 
 Model-provider setup uses the same provider/auth and default-model steps as
-`openclaw onboard`. In the local Crestodian TUI, approval exits the chat shell,
+`nodoassist onboard`. In the local Crestodian TUI, approval exits the chat shell,
 runs those steps with masked terminal prompts, and then resumes Crestodian. A
 gateway/app chat that supports sensitive replies hosts the same steps inline.
 
@@ -131,7 +131,7 @@ The macOS app drives the same ladder through the `crestodian.setup.detect` and `
 
 ## AI conversation
 
-Interactive Crestodian is AI-only: every message — including ones that look like typed commands — runs through the same embedded agent loop as regular OpenClaw agents, restricted to one ring-zero `crestodian` tool that wraps the typed operations. Read actions run freely, mutations require your conversational approval for that exact operation (see Operations and approval), and every applied write is audited and re-validated. The agent session persists, so the custodian has real multi-turn memory. It first uses the configured OpenClaw model; with no usable model it falls back to a local runtime already present on the machine, in setup-ladder order:
+Interactive Crestodian is AI-only: every message — including ones that look like typed commands — runs through the same embedded agent loop as regular NodoAssist agents, restricted to one ring-zero `crestodian` tool that wraps the typed operations. Read actions run freely, mutations require your conversational approval for that exact operation (see Operations and approval), and every applied write is audited and re-validated. The agent session persists, so the custodian has real multi-turn memory. It first uses the configured NodoAssist model; with no usable model it falls back to a local runtime already present on the machine, in setup-ladder order:
 
 - Claude Code CLI: `claude-cli/claude-opus-4-8` (agent loop; the ring-zero tool is served over MCP, see the trust model below)
 - Codex app-server harness: `openai/gpt-5.5` (agent loop with an enforced single-tool allow-list)
@@ -150,20 +150,20 @@ Message-channel rescue mode never uses the model-assisted planner. Remote rescue
 Embedded runtimes and the Codex app-server harness enforce the ring-zero
 restriction directly: the run carries a tool allow-list with only the
 `crestodian` tool. CLI harnesses (Claude Code, Gemini CLI) cannot enforce an
-OpenClaw tool allow-list — the CLI owns its native tools and its own permission
-policy, so OpenClaw fails closed if asked to restrict one. For CLI-harness
+NodoAssist tool allow-list — the CLI owns its native tools and its own permission
+policy, so NodoAssist fails closed if asked to restrict one. For CLI-harness
 models Crestodian instead:
 
 - injects a dedicated MCP server that serves only the `crestodian` tool and
-  replaces OpenClaw's normal MCP tool surface for the run (for Claude Code the
+  replaces NodoAssist's normal MCP tool surface for the run (for Claude Code the
   generated config is applied with `--strict-mcp-config`, so no other MCP
   servers are loaded),
 - keeps every config mutation inside the tool's approval and audit contract —
   reads run freely, writes require your conversational yes, and every applied
   write is audited and re-validated,
 - leaves native tools (file reads, shell) to the harness. They follow the same
-  permission posture as normal OpenClaw agent runs on this machine: with
-  OpenClaw's default exec settings Claude Code runs with permissions bypassed,
+  permission posture as normal NodoAssist agent runs on this machine: with
+  NodoAssist's default exec settings Claude Code runs with permissions bypassed,
   and a restricted `tools.exec` config falls back to the CLI's own permission
   policy.
 
@@ -185,7 +185,7 @@ talk to work agent
 switch to main agent
 ```
 
-`openclaw tui`, `openclaw chat`, and `openclaw terminal` open the normal agent TUI directly; they do not start Crestodian. After switching into the normal TUI, `/crestodian` returns to Crestodian, optionally with a follow-up request:
+`nodoassist tui`, `nodoassist chat`, and `nodoassist terminal` open the normal agent TUI directly; they do not start Crestodian. After switching into the normal TUI, `/crestodian` returns to Crestodian, optionally with a follow-up request:
 
 ```text
 /crestodian
@@ -200,11 +200,11 @@ Supported command: `/crestodian <request>`. Rescue accepts the exact typed comma
 
 ```text
 You, in a trusted owner DM: /crestodian status
-OpenClaw: Crestodian rescue mode. Gateway reachable: no. Config valid: no.
+NodoAssist: Crestodian rescue mode. Gateway reachable: no. Config valid: no.
 You: /crestodian restart gateway
-OpenClaw: Plan: restart the Gateway. Reply /crestodian yes to apply.
+NodoAssist: Plan: restart the Gateway. Reply /crestodian yes to apply.
 You: /crestodian yes
-OpenClaw: Applied. Audit entry written.
+NodoAssist: Applied. Audit entry written.
 ```
 
 Agent creation can also be queued locally or via rescue:
@@ -223,7 +223,7 @@ Security contract for remote rescue:
 - Requires an explicit owner identity; no wildcard sender rules, open group policy, unauthenticated webhooks, or anonymous channels.
 - Owner DMs only by default; group/channel rescue needs explicit opt-in.
 - Plugin search and list are read-only. Plugin install is always local-only (blocked in rescue, even when otherwise enabled) because it downloads executable code. Plugin uninstall can be approved as a persistent rescue operation.
-- Remote rescue cannot open the local TUI or switch into an interactive agent session; use local `openclaw` for agent handoff.
+- Remote rescue cannot open the local TUI or switch into an interactive agent session; use local `nodoassist` for agent handoff.
 - Persistent writes still require approval, even in rescue mode.
 - Every applied rescue operation is audited. Message-channel rescue records channel, account, sender, and source-address metadata; config-mutating operations also record config hashes before and after.
 - Secrets are never echoed. SecretRef inspection reports availability, not values.
@@ -274,7 +274,7 @@ pnpm test:docker:crestodian-first-run
 That lane starts with an empty state dir, verifies the modern onboard Crestodian entrypoint, sets the default model, creates an additional agent, configures Discord through a plugin enablement plus token SecretRef, validates config, and checks the audit log. QA Lab has a repo-backed scenario for the same Ring 0 flow:
 
 ```bash
-pnpm openclaw qa suite --scenario crestodian-ring-zero-setup
+pnpm nodoassist qa suite --scenario crestodian-ring-zero-setup
 ```
 
 ## Related

@@ -1,16 +1,16 @@
 // Resolves and packages install sources for plugin installs.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
-import { normalizeStringEntries } from "@openclaw/normalization-core/string-normalization";
+import { isRecord } from "@nodoassist/normalization-core/record-coerce";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
+import { normalizeStringEntries } from "@nodoassist/normalization-core/string-normalization";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { resolveUserPath } from "../utils.js";
 import { resolveArchiveKind } from "./archive.js";
 import { pathExists } from "./fs-safe.js";
 import { applyNpmFreshnessBypassEnv, type NpmProjectInstallEnvOptions } from "./npm-install-env.js";
 import { withTempWorkspace } from "./private-temp-workspace.js";
-import { resolvePreferredOpenClawTmpDir } from "./tmp-openclaw-dir.js";
+import { resolvePreferredNodoAssistTmpDir } from "./tmp-nodoassist-dir.js";
 
 /** Metadata npm reports when resolving a registry spec or packed archive. */
 export type NpmSpecResolution = {
@@ -20,7 +20,7 @@ export type NpmSpecResolution = {
   integrity?: string;
   shasum?: string;
   resolvedAt?: string;
-  packageOpenClaw?: Record<string, unknown>;
+  packageNodoAssist?: Record<string, unknown>;
 };
 
 /** Flattened npm resolution fields stored on install results and diagnostics. */
@@ -74,7 +74,7 @@ function normalizeNpmViewMetadata(value: unknown): NpmSpecResolution | null {
     integrity:
       normalizeOptionalString(rec["dist.integrity"]) ?? normalizeOptionalString(dist.integrity),
     shasum: normalizeOptionalString(rec["dist.shasum"]) ?? normalizeOptionalString(dist.shasum),
-    ...(isRecord(rec.openclaw) ? { packageOpenClaw: rec.openclaw } : {}),
+    ...(isRecord(rec.nodoassist) ? { packageNodoAssist: rec.nodoassist } : {}),
   };
 }
 
@@ -98,7 +98,7 @@ export async function resolveNpmSpecMetadata(params: { spec: string; timeoutMs?:
       "version",
       "dist.integrity",
       "dist.shasum",
-      "openclaw",
+      "nodoassist",
       "--json",
     ],
     {
@@ -141,7 +141,7 @@ export async function withTempDir<T>(
   fn: (tmpDir: string) => Promise<T>,
   options?: { rootDir?: string },
 ): Promise<T> {
-  const rootDir = options?.rootDir ?? resolvePreferredOpenClawTmpDir();
+  const rootDir = options?.rootDir ?? resolvePreferredNodoAssistTmpDir();
   return await withTempWorkspace({ rootDir, prefix }, async (tmp) => fn(tmp.dir));
 }
 

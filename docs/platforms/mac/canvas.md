@@ -15,14 +15,14 @@ surfaces.
 
 Canvas state is stored under Application Support:
 
-- `~/Library/Application Support/OpenClaw/canvas/<session>/...`
+- `~/Library/Application Support/NodoAssist/canvas/<session>/...`
 
 The Canvas panel serves those files via a custom URL scheme,
-`openclaw-canvas://<session>/<path>`:
+`nodoassist-canvas://<session>/<path>`:
 
-- `openclaw-canvas://main/` -> `<canvasRoot>/main/index.html`
-- `openclaw-canvas://main/assets/app.css` -> `<canvasRoot>/main/assets/app.css`
-- `openclaw-canvas://main/widgets/todo/` -> `<canvasRoot>/main/widgets/todo/index.html`
+- `nodoassist-canvas://main/` -> `<canvasRoot>/main/index.html`
+- `nodoassist-canvas://main/assets/app.css` -> `<canvasRoot>/main/assets/app.css`
+- `nodoassist-canvas://main/widgets/todo/` -> `<canvasRoot>/main/widgets/todo/index.html`
 
 If no `index.html` exists at the root, the app shows a built-in scaffold page.
 
@@ -43,10 +43,10 @@ panel, navigate to a path or URL, evaluate JavaScript, and capture a
 snapshot image:
 
 ```bash
-openclaw nodes canvas present --node <id>
-openclaw nodes canvas navigate --node <id> --url "/"
-openclaw nodes canvas eval --node <id> --js "document.title"
-openclaw nodes canvas snapshot --node <id>
+nodoassist nodes canvas present --node <id>
+nodoassist nodes canvas navigate --node <id> --url "/"
+nodoassist nodes canvas eval --node <id> --js "document.title"
+nodoassist nodes canvas snapshot --node <id>
 ```
 
 `canvas.navigate` accepts local canvas paths, `http(s)` URLs, and `file://`
@@ -58,7 +58,7 @@ A2UI is hosted by the Gateway canvas host and rendered inside the Canvas
 panel. When the Gateway advertises a Canvas host, the macOS app auto-navigates
 to the A2UI host page on first open.
 
-Default A2UI host URL: `http://<gateway-host>:18789/__openclaw__/a2ui/`
+Default A2UI host URL: `http://<gateway-host>:18789/__nodoassist__/a2ui/`
 
 ### A2UI commands (v0.8)
 
@@ -72,21 +72,21 @@ cat > /tmp/a2ui-v0.8.jsonl <<'EOFA2'
 {"beginRendering":{"surfaceId":"main","root":"root"}}
 EOFA2
 
-openclaw nodes canvas a2ui push --jsonl /tmp/a2ui-v0.8.jsonl --node <id>
+nodoassist nodes canvas a2ui push --jsonl /tmp/a2ui-v0.8.jsonl --node <id>
 ```
 
 Quick smoke test:
 
 ```bash
-openclaw nodes canvas a2ui push --node <id> --text "Hello from A2UI"
+nodoassist nodes canvas a2ui push --node <id> --text "Hello from A2UI"
 ```
 
 ## Triggering agent runs from Canvas
 
-Canvas can trigger new agent runs via `openclaw://agent?...` deep links:
+Canvas can trigger new agent runs via `nodoassist://agent?...` deep links:
 
 ```js
-window.location.href = "openclaw://agent?message=Review%20this%20design";
+window.location.href = "nodoassist://agent?message=Review%20this%20design";
 ```
 
 Supported query parameters:

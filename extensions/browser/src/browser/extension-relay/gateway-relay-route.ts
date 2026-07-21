@@ -1,8 +1,8 @@
 /**
  * Gateway-hosted extension relay upgrade handler.
  *
- * Lets the OpenClaw Chrome extension connect DIRECTLY to a remote gateway over
- * `wss://` — no OpenClaw node host on the browser machine. This is the
+ * Lets the NodoAssist Chrome extension connect DIRECTLY to a remote gateway over
+ * `wss://` — no NodoAssist node host on the browser machine. This is the
  * cross-machine path for #53599: a user installs only the extension and pastes
  * a `wss://gateway/browser/extension#<secret>` pairing string.
  *

@@ -1,10 +1,10 @@
 /** TLS helpers for ChatGPT OAuth provider discovery in plugin runtime code. */
 import path from "node:path";
-import { resolveTimerTimeoutMs } from "@openclaw/normalization-core/number-coercion";
-import { asNullableObjectRecord } from "@openclaw/normalization-core/record-coerce";
+import { resolveTimerTimeoutMs } from "@nodoassist/normalization-core/number-coercion";
+import { asNullableObjectRecord } from "@nodoassist/normalization-core/record-coerce";
 import { note } from "../../packages/terminal-core/src/note.js";
 import { formatCliCommand } from "../cli/command-format.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 
 const TLS_CERT_ERROR_CODES = new Set([
   "UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
@@ -79,7 +79,7 @@ function resolveCertBundlePath(): string | null {
   return path.join(prefix, "etc", "openssl@3", "cert.pem");
 }
 
-function hasOpenAICodexOAuthProfile(cfg: OpenClawConfig): boolean {
+function hasOpenAICodexOAuthProfile(cfg: NodoAssistConfig): boolean {
   const profiles = cfg.auth?.profiles;
   if (!profiles) {
     return false;
@@ -90,7 +90,7 @@ function hasOpenAICodexOAuthProfile(cfg: OpenClawConfig): boolean {
 }
 
 export function shouldRunOpenAIOAuthTlsPrerequisites(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   deep?: boolean;
 }): boolean {
   if (params.deep === true) {
@@ -155,7 +155,7 @@ export function formatOpenAIOAuthTlsPreflightFix(
 }
 
 export async function noteOpenAIOAuthTlsPrerequisites(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   deep?: boolean;
 }): Promise<void> {
   if (!shouldRunOpenAIOAuthTlsPrerequisites(params)) {

@@ -1,15 +1,15 @@
 {
-  "name": "@openclaw/bonjour",
+  "name": "@nodoassist/bonjour",
   "version": "2026.6.11",
-  "description": "OpenClaw Bonjour/mDNS gateway discovery",
+  "description": "NodoAssist Bonjour/mDNS gateway discovery",
   "type": "module",
   "dependencies": {
     "@homebridge/ciao": "1.3.9"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

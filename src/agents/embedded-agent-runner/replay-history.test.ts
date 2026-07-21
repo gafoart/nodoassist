@@ -1,12 +1,12 @@
 // Coverage for normalizing assistant replay content before provider requests.
-import type { AgentMessage } from "openclaw/plugin-sdk/agent-core";
+import type { AgentMessage } from "nodoassist/plugin-sdk/agent-core";
 import { describe, expect, it } from "vitest";
-import { OPENCLAW_TRANSCRIPT_ARTIFACT_API } from "../../shared/transcript-only-openclaw-assistant.js";
+import { NODOASSIST_TRANSCRIPT_ARTIFACT_API } from "../../shared/transcript-only-nodoassist-assistant.js";
 import {
   INTERNAL_RUNTIME_CONTEXT_BEGIN,
   INTERNAL_RUNTIME_CONTEXT_END,
-  OPENCLAW_NEXT_TURN_RUNTIME_CONTEXT_HEADER,
-  OPENCLAW_RUNTIME_CONTEXT_NOTICE,
+  NODOASSIST_NEXT_TURN_RUNTIME_CONTEXT_HEADER,
+  NODOASSIST_RUNTIME_CONTEXT_NOTICE,
 } from "../internal-runtime-context.js";
 import { normalizeAssistantReplayContent } from "./replay-history.js";
 
@@ -47,12 +47,14 @@ function userMessage(text: string): AgentMessage {
   return { role: "user", content: text, timestamp: 0 } as unknown as AgentMessage;
 }
 
-function openclawTranscriptAssistant(model: "delivery-mirror" | "gateway-injected"): AgentMessage {
+function nodoassistTranscriptAssistant(
+  model: "delivery-mirror" | "gateway-injected",
+): AgentMessage {
   return {
     role: "assistant",
     content: [{ type: "text", text: "channel mirror" }],
-    api: OPENCLAW_TRANSCRIPT_ARTIFACT_API,
-    provider: "openclaw",
+    api: NODOASSIST_TRANSCRIPT_ARTIFACT_API,
+    provider: "nodoassist",
     model,
     usage: {
       input: 0,
@@ -287,8 +289,8 @@ describe("normalizeAssistantReplayContent", () => {
             INTERNAL_RUNTIME_CONTEXT_BEGIN,
             "keep this internal",
             INTERNAL_RUNTIME_CONTEXT_END,
-            OPENCLAW_NEXT_TURN_RUNTIME_CONTEXT_HEADER,
-            OPENCLAW_RUNTIME_CONTEXT_NOTICE,
+            NODOASSIST_NEXT_TURN_RUNTIME_CONTEXT_HEADER,
+            NODOASSIST_RUNTIME_CONTEXT_NOTICE,
             "",
             "Visible after",
           ].join("\n"),
@@ -316,14 +318,14 @@ describe("normalizeAssistantReplayContent", () => {
     expect(JSON.stringify(out)).not.toContain("assistant copied inbound metadata omitted");
   });
 
-  it("filters openclaw delivery-mirror and gateway-injected assistant messages from replay", () => {
+  it("filters nodoassist delivery-mirror and gateway-injected assistant messages from replay", () => {
     // Gateway mirror entries are transcript artifacts, not model-authored
     // assistant turns, so they must not be sent back to providers.
     const messages = [
       userMessage("hello"),
-      openclawTranscriptAssistant("delivery-mirror"),
+      nodoassistTranscriptAssistant("delivery-mirror"),
       bedrockAssistant([{ type: "text", text: "real reply" }]),
-      openclawTranscriptAssistant("gateway-injected"),
+      nodoassistTranscriptAssistant("gateway-injected"),
     ];
     const out = normalizeAssistantReplayContent(messages);
     expect(out).toHaveLength(2);

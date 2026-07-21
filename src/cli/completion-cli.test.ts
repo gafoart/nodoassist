@@ -9,12 +9,12 @@ import { getCompletionScript } from "./completion-cli.js";
 
 function createCompletionProgram(): Command {
   const program = new Command();
-  program.name("openclaw");
+  program.name("nodoassist");
   program.description("CLI root");
   program.option("-v, --verbose", "Verbose output");
   program.option(
     "--status-json",
-    "Output JSON (alias for `models status --json`) in $OPENCLAW_STATE_DIR",
+    "Output JSON (alias for `models status --json`) in $NODOASSIST_STATE_DIR",
   );
 
   const gateway = program.command("gateway").description("Gateway commands");
@@ -38,23 +38,23 @@ describe("completion-cli", () => {
   it("generates zsh functions for nested subcommands", () => {
     const script = getCompletionScript("zsh", createCompletionProgram());
 
-    expect(script).toContain("_openclaw_gateway()");
-    expect(script).toContain("(status) _openclaw_gateway_status ;;");
-    expect(script).toContain("(restart) _openclaw_gateway_restart ;;");
+    expect(script).toContain("_nodoassist_gateway()");
+    expect(script).toContain("(status) _nodoassist_gateway_status ;;");
+    expect(script).toContain("(restart) _nodoassist_gateway_restart ;;");
     expect(script).toContain("--force[Force the action]");
     expect(script).toContain("\\`models status --json\\`");
-    expect(script).toContain("\\$OPENCLAW_STATE_DIR");
+    expect(script).toContain("\\$NODOASSIST_STATE_DIR");
   });
 
   it("escapes zsh option descriptions for double-quoted arguments specs", () => {
     const program = new Command()
-      .name("openclaw")
-      .option("--literal", "Use $OPENCLAW_STATE_DIR with `model/list` and John's profile");
+      .name("nodoassist")
+      .option("--literal", "Use $NODOASSIST_STATE_DIR with `model/list` and John's profile");
 
     const script = getCompletionScript("zsh", program);
 
     expect(script).toContain(
-      "--literal[Use \\$OPENCLAW_STATE_DIR with \\`model/list\\` and John's profile]",
+      "--literal[Use \\$NODOASSIST_STATE_DIR with \\`model/list\\` and John's profile]",
     );
     expect(script).not.toContain("John'\\''s");
   });
@@ -75,9 +75,9 @@ describe("completion-cli", () => {
       throw probe.error;
     }
 
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-zsh-completion-"));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-zsh-completion-"));
     try {
-      const scriptPath = path.join(tempDir, "openclaw.zsh");
+      const scriptPath = path.join(tempDir, "nodoassist.zsh");
       await fs.writeFile(scriptPath, getCompletionScript("zsh", createCompletionProgram()), "utf8");
 
       const result = spawnSync(
@@ -86,13 +86,13 @@ describe("completion-cli", () => {
           "-fc",
           `
             source ${JSON.stringify(scriptPath)}
-            [[ -z "\${_comps[openclaw]-}" ]] || exit 10
-            [[ "\${precmd_functions[(r)_openclaw_register_completion]}" = "_openclaw_register_completion" ]] || exit 11
+            [[ -z "\${_comps[nodoassist]-}" ]] || exit 10
+            [[ "\${precmd_functions[(r)_nodoassist_register_completion]}" = "_nodoassist_register_completion" ]] || exit 11
             autoload -Uz compinit
             compinit -C
-            _openclaw_register_completion
-            [[ -z "\${precmd_functions[(r)_openclaw_register_completion]}" ]] || exit 12
-            [[ "\${_comps[openclaw]-}" = "_openclaw_root_completion" ]]
+            _nodoassist_register_completion
+            [[ -z "\${precmd_functions[(r)_nodoassist_register_completion]}" ]] || exit 12
+            [[ "\${_comps[nodoassist]-}" = "_nodoassist_root_completion" ]]
           `,
         ],
         {
@@ -117,16 +117,16 @@ describe("completion-cli", () => {
 
     expect(script).toContain("if ($commandPath -eq 'gateway') {");
     expect(script).toContain("if ($commandPath -eq 'gateway status') {");
-    expect(script).not.toContain("if ($commandPath -eq 'openclaw gateway') {");
+    expect(script).not.toContain("if ($commandPath -eq 'nodoassist gateway') {");
     expect(script).toContain("$completions = @('status','restart','--force','--token')");
     expect(script).not.toContain("'-t,'");
   });
 
   it("generates valid PowerShell root arrays when commands or options are empty", () => {
-    const commandsOnly = new Command().name("openclaw");
+    const commandsOnly = new Command().name("nodoassist");
     commandsOnly.command("status");
-    const optionsOnly = new Command().name("openclaw").option("--json", "JSON output");
-    const empty = new Command().name("openclaw");
+    const optionsOnly = new Command().name("nodoassist").option("--json", "JSON output");
+    const empty = new Command().name("nodoassist");
 
     expect(getCompletionScript("powershell", commandsOnly)).toContain("$completions = @('status')");
     expect(getCompletionScript("powershell", optionsOnly)).toContain("$completions = @('--json')");
@@ -137,29 +137,29 @@ describe("completion-cli", () => {
     const script = getCompletionScript("fish", createCompletionProgram());
 
     expect(script).toContain(
-      'complete -c openclaw -n "__fish_use_subcommand" -a "gateway" -d \'Gateway commands\'',
+      'complete -c nodoassist -n "__fish_use_subcommand" -a "gateway" -d \'Gateway commands\'',
     );
     expect(script).toContain(
-      'complete -c openclaw -n "__openclaw_command_path_matches gateway -- -t --token" -a "status" -d \'Show gateway status\'',
+      'complete -c nodoassist -n "__nodoassist_command_path_matches gateway -- -t --token" -a "status" -d \'Show gateway status\'',
     );
     expect(script).toContain(
-      "complete -c openclaw -n \"__openclaw_command_path_matches gateway -- -t --token\" -l force -d 'Force the action'",
+      "complete -c nodoassist -n \"__nodoassist_command_path_matches gateway -- -t --token\" -l force -d 'Force the action'",
     );
     expect(script).toContain(
-      "complete -c openclaw -n \"__openclaw_command_path_matches gateway status -- -t --token\" -l json -d 'JSON output'",
+      "complete -c nodoassist -n \"__nodoassist_command_path_matches gateway status -- -t --token\" -l json -d 'JSON output'",
     );
-    expect(script).toContain("__openclaw_command_path_matches gateway -- -t --token");
+    expect(script).toContain("__nodoassist_command_path_matches gateway -- -t --token");
     expect(script).toContain("if contains -- $flag $value_options");
   });
 
   it("scopes fish value-taking option skips to the active command path", () => {
     const script = getCompletionScript("fish", createCompletionProgram());
 
-    expect(script).toContain("__openclaw_command_path_matches agent -- --verbose");
-    expect(script).toContain("__openclaw_command_path_matches sessions cleanup --");
-    expect(script).not.toContain("__openclaw_command_path_matches sessions cleanup -- --verbose");
+    expect(script).toContain("__nodoassist_command_path_matches agent -- --verbose");
+    expect(script).toContain("__nodoassist_command_path_matches sessions cleanup --");
+    expect(script).not.toContain("__nodoassist_command_path_matches sessions cleanup -- --verbose");
     expect(script).toContain(
-      "complete -c openclaw -n \"__openclaw_command_path_matches sessions cleanup --\" -l dry-run -d 'Preview cleanup'",
+      "complete -c nodoassist -n \"__nodoassist_command_path_matches sessions cleanup --\" -l dry-run -d 'Preview cleanup'",
     );
   });
 
@@ -175,7 +175,7 @@ describe("completion-cli", () => {
       return;
     }
 
-    const script = getCompletionScript("bash", new Command().name("openclaw"));
+    const script = getCompletionScript("bash", new Command().name("nodoassist"));
     const result = spawnSync("bash", ["--noprofile", "--norc", "-n"], {
       encoding: "utf8",
       input: script,
@@ -186,11 +186,11 @@ describe("completion-cli", () => {
   });
 });
 
-// Commander aliases are typeable commands (`openclaw capability` == `openclaw infer`),
+// Commander aliases are typeable commands (`nodoassist capability` == `nodoassist infer`),
 // so every shell must complete alias names and keep completing after an alias.
 function createAliasedCompletionProgram(): Command {
   const program = new Command();
-  program.name("openclaw");
+  program.name("nodoassist");
   program.option("--profile <name>", "Profile");
   const infer = program.command("infer").alias("capability").description("Run inference");
   infer.command("embed").description("Embed text").option("--model <id>", "Model id");
@@ -208,9 +208,9 @@ describe("completion-cli command aliases", () => {
     const script = getCompletionScript("zsh", createAliasedCompletionProgram());
 
     expect(script).toContain("'capability[Run inference]'");
-    expect(script).toContain("(infer|capability) _openclaw_infer ;;");
+    expect(script).toContain("(infer|capability) _nodoassist_infer ;;");
     expect(script).toContain("'create[Add a job]'");
-    expect(script).toContain("(add|create) _openclaw_cron_add ;;");
+    expect(script).toContain("(add|create) _nodoassist_cron_add ;;");
   });
 
   it("completes root and nested aliases in bash command paths", () => {
@@ -237,9 +237,9 @@ describe("completion-cli command aliases", () => {
         "--norc",
         "-c",
         `${script}
-COMP_WORDS=(openclaw --profile work cron create --a)
+COMP_WORDS=(nodoassist --profile work cron create --a)
 COMP_CWORD=5
-_openclaw_completion
+_nodoassist_completion
 printf '%s\\n' "\${COMPREPLY[@]}"
 `,
       ],
@@ -264,16 +264,16 @@ printf '%s\\n' "\${COMPREPLY[@]}"
     const script = getCompletionScript("fish", createAliasedCompletionProgram());
 
     expect(script).toContain(
-      'complete -c openclaw -n "__fish_use_subcommand" -a "capability" -d \'Run inference\'',
+      'complete -c nodoassist -n "__fish_use_subcommand" -a "capability" -d \'Run inference\'',
     );
     expect(script).toContain(
-      'complete -c openclaw -n "__openclaw_command_path_matches capability -- --profile" -a "embed" -d \'Embed text\'',
+      'complete -c nodoassist -n "__nodoassist_command_path_matches capability -- --profile" -a "embed" -d \'Embed text\'',
     );
     expect(script).toContain(
-      'complete -c openclaw -n "__openclaw_command_path_matches cron -- --profile" -a "create" -d \'Add a job\'',
+      'complete -c nodoassist -n "__nodoassist_command_path_matches cron -- --profile" -a "create" -d \'Add a job\'',
     );
     expect(script).toContain(
-      "complete -c openclaw -n \"__openclaw_command_path_matches cron create -- --profile --at\" -l at -d 'Schedule time'",
+      "complete -c nodoassist -n \"__nodoassist_command_path_matches cron create -- --profile --at\" -l at -d 'Schedule time'",
     );
   });
 

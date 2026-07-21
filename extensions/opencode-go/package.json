@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/opencode-go-provider",
+  "name": "@nodoassist/opencode-go-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw OpenCode Go provider plugin",
+  "description": "NodoAssist OpenCode Go provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

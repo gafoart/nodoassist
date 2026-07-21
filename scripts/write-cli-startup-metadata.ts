@@ -1,11 +1,11 @@
-// Write Cli Startup Metadata script supports OpenClaw repository automation.
+// Write Cli Startup Metadata script supports NodoAssist repository automation.
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { RootHelpRenderOptions } from "../src/cli/program/root-help.js";
-import type { OpenClawConfig } from "../src/config/config.js";
+import type { NodoAssistConfig } from "../src/config/config.js";
 import { resolveWindowsTaskkillPath } from "./lib/windows-taskkill.mjs";
 
 function dedupe(values: string[]): string[] {
@@ -284,7 +284,7 @@ function readBundledChannelCatalog(
       const raw = readFileSync(packageJsonPath, "utf8");
       signature.update(`${dirEntry.name}\0${raw}\0`);
       const parsed = JSON.parse(raw) as {
-        openclaw?: {
+        nodoassist?: {
           channel?: {
             id?: unknown;
             order?: unknown;
@@ -292,12 +292,12 @@ function readBundledChannelCatalog(
           };
         };
       };
-      const id = parsed.openclaw?.channel?.id;
+      const id = parsed.nodoassist?.channel?.id;
       if (typeof id !== "string" || !id.trim()) {
         continue;
       }
-      const orderRaw = parsed.openclaw?.channel?.order;
-      const labelRaw = parsed.openclaw?.channel?.label;
+      const orderRaw = parsed.nodoassist?.channel?.order;
+      const labelRaw = parsed.nodoassist?.channel?.label;
       entries.push({
         id: id.trim(),
         order: typeof orderRaw === "number" ? orderRaw : 999,
@@ -320,24 +320,24 @@ function readBundledChannelCatalog(
 function createIsolatedRootHelpRenderContext(
   bundledPluginsDir: string = extensionsDir,
 ): RootHelpRenderContext {
-  const stateDir = path.join(rootDir, ".openclaw-build-root-help");
+  const stateDir = path.join(rootDir, ".nodoassist-build-root-help");
   const workspaceDir = path.join(stateDir, "workspace");
   const homeDir = path.join(stateDir, "home");
   const env: NodeJS.ProcessEnv = {
     HOME: homeDir,
-    LOGNAME: process.env.LOGNAME ?? process.env.USER ?? "openclaw-build",
-    USER: process.env.USER ?? process.env.LOGNAME ?? "openclaw-build",
+    LOGNAME: process.env.LOGNAME ?? process.env.USER ?? "nodoassist-build",
+    USER: process.env.USER ?? process.env.LOGNAME ?? "nodoassist-build",
     PATH: process.env.PATH ?? "",
     TMPDIR: process.env.TMPDIR ?? "/tmp",
     LANG: process.env.LANG ?? "C.UTF-8",
     LC_ALL: process.env.LC_ALL ?? "C.UTF-8",
     TERM: process.env.TERM ?? "dumb",
     NO_COLOR: "1",
-    OPENCLAW_BUNDLED_PLUGINS_DIR: bundledPluginsDir,
-    OPENCLAW_DISABLE_BUNDLED_PLUGINS: "",
-    OPENCLAW_STATE_DIR: stateDir,
+    NODOASSIST_BUNDLED_PLUGINS_DIR: bundledPluginsDir,
+    NODOASSIST_DISABLE_BUNDLED_PLUGINS: "",
+    NODOASSIST_STATE_DIR: stateDir,
   };
-  const config: OpenClawConfig = {
+  const config: NodoAssistConfig = {
     agents: {
       defaults: {
         workspace: workspaceDir,
@@ -682,7 +682,7 @@ async function renderSourceBrowserHelpText(
     `const { createProgramContext } = await import(${JSON.stringify(contextUrl)});`,
     `const program = new Command();`,
     `configureProgramHelp(program, createProgramContext());`,
-    `registerBrowserCli(program, ["node", "openclaw", "browser", "--help"]);`,
+    `registerBrowserCli(program, ["node", "nodoassist", "browser", "--help"]);`,
     `const browser = program.commands.find((cmd) => cmd.name() === "browser");`,
     `if (!browser) throw new Error("Browser command was not registered.");`,
     `browser.outputHelp();`,
@@ -692,7 +692,7 @@ async function renderSourceBrowserHelpText(
     cwd: rootDir,
     env: {
       ...renderContext.env,
-      OPENCLAW_DISABLE_CLI_STARTUP_HELP_FAST_PATH: "1",
+      NODOASSIST_DISABLE_CLI_STARTUP_HELP_FAST_PATH: "1",
     },
     failureMessage: "Failed to render source browser help",
     timeoutMs: BROWSER_HELP_RENDER_TIMEOUT_MS,
@@ -703,11 +703,11 @@ async function renderSourceCommandHelpText(
   command: SourceCommandHelpCommand,
   renderContext: RootHelpRenderContext = createIsolatedRootHelpRenderContext(),
 ): Promise<string> {
-  return await spawnText(["openclaw.mjs", command, "--help"], {
+  return await spawnText(["nodoassist.mjs", command, "--help"], {
     cwd: rootDir,
     env: {
       ...renderContext.env,
-      OPENCLAW_DISABLE_CLI_STARTUP_HELP_FAST_PATH: "1",
+      NODOASSIST_DISABLE_CLI_STARTUP_HELP_FAST_PATH: "1",
     },
     failureMessage: `Failed to render source ${command} help`,
     timeoutMs: COMMAND_HELP_RENDER_TIMEOUT_MS,

@@ -1,18 +1,18 @@
 // OpenRouter OAuth support exchanges PKCE browser login codes for API keys.
 import { createServer } from "node:http";
-import { formatErrorMessage } from "openclaw/plugin-sdk/error-runtime";
-import type { ProviderAuthContext, ProviderAuthMethod } from "openclaw/plugin-sdk/plugin-entry";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
+import type { ProviderAuthContext, ProviderAuthMethod } from "nodoassist/plugin-sdk/plugin-entry";
 import {
   buildApiKeyCredential,
   generatePkceVerifierChallenge,
   type ProviderAuthResult,
-} from "openclaw/plugin-sdk/provider-auth";
-import { generateOAuthState } from "openclaw/plugin-sdk/provider-auth-runtime";
+} from "nodoassist/plugin-sdk/provider-auth";
+import { generateOAuthState } from "nodoassist/plugin-sdk/provider-auth-runtime";
 import {
   readProviderJsonResponse,
   readResponseTextLimited,
-} from "openclaw/plugin-sdk/provider-http";
-import { isRecord } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/provider-http";
+import { isRecord } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { applyOpenrouterConfig, OPENROUTER_DEFAULT_MODEL_REF } from "./onboard.js";
 
 const PROVIDER_ID = "openrouter";
@@ -260,7 +260,7 @@ export async function waitForOpenRouterOAuthCallback(params: {
         res.end(
           "<!doctype html><html><head><meta charset='utf-8'/></head>" +
             "<body><h2>OpenRouter OAuth complete</h2>" +
-            "<p>You can close this window and return to OpenClaw.</p></body></html>",
+            "<p>You can close this window and return to NodoAssist.</p></body></html>",
         );
         finish(undefined, { code, state: params.expectedState });
       } catch (err) {

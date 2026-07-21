@@ -1,9 +1,10 @@
 // Tlon plugin module implements channel behavior.
 import crypto from "node:crypto";
-import type { ChannelAccountSnapshot } from "openclaw/plugin-sdk/channel-contract";
-import type { ChannelOutboundAdapter } from "openclaw/plugin-sdk/channel-send-result";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { ChannelPlugin } from "openclaw/plugin-sdk/core";
+import type { ChannelAccountSnapshot } from "nodoassist/plugin-sdk/channel-contract";
+import type { ChannelOutboundAdapter } from "nodoassist/plugin-sdk/channel-send-result";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import type { ChannelPlugin } from "nodoassist/plugin-sdk/core";
+import { readResponseTextLimited } from "nodoassist/plugin-sdk/provider-http";
 import { monitorTlonProvider } from "./monitor/index.js";
 import { tlonSetupWizard } from "./setup-surface.js";
 import {
@@ -25,7 +26,6 @@ import {
   sendGroupMessageWithStory,
 } from "./urbit/send.js";
 import { uploadImageFromUrl } from "./urbit/upload.js";
-import { readResponseTextLimited } from "openclaw/plugin-sdk/provider-http";
 
 type ResolvedTlonAccount = ReturnType<typeof resolveTlonAccount>;
 type ConfiguredTlonAccount = ResolvedTlonAccount & {
@@ -93,7 +93,7 @@ async function createHttpPokeApi(params: {
 }
 
 function resolveOutboundContext(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   to: string;
 }) {

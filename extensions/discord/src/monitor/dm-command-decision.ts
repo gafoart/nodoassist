@@ -1,7 +1,7 @@
 // Discord plugin module implements dm command decision behavior.
-import type { ResolvedChannelMessageIngress } from "openclaw/plugin-sdk/channel-ingress-runtime";
-import { createChannelPairingChallengeIssuer } from "openclaw/plugin-sdk/channel-pairing";
-import { upsertChannelPairingRequest } from "openclaw/plugin-sdk/conversation-runtime";
+import type { ResolvedChannelMessageIngress } from "nodoassist/plugin-sdk/channel-ingress-runtime";
+import { createChannelPairingChallengeIssuer } from "nodoassist/plugin-sdk/channel-pairing";
+import { upsertChannelPairingRequest } from "nodoassist/plugin-sdk/conversation-runtime";
 
 export async function handleDiscordDmCommandDecision(params: {
   senderAccess: Pick<ResolvedChannelMessageIngress["senderAccess"], "decision">;

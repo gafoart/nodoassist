@@ -8,7 +8,7 @@ on:
         required: false
         type: string
       ref:
-        description: OpenClaw branch, tag, or SHA containing the maturity score source
+        description: NodoAssist branch, tag, or SHA containing the maturity score source
         required: true
         default: main
         type: string
@@ -25,7 +25,7 @@ on:
         default: ""
         type: string
       ref:
-        description: OpenClaw branch, tag, or SHA containing the maturity score source
+        description: NodoAssist branch, tag, or SHA containing the maturity score source
         required: true
         type: string
       expected_sha:
@@ -37,7 +37,7 @@ on:
       OPENAI_API_KEY:
         description: OpenAI API key used by live QA profile scenarios
         required: true
-      OPENCLAW_MATURITY_SCORECARD_AGENT_OPENAI_API_KEY:
+      NODOASSIST_MATURITY_SCORECARD_AGENT_OPENAI_API_KEY:
         description: Optional OpenAI API key used by maturity scorecard agent steps
         required: false
       GH_APP_PRIVATE_KEY:
@@ -266,11 +266,11 @@ jobs:
 
       - name: Ensure maturity scorecard agent key exists
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENCLAW_MATURITY_SCORECARD_AGENT_OPENAI_API_KEY || secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.NODOASSIST_MATURITY_SCORECARD_AGENT_OPENAI_API_KEY || secrets.OPENAI_API_KEY }}
         run: |
           set -euo pipefail
           if [[ -z "${OPENAI_API_KEY:-}" ]]; then
-            echo "Missing OPENCLAW_MATURITY_SCORECARD_AGENT_OPENAI_API_KEY or OPENAI_API_KEY secret." >&2
+            echo "Missing NODOASSIST_MATURITY_SCORECARD_AGENT_OPENAI_API_KEY or OPENAI_API_KEY secret." >&2
             exit 1
           fi
 
@@ -281,9 +281,9 @@ jobs:
           MATURITY_SCORES_PATH: qa/maturity-scores.yaml
           MATURITY_TAXONOMY_PATH: taxonomy.yaml
         with:
-          openai-api-key: ${{ secrets.OPENCLAW_MATURITY_SCORECARD_AGENT_OPENAI_API_KEY || secrets.OPENAI_API_KEY }}
+          openai-api-key: ${{ secrets.NODOASSIST_MATURITY_SCORECARD_AGENT_OPENAI_API_KEY || secrets.OPENAI_API_KEY }}
           prompt-file: .github/codex/prompts/maturity-scorecard-agent.md
-          model: ${{ vars.OPENCLAW_CI_OPENAI_MODEL_BARE }}
+          model: ${{ vars.NODOASSIST_CI_OPENAI_MODEL_BARE }}
           effort: high
           sandbox: workspace-write
           safety-strategy: drop-sudo
@@ -396,7 +396,7 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -z "${GH_TOKEN:-}" ]]; then
-            echo "Maturity scorecard PR creation requires the OpenClaw GitHub App token secrets." >&2
+            echo "Maturity scorecard PR creation requires the NodoAssist GitHub App token secrets." >&2
             exit 1
           fi
 

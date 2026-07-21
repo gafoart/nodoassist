@@ -3,11 +3,11 @@
  *
  * Loads references, resolves providers/options, saves generated images, and supports detached background runs.
  */
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+import { normalizeProviderId } from "@nodoassist/model-catalog-core/provider-id";
 import { Type } from "typebox";
 import { findCapabilityProviderById } from "../../../packages/media-generation-core/src/capability-model-ref.js";
 import { getRuntimeConfig } from "../../config/config.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { resolveImageGenerationMaxInputImages } from "../../image-generation/capabilities.js";
 import { parseImageGenerationModelRef } from "../../image-generation/model-ref.js";
 import {
@@ -246,7 +246,7 @@ const ImageGenerateToolSchema = Type.Object({
 });
 
 export function resolveImageGenerationModelConfigForTool(params: {
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   workspaceDir?: string;
   agentDir?: string;
   authStore?: AuthProfileStore;
@@ -261,7 +261,7 @@ export function resolveImageGenerationModelConfigForTool(params: {
   });
 }
 
-function hasExplicitImageGenerationModelConfig(cfg?: OpenClawConfig): boolean {
+function hasExplicitImageGenerationModelConfig(cfg?: NodoAssistConfig): boolean {
   return hasToolModelConfig(coerceToolModelConfig(cfg?.agents?.defaults?.imageGenerationModel));
 }
 
@@ -730,7 +730,7 @@ const defaultScheduleImageGenerateBackgroundWork = createDefaultMediaGenerateBac
 });
 
 async function executeImageGenerationJob(params: {
-  effectiveCfg: OpenClawConfig;
+  effectiveCfg: NodoAssistConfig;
   prompt: string;
   agentDir?: string;
   model?: string;
@@ -890,7 +890,7 @@ async function executeImageGenerationJob(params: {
 }
 
 export function createImageGenerateTool(options?: {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   agentDir?: string;
   authProfileStore?: AuthProfileStore;
   agentSessionKey?: string;

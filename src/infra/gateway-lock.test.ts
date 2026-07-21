@@ -18,7 +18,7 @@ import {
 
 type GatewayLock = NonNullable<Awaited<ReturnType<typeof acquireGatewayLock>>>;
 
-const fixtureRootTracker = createSuiteTempRootTracker({ prefix: "openclaw-gateway-lock-" });
+const fixtureRootTracker = createSuiteTempRootTracker({ prefix: "nodoassist-gateway-lock-" });
 let fixtureRoot = "";
 const realNow = Date.now.bind(Date);
 
@@ -28,12 +28,12 @@ function resolveTestLockDir() {
 
 async function makeEnv() {
   const dir = await fixtureRootTracker.make("case");
-  const configPath = path.join(dir, "openclaw.json");
+  const configPath = path.join(dir, "nodoassist.json");
   await fs.writeFile(configPath, "{}", "utf8");
   return {
     ...process.env,
-    OPENCLAW_STATE_DIR: dir,
-    OPENCLAW_CONFIG_PATH: configPath,
+    NODOASSIST_STATE_DIR: dir,
+    NODOASSIST_CONFIG_PATH: configPath,
   };
 }
 
@@ -201,7 +201,7 @@ describe("gateway lock", () => {
 
     const pending = acquireForTest(env, {
       timeoutMs: 15,
-      readProcessCmdline: () => ["openclaw", "gateway", "run"],
+      readProcessCmdline: () => ["nodoassist", "gateway", "run"],
     });
     await expect(pending).rejects.toBeInstanceOf(GatewayLockError);
 
@@ -216,7 +216,7 @@ describe("gateway lock", () => {
       await acquireForTest(env, {
         platform: "darwin",
         port: 48789,
-        readProcessCmdline: () => ["openclaw-gateway"],
+        readProcessCmdline: () => ["nodoassist-gateway"],
       }),
     );
 
@@ -226,7 +226,7 @@ describe("gateway lock", () => {
           env,
           lockDir: resolveTestLockDir(),
           platform: "darwin",
-          readProcessCmdline: () => ["openclaw-gateway"],
+          readProcessCmdline: () => ["nodoassist-gateway"],
         }),
       ).resolves.toBe(48789);
     } finally {
@@ -245,7 +245,7 @@ describe("gateway lock", () => {
           platform: "darwin",
           port: 48789,
           timeoutMs: 15,
-          readProcessCmdline: () => ["openclaw-gateway"],
+          readProcessCmdline: () => ["nodoassist-gateway"],
         }),
       ).rejects.toBeInstanceOf(GatewayLockError);
       expect(connectSpy).toHaveBeenCalled();
@@ -357,7 +357,7 @@ describe("gateway lock", () => {
         staleMs: 10_000,
         platform: "darwin",
         port: 18789,
-        readProcessCmdline: () => ["/usr/local/bin/openclaw", "gateway", "run"],
+        readProcessCmdline: () => ["/usr/local/bin/nodoassist", "gateway", "run"],
       });
       await expect(pending).rejects.toBeInstanceOf(GatewayLockError);
     } finally {
@@ -385,7 +385,7 @@ describe("gateway lock", () => {
           now = 10;
         },
         lockDir: resolveTestLockDir(),
-        readProcessCmdline: () => ["/usr/local/bin/openclaw", "gateway", "run"],
+        readProcessCmdline: () => ["/usr/local/bin/nodoassist", "gateway", "run"],
       }),
     ).rejects.toBeInstanceOf(GatewayLockError);
 
@@ -395,7 +395,7 @@ describe("gateway lock", () => {
   it("returns null when multi-gateway override is enabled", async () => {
     const env = await makeEnv();
     const lock = await acquireGatewayLock({
-      env: { ...env, OPENCLAW_ALLOW_MULTI_GATEWAY: "1", VITEST: "" },
+      env: { ...env, NODOASSIST_ALLOW_MULTI_GATEWAY: "1", VITEST: "" },
       lockDir: resolveTestLockDir(),
     });
     expect(lock).toBeNull();
@@ -512,7 +512,7 @@ describe("gateway lock", () => {
       platform: "win32",
       port: 18789,
       readProcessCmdline: () => [
-        "C:\\Users\\me\\AppData\\Roaming\\npm\\openclaw.cmd",
+        "C:\\Users\\me\\AppData\\Roaming\\npm\\nodoassist.cmd",
         "gateway",
         "run",
       ],
@@ -575,7 +575,7 @@ describe("gateway lock", () => {
       staleMs: 10_000,
       platform: "darwin",
       port: 18789,
-      readProcessCmdline: () => ["/usr/local/bin/openclaw", "gateway", "run", "--port", "18789"],
+      readProcessCmdline: () => ["/usr/local/bin/nodoassist", "gateway", "run", "--port", "18789"],
     });
     await expect(pending).rejects.toBeInstanceOf(GatewayLockError);
 

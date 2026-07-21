@@ -1,6 +1,6 @@
 // Brave tests cover brave web search provider plugin behavior.
 import fs from "node:fs";
-import { validateJsonSchemaValue } from "openclaw/plugin-sdk/json-schema-runtime";
+import { validateJsonSchemaValue } from "nodoassist/plugin-sdk/json-schema-runtime";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { testing } from "../test-api.js";
 import { createBraveWebSearchProvider as createBraveWebSearchContractProvider } from "../web-search-contract-api.js";
@@ -8,7 +8,7 @@ import { createBraveWebSearchProvider } from "./brave-web-search-provider.js";
 
 const loggerInfoMock = vi.hoisted(() => vi.fn());
 
-vi.mock("openclaw/plugin-sdk/runtime-env", () => ({
+vi.mock("nodoassist/plugin-sdk/runtime-env", () => ({
   createSubsystemLogger: () => ({
     info: loggerInfoMock,
     debug: vi.fn(),
@@ -33,13 +33,13 @@ vi.mock("openclaw/plugin-sdk/runtime-env", () => ({
 }));
 
 const braveManifest = JSON.parse(
-  fs.readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf-8"),
+  fs.readFileSync(new URL("../nodoassist.plugin.json", import.meta.url), "utf-8"),
 ) as {
   configSchema?: Record<string, unknown>;
 };
 
 afterAll(() => {
-  vi.doUnmock("openclaw/plugin-sdk/runtime-env");
+  vi.doUnmock("nodoassist/plugin-sdk/runtime-env");
   vi.resetModules();
 });
 
@@ -176,12 +176,12 @@ describe("brave web search provider", () => {
       throw new Error("Expected tool definition");
     }
 
-    const result = await tool.execute({ query: "OpenClaw docs" });
+    const result = await tool.execute({ query: "NodoAssist docs" });
 
     expect(result).toEqual({
       error: "missing_brave_api_key",
       message:
-        "web_search (brave) needs a Brave Search API key. Run `openclaw configure --section web` to store it, or set BRAVE_API_KEY in the Gateway environment. If you do not want to configure a search API key, use web_fetch for a specific URL or the browser tool for interactive pages.",
+        "web_search (brave) needs a Brave Search API key. Run `nodoassist configure --section web` to store it, or set BRAVE_API_KEY in the Gateway environment. If you do not want to configure a search API key, use web_fetch for a specific URL or the browser tool for interactive pages.",
       docs: "https://docs.openclaw.ai/tools/web",
     });
   });

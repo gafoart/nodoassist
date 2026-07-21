@@ -8,33 +8,33 @@ sidebarTitle: "Onboarding: CLI"
 ---
 
 ```bash
-openclaw onboard
+nodoassist onboard
 ```
 
 CLI onboarding is the recommended terminal setup path on macOS, Linux, and
 Windows (native or WSL2). It configures a local Gateway (or a connection to a
 remote Gateway), plus channels, skills, and workspace defaults in one guided
-flow. `openclaw setup` runs the same flow ([Setup](/cli/setup) covers the
+flow. `nodoassist setup` runs the same flow ([Setup](/cli/setup) covers the
 `--baseline` config-only variant). Windows desktop users can also start from
 [Windows Hub](/platforms/windows).
 
 Provider sign-in, channel pairing, daemon install, and skill downloads can
 extend a quick setup; optional steps can be skipped and revisited later with
-`openclaw configure`.
+`nodoassist configure`.
 
 <Info>
-Fastest first chat: skip channel setup entirely. Run `openclaw dashboard` and
+Fastest first chat: skip channel setup entirely. Run `nodoassist dashboard` and
 chat in the browser through the Control UI. Docs: [Dashboard](/web/dashboard).
 </Info>
 
 ## Locale
 
-The wizard localizes fixed onboarding copy. Resolve order: `OPENCLAW_LOCALE`,
+The wizard localizes fixed onboarding copy. Resolve order: `NODOASSIST_LOCALE`,
 `LC_ALL`, `LC_MESSAGES`, `LANG`, then English. Supported locales: `en`,
 `zh-CN`, `zh-TW`.
 
 ```bash
-OPENCLAW_LOCALE=zh-CN openclaw onboard
+NODOASSIST_LOCALE=zh-CN nodoassist onboard
 ```
 
 Product names, commands, config keys, URLs, provider IDs, model IDs, and
@@ -43,8 +43,8 @@ plugin/channel labels stay in English regardless of locale.
 To reconfigure later:
 
 ```bash
-openclaw configure
-openclaw agents add <name>
+nodoassist configure
+nodoassist agents add <name>
 ```
 
 <Note>
@@ -55,7 +55,7 @@ openclaw agents add <name>
 Onboarding includes a web search step where you can pick a provider: Brave,
 DuckDuckGo, Exa, Firecrawl, Gemini, Grok, Kimi, MiniMax Search, Ollama Web
 Search, Perplexity, SearXNG, or Tavily. Some need an API key; others are
-key-free. Configure this later with `openclaw configure --section web`. Docs:
+key-free. Configure this later with `nodoassist configure --section web`. Docs:
 [Web tools](/tools/web).
 </Tip>
 
@@ -103,7 +103,7 @@ Local mode (default) walks through these steps:
    be set, or onboarding fails fast. Interactive secret reference mode can
    point at an environment variable or a configured provider ref (`file` or
    `exec`), with a fast preflight check before saving.
-2. **Workspace** - directory for agent files (default `~/.openclaw/workspace`). Seeds bootstrap files.
+2. **Workspace** - directory for agent files (default `~/.nodoassist/workspace`). Seeds bootstrap files.
 3. **Gateway** - port, bind address, auth mode, Tailscale exposure. In
    interactive token mode, choose plaintext token storage (default) or opt
    into a SecretRef. Non-interactive SecretRef path: `--gateway-token-ref-env <ENV_VAR>`.
@@ -127,21 +127,21 @@ Re-running onboarding does **not** wipe anything unless you explicitly choose
 **Reset** (or pass `--reset`). CLI `--reset` defaults to config, credentials,
 and sessions; use `--reset-scope full` to also remove the workspace. If the
 config is invalid or contains legacy keys, onboarding asks you to run
-`openclaw doctor` first.
+`nodoassist doctor` first.
 </Note>
 
 `--flow import` runs a detected migration flow (for example Hermes) instead of
 fresh setup; see [Migrate](/cli/migrate) and the migration guides under
-[Install](/install/migrating-hermes). `openclaw onboard --modern` starts
+[Install](/install/migrating-hermes). `nodoassist onboard --modern` starts
 [Crestodian](/cli/crestodian), a conversational setup/repair assistant, in
 place of the classic wizard.
 
 ## Add another agent
 
-Use `openclaw agents add <name>` to create a separate agent with its own
+Use `nodoassist agents add <name>` to create a separate agent with its own
 workspace, sessions, and auth profiles. Running without `--workspace` starts
 an interactive flow for name, workspace, auth, channels, and bindings - it is
-not the full `openclaw onboard` wizard.
+not the full `nodoassist onboard` wizard.
 
 What it sets:
 
@@ -151,7 +151,7 @@ What it sets:
 
 Notes:
 
-- Default workspace: `~/.openclaw/workspace-<agentId>` (or under
+- Default workspace: `~/.nodoassist/workspace-<agentId>` (or under
   `agents.defaults.workspace` if that is set).
 - Add `bindings` to route inbound messages to this agent (onboarding can do this for you).
 - Non-interactive flags: `--model`, `--agent-dir`, `--bind`, `--non-interactive`.
@@ -161,11 +161,11 @@ Notes:
 For detailed step-by-step behavior and config outputs, see
 [CLI setup reference](/start/wizard-cli-reference).
 For non-interactive examples, see [CLI automation](/start/wizard-cli-automation).
-For the full flag reference, see [`openclaw onboard`](/cli/onboard).
+For the full flag reference, see [`nodoassist onboard`](/cli/onboard).
 
 ## Related docs
 
-- CLI command reference: [`openclaw onboard`](/cli/onboard)
+- CLI command reference: [`nodoassist onboard`](/cli/onboard)
 - Onboarding overview: [Onboarding overview](/start/onboarding-overview)
 - macOS app onboarding: [Onboarding](/start/onboarding)
 - Agent first-run ritual: [Agent Bootstrapping](/start/bootstrapping)

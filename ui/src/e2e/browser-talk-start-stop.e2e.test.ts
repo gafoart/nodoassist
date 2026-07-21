@@ -11,7 +11,7 @@ import {
 
 const chromiumExecutablePath = resolvePlaywrightChromiumExecutablePath(chromium.executablePath());
 const chromiumAvailable = canRunPlaywrightChromium(chromiumExecutablePath);
-const allowMissingChromium = process.env.OPENCLAW_UI_E2E_ALLOW_MISSING_CHROMIUM === "1";
+const allowMissingChromium = process.env.NODOASSIST_UI_E2E_ALLOW_MISSING_CHROMIUM === "1";
 const describeControlUiE2e = chromiumAvailable || !allowMissingChromium ? describe : describe.skip;
 
 let server: ControlUiE2eServer;
@@ -61,7 +61,7 @@ async function installTalkBrowserFixtures(page: Page) {
       configurable: true,
       value: MockAudioContext,
     });
-    Object.defineProperty(window, "openclawTalkE2eState", {
+    Object.defineProperty(window, "nodoassistTalkE2eState", {
       configurable: true,
       value: state,
     });
@@ -143,9 +143,9 @@ describeControlUiE2e("Control UI browser Talk", () => {
             () =>
               (
                 window as Window & {
-                  openclawTalkE2eState?: { constraints: unknown[] };
+                  nodoassistTalkE2eState?: { constraints: unknown[] };
                 }
-              ).openclawTalkE2eState?.constraints,
+              ).nodoassistTalkE2eState?.constraints,
           ),
         )
         .toEqual([{ audio: { deviceId: { exact: "usb" } } }]);
@@ -174,9 +174,9 @@ describeControlUiE2e("Control UI browser Talk", () => {
           page.evaluate(() => {
             const state = (
               window as Window & {
-                openclawTalkE2eState?: { audioContextsClosed: number; tracksStopped: number };
+                nodoassistTalkE2eState?: { audioContextsClosed: number; tracksStopped: number };
               }
-            ).openclawTalkE2eState;
+            ).nodoassistTalkE2eState;
             return state
               ? {
                   audioContextsClosed: state.audioContextsClosed,

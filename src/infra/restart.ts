@@ -9,11 +9,11 @@ import {
 } from "../daemon/constants.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { resolveTimerTimeoutMs } from "../shared/number-coercion.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as NodoAssistStateKyselyDatabase } from "../state/nodoassist-state-db.generated.js";
 import {
-  openOpenClawStateDatabase,
-  runOpenClawStateWriteTransaction,
-} from "../state/openclaw-state-db.js";
+  openNodoAssistStateDatabase,
+  runNodoAssistStateWriteTransaction,
+} from "../state/nodoassist-state-db.js";
 import {
   executeSqliteQuerySync,
   executeSqliteQueryTakeFirstSync,
@@ -36,7 +36,7 @@ const GATEWAY_RESTART_INTENT_KEY = "gateway-restart";
 const GATEWAY_RESTART_INTENT_TTL_MS = 60_000;
 
 const restartLog = createSubsystemLogger("restart");
-type GatewayRestartIntentDatabase = Pick<OpenClawStateKyselyDatabase, "gateway_restart_intent">;
+type GatewayRestartIntentDatabase = Pick<NodoAssistStateKyselyDatabase, "gateway_restart_intent">;
 
 export { findGatewayPidsOnPortSync };
 
@@ -178,7 +178,7 @@ export function writeGatewayRestartIntentSync(opts: {
         ? Math.floor(opts.intent.waitMs)
         : null;
     const createdAt = Date.now();
-    runOpenClawStateWriteTransaction(
+    runNodoAssistStateWriteTransaction(
       ({ db }) => {
         const stateDb = getNodeSqliteKysely<GatewayRestartIntentDatabase>(db);
         executeSqliteQuerySync(
@@ -219,7 +219,7 @@ export function writeGatewayRestartIntentSync(opts: {
 
 export function clearGatewayRestartIntentSync(env: NodeJS.ProcessEnv = process.env): void {
   try {
-    runOpenClawStateWriteTransaction(
+    runNodoAssistStateWriteTransaction(
       ({ db }) => {
         const stateDb = getNodeSqliteKysely<GatewayRestartIntentDatabase>(db);
         executeSqliteQuerySync(
@@ -238,7 +238,7 @@ function readGatewayRestartIntentPayloadSync(
   env: NodeJS.ProcessEnv,
 ): GatewayRestartIntentPayload | null {
   try {
-    const { db } = openOpenClawStateDatabase({ env });
+    const { db } = openNodoAssistStateDatabase({ env });
     const stateDb = getNodeSqliteKysely<GatewayRestartIntentDatabase>(db);
     const parsed = executeSqliteQueryTakeFirstSync(
       db,
@@ -383,8 +383,8 @@ export function emitGatewayRestart(
       process.emit("SIGUSR1");
     } else if (process.platform === "win32") {
       // On Windows with no SIGUSR1 listener, fall back to task-scheduler handoff.
-      // triggerOpenClawRestart() uses schtasks to restart the gateway.
-      const result = triggerOpenClawRestart();
+      // triggerNodoAssistRestart() uses schtasks to restart the gateway.
+      const result = triggerNodoAssistRestart();
       if (!result.ok) {
         // Roll back the cycle marker so future restart requests can still proceed.
         rollBackGatewayRestartEmission();
@@ -702,7 +702,7 @@ function normalizeSystemdUnit(raw?: string, profile?: string): string {
   return unit.endsWith(".service") ? unit : `${unit}.service`;
 }
 
-export function triggerOpenClawRestart(): RestartAttempt {
+export function triggerNodoAssistRestart(): RestartAttempt {
   if (process.env.VITEST || process.env.NODE_ENV === "test") {
     return { ok: true, method: "supervisor", detail: "test mode" };
   }
@@ -712,8 +712,8 @@ export function triggerOpenClawRestart(): RestartAttempt {
   const tried: string[] = [];
   if (process.platform === "linux") {
     const unit = normalizeSystemdUnit(
-      process.env.OPENCLAW_SYSTEMD_UNIT,
-      process.env.OPENCLAW_PROFILE,
+      process.env.NODOASSIST_SYSTEMD_UNIT,
+      process.env.NODOASSIST_PROFILE,
     );
     const userArgs = ["--user", "restart", unit];
     tried.push(`systemctl ${userArgs.join(" ")}`);
@@ -753,8 +753,8 @@ export function triggerOpenClawRestart(): RestartAttempt {
   }
 
   const label =
-    process.env.OPENCLAW_LAUNCHD_LABEL ||
-    resolveGatewayLaunchAgentLabel(process.env.OPENCLAW_PROFILE);
+    process.env.NODOASSIST_LAUNCHD_LABEL ||
+    resolveGatewayLaunchAgentLabel(process.env.NODOASSIST_PROFILE);
   const uid = typeof process.getuid === "function" ? process.getuid() : undefined;
   const domain = uid !== undefined ? `gui/${uid}` : "gui/501";
   const target = `${domain}/${label}`;

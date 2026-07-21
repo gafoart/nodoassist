@@ -9,5 +9,5 @@ export {
   replaceConfigFile,
   type BrowserConfig,
   type BrowserProfileConfig,
-  type OpenClawConfig,
+  type NodoAssistConfig,
 } from "../sdk-config.js";

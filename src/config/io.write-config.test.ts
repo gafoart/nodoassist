@@ -7,11 +7,11 @@ import { executeSqliteQueryTakeFirstSync, getNodeSqliteKysely } from "../infra/k
 import { readPersistedInstalledPluginIndex } from "../plugins/installed-plugin-index-store.js";
 import type { PluginManifestRegistry } from "../plugins/manifest-registry.js";
 import { clearLoadPluginMetadataSnapshotMemo } from "../plugins/plugin-metadata-snapshot.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as NodoAssistStateKyselyDatabase } from "../state/nodoassist-state-db.generated.js";
 import {
-  closeOpenClawStateDatabaseForTest,
-  openOpenClawStateDatabase,
-} from "../state/openclaw-state-db.js";
+  closeNodoAssistStateDatabaseForTest,
+  openNodoAssistStateDatabase,
+} from "../state/nodoassist-state-db.js";
 import { createSuiteTempRootTracker } from "../test-helpers/temp-dir.js";
 import { withEnvAsync } from "../test-utils/env.js";
 import { hashConfigIncludeRaw } from "./includes.js";
@@ -26,10 +26,10 @@ import {
   writeConfigFile,
 } from "./io.js";
 import { ConfigMutationConflictError } from "./mutation-conflict.js";
-import type { ConfigFileSnapshot, OpenClawConfig } from "./types.openclaw.js";
+import type { ConfigFileSnapshot, NodoAssistConfig } from "./types.nodoassist.js";
 
 const CONFIG_CLOBBER_SNAPSHOT_LIMIT = 32;
-type ConfigHealthDatabase = Pick<OpenClawStateKyselyDatabase, "config_health_entries">;
+type ConfigHealthDatabase = Pick<NodoAssistStateKyselyDatabase, "config_health_entries">;
 
 // Mock the plugin manifest registry so we can register a fake channel whose
 // AJV JSON Schema carries a `default` value.  This lets the #56772 regression
@@ -77,7 +77,7 @@ vi.mock("./backup-rotation.js", async (importOriginal) => {
 });
 
 describe("config io write", () => {
-  const suiteRootTracker = createSuiteTempRootTracker({ prefix: "openclaw-config-io-" });
+  const suiteRootTracker = createSuiteTempRootTracker({ prefix: "nodoassist-config-io-" });
   const silentLogger = {
     warn: () => {},
     error: () => {},
@@ -87,9 +87,9 @@ describe("config io write", () => {
     const home = await suiteRootTracker.make("case");
     return withEnvAsync(
       {
-        OPENCLAW_DEFER_SHELL_ENV_FALLBACK: undefined,
-        OPENCLAW_LOAD_SHELL_ENV: undefined,
-        OPENCLAW_SHELL_ENV_TIMEOUT_MS: undefined,
+        NODOASSIST_DEFER_SHELL_ENV_FALLBACK: undefined,
+        NODOASSIST_LOAD_SHELL_ENV: undefined,
+        NODOASSIST_SHELL_ENV_TIMEOUT_MS: undefined,
       },
       () => fn(home),
     );
@@ -107,7 +107,7 @@ describe("config io write", () => {
   });
 
   afterEach(() => {
-    closeOpenClawStateDatabaseForTest();
+    closeNodoAssistStateDatabaseForTest();
     resetConfigRuntimeState();
     clearLoadPluginMetadataSnapshotMemo();
     mockMaintainConfigBackups.mockReset();
@@ -115,13 +115,13 @@ describe("config io write", () => {
   });
 
   afterAll(async () => {
-    closeOpenClawStateDatabaseForTest();
+    closeNodoAssistStateDatabaseForTest();
     resetConfigRuntimeState();
     await suiteRootTracker.cleanup();
   });
 
   function readConfigHealthRow(home: string, configPath: string) {
-    const { db } = openOpenClawStateDatabase({ env: { HOME: home } as NodeJS.ProcessEnv });
+    const { db } = openNodoAssistStateDatabase({ env: { HOME: home } as NodeJS.ProcessEnv });
     const healthDb = getNodeSqliteKysely<ConfigHealthDatabase>(db);
     return executeSqliteQueryTakeFirstSync(
       db,
@@ -192,15 +192,15 @@ describe("config io write", () => {
 
   const createFastConfigIO = (home: string) =>
     createConfigIO({
-      env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+      env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
       homedir: () => home,
       logger: silentLogger,
     });
 
   it("writes health state to SQLite through public config reads", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const healthPath = path.join(home, ".openclaw", "logs", "config-health.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const healthPath = path.join(home, ".nodoassist", "logs", "config-health.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -210,7 +210,7 @@ describe("config io write", () => {
       const warn = vi.fn();
       const io = createConfigIO({
         configPath,
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: { warn, error: vi.fn() },
       });
@@ -231,15 +231,15 @@ describe("config io write", () => {
 
   it("refuses direct config writes in Nix mode without changing the file", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const initialRaw = `${JSON.stringify({ gateway: { mode: "local" } }, null, 2)}\n`;
       await fs.writeFile(configPath, initialRaw, "utf-8");
       const io = createConfigIO({
         configPath,
         env: {
-          OPENCLAW_NIX_MODE: "1",
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_NIX_MODE: "1",
+          NODOASSIST_TEST_FAST: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
@@ -255,9 +255,9 @@ describe("config io write", () => {
 
   it("loads shipped plugin install config records without mutating config or plugin index", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const pluginDir = path.join(home, ".openclaw", "plugins", "demo");
-      const manifestPath = path.join(pluginDir, "openclaw.plugin.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const pluginDir = path.join(home, ".nodoassist", "plugins", "demo");
+      const manifestPath = path.join(pluginDir, "nodoassist.plugin.json");
       const source = path.join(pluginDir, "index.ts");
       await fs.mkdir(pluginDir, { recursive: true });
       await fs.writeFile(source, "export function register() {}\n", "utf-8");
@@ -331,7 +331,7 @@ describe("config io write", () => {
         });
         await expect(
           readPersistedInstalledPluginIndex({
-            stateDir: path.join(home, ".openclaw"),
+            stateDir: path.join(home, ".nodoassist"),
           }),
         ).resolves.toBeNull();
         await expect(fs.readFile(configPath, "utf-8")).resolves.toBe(initialRaw);
@@ -346,8 +346,8 @@ describe("config io write", () => {
 
   it("retains included shipped plugin install records in write snapshots", async () => {
     await withSuiteHome(async (home) => {
-      const configDir = path.join(home, ".openclaw");
-      const configPath = path.join(configDir, "openclaw.json");
+      const configDir = path.join(home, ".nodoassist");
+      const configPath = path.join(configDir, "nodoassist.json");
       const pluginsPath = path.join(configDir, "plugins.json5");
       await fs.mkdir(configDir, { recursive: true });
       await fs.writeFile(
@@ -389,9 +389,9 @@ describe("config io write", () => {
 
   it("migrates shipped plugin install config records into the plugin index during explicit writes", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const pluginDir = path.join(home, ".openclaw", "plugins", "demo");
-      const manifestPath = path.join(pluginDir, "openclaw.plugin.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const pluginDir = path.join(home, ".nodoassist", "plugins", "demo");
+      const manifestPath = path.join(pluginDir, "nodoassist.plugin.json");
       const source = path.join(pluginDir, "index.ts");
       await fs.mkdir(pluginDir, { recursive: true });
       await fs.writeFile(source, "export function register() {}\n", "utf-8");
@@ -452,7 +452,7 @@ describe("config io write", () => {
 
         const index = requireRecord(
           await readPersistedInstalledPluginIndex({
-            stateDir: path.join(home, ".openclaw"),
+            stateDir: path.join(home, ".nodoassist"),
           }),
           "persisted plugin index",
         );
@@ -481,8 +481,8 @@ describe("config io write", () => {
 
   it("migrates shipped plugin install config records during explicit writes even when the manifest is missing", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const pluginDir = path.join(home, ".openclaw", "plugins", "missing");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const pluginDir = path.join(home, ".nodoassist", "plugins", "missing");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -514,7 +514,7 @@ describe("config io write", () => {
 
       const index = requireRecord(
         await readPersistedInstalledPluginIndex({
-          stateDir: path.join(home, ".openclaw"),
+          stateDir: path.join(home, ".nodoassist"),
         }),
         "persisted plugin index",
       );
@@ -537,8 +537,8 @@ describe("config io write", () => {
       plugins: [],
     } satisfies PluginManifestRegistry);
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const unwritableStatePath = path.join(home, ".openclaw");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const unwritableStatePath = path.join(home, ".nodoassist");
       const pluginDir = path.join(unwritableStatePath, "plugins", "demo");
       const original = {
         plugins: {
@@ -556,7 +556,7 @@ describe("config io write", () => {
       await fs.writeFile(configPath, `${JSON.stringify(original, null, 2)}\n`, "utf-8");
       const warn = vi.fn();
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: { warn, error: vi.fn() },
       });
@@ -589,7 +589,7 @@ describe("config io write", () => {
     await withSuiteHome(async (home) => {
       const warn = vi.fn();
       const io = createConfigIO({
-        env: { HOME: home, OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { HOME: home, NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: { warn, error: vi.fn() },
       });
@@ -627,8 +627,8 @@ describe("config io write", () => {
 
   it("keeps shipped plugin install index migration when config write fails", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const pluginDir = path.join(home, ".openclaw", "plugins", "demo");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const pluginDir = path.join(home, ".nodoassist", "plugins", "demo");
       const original = {
         plugins: {
           entries: { demo: { enabled: true } },
@@ -657,7 +657,7 @@ describe("config io write", () => {
         installPath: pluginDir,
       });
       const persistedIndex = await readPersistedInstalledPluginIndex({
-        stateDir: path.join(home, ".openclaw"),
+        stateDir: path.join(home, ".nodoassist"),
       });
       expectInstallRecord(persistedIndex?.installRecords.demo, {
         source: "npm",
@@ -684,7 +684,7 @@ describe("config io write", () => {
     "tightens world-writable state dir when writing the default config",
     async () => {
       await withSuiteHome(async (home) => {
-        const stateDir = path.join(home, ".openclaw");
+        const stateDir = path.join(home, ".nodoassist");
         await fs.mkdir(stateDir, { recursive: true, mode: 0o777 });
         await fs.chmod(stateDir, 0o777);
 
@@ -702,9 +702,9 @@ describe("config io write", () => {
     },
   );
 
-  it("keeps writes inside an OPENCLAW_STATE_DIR override even when the real home config exists", async () => {
+  it("keeps writes inside an NODOASSIST_STATE_DIR override even when the real home config exists", async () => {
     await withSuiteHome(async (home) => {
-      const liveConfigPath = path.join(home, ".openclaw", "openclaw.json");
+      const liveConfigPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(liveConfigPath), { recursive: true });
       await fs.writeFile(
         liveConfigPath,
@@ -713,14 +713,14 @@ describe("config io write", () => {
       );
 
       const overrideDir = path.join(home, "isolated-state");
-      const env = { OPENCLAW_STATE_DIR: overrideDir } as NodeJS.ProcessEnv;
+      const env = { NODOASSIST_STATE_DIR: overrideDir } as NodeJS.ProcessEnv;
       const io = createConfigIO({
         env,
         homedir: () => home,
         logger: silentLogger,
       });
 
-      expect(io.configPath).toBe(path.join(overrideDir, "openclaw.json"));
+      expect(io.configPath).toBe(path.join(overrideDir, "nodoassist.json"));
 
       await io.writeConfigFile({
         agents: { list: [{ id: "main", default: true }] },
@@ -734,7 +734,7 @@ describe("config io write", () => {
       expect(livePersisted.gateway).toEqual({ mode: "local", port: 18789 });
 
       const overridePersisted = JSON.parse(
-        await fs.readFile(path.join(overrideDir, "openclaw.json"), "utf-8"),
+        await fs.readFile(path.join(overrideDir, "nodoassist.json"), "utf-8"),
       ) as {
         session?: { store?: unknown };
       };
@@ -744,7 +744,7 @@ describe("config io write", () => {
 
   it("does not mutate caller config when unsetPaths is applied on first write", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       const io = createConfigIO({
         env: {} as NodeJS.ProcessEnv,
         homedir: () => home,
@@ -792,7 +792,7 @@ describe("config io write", () => {
 
   it("does not print overwrite audit output by default when updating config", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -822,7 +822,7 @@ describe("config io write", () => {
 
   it("does not print benign missing-meta write anomalies by default", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -852,7 +852,7 @@ describe("config io write", () => {
 
   it("prints missing-meta write anomalies when anomaly logging is requested", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -862,7 +862,7 @@ describe("config io write", () => {
       const warn = vi.fn();
       const io = createConfigIO({
         env: {
-          OPENCLAW_CONFIG_WRITE_ANOMALY_LOG: "1",
+          NODOASSIST_CONFIG_WRITE_ANOMALY_LOG: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: {
@@ -884,7 +884,7 @@ describe("config io write", () => {
 
   it("suppresses overwrite audit output when skipOutputLogs is set", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -895,7 +895,7 @@ describe("config io write", () => {
       const io = createConfigIO({
         env: {
           VITEST: "true",
-          OPENCLAW_TEST_CONFIG_OVERWRITE_LOG: "1",
+          NODOASSIST_TEST_CONFIG_OVERWRITE_LOG: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: {
@@ -920,7 +920,7 @@ describe("config io write", () => {
 
   it("preserves root $schema during partial writes", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -943,7 +943,7 @@ describe("config io write", () => {
 
   it("recovers configs polluted by a leading status line", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       const cleanConfig = {
         gateway: { mode: "local" },
         agents: { list: [{ id: "main", default: true }, { id: "discord-dm" }] },
@@ -987,7 +987,7 @@ describe("config io write", () => {
 
   it("warns when prefix recovery cannot tighten config permissions", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       const cleanConfig = {
         gateway: { mode: "local" },
         agents: { list: [{ id: "main", default: true }, { id: "discord-dm" }] },
@@ -1030,7 +1030,7 @@ describe("config io write", () => {
 
   it("rotates repeated prefix-recovery clobber snapshots for doctor-style repair loops", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       const cleanConfig = {
         gateway: { mode: "local" },
         agents: { list: [{ id: "main", default: true }] },
@@ -1072,12 +1072,12 @@ describe("config io write", () => {
 
   it("rejects destructive internal writes before replacing the config", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const original = {
         gateway: { mode: "local" },
         channels: { telegram: { enabled: true, dmPolicy: "pairing" } },
-        agents: { list: [{ id: "main", default: true, workspace: "/tmp/openclaw-main" }] },
+        agents: { list: [{ id: "main", default: true, workspace: "/tmp/nodoassist-main" }] },
         tools: { profile: "messaging" },
         commands: { ownerDisplay: "hash" },
       } satisfies ConfigFileSnapshot["config"];
@@ -1130,7 +1130,7 @@ describe("config io write", () => {
 
   it("does not preflight runtime secrets before rejecting blocked root writes", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const original = {
         meta: { lastTouchedVersion: "2026.4.30" },
@@ -1180,7 +1180,7 @@ describe("config io write", () => {
 
   it("ignores verbose BOM formatting but still rejects a destructive size drop", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const original = {
         meta: { lastTouchedVersion: "2026.4.23" },
@@ -1226,7 +1226,7 @@ describe("config io write", () => {
 
   it("canonicalizes parseable schema-invalid config for the size baseline", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const channels = {
         telegram: {
@@ -1271,7 +1271,7 @@ describe("config io write", () => {
 
   it("keeps the raw-byte size baseline for malformed config", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const malformedRaw = `not-json\n${"x".repeat(2048)}\n`;
       await fs.writeFile(configPath, malformedRaw, "utf-8");
@@ -1288,7 +1288,7 @@ describe("config io write", () => {
 
   it("allows intentional size-drop writes without disabling gateway-mode protection", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const original = {
         meta: { lastTouchedVersion: "2026.4.30" },
@@ -1346,7 +1346,7 @@ describe("config io write", () => {
 
   it("keeps authored agent provider params during narrowed internal agent writes", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const original = {
         gateway: { mode: "local" },
@@ -1411,7 +1411,7 @@ describe("config io write", () => {
         { baseSnapshot },
       );
 
-      const persisted = JSON.parse(await fs.readFile(configPath, "utf-8")) as OpenClawConfig;
+      const persisted = JSON.parse(await fs.readFile(configPath, "utf-8")) as NodoAssistConfig;
       expect(persisted.agents?.defaults?.params).toEqual({
         transport: "sse",
         openaiWsWarmup: false,
@@ -1426,7 +1426,7 @@ describe("config io write", () => {
 
   it("preserves parsed source config when snapshot validation fails", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const original = {
         gateway: { mode: "local" },
@@ -1449,7 +1449,7 @@ describe("config io write", () => {
 
   it("returns the read-time environment snapshot for invalid config repairs", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -1457,7 +1457,7 @@ describe("config io write", () => {
           {
             gateway: {
               mode: "local",
-              auth: { mode: "token", token: "${OPENCLAW_GATEWAY_TOKEN}" },
+              auth: { mode: "token", token: "${NODOASSIST_GATEWAY_TOKEN}" },
             },
             channels: { "test-plugin-channel": { enabled: true } },
           },
@@ -1468,8 +1468,8 @@ describe("config io write", () => {
       );
       const io = createConfigIO({
         env: {
-          OPENCLAW_GATEWAY_TOKEN: "gateway-token-at-read",
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_GATEWAY_TOKEN: "gateway-token-at-read",
+          NODOASSIST_TEST_FAST: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
@@ -1478,7 +1478,7 @@ describe("config io write", () => {
       const result = await io.readConfigFileSnapshotForWrite();
 
       expect(result.snapshot.valid).toBe(false);
-      expect(result.writeOptions.envSnapshotForRestore?.OPENCLAW_GATEWAY_TOKEN).toBe(
+      expect(result.writeOptions.envSnapshotForRestore?.NODOASSIST_GATEWAY_TOKEN).toBe(
         "gateway-token-at-read",
       );
     });
@@ -1486,7 +1486,7 @@ describe("config io write", () => {
 
   it("returns the read-time environment snapshot when invalid reads fall back after resolution", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -1494,7 +1494,7 @@ describe("config io write", () => {
           {
             gateway: {
               mode: "local",
-              auth: { mode: "token", token: "${OPENCLAW_GATEWAY_TOKEN}" },
+              auth: { mode: "token", token: "${NODOASSIST_GATEWAY_TOKEN}" },
             },
             channels: { "test-plugin-channel": { enabled: true } },
           },
@@ -1508,8 +1508,8 @@ describe("config io write", () => {
       });
       const io = createConfigIO({
         env: {
-          OPENCLAW_GATEWAY_TOKEN: "gateway-token-at-read",
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_GATEWAY_TOKEN: "gateway-token-at-read",
+          NODOASSIST_TEST_FAST: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
@@ -1518,7 +1518,7 @@ describe("config io write", () => {
       const result = await io.readConfigFileSnapshotForWrite();
 
       expect(result.snapshot.valid).toBe(false);
-      expect(result.writeOptions.envSnapshotForRestore?.OPENCLAW_GATEWAY_TOKEN).toBe(
+      expect(result.writeOptions.envSnapshotForRestore?.NODOASSIST_GATEWAY_TOKEN).toBe(
         "gateway-token-at-read",
       );
     });
@@ -1526,8 +1526,8 @@ describe("config io write", () => {
 
   it("returns the snapshot-time hash when an included file is malformed", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const includePath = path.join(home, ".openclaw", "plugins.json5");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const includePath = path.join(home, ".nodoassist", "plugins.json5");
       const malformedRaw = "{ malformed";
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
@@ -1537,7 +1537,7 @@ describe("config io write", () => {
       );
       await fs.writeFile(includePath, malformedRaw, "utf-8");
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -1557,19 +1557,19 @@ describe("config io write", () => {
 
   it("returns a write guard that rejects a changed active config path", async () => {
     await withSuiteHome(async (home) => {
-      const firstConfigPath = path.join(home, ".openclaw", "first.json");
-      const secondConfigPath = path.join(home, ".openclaw", "second.json");
+      const firstConfigPath = path.join(home, ".nodoassist", "first.json");
+      const secondConfigPath = path.join(home, ".nodoassist", "second.json");
       await fs.mkdir(path.dirname(firstConfigPath), { recursive: true });
       await fs.writeFile(firstConfigPath, "{}", "utf-8");
       await fs.writeFile(secondConfigPath, "{}", "utf-8");
       const env = {
-        OPENCLAW_CONFIG_PATH: firstConfigPath,
-        OPENCLAW_TEST_FAST: "1",
+        NODOASSIST_CONFIG_PATH: firstConfigPath,
+        NODOASSIST_TEST_FAST: "1",
       } as NodeJS.ProcessEnv;
       const io = createConfigIO({ env, homedir: () => home, logger: silentLogger });
 
       const result = await io.readConfigFileSnapshotForWrite();
-      env.OPENCLAW_CONFIG_PATH = secondConfigPath;
+      env.NODOASSIST_CONFIG_PATH = secondConfigPath;
 
       expect(() => result.writeOptions.assertConfigPathForWrite?.()).toThrow(
         "config path changed since last load",
@@ -1579,17 +1579,17 @@ describe("config io write", () => {
 
   it("rejects write snapshots when the IO instance no longer owns its config path", async () => {
     await withSuiteHome(async (home) => {
-      const firstConfigPath = path.join(home, ".openclaw", "first.json");
-      const secondConfigPath = path.join(home, ".openclaw", "second.json");
+      const firstConfigPath = path.join(home, ".nodoassist", "first.json");
+      const secondConfigPath = path.join(home, ".nodoassist", "second.json");
       await fs.mkdir(path.dirname(firstConfigPath), { recursive: true });
       await fs.writeFile(firstConfigPath, "{}", "utf-8");
       await fs.writeFile(secondConfigPath, "{}", "utf-8");
       const env = {
-        OPENCLAW_CONFIG_PATH: firstConfigPath,
-        OPENCLAW_TEST_FAST: "1",
+        NODOASSIST_CONFIG_PATH: firstConfigPath,
+        NODOASSIST_TEST_FAST: "1",
       } as NodeJS.ProcessEnv;
       const io = createConfigIO({ env, homedir: () => home, logger: silentLogger });
-      env.OPENCLAW_CONFIG_PATH = secondConfigPath;
+      env.NODOASSIST_CONFIG_PATH = secondConfigPath;
 
       await expect(io.readConfigFileSnapshotForWrite()).rejects.toThrow(
         "config path changed since last load",
@@ -1599,12 +1599,12 @@ describe("config io write", () => {
 
   it("rejects local write ownership when config env changes path selection during the read", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const configuredNextPath = path.join(home, ".openclaw", "next.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const configuredNextPath = path.join(home, ".nodoassist", "next.json");
       const sourceConfig = {
-        env: { OPENCLAW_CONFIG_PATH: configuredNextPath },
+        env: { NODOASSIST_CONFIG_PATH: configuredNextPath },
         gateway: { mode: "local" },
-      } satisfies OpenClawConfig;
+      } satisfies NodoAssistConfig;
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(configPath, `${JSON.stringify(sourceConfig, null, 2)}\n`, "utf-8");
       const io = createFastConfigIO(home);
@@ -1617,12 +1617,12 @@ describe("config io write", () => {
 
   it("follows config env path selection before returning global write ownership", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const configuredNextPath = path.join(home, ".openclaw", "next.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const configuredNextPath = path.join(home, ".nodoassist", "next.json");
       const sourceConfig = {
-        env: { OPENCLAW_CONFIG_PATH: configuredNextPath },
+        env: { NODOASSIST_CONFIG_PATH: configuredNextPath },
         gateway: { mode: "local" },
-      } satisfies OpenClawConfig;
+      } satisfies NodoAssistConfig;
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(configPath, `${JSON.stringify(sourceConfig, null, 2)}\n`, "utf-8");
       await fs.writeFile(
@@ -1633,10 +1633,10 @@ describe("config io write", () => {
 
       await withEnvAsync(
         {
-          OPENCLAW_CONFIG_PATH: undefined,
-          OPENCLAW_HOME: home,
-          OPENCLAW_STATE_DIR: undefined,
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_CONFIG_PATH: undefined,
+          NODOASSIST_HOME: home,
+          NODOASSIST_STATE_DIR: undefined,
+          NODOASSIST_TEST_FAST: "1",
         },
         async () => {
           const prepared = await readConfigFileSnapshotForWrite();
@@ -1656,10 +1656,10 @@ describe("config io write", () => {
         },
       );
 
-      const initialConfig = JSON.parse(await fs.readFile(configPath, "utf-8")) as OpenClawConfig;
+      const initialConfig = JSON.parse(await fs.readFile(configPath, "utf-8")) as NodoAssistConfig;
       const persisted = JSON.parse(
         await fs.readFile(configuredNextPath, "utf-8"),
-      ) as OpenClawConfig;
+      ) as NodoAssistConfig;
       expect(initialConfig.gateway?.mode).toBe("local");
       expect(persisted.gateway?.mode).toBe("remote");
     });
@@ -1667,8 +1667,8 @@ describe("config io write", () => {
 
   it("does not use expectedConfigPath as the write destination", async () => {
     await withSuiteHome(async (home) => {
-      const expectedConfigPath = path.join(home, ".openclaw", "expected.json");
-      const activeConfigPath = path.join(home, ".openclaw", "active.json");
+      const expectedConfigPath = path.join(home, ".nodoassist", "expected.json");
+      const activeConfigPath = path.join(home, ".nodoassist", "active.json");
       await fs.mkdir(path.dirname(expectedConfigPath), { recursive: true });
       await fs.writeFile(
         expectedConfigPath,
@@ -1679,8 +1679,8 @@ describe("config io write", () => {
 
       await withEnvAsync(
         {
-          OPENCLAW_CONFIG_PATH: activeConfigPath,
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_CONFIG_PATH: activeConfigPath,
+          NODOASSIST_TEST_FAST: "1",
         },
         async () => {
           await writeConfigFile(
@@ -1694,10 +1694,10 @@ describe("config io write", () => {
 
       const expectedConfig = JSON.parse(
         await fs.readFile(expectedConfigPath, "utf-8"),
-      ) as OpenClawConfig;
+      ) as NodoAssistConfig;
       const activeConfig = JSON.parse(
         await fs.readFile(activeConfigPath, "utf-8"),
-      ) as OpenClawConfig;
+      ) as NodoAssistConfig;
       expect(expectedConfig.gateway?.mode).toBe("local");
       expect(activeConfig.gateway?.mode).toBe("remote");
     });
@@ -1705,8 +1705,8 @@ describe("config io write", () => {
 
   it("returns the missing-file hash when an included file is absent", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const includePath = path.join(home, ".openclaw", "plugins.json5");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const includePath = path.join(home, ".nodoassist", "plugins.json5");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -1714,7 +1714,7 @@ describe("config io write", () => {
         "utf-8",
       );
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -1733,8 +1733,8 @@ describe("config io write", () => {
 
   it("rejects root-include partial writes instead of flattening the root config", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const includePath = path.join(home, ".openclaw", "extra.json5");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const includePath = path.join(home, ".nodoassist", "extra.json5");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         includePath,
@@ -1757,7 +1757,7 @@ describe("config io write", () => {
 
   it("rejects a stale base snapshot before overwriting the root config", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -1765,7 +1765,7 @@ describe("config io write", () => {
         "utf-8",
       );
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -1787,8 +1787,8 @@ describe("config io write", () => {
 
   it("rejects a base snapshot from a different config path before overwriting the root config", async () => {
     await withSuiteHome(async (home) => {
-      const firstConfigPath = path.join(home, ".openclaw", "first.json");
-      const secondConfigPath = path.join(home, ".openclaw", "second.json");
+      const firstConfigPath = path.join(home, ".nodoassist", "first.json");
+      const secondConfigPath = path.join(home, ".nodoassist", "second.json");
       await fs.mkdir(path.dirname(firstConfigPath), { recursive: true });
       const originalRaw = `${JSON.stringify(
         { gateway: { mode: "local", port: 18789 } },
@@ -1799,13 +1799,13 @@ describe("config io write", () => {
       await fs.writeFile(secondConfigPath, originalRaw, "utf-8");
       const firstIo = createConfigIO({
         configPath: firstConfigPath,
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
       const secondIo = createConfigIO({
         configPath: secondConfigPath,
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -1824,8 +1824,8 @@ describe("config io write", () => {
 
   it("rolls back a root write when config path ownership changes during commit", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const secondConfigPath = path.join(home, ".openclaw", "second.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const secondConfigPath = path.join(home, ".nodoassist", "second.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const originalRaw = `${JSON.stringify(
         { gateway: { mode: "local", port: 18789 } },
@@ -1835,7 +1835,7 @@ describe("config io write", () => {
       await fs.writeFile(configPath, originalRaw, "utf-8");
       const io = createConfigIO({
         configPath,
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -1866,7 +1866,7 @@ describe("config io write", () => {
 
   it("rejects a base snapshot changed during preflight before replacing the root config", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -1874,7 +1874,7 @@ describe("config io write", () => {
         "utf-8",
       );
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -1904,7 +1904,7 @@ describe("config io write", () => {
 
   it("rejects a base snapshot changed during backup rotation", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -1912,7 +1912,7 @@ describe("config io write", () => {
         "utf-8",
       );
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -1936,10 +1936,10 @@ describe("config io write", () => {
 
   it("rejects a missing base config created empty during preflight", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       const io = createConfigIO({
         configPath,
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -1964,10 +1964,10 @@ describe("config io write", () => {
 
   it("assigns distinct snapshot hashes to missing and empty root config", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       const io = createConfigIO({
         configPath,
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -1984,12 +1984,12 @@ describe("config io write", () => {
 
   it("rejects an empty base config removed during preflight", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(configPath, "", "utf-8");
       const io = createConfigIO({
         configPath,
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -2014,15 +2014,15 @@ describe("config io write", () => {
 
   it("rejects invalid include-backed repairs instead of persisting substituted secrets", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const includePath = path.join(home, ".openclaw", "gateway.json5");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const includePath = path.join(home, ".nodoassist", "gateway.json5");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         includePath,
         `${JSON.stringify(
           {
             mode: "local",
-            auth: { mode: "token", token: "${OPENCLAW_GATEWAY_TOKEN}" },
+            auth: { mode: "token", token: "${NODOASSIST_GATEWAY_TOKEN}" },
             invalid: true,
           },
           null,
@@ -2038,8 +2038,8 @@ describe("config io write", () => {
       const originalRootRaw = await fs.readFile(configPath, "utf-8");
       const io = createConfigIO({
         env: {
-          OPENCLAW_GATEWAY_TOKEN: "gateway-token-runtime",
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_GATEWAY_TOKEN: "gateway-token-runtime",
+          NODOASSIST_TEST_FAST: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
@@ -2058,15 +2058,15 @@ describe("config io write", () => {
 
       await expect(fs.readFile(configPath, "utf-8")).resolves.toBe(originalRootRaw);
       await expect(fs.readFile(includePath, "utf-8")).resolves.toContain(
-        '"token": "${OPENCLAW_GATEWAY_TOKEN}"',
+        '"token": "${NODOASSIST_GATEWAY_TOKEN}"',
       );
     });
   });
 
   it("repairs invalid root-authored siblings without flattening included config", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const includePath = path.join(home, ".openclaw", "agent-defaults.json5");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const includePath = path.join(home, ".nodoassist", "agent-defaults.json5");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         includePath,
@@ -2088,7 +2088,7 @@ describe("config io write", () => {
       );
       const originalIncludeRaw = await fs.readFile(includePath, "utf-8");
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -2107,8 +2107,8 @@ describe("config io write", () => {
 
   it("rejects repairs that would flatten a valid outer include with a broken nested include", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const pluginsPath = path.join(home, ".openclaw", "plugins.json5");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const pluginsPath = path.join(home, ".nodoassist", "plugins.json5");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         pluginsPath,
@@ -2123,7 +2123,7 @@ describe("config io write", () => {
       const originalRootRaw = await fs.readFile(configPath, "utf-8");
       const originalPluginsRaw = await fs.readFile(pluginsPath, "utf-8");
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -2141,7 +2141,7 @@ describe("config io write", () => {
 
   it("allows replacement repair of a malformed include directive", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -2149,7 +2149,7 @@ describe("config io write", () => {
         "utf-8",
       );
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -2177,9 +2177,9 @@ describe("config io write", () => {
           cliBackends: [],
           skills: [],
           hooks: [],
-          rootDir: "/tmp/openclaw-test-literal-plugin",
-          source: "/tmp/openclaw-test-literal-plugin/index.ts",
-          manifestPath: "/tmp/openclaw-test-literal-plugin/openclaw.plugin.json",
+          rootDir: "/tmp/nodoassist-test-literal-plugin",
+          source: "/tmp/nodoassist-test-literal-plugin/index.ts",
+          manifestPath: "/tmp/nodoassist-test-literal-plugin/nodoassist.plugin.json",
           configSchema: {
             type: "object",
             properties: {
@@ -2193,8 +2193,8 @@ describe("config io write", () => {
     } satisfies PluginManifestRegistry);
 
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const agentsPath = path.join(home, ".openclaw", "agents.json5");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const agentsPath = path.join(home, ".nodoassist", "agents.json5");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         agentsPath,
@@ -2222,7 +2222,7 @@ describe("config io write", () => {
       );
       const io = createConfigIO({
         env: {
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_TEST_FAST: "1",
           ROOT_LITERAL_TOKEN: "secret",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
@@ -2244,12 +2244,12 @@ describe("config io write", () => {
 
   it("repairs invalid config without flattening array-nested includes", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const includePath = path.join(home, ".openclaw", "main-agent.json5");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const includePath = path.join(home, ".nodoassist", "main-agent.json5");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         includePath,
-        `${JSON.stringify({ id: "main", workspace: "${OPENCLAW_AGENT_WORKSPACE}" }, null, 2)}\n`,
+        `${JSON.stringify({ id: "main", workspace: "${NODOASSIST_AGENT_WORKSPACE}" }, null, 2)}\n`,
         "utf-8",
       );
       await fs.writeFile(
@@ -2270,8 +2270,8 @@ describe("config io write", () => {
       const originalRootRaw = await fs.readFile(configPath, "utf-8");
       const io = createConfigIO({
         env: {
-          OPENCLAW_AGENT_WORKSPACE: "/resolved/agent-workspace",
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_AGENT_WORKSPACE: "/resolved/agent-workspace",
+          NODOASSIST_TEST_FAST: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
@@ -2290,7 +2290,7 @@ describe("config io write", () => {
       expect(persistedRoot.agents?.defaults).toBeUndefined();
       expect(persistedRoot.agents?.list).toEqual([{ $include: "./main-agent.json5" }]);
       await expect(fs.readFile(includePath, "utf-8")).resolves.toContain(
-        '"workspace": "${OPENCLAW_AGENT_WORKSPACE}"',
+        '"workspace": "${NODOASSIST_AGENT_WORKSPACE}"',
       );
     });
   });
@@ -2307,9 +2307,9 @@ describe("config io write", () => {
           cliBackends: [],
           skills: [],
           hooks: [],
-          rootDir: "/tmp/openclaw-test-required-plugin",
-          source: "/tmp/openclaw-test-required-plugin/index.ts",
-          manifestPath: "/tmp/openclaw-test-required-plugin/openclaw.plugin.json",
+          rootDir: "/tmp/nodoassist-test-required-plugin",
+          source: "/tmp/nodoassist-test-required-plugin/index.ts",
+          manifestPath: "/tmp/nodoassist-test-required-plugin/nodoassist.plugin.json",
           configSchema: {
             type: "object",
             properties: {
@@ -2351,7 +2351,7 @@ describe("config io write", () => {
 
   it("writes runtime-derived edits back to source SecretRef markers", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -2374,7 +2374,7 @@ describe("config io write", () => {
         "utf-8",
       );
 
-      await withEnvAsync({ OPENCLAW_CONFIG_PATH: configPath }, async () => {
+      await withEnvAsync({ NODOASSIST_CONFIG_PATH: configPath }, async () => {
         setRuntimeConfigSnapshot(
           {
             gateway: { mode: "local" },
@@ -2442,7 +2442,7 @@ describe("config io write", () => {
 
   it("notifies in-process reloaders with resolved source config when persisted env refs are restored", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -2450,7 +2450,7 @@ describe("config io write", () => {
           {
             gateway: {
               mode: "local",
-              auth: { mode: "token", token: "${OPENCLAW_GATEWAY_TOKEN}" },
+              auth: { mode: "token", token: "${NODOASSIST_GATEWAY_TOKEN}" },
             },
             agents: { defaults: { model: { primary: "openai/gpt-5.4" } } },
           },
@@ -2467,8 +2467,8 @@ describe("config io write", () => {
       try {
         await withEnvAsync(
           {
-            OPENCLAW_CONFIG_PATH: configPath,
-            OPENCLAW_GATEWAY_TOKEN: "gateway-token-runtime",
+            NODOASSIST_CONFIG_PATH: configPath,
+            NODOASSIST_GATEWAY_TOKEN: "gateway-token-runtime",
           },
           async () => {
             setRuntimeConfigSnapshot(
@@ -2501,7 +2501,7 @@ describe("config io write", () => {
             const persisted = JSON.parse(await fs.readFile(configPath, "utf-8")) as {
               gateway?: { auth?: { token?: string } };
             };
-            expect(persisted.gateway?.auth?.token).toBe("${OPENCLAW_GATEWAY_TOKEN}");
+            expect(persisted.gateway?.auth?.token).toBe("${NODOASSIST_GATEWAY_TOKEN}");
             expect(observedSources).toHaveLength(1);
             const observedSource = requireRecord(observedSources[0], "observed source config");
             expect(observedSource.gateway).toEqual({
@@ -2523,7 +2523,7 @@ describe("config io write", () => {
 
   it("rejects ambiguous removals from arrays containing environment references", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const originalRaw = `${JSON.stringify(
         { plugins: { allow: ["${PLUGIN_A}", "${PLUGIN_B}"] } },
@@ -2533,7 +2533,7 @@ describe("config io write", () => {
       await fs.writeFile(configPath, originalRaw, "utf-8");
       const io = createConfigIO({
         env: {
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_TEST_FAST: "1",
           PLUGIN_A: "same-plugin",
           PLUGIN_B: "same-plugin",
         } as NodeJS.ProcessEnv,
@@ -2551,7 +2551,7 @@ describe("config io write", () => {
 
   it("preserves escaped literals when config writes reorder arrays", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -2559,7 +2559,7 @@ describe("config io write", () => {
         "utf-8",
       );
       const io = createConfigIO({
-        env: { OPENCLAW_TEST_FAST: "1" } as NodeJS.ProcessEnv,
+        env: { NODOASSIST_TEST_FAST: "1" } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: silentLogger,
       });
@@ -2585,9 +2585,9 @@ describe("config io write", () => {
           cliBackends: [],
           skills: [],
           hooks: [],
-          rootDir: "/tmp/openclaw-test-demo",
-          source: "/tmp/openclaw-test-demo/index.ts",
-          manifestPath: "/tmp/openclaw-test-demo/openclaw.plugin.json",
+          rootDir: "/tmp/nodoassist-test-demo",
+          source: "/tmp/nodoassist-test-demo/index.ts",
+          manifestPath: "/tmp/nodoassist-test-demo/nodoassist.plugin.json",
           configSchema: {
             type: "object",
             properties: {
@@ -2600,7 +2600,7 @@ describe("config io write", () => {
     } satisfies PluginManifestRegistry);
 
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const sourceConfig = {
         gateway: { mode: "local" },
@@ -2622,7 +2622,7 @@ describe("config io write", () => {
       });
 
       try {
-        await withEnvAsync({ OPENCLAW_CONFIG_PATH: configPath }, async () => {
+        await withEnvAsync({ NODOASSIST_CONFIG_PATH: configPath }, async () => {
           setRuntimeConfigSnapshot(runtimeConfig, sourceConfig);
 
           await writeConfigFile({
@@ -2635,7 +2635,7 @@ describe("config io write", () => {
           });
 
           const postWriteSnapshot = await createConfigIO({
-            env: { OPENCLAW_CONFIG_PATH: configPath, VITEST: "true" } as NodeJS.ProcessEnv,
+            env: { NODOASSIST_CONFIG_PATH: configPath, VITEST: "true" } as NodeJS.ProcessEnv,
             homedir: () => home,
             logger: silentLogger,
           }).readConfigFileSnapshot();
@@ -2660,12 +2660,12 @@ describe("config io write", () => {
 
   it("rolls back the root config when post-write runtime refresh fails", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const initialConfig = {
         gateway: { mode: "local", port: 18789 },
         plugins: { entries: { "google-antigravity-auth": { enabled: false } } },
-      } satisfies OpenClawConfig;
+      } satisfies NodoAssistConfig;
       const initialRaw = `${JSON.stringify(initialConfig, null, 2)}\n`;
       await fs.writeFile(configPath, initialRaw, "utf-8");
       const warn = vi.fn();
@@ -2679,7 +2679,7 @@ describe("config io write", () => {
       expect(warn).toHaveBeenCalledTimes(1);
 
       try {
-        await withEnvAsync({ OPENCLAW_CONFIG_PATH: configPath }, async () => {
+        await withEnvAsync({ NODOASSIST_CONFIG_PATH: configPath }, async () => {
           setRuntimeConfigSnapshotRefreshHandler({
             refresh: () => {
               throw new Error("synthetic refresh failure");
@@ -2705,9 +2705,9 @@ describe("config io write", () => {
 
   it("does not delete an existing root config when rollback has no previous raw payload", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
-      const initialConfig = { gateway: { mode: "local", port: 18789 } } satisfies OpenClawConfig;
+      const initialConfig = { gateway: { mode: "local", port: 18789 } } satisfies NodoAssistConfig;
       await fs.writeFile(configPath, `${JSON.stringify(initialConfig, null, 2)}\n`, "utf-8");
       const baseSnapshot = {
         path: configPath,
@@ -2725,7 +2725,7 @@ describe("config io write", () => {
       } satisfies ConfigFileSnapshot;
 
       try {
-        await withEnvAsync({ OPENCLAW_CONFIG_PATH: configPath }, async () => {
+        await withEnvAsync({ NODOASSIST_CONFIG_PATH: configPath }, async () => {
           setRuntimeConfigSnapshotRefreshHandler({
             refresh: () => {
               throw new Error("synthetic refresh failure");
@@ -2741,7 +2741,7 @@ describe("config io write", () => {
             ),
           ).rejects.toThrow(/runtime snapshot refresh failed: synthetic refresh failure/);
 
-          const persisted = JSON.parse(await fs.readFile(configPath, "utf-8")) as OpenClawConfig;
+          const persisted = JSON.parse(await fs.readFile(configPath, "utf-8")) as NodoAssistConfig;
           expect(persisted.gateway).toEqual({ mode: "local", port: 19001 });
         });
       } finally {
@@ -2752,7 +2752,7 @@ describe("config io write", () => {
 
   it("does not overwrite concurrent root config edits during failed refresh rollback", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -2766,7 +2766,7 @@ describe("config io write", () => {
       )}\n`;
 
       try {
-        await withEnvAsync({ OPENCLAW_CONFIG_PATH: configPath }, async () => {
+        await withEnvAsync({ NODOASSIST_CONFIG_PATH: configPath }, async () => {
           setRuntimeConfigSnapshotRefreshHandler({
             refresh: async () => {
               await fs.writeFile(configPath, concurrentRaw, "utf-8");
@@ -2788,8 +2788,8 @@ describe("config io write", () => {
 
   it("keeps plugin install index migration when runtime refresh fails", async () => {
     await withSuiteHome(async (home) => {
-      const stateDir = path.join(home, ".openclaw");
-      const configPath = path.join(stateDir, "openclaw.json");
+      const stateDir = path.join(home, ".nodoassist");
+      const configPath = path.join(stateDir, "nodoassist.json");
       const pluginDir = path.join(stateDir, "plugins", "demo");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const initialConfig = {
@@ -2803,15 +2803,15 @@ describe("config io write", () => {
             },
           },
         },
-      } satisfies OpenClawConfig;
+      } satisfies NodoAssistConfig;
       const initialRaw = `${JSON.stringify(initialConfig, null, 2)}\n`;
       await fs.writeFile(configPath, initialRaw, "utf-8");
 
       try {
         await withEnvAsync(
           {
-            OPENCLAW_CONFIG_PATH: configPath,
-            OPENCLAW_STATE_DIR: stateDir,
+            NODOASSIST_CONFIG_PATH: configPath,
+            NODOASSIST_STATE_DIR: stateDir,
           },
           async () => {
             setRuntimeConfigSnapshotRefreshHandler({
@@ -2841,15 +2841,15 @@ describe("config io write", () => {
 
   it("blocks runtime preflight failures before committing root writes", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       const initialRaw = `${JSON.stringify({ gateway: { mode: "local" } }, null, 2)}\n`;
-      let observedSource: OpenClawConfig | undefined;
+      let observedSource: NodoAssistConfig | undefined;
 
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(configPath, initialRaw, "utf-8");
 
       try {
-        await withEnvAsync({ OPENCLAW_CONFIG_PATH: configPath }, async () => {
+        await withEnvAsync({ NODOASSIST_CONFIG_PATH: configPath }, async () => {
           setRuntimeConfigSnapshotRefreshHandler({
             preflight: async ({ sourceConfig }) => {
               observedSource = sourceConfig;
@@ -2876,13 +2876,13 @@ describe("config io write", () => {
 
   it("blocks runtime preflight failures before direct config IO commits root writes", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       const initialRaw = `${JSON.stringify({ gateway: { mode: "local" } }, null, 2)}\n`;
       const env = {
         ...process.env,
-        OPENCLAW_CONFIG_PATH: configPath,
+        NODOASSIST_CONFIG_PATH: configPath,
       } as NodeJS.ProcessEnv;
-      let observedSource: OpenClawConfig | undefined;
+      let observedSource: NodoAssistConfig | undefined;
 
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(configPath, initialRaw, "utf-8");
@@ -2912,9 +2912,9 @@ describe("config io write", () => {
 
   it("restores config env vars when post-write runtime refresh rollback succeeds", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const envKey = "OPENCLAW_TEST_RUNTIME_ROLLBACK_ENV";
-      const initialConfig = { gateway: { mode: "local", port: 18789 } } satisfies OpenClawConfig;
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const envKey = "NODOASSIST_TEST_RUNTIME_ROLLBACK_ENV";
+      const initialConfig = { gateway: { mode: "local", port: 18789 } } satisfies NodoAssistConfig;
       const initialRaw = `${JSON.stringify(initialConfig, null, 2)}\n`;
 
       await fs.mkdir(path.dirname(configPath), { recursive: true });
@@ -2923,7 +2923,7 @@ describe("config io write", () => {
       try {
         await withEnvAsync(
           {
-            OPENCLAW_CONFIG_PATH: configPath,
+            NODOASSIST_CONFIG_PATH: configPath,
             [envKey]: undefined,
           },
           async () => {
@@ -2953,19 +2953,19 @@ describe("config io write", () => {
 
   it("rolls back root writes when canonical reread changes config path ownership", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const nextConfigPath = path.join(home, ".openclaw", "next.json");
-      const initialConfig = { gateway: { mode: "local", port: 18789 } } satisfies OpenClawConfig;
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const nextConfigPath = path.join(home, ".nodoassist", "next.json");
+      const initialConfig = { gateway: { mode: "local", port: 18789 } } satisfies NodoAssistConfig;
       const initialRaw = `${JSON.stringify(initialConfig, null, 2)}\n`;
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(configPath, initialRaw, "utf-8");
 
       await withEnvAsync(
         {
-          OPENCLAW_CONFIG_PATH: undefined,
-          OPENCLAW_HOME: home,
-          OPENCLAW_STATE_DIR: undefined,
-          OPENCLAW_TEST_FAST: "1",
+          NODOASSIST_CONFIG_PATH: undefined,
+          NODOASSIST_HOME: home,
+          NODOASSIST_STATE_DIR: undefined,
+          NODOASSIST_TEST_FAST: "1",
         },
         async () => {
           const prepared = await readConfigFileSnapshotForWrite();
@@ -2974,7 +2974,7 @@ describe("config io write", () => {
             writeConfigFile(
               {
                 gateway: { mode: "local", port: 19001 },
-                env: { OPENCLAW_CONFIG_PATH: nextConfigPath },
+                env: { NODOASSIST_CONFIG_PATH: nextConfigPath },
               },
               {
                 baseSnapshot: prepared.snapshot,
@@ -2984,7 +2984,7 @@ describe("config io write", () => {
           ).rejects.toThrow("config path changed since last load");
 
           await expect(fs.readFile(configPath, "utf-8")).resolves.toBe(initialRaw);
-          expect(process.env.OPENCLAW_CONFIG_PATH).toBeUndefined();
+          expect(process.env.NODOASSIST_CONFIG_PATH).toBeUndefined();
           await expect(fs.stat(nextConfigPath)).rejects.toMatchObject({ code: "ENOENT" });
         },
       );
@@ -2993,15 +2993,15 @@ describe("config io write", () => {
 
   it("uses injected filesystem operations when rolling back ownership loss", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const otherConfigPath = path.join(home, ".openclaw", "other.json");
-      const initialConfig = { gateway: { mode: "local", port: 18789 } } satisfies OpenClawConfig;
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
+      const otherConfigPath = path.join(home, ".nodoassist", "other.json");
+      const initialConfig = { gateway: { mode: "local", port: 18789 } } satisfies NodoAssistConfig;
       const initialRaw = `${JSON.stringify(initialConfig, null, 2)}\n`;
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(configPath, initialRaw, "utf-8");
       const env = {
-        OPENCLAW_CONFIG_PATH: configPath,
-        OPENCLAW_TEST_FAST: "1",
+        NODOASSIST_CONFIG_PATH: configPath,
+        NODOASSIST_TEST_FAST: "1",
       } as NodeJS.ProcessEnv;
       const readFile = fsNode.promises.readFile.bind(fsNode.promises);
       const rename = fsNode.promises.rename.bind(fsNode.promises);
@@ -3021,7 +3021,7 @@ describe("config io write", () => {
             await rename(from, to);
             if (!committed && to === configPath) {
               committed = true;
-              env.OPENCLAW_CONFIG_PATH = otherConfigPath;
+              env.NODOASSIST_CONFIG_PATH = otherConfigPath;
             }
           },
         },
@@ -3056,9 +3056,9 @@ describe("config io write", () => {
           cliBackends: [],
           skills: [],
           hooks: [],
-          rootDir: "/tmp/openclaw-test-demo",
-          source: "/tmp/openclaw-test-demo/index.ts",
-          manifestPath: "/tmp/openclaw-test-demo/openclaw.plugin.json",
+          rootDir: "/tmp/nodoassist-test-demo",
+          source: "/tmp/nodoassist-test-demo/index.ts",
+          manifestPath: "/tmp/nodoassist-test-demo/nodoassist.plugin.json",
           configSchema: {
             type: "object",
             properties: {
@@ -3071,7 +3071,7 @@ describe("config io write", () => {
     } satisfies PluginManifestRegistry);
 
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       const sourceConfig = {
         gateway: { mode: "local" },
@@ -3088,14 +3088,14 @@ describe("config io write", () => {
       } satisfies ConfigFileSnapshot["config"];
 
       try {
-        await withEnvAsync({ OPENCLAW_CONFIG_PATH: configPath }, async () => {
+        await withEnvAsync({ NODOASSIST_CONFIG_PATH: configPath }, async () => {
           setRuntimeConfigSnapshot(runtimeConfig, sourceConfig);
 
           await writeConfigFile(runtimeConfig, {
             explicitSetPaths: [["plugins", "entries", "demo", "config"]],
           });
 
-          const persisted = JSON.parse(await fs.readFile(configPath, "utf-8")) as OpenClawConfig;
+          const persisted = JSON.parse(await fs.readFile(configPath, "utf-8")) as NodoAssistConfig;
           expect(persisted.plugins?.entries?.demo?.config).toStrictEqual({ mode: "auto" });
         });
       } finally {
@@ -3109,7 +3109,7 @@ describe("config io write", () => {
 
   it("skipPluginValidation bypasses plugin schema rejection on writeConfigFile (#76800)", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(configPath, "{}\n", "utf-8");
       mockLoadPluginManifestRegistry.mockReturnValue({
@@ -3123,9 +3123,9 @@ describe("config io write", () => {
             cliBackends: [],
             skills: [],
             hooks: [],
-            rootDir: "/tmp/openclaw-test-strict-plugin",
-            source: "/tmp/openclaw-test-strict-plugin/index.ts",
-            manifestPath: "/tmp/openclaw-test-strict-plugin/openclaw.plugin.json",
+            rootDir: "/tmp/nodoassist-test-strict-plugin",
+            source: "/tmp/nodoassist-test-strict-plugin/index.ts",
+            manifestPath: "/tmp/nodoassist-test-strict-plugin/nodoassist.plugin.json",
             configSchema: {
               type: "object",
               properties: { token: { type: "string" } },
@@ -3138,12 +3138,12 @@ describe("config io write", () => {
 
       try {
         // Plugin is enabled but missing required "token" — validation fails without skip.
-        const cfg: OpenClawConfig = {
+        const cfg: NodoAssistConfig = {
           agents: { list: [{ id: "main", default: true }] },
           plugins: { entries: { "strict-plugin": { enabled: true } } },
         };
 
-        await withEnvAsync({ OPENCLAW_CONFIG_PATH: configPath }, async () => {
+        await withEnvAsync({ NODOASSIST_CONFIG_PATH: configPath }, async () => {
           await writeConfigFile(cfg, { skipPluginValidation: true });
           await expect(fs.readFile(configPath, "utf-8")).resolves.toContain('"strict-plugin"');
 
@@ -3151,7 +3151,7 @@ describe("config io write", () => {
             /Config validation failed/,
           );
           await expect(
-            writeConfigFile({ agents: { list: "not-array" } } as unknown as OpenClawConfig, {
+            writeConfigFile({ agents: { list: "not-array" } } as unknown as NodoAssistConfig, {
               skipPluginValidation: true,
             }),
           ).rejects.toThrow(/Config validation failed/);
@@ -3167,13 +3167,13 @@ describe("config io write", () => {
 
   it("preserves authored tilde paths when runtime-shaped writes hand back absolute paths", async () => {
     await withSuiteHome(async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+      const configPath = path.join(home, ".nodoassist", "nodoassist.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
         `${JSON.stringify(
           {
-            logging: { file: "~/openclaw-upgrade-survivor/gateway.jsonl" },
+            logging: { file: "~/nodoassist-upgrade-survivor/gateway.jsonl" },
           },
           null,
           2,
@@ -3186,15 +3186,15 @@ describe("config io write", () => {
       await io.writeConfigFile(
         {
           logging: {
-            file: path.join(home, "openclaw-upgrade-survivor", "gateway.jsonl"),
+            file: path.join(home, "nodoassist-upgrade-survivor", "gateway.jsonl"),
             level: "debug",
           },
         },
         { baseSnapshot: snapshot },
       );
 
-      const persisted = JSON.parse(await fs.readFile(configPath, "utf-8")) as OpenClawConfig;
-      expect(persisted.logging?.file).toBe("~/openclaw-upgrade-survivor/gateway.jsonl");
+      const persisted = JSON.parse(await fs.readFile(configPath, "utf-8")) as NodoAssistConfig;
+      expect(persisted.logging?.file).toBe("~/nodoassist-upgrade-survivor/gateway.jsonl");
       expect(persisted.logging?.level).toBe("debug");
     });
   });

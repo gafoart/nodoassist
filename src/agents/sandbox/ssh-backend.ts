@@ -5,7 +5,7 @@
  */
 import fs from "node:fs/promises";
 import path from "node:path";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
+import { normalizeLowercaseStringOrEmpty } from "@nodoassist/normalization-core/string-coerce";
 import type {
   SandboxBackendCommandParams,
   SandboxBackendCommandResult,
@@ -69,7 +69,7 @@ export const sshSandboxBackendManager: SandboxBackendManager = {
           "/bin/sh",
           "-c",
           'if [ -d "$1" ]; then printf "1\\n"; else printf "0\\n"; fi',
-          "openclaw-sandbox-check",
+          "nodoassist-sandbox-check",
           runtimePaths.runtimeRootDir,
         ]),
       });
@@ -99,7 +99,7 @@ export const sshSandboxBackendManager: SandboxBackendManager = {
           "/bin/sh",
           "-c",
           'rm -rf -- "$1"',
-          "openclaw-sandbox-remove",
+          "nodoassist-sandbox-remove",
           runtimePaths.runtimeRootDir,
         ]),
         allowFailure: true,
@@ -236,7 +236,7 @@ class SshSandboxBackendImpl {
           "/bin/sh",
           "-c",
           'if [ -d "$1" ]; then printf "1\\n"; else printf "0\\n"; fi',
-          "openclaw-sandbox-check",
+          "nodoassist-sandbox-check",
           this.params.runtimePaths.runtimeRootDir,
         ]),
       });
@@ -352,7 +352,7 @@ class SshSandboxBackendImpl {
         "/bin/sh",
         "-c",
         `${ENSURE_REMOTE_REAL_DIRECTORY_SCRIPT}\nfind "$1" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +`,
-        "openclaw-sandbox-clear",
+        "nodoassist-sandbox-clear",
         remoteDir,
         this.params.runtimePaths.runtimeRootDir,
       ]),
@@ -386,7 +386,7 @@ class SshSandboxBackendImpl {
           "/bin/sh",
           "-c",
           params.script,
-          "openclaw-sandbox-fs",
+          "nodoassist-sandbox-fs",
           ...(params.args ?? []),
         ]),
         stdin: params.stdin,
@@ -437,7 +437,7 @@ export function resolveSshRuntimePaths(
     remoteSkillsWorkspaceDir: path.posix.join(
       runtimeRootDir,
       "workspace",
-      ".openclaw",
+      ".nodoassist",
       "sandbox-skills",
     ),
   };
@@ -455,5 +455,5 @@ function buildSshSandboxRuntimeId(scopeKey: string): string {
     (acc, char) => ((acc * 33) ^ char.charCodeAt(0)) >>> 0,
     5381,
   );
-  return `openclaw-ssh-${safe || "session"}-${hash.toString(16).slice(0, 8)}`;
+  return `nodoassist-ssh-${safe || "session"}-${hash.toString(16).slice(0, 8)}`;
 }

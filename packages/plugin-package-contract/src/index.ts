@@ -6,7 +6,7 @@ export type JsonObject = Record<string, unknown>;
 /** Compatibility metadata extracted from an external plugin package. */
 export type ExternalPluginCompatibility = {
   pluginApiRange?: string;
-  builtWithOpenClawVersion?: string;
+  builtWithNodoAssistVersion?: string;
   pluginSdkVersion?: string;
   minGatewayVersion?: string;
 };
@@ -25,8 +25,8 @@ export type ExternalCodePluginValidationResult = {
 
 /** Required package.json field paths for external code plugin packages. */
 export const EXTERNAL_CODE_PLUGIN_REQUIRED_FIELD_PATHS = [
-  "openclaw.compat.pluginApi",
-  "openclaw.build.openclawVersion",
+  "nodoassist.compat.pluginApi",
+  "nodoassist.build.nodoassistVersion",
 ] as const;
 
 /** Narrow unknown values to plain records. */
@@ -43,21 +43,21 @@ function normalizeOptionalString(value: unknown): string | undefined {
   return trimmed ? trimmed : undefined;
 }
 
-/** Read OpenClaw package.json blocks without trusting caller input shape. */
-function readOpenClawBlock(packageJson: unknown) {
+/** Read NodoAssist package.json blocks without trusting caller input shape. */
+function readNodoAssistBlock(packageJson: unknown) {
   const root = isRecord(packageJson) ? packageJson : undefined;
-  const openclaw = isRecord(root?.openclaw) ? root.openclaw : undefined;
-  const compat = isRecord(openclaw?.compat) ? openclaw.compat : undefined;
-  const build = isRecord(openclaw?.build) ? openclaw.build : undefined;
-  const install = isRecord(openclaw?.install) ? openclaw.install : undefined;
-  return { root, openclaw, compat, build, install };
+  const nodoassist = isRecord(root?.nodoassist) ? root.nodoassist : undefined;
+  const compat = isRecord(nodoassist?.compat) ? nodoassist.compat : undefined;
+  const build = isRecord(nodoassist?.build) ? nodoassist.build : undefined;
+  const install = isRecord(nodoassist?.install) ? nodoassist.install : undefined;
+  return { root, nodoassist, compat, build, install };
 }
 
 /** Normalize compatibility metadata from an external plugin package.json. */
 export function normalizeExternalPluginCompatibility(
   packageJson: unknown,
 ): ExternalPluginCompatibility | undefined {
-  const { root, compat, build, install } = readOpenClawBlock(packageJson);
+  const { root, compat, build, install } = readNodoAssistBlock(packageJson);
   const version = normalizeOptionalString(root?.version);
   const minHostVersion = normalizeOptionalString(install?.minHostVersion);
   const compatibility: ExternalPluginCompatibility = {};
@@ -72,9 +72,9 @@ export function normalizeExternalPluginCompatibility(
     compatibility.minGatewayVersion = minGatewayVersion;
   }
 
-  const builtWithOpenClawVersion = normalizeOptionalString(build?.openclawVersion) ?? version;
-  if (builtWithOpenClawVersion) {
-    compatibility.builtWithOpenClawVersion = builtWithOpenClawVersion;
+  const builtWithNodoAssistVersion = normalizeOptionalString(build?.nodoassistVersion) ?? version;
+  if (builtWithNodoAssistVersion) {
+    compatibility.builtWithNodoAssistVersion = builtWithNodoAssistVersion;
   }
 
   const pluginSdkVersion = normalizeOptionalString(build?.pluginSdkVersion);
@@ -87,13 +87,13 @@ export function normalizeExternalPluginCompatibility(
 
 /** List missing required field paths for an external code plugin package.json. */
 export function listMissingExternalCodePluginFieldPaths(packageJson: unknown): string[] {
-  const { compat, build } = readOpenClawBlock(packageJson);
+  const { compat, build } = readNodoAssistBlock(packageJson);
   const missing: string[] = [];
   if (!normalizeOptionalString(compat?.pluginApi)) {
-    missing.push("openclaw.compat.pluginApi");
+    missing.push("nodoassist.compat.pluginApi");
   }
-  if (!normalizeOptionalString(build?.openclawVersion)) {
-    missing.push("openclaw.build.openclawVersion");
+  if (!normalizeOptionalString(build?.nodoassistVersion)) {
+    missing.push("nodoassist.build.nodoassistVersion");
   }
   return missing;
 }

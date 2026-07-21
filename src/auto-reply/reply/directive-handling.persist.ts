@@ -19,7 +19,7 @@ import {
   sessionSnapshotChangesApplied,
 } from "../../config/sessions/session-snapshot-merge.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { triggerSessionPatchHook } from "../../gateway/session-patch-hooks.js";
 import { enqueueSystemEvent } from "../../infra/system-events.js";
 import { applyTraceOverride, applyVerboseOverride } from "../../sessions/level-overrides.js";
@@ -48,7 +48,7 @@ const MODEL_RUNTIME_CLEAR_VALUES = new Set(["auto", "default"]);
 function resolveModelRuntimeOverride(params: {
   rawRuntime?: string;
   provider: string;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
 }):
   | { kind: "clear" }
   | { kind: "set"; runtime: string }
@@ -63,8 +63,8 @@ function resolveModelRuntimeOverride(params: {
   if (MODEL_RUNTIME_CLEAR_VALUES.has(runtime)) {
     return { kind: "clear" };
   }
-  if (runtime === "openclaw") {
-    return { kind: "set", runtime: "openclaw" };
+  if (runtime === "nodoassist") {
+    return { kind: "set", runtime: "nodoassist" };
   }
   if (normalizeProviderId(params.provider) === "openai" && runtime === "codex") {
     return { kind: "set", runtime: "codex" };
@@ -86,7 +86,7 @@ function resolveModelRuntimeOverride(params: {
 export async function persistInlineDirectives(params: {
   directives: InlineDirectives;
   effectiveModelDirective?: string;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   agentDir?: string;
   sessionEntry?: SessionEntry;
   sessionStore?: Record<string, SessionEntry>;
@@ -102,7 +102,7 @@ export async function persistInlineDirectives(params: {
   model: string;
   initialModelLabel: string;
   formatModelSwitchEvent: (label: string, alias?: string) => string;
-  agentCfg: NonNullable<OpenClawConfig["agents"]>["defaults"] | undefined;
+  agentCfg: NonNullable<NodoAssistConfig["agents"]>["defaults"] | undefined;
   messageProvider?: string;
   surface?: string;
   gatewayClientScopes?: string[];

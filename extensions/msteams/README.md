@@ -1,11 +1,11 @@
-# OpenClaw Microsoft Teams
+# NodoAssist Microsoft Teams
 
-Official OpenClaw channel plugin for Microsoft Teams bot conversations.
+Official NodoAssist channel plugin for Microsoft Teams bot conversations.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugin add @openclaw/msteams
+nodoassist plugin add @nodoassist/msteams
 ```
 
-Configure the Teams bot credentials and trusted service URLs in OpenClaw, then connect the bot to the teams or chats where agents should operate.
+Configure the Teams bot credentials and trusted service URLs in NodoAssist, then connect the bot to the teams or chats where agents should operate.

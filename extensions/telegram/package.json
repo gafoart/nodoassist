@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/telegram",
+  "name": "@nodoassist/telegram",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw Telegram channel plugin",
+  "description": "NodoAssist Telegram channel plugin",
   "type": "module",
   "dependencies": {
     "@grammyjs/runner": "2.0.3",
@@ -12,9 +12,9 @@
     "undici": "8.5.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],

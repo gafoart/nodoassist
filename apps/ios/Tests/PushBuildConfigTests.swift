@@ -1,12 +1,12 @@
 import Foundation
 import Testing
-@testable import OpenClaw
+@testable import NodoAssist
 
 struct PushBuildConfigTests {
     @Test func `app store mode derives production relay contract`() {
         let config = PushBuildConfig(infoDictionary: [
-            "OpenClawPushMode": "appStore",
-            "OpenClawPushRelayBaseURL": "https://wrong.example.com",
+            "NodoAssistPushMode": "appStore",
+            "NodoAssistPushRelayBaseURL": "https://wrong.example.com",
         ])
 
         #expect(config.mode == .appStore)
@@ -20,8 +20,8 @@ struct PushBuildConfigTests {
 
     @Test func `simulator sandbox mode derives internal proof contract`() {
         let config = PushBuildConfig(infoDictionary: [
-            "OpenClawPushMode": "simulatorSandbox",
-            "OpenClawPushRelayBaseURL": "https://staging-relay.example.com",
+            "NodoAssistPushMode": "simulatorSandbox",
+            "NodoAssistPushRelayBaseURL": "https://staging-relay.example.com",
         ])
 
         #expect(config.mode == .simulatorSandbox)
@@ -35,8 +35,8 @@ struct PushBuildConfigTests {
 
     @Test func `local release mode remains direct production push`() {
         let config = PushBuildConfig(infoDictionary: [
-            "OpenClawPushMode": "localProduction",
-            "OpenClawPushRelayBaseURL": "https://ios-push-relay.openclaw.ai",
+            "NodoAssistPushMode": "localProduction",
+            "NodoAssistPushRelayBaseURL": "https://ios-push-relay.openclaw.ai",
         ])
 
         #expect(config.mode == .localProduction)

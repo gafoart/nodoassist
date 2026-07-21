@@ -16,9 +16,9 @@ vi.mock("./terminal-runtime.ts", () => {
   return { createIsolatedGhosttyTerminal: createGhosttyTerminalMock };
 });
 
-import { OpenClawTerminalPanel } from "./terminal-panel.ts";
+import { NodoAssistTerminalPanel } from "./terminal-panel.ts";
 
-describe("OpenClawTerminalPanel", () => {
+describe("NodoAssistTerminalPanel", () => {
   afterEach(() => {
     document.body.replaceChildren();
     localStorage.clear();
@@ -57,7 +57,7 @@ describe("OpenClawTerminalPanel", () => {
       },
       addEventListener: () => () => {},
     };
-    const panel = document.createElement("openclaw-terminal-panel") as OpenClawTerminalPanel;
+    const panel = document.createElement("nodoassist-terminal-panel") as NodoAssistTerminalPanel;
     panel.client = client;
     panel.agentId = "ops";
     panel.available = true;
@@ -73,7 +73,7 @@ describe("OpenClawTerminalPanel", () => {
     });
     expect(createOptions?.terminalOptions?.fontFamily).toContain("MesloLGLDZ Nerd Font Mono");
     expect(getComputedStyle(createOptions!.parent).caretColor).toBe("rgba(0, 0, 0, 0)");
-    const styles = (OpenClawTerminalPanel.styles as { cssText: string }).cssText;
+    const styles = (NodoAssistTerminalPanel.styles as { cssText: string }).cssText;
     expect(styles).toMatch(/\.tp-new\s*\{[^}]*align-self:\s*center/u);
     await vi.waitFor(() => {
       expect(requests).toContainEqual({
@@ -125,7 +125,7 @@ describe("OpenClawTerminalPanel", () => {
       },
       addEventListener: () => () => {},
     };
-    const panel = document.createElement("openclaw-terminal-panel") as OpenClawTerminalPanel;
+    const panel = document.createElement("nodoassist-terminal-panel") as NodoAssistTerminalPanel;
     panel.client = client;
     panel.available = true;
     panel.fullscreen = true;
@@ -194,7 +194,7 @@ describe("OpenClawTerminalPanel", () => {
         };
       },
     };
-    const panel = document.createElement("openclaw-terminal-panel") as OpenClawTerminalPanel;
+    const panel = document.createElement("nodoassist-terminal-panel") as NodoAssistTerminalPanel;
     panel.client = client;
     panel.available = true;
     document.body.append(panel);
@@ -220,7 +220,7 @@ describe("OpenClawTerminalPanel", () => {
       });
     });
     expect(controllers[0].dispose).toHaveBeenCalledOnce();
-    expect(sessionStorage.getItem("openclaw.terminal.sessions.v1")).toBe("[]");
+    expect(sessionStorage.getItem("nodoassist.terminal.sessions.v1")).toBe("[]");
 
     panel.toggle();
     await vi.waitFor(() => {

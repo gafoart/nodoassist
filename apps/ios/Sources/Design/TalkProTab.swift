@@ -9,13 +9,13 @@ struct TalkProTab: View {
     @AppStorage("talk.background.enabled") private var talkBackgroundEnabled: Bool = false
     @State private var showPermissionPrompt = false
     @State private var showTalkIssueDetails = false
-    let headerLeadingAction: OpenClawSidebarHeaderAction?
+    let headerLeadingAction: NodoAssistSidebarHeaderAction?
     let ownsNavigationStack: Bool
     var openSettings: () -> Void
     var openVoiceSettings: () -> Void
 
     init(
-        headerLeadingAction: OpenClawSidebarHeaderAction? = nil,
+        headerLeadingAction: NodoAssistSidebarHeaderAction? = nil,
         ownsNavigationStack: Bool = true,
         openSettings: @escaping () -> Void,
         openVoiceSettings: (() -> Void)? = nil)
@@ -65,20 +65,20 @@ struct TalkProTab: View {
                                 self.showPermissionPrompt = false
                             } label: {
                                 Text("Not Now")
-                                    .font(OpenClawType.subheadSemiBold)
+                                    .font(NodoAssistType.subheadSemiBold)
                             }
                         }
                     }
             }
             .presentationDetents([.medium, .large])
-            .openClawSheetChrome()
+            .nodoAssistSheetChrome()
         }
         .sheet(isPresented: self.$showTalkIssueDetails) {
             if let fallbackIssue = self.fallbackIssue {
                 TalkRuntimeIssueDetailsSheet(
                     issue: fallbackIssue,
                     onOpenSettings: self.openVoiceSettings)
-                    .openClawSheetChrome()
+                    .nodoAssistSheetChrome()
             }
         }
         .onAppear { self.alignPersistedTalkState() }
@@ -107,7 +107,7 @@ struct TalkProTab: View {
         .toolbar {
             if let headerLeadingAction {
                 ToolbarItem(placement: .topBarLeading) {
-                    OpenClawSidebarRevealButton(action: headerLeadingAction)
+                    NodoAssistSidebarRevealButton(action: headerLeadingAction)
                 }
             }
         }
@@ -122,17 +122,17 @@ struct TalkProTab: View {
 
                 VStack(spacing: 4) {
                     Text(self.state.title)
-                        .font(OpenClawType.title3SemiBold)
+                        .font(NodoAssistType.title3SemiBold)
                         .multilineTextAlignment(.center)
                     Text(self.heroSubtitle)
-                        .font(OpenClawType.subhead)
+                        .font(NodoAssistType.subhead)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
 
                 Button(action: self.handlePrimaryAction) {
                     Label(self.state.primaryButtonTitle, systemImage: self.state.primaryButtonIcon)
-                        .font(OpenClawType.subheadSemiBold)
+                        .font(NodoAssistType.subheadSemiBold)
                         // Match the icon to the label; otherwise the symbol picks up the tint color.
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
@@ -173,22 +173,22 @@ struct TalkProTab: View {
         Section("Controls") {
             Toggle(isOn: self.talkSpeakerphoneBinding) {
                 Text("Speakerphone")
-                    .font(OpenClawType.body)
+                    .font(NodoAssistType.body)
             }
             .accessibilityIdentifier("talk-speakerphone-control")
             Toggle(isOn: self.$talkBackgroundEnabled) {
                 Text("Background listening")
-                    .font(OpenClawType.body)
+                    .font(NodoAssistType.body)
             }
             .accessibilityIdentifier("talk-background-listening-control")
             Button(action: self.openVoiceSettings) {
                 HStack {
                     Label("Voice & Talk Settings", systemImage: "slider.horizontal.3")
-                        .font(OpenClawType.body)
+                        .font(NodoAssistType.body)
                         .foregroundStyle(.primary)
                     Spacer()
                     Image(systemName: "chevron.forward")
-                        .font(OpenClawType.footnoteSemiBold)
+                        .font(NodoAssistType.footnoteSemiBold)
                         .foregroundStyle(.tertiary)
                 }
                 .contentShape(Rectangle())
@@ -369,7 +369,7 @@ struct TalkProState: Equatable {
         if self.isSpeaking { return "Speaking" }
         if self.isListening { return "Listening" }
         if self.normalizedStatus.contains("connecting") { return "Connecting" }
-        if self.normalizedStatus.contains("thinking") { return "Asking OpenClaw" }
+        if self.normalizedStatus.contains("thinking") { return "Asking NodoAssist" }
         if self.isEnabled { return "Ready to talk" }
         return "Talk is off"
     }
@@ -379,12 +379,12 @@ struct TalkProState: Equatable {
         if !self.gatewayConnected { return .secondary }
         switch self.permissionState {
         case .requestFailed, .loadFailed:
-            return OpenClawBrand.danger
+            return NodoAssistBrand.danger
         case .missingScope, .requestingUpgrade, .upgradeRequested, .apiKeyMissing:
-            return OpenClawBrand.warn
+            return NodoAssistBrand.warn
         default:
-            if !self.isConfigLoaded { return OpenClawBrand.warn }
-            return self.isEnabled ? OpenClawBrand.ok : OpenClawBrand.accentHot
+            if !self.isConfigLoaded { return NodoAssistBrand.warn }
+            return self.isEnabled ? NodoAssistBrand.ok : NodoAssistBrand.accentHot
         }
     }
 

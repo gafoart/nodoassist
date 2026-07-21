@@ -1,7 +1,7 @@
 // Xai plugin module implements tts behavior.
-import { assertOkOrThrowProviderError, postJsonRequest } from "openclaw/plugin-sdk/provider-http";
-import { readResponseWithLimit } from "openclaw/plugin-sdk/response-limit-runtime";
-import { trimToUndefined } from "openclaw/plugin-sdk/speech";
+import { assertOkOrThrowProviderError, postJsonRequest } from "nodoassist/plugin-sdk/provider-http";
+import { readResponseWithLimit } from "nodoassist/plugin-sdk/response-limit-runtime";
+import { trimToUndefined } from "nodoassist/plugin-sdk/speech";
 import { XAI_BASE_URL } from "./api.js";
 import { xaiUserAgentHeaderFor } from "./src/xai-user-agent.js";
 export { XAI_BASE_URL };

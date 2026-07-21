@@ -4,8 +4,8 @@ export {
   sanitizeAssistantVisibleText,
   sanitizeAssistantVisibleTextWithProfile,
   stripToolCallXmlTags,
-} from "openclaw/plugin-sdk/text-chunking";
-export { normalizeE164, resolveUserPath, sleep } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "nodoassist/plugin-sdk/text-chunking";
+export { normalizeE164, resolveUserPath, sleep } from "nodoassist/plugin-sdk/text-utility-runtime";
 export {
   assertWebChannel,
   isSelfChatMode,

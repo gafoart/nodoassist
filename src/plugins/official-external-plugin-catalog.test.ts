@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import officialExternalPluginCatalog from "../../scripts/lib/official-external-plugin-catalog.json" with { type: "json" };
-import { closeOpenClawStateDatabaseForTest } from "../state/openclaw-state-db.js";
+import { closeNodoAssistStateDatabaseForTest } from "../state/nodoassist-state-db.js";
 import { createSqliteHostedOfficialExternalPluginCatalogSnapshotStore } from "./official-external-plugin-catalog-snapshot-store.js";
 import {
   type OfficialExternalPluginCatalogEntry,
@@ -53,7 +53,7 @@ describe("official external plugin catalog", () => {
     expect(isOfficialExternalPluginCatalogFeed(officialExternalPluginCatalog)).toBe(true);
     expect(officialExternalPluginCatalog).toMatchObject({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       sequence: 1,
     });
     expect(officialExternalPluginCatalog.entries.length).toBeGreaterThan(0);
@@ -72,7 +72,7 @@ describe("official external plugin catalog", () => {
     expect(
       isOfficialExternalPluginCatalogFeed({
         schemaVersion: 2,
-        id: "openclaw-official-external-plugins",
+        id: "nodoassist-official-external-plugins",
         generatedAt: "2026-06-22T00:00:00.000Z",
         sequence: 1,
         entries: [],
@@ -81,7 +81,7 @@ describe("official external plugin catalog", () => {
     expect(
       isOfficialExternalPluginCatalogFeed({
         schemaVersion: 3,
-        id: "openclaw-official-external-plugins",
+        id: "nodoassist-official-external-plugins",
         generatedAt: "2026-06-22T00:00:00.000Z",
         sequence: 1,
         entries: [],
@@ -110,7 +110,7 @@ describe("official external plugin catalog", () => {
       entries: [
         {
           type: "plugin",
-          id: "@expediagroup/expedia-openclaw",
+          id: "@expediagroup/expedia-nodoassist",
           title: "Expedia Travel",
           version: "1.0.4",
           state: "available",
@@ -122,7 +122,7 @@ describe("official external plugin catalog", () => {
             candidates: [
               {
                 sourceRef: "public-clawhub",
-                package: "@expediagroup/expedia-openclaw",
+                package: "@expediagroup/expedia-nodoassist",
                 version: "1.0.4",
                 integrity:
                   "sha256:b355dda04403becaab8bbab069fd1e7b0578262e7459e598cc5b19615b5bdab9",
@@ -138,13 +138,13 @@ describe("official external plugin catalog", () => {
     }
 
     expect(entry).toMatchObject({
-      id: "@expediagroup/expedia-openclaw",
+      id: "@expediagroup/expedia-nodoassist",
       title: "Expedia Travel",
       version: "1.0.4",
     });
-    expect(resolveOfficialExternalPluginId(entry)).toBe("@expediagroup/expedia-openclaw");
+    expect(resolveOfficialExternalPluginId(entry)).toBe("@expediagroup/expedia-nodoassist");
     expect(resolveOfficialExternalPluginInstall(entry)).toEqual({
-      clawhubSpec: "clawhub:@expediagroup/expedia-openclaw@1.0.4",
+      clawhubSpec: "clawhub:@expediagroup/expedia-nodoassist@1.0.4",
       defaultChoice: "clawhub",
       expectedIntegrity: "sha256-s1XdoEQDvsqri7qwaf0eewV4Ji50WeWYzFsZYVtb2rk=",
     });
@@ -287,16 +287,16 @@ describe("official external plugin catalog", () => {
   it("loads a hosted feed with conditional headers and checksum metadata", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 2,
       entries: [
         {
-          name: "@openclaw/hosted-proof",
+          name: "@nodoassist/hosted-proof",
           kind: "plugin",
-          openclaw: {
+          nodoassist: {
             plugin: { id: "hosted-proof", label: "Hosted Proof" },
-            install: { npmSpec: "@openclaw/hosted-proof", defaultChoice: "npm" },
+            install: { npmSpec: "@nodoassist/hosted-proof", defaultChoice: "npm" },
           },
         },
       ],
@@ -323,7 +323,7 @@ describe("official external plugin catalog", () => {
     });
 
     expect(result.source).toBe("hosted");
-    expect(result.entries.map((entry) => entry.name)).toEqual(["@openclaw/hosted-proof"]);
+    expect(result.entries.map((entry) => entry.name)).toEqual(["@nodoassist/hosted-proof"]);
     if (result.source === "hosted") {
       expect(result.feed.sequence).toBe(2);
       expect(result.metadata).toMatchObject({
@@ -344,7 +344,7 @@ describe("official external plugin catalog", () => {
       entries: [
         {
           type: "plugin",
-          id: "@expediagroup/expedia-openclaw",
+          id: "@expediagroup/expedia-nodoassist",
           title: "Expedia Travel",
           version: "1.0.4",
           state: "available",
@@ -356,7 +356,7 @@ describe("official external plugin catalog", () => {
             candidates: [
               {
                 sourceRef: "public-clawhub",
-                package: "@expediagroup/expedia-openclaw",
+                package: "@expediagroup/expedia-nodoassist",
                 version: "1.0.4",
                 integrity:
                   "sha256:b355dda04403becaab8bbab069fd1e7b0578262e7459e598cc5b19615b5bdab9",
@@ -382,7 +382,7 @@ describe("official external plugin catalog", () => {
     expect(result.source).toBe("hosted");
     expect(result.entries).toHaveLength(1);
     expect(result.entries[0]).toMatchObject({
-      id: "@expediagroup/expedia-openclaw",
+      id: "@expediagroup/expedia-nodoassist",
       title: "Expedia Travel",
       version: "1.0.4",
     });
@@ -391,14 +391,14 @@ describe("official external plugin catalog", () => {
   it("uses the default local feed profile for hosted catalog loading", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 8,
       entries: [
         {
-          name: "@openclaw/default-profile-proof",
+          name: "@nodoassist/default-profile-proof",
           kind: "plugin",
-          openclaw: { plugin: { id: "default-profile-proof" } },
+          nodoassist: { plugin: { id: "default-profile-proof" } },
         },
       ],
     });
@@ -417,7 +417,9 @@ describe("official external plugin catalog", () => {
     });
 
     expect(result.source).toBe("hosted");
-    expect(result.entries.map((entry) => entry.name)).toEqual(["@openclaw/default-profile-proof"]);
+    expect(result.entries.map((entry) => entry.name)).toEqual([
+      "@nodoassist/default-profile-proof",
+    ]);
   });
 
   it("accepts the live ClawHub feed source ref by default", async () => {
@@ -429,16 +431,16 @@ describe("official external plugin catalog", () => {
       entries: [
         {
           type: "plugin",
-          id: "@openclaw/live-feed-proof",
+          id: "@nodoassist/live-feed-proof",
           title: "Live Feed Proof",
           version: "1.0.0",
           state: "available",
-          publisher: { id: "openclaw", trust: "official" },
+          publisher: { id: "nodoassist", trust: "official" },
           install: {
             candidates: [
               {
                 sourceRef: "public-clawhub",
-                package: "@openclaw/live-feed-proof",
+                package: "@nodoassist/live-feed-proof",
                 version: "1.0.0",
                 integrity:
                   "sha256:b355dda04403becaab8bbab069fd1e7b0578262e7459e598cc5b19615b5bdab9",
@@ -458,15 +460,15 @@ describe("official external plugin catalog", () => {
     });
 
     expect(result.source).toBe("hosted");
-    expect(result.entries.map((entry) => entry.id)).toEqual(["@openclaw/live-feed-proof"]);
+    expect(result.entries.map((entry) => entry.id)).toEqual(["@nodoassist/live-feed-proof"]);
     expect(resolveOfficialExternalPluginInstall(result.entries[0])).toEqual({
-      clawhubSpec: "clawhub:@openclaw/live-feed-proof@1.0.0",
+      clawhubSpec: "clawhub:@nodoassist/live-feed-proof@1.0.0",
       defaultChoice: "clawhub",
       expectedIntegrity: "sha256-s1XdoEQDvsqri7qwaf0eewV4Ji50WeWYzFsZYVtb2rk=",
     });
   });
 
-  it("loads hosted catalog profiles from OpenClaw config", async () => {
+  it("loads hosted catalog profiles from NodoAssist config", async () => {
     const config = {
       marketplaces: {
         feeds: { acme: { url: "https://packages.acme.example/openclaw/feed" } },
@@ -475,14 +477,14 @@ describe("official external plugin catalog", () => {
     };
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 14,
       entries: [
         {
           name: "@acme/config-profile-proof",
           kind: "plugin",
-          openclaw: {
+          nodoassist: {
             plugin: { id: "config-profile-proof" },
             install: { sourceRef: "acme-npm", npmSpec: "@acme/config-profile-proof" },
           },
@@ -510,7 +512,7 @@ describe("official external plugin catalog", () => {
   it("allows named local feed profiles to authorize their configured HTTPS host", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 9,
       entries: [
@@ -526,7 +528,7 @@ describe("official external plugin catalog", () => {
               },
             ],
           },
-          openclaw: {
+          nodoassist: {
             plugin: { id: "private-proof" },
             install: { sourceRef: "acme-npm", npmSpec: "@acme/private-proof" },
           },
@@ -608,14 +610,14 @@ describe("official external plugin catalog", () => {
   it("requires manifest install source refs when the default feed profile URL is overridden", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 13,
       entries: [
         {
           name: "@acme/default-override-missing-source-ref",
           kind: "plugin",
-          openclaw: {
+          nodoassist: {
             plugin: { id: "default-override-missing-source-ref" },
             install: { npmSpec: "@acme/default-override-missing-source-ref" },
           },
@@ -623,7 +625,7 @@ describe("official external plugin catalog", () => {
         {
           name: "@acme/default-override-known-source-ref",
           kind: "plugin",
-          openclaw: {
+          nodoassist: {
             plugin: { id: "default-override-known-source-ref" },
             install: { sourceRef: "acme-npm", npmSpec: "@acme/default-override-known-source-ref" },
           },
@@ -652,16 +654,16 @@ describe("official external plugin catalog", () => {
   it("preserves default feed manifest installs for direct default hosted feed URL refreshes", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 14,
       entries: [
         {
-          name: "@openclaw/direct-default-missing-source-ref",
+          name: "@nodoassist/direct-default-missing-source-ref",
           kind: "plugin",
-          openclaw: {
+          nodoassist: {
             plugin: { id: "direct-default-missing-source-ref" },
-            install: { npmSpec: "@openclaw/direct-default-missing-source-ref" },
+            install: { npmSpec: "@nodoassist/direct-default-missing-source-ref" },
           },
         },
       ],
@@ -678,21 +680,21 @@ describe("official external plugin catalog", () => {
 
     expect(result.source).toBe("hosted");
     expect(result.entries.map((entry) => entry.name)).toEqual([
-      "@openclaw/direct-default-missing-source-ref",
+      "@nodoassist/direct-default-missing-source-ref",
     ]);
   });
 
   it("requires manifest install source refs for non-default direct hosted feed URL overrides", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 15,
       entries: [
         {
           name: "@acme/direct-url-missing-source-ref",
           kind: "plugin",
-          openclaw: {
+          nodoassist: {
             plugin: { id: "direct-url-missing-source-ref" },
             install: { npmSpec: "@acme/direct-url-missing-source-ref" },
           },
@@ -700,7 +702,7 @@ describe("official external plugin catalog", () => {
         {
           name: "@acme/direct-url-known-source-ref",
           kind: "plugin",
-          openclaw: {
+          nodoassist: {
             plugin: { id: "direct-url-known-source-ref" },
             install: { sourceRef: "acme-npm", npmSpec: "@acme/direct-url-known-source-ref" },
           },
@@ -730,7 +732,7 @@ describe("official external plugin catalog", () => {
     const missingManifestSourceRef = {
       name: "@acme/missing-manifest-source-ref",
       kind: "plugin",
-      openclaw: {
+      nodoassist: {
         plugin: { id: "missing-manifest-source-ref" },
         install: { npmSpec: "@acme/missing-manifest-source-ref" },
       },
@@ -738,7 +740,7 @@ describe("official external plugin catalog", () => {
     const knownManifestSourceRef = {
       name: "@acme/known-manifest-source-ref",
       kind: "plugin",
-      openclaw: {
+      nodoassist: {
         plugin: { id: "known-manifest-source-ref" },
         install: {
           sourceRef: "acme-npm",
@@ -749,7 +751,7 @@ describe("official external plugin catalog", () => {
     const implicitNameInstall = {
       name: "@acme/implicit-name-install",
       kind: "plugin",
-      openclaw: { plugin: { id: "implicit-name-install" } },
+      nodoassist: { plugin: { id: "implicit-name-install" } },
     };
     const topLevelCandidateOnly = {
       name: "@acme/top-level-candidate-only",
@@ -757,14 +759,14 @@ describe("official external plugin catalog", () => {
       install: {
         candidates: [{ sourceRef: "acme-npm", package: "@acme/top-level-candidate-only" }],
       },
-      openclaw: {
+      nodoassist: {
         plugin: { id: "top-level-candidate-only" },
         install: { npmSpec: "@acme/top-level-candidate-only" },
       },
     };
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 11,
       entries: [
@@ -818,43 +820,43 @@ describe("official external plugin catalog", () => {
 
   it("filters hosted feed entries that reference unknown local source profiles", async () => {
     const knownEntry = {
-      name: "@openclaw/source-ref-known",
+      name: "@nodoassist/source-ref-known",
       kind: "plugin",
       install: {
-        candidates: [{ sourceRef: "public-clawhub", package: "@openclaw/source-ref-known" }],
+        candidates: [{ sourceRef: "public-clawhub", package: "@nodoassist/source-ref-known" }],
       },
-      openclaw: { plugin: { id: "source-ref-known" } },
+      nodoassist: { plugin: { id: "source-ref-known" } },
     };
     const unknownEntry = {
-      name: "@openclaw/source-ref-unknown",
+      name: "@nodoassist/source-ref-unknown",
       kind: "plugin",
       install: {
-        candidates: [{ sourceRef: "attacker-npm", package: "@openclaw/source-ref-unknown" }],
+        candidates: [{ sourceRef: "attacker-npm", package: "@nodoassist/source-ref-unknown" }],
       },
-      openclaw: { plugin: { id: "source-ref-unknown" } },
+      nodoassist: { plugin: { id: "source-ref-unknown" } },
     };
     const missingEntry = {
-      name: "@openclaw/source-ref-missing",
+      name: "@nodoassist/source-ref-missing",
       kind: "plugin",
-      install: { candidates: [{ package: "@openclaw/source-ref-missing" }] },
-      openclaw: { plugin: { id: "source-ref-missing" } },
+      install: { candidates: [{ package: "@nodoassist/source-ref-missing" }] },
+      nodoassist: { plugin: { id: "source-ref-missing" } },
     };
     const manifestInstallWithoutSourceRef = {
-      name: "@openclaw/source-ref-manifest-missing",
+      name: "@nodoassist/source-ref-manifest-missing",
       kind: "plugin",
       install: {
         candidates: [
-          { sourceRef: "public-clawhub", package: "@openclaw/source-ref-manifest-missing" },
+          { sourceRef: "public-clawhub", package: "@nodoassist/source-ref-manifest-missing" },
         ],
       },
-      openclaw: {
+      nodoassist: {
         plugin: { id: "source-ref-manifest-missing" },
-        install: { npmSpec: "@openclaw/source-ref-manifest-missing" },
+        install: { npmSpec: "@nodoassist/source-ref-manifest-missing" },
       },
     };
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 10,
       entries: [knownEntry, unknownEntry, missingEntry, manifestInstallWithoutSourceRef],
@@ -877,7 +879,7 @@ describe("official external plugin catalog", () => {
         missingEntry,
         manifestInstallWithoutSourceRef,
       ]).map((entry) => entry.name),
-    ).toEqual(["@openclaw/source-ref-known", "@openclaw/source-ref-manifest-missing"]);
+    ).toEqual(["@nodoassist/source-ref-known", "@nodoassist/source-ref-manifest-missing"]);
 
     const result = await loadHostedOfficialExternalPluginCatalogEntries({
       fetchImpl: vi.fn(async () => new Response(body, { status: 200 })),
@@ -886,8 +888,8 @@ describe("official external plugin catalog", () => {
 
     expect(result.source).toBe("hosted");
     expect(result.entries.map((entry) => entry.name)).toEqual([
-      "@openclaw/source-ref-known",
-      "@openclaw/source-ref-manifest-missing",
+      "@nodoassist/source-ref-known",
+      "@nodoassist/source-ref-manifest-missing",
     ]);
   });
 
@@ -938,14 +940,14 @@ describe("official external plugin catalog", () => {
     const writeSpy = vi.spyOn(snapshotStore, "write");
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 3,
       entries: [
         {
-          name: "@openclaw/snapshot-write-proof",
+          name: "@nodoassist/snapshot-write-proof",
           kind: "plugin",
-          openclaw: { plugin: { id: "snapshot-write-proof" } },
+          nodoassist: { plugin: { id: "snapshot-write-proof" } },
         },
       ],
     });
@@ -978,14 +980,14 @@ describe("official external plugin catalog", () => {
   it("fails explicit refreshes when required snapshot persistence fails", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 4,
       entries: [
         {
-          name: "@openclaw/snapshot-write-fail-proof",
+          name: "@nodoassist/snapshot-write-fail-proof",
           kind: "plugin",
-          openclaw: { plugin: { id: "snapshot-write-fail-proof" } },
+          nodoassist: { plugin: { id: "snapshot-write-fail-proof" } },
         },
       ],
     });
@@ -1011,14 +1013,14 @@ describe("official external plugin catalog", () => {
     const snapshotStore = createInMemoryHostedOfficialExternalPluginCatalogSnapshotStore();
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 5,
       entries: [
         {
-          name: "@openclaw/offline-snapshot-proof",
+          name: "@nodoassist/offline-snapshot-proof",
           kind: "plugin",
-          openclaw: { plugin: { id: "offline-snapshot-proof" } },
+          nodoassist: { plugin: { id: "offline-snapshot-proof" } },
         },
       ],
     });
@@ -1046,26 +1048,28 @@ describe("official external plugin catalog", () => {
 
     expect(offlineFetch).not.toHaveBeenCalled();
     expect(result.source).toBe("hosted-snapshot");
-    expect(result.entries.map((entry) => entry.name)).toEqual(["@openclaw/offline-snapshot-proof"]);
+    expect(result.entries.map((entry) => entry.name)).toEqual([
+      "@nodoassist/offline-snapshot-proof",
+    ]);
     if (result.source === "hosted-snapshot") {
       expect(result.error).toBe("hosted catalog feed offline mode");
       expect(result.metadata.checksum).toBe(seeded.metadata.checksum);
     }
   });
 
-  it("persists hosted feed snapshots in OpenClaw state for HTTP 304 reuse", async () => {
-    const stateDir = mkdtempSync(path.join(os.tmpdir(), "openclaw-hosted-catalog-"));
+  it("persists hosted feed snapshots in NodoAssist state for HTTP 304 reuse", async () => {
+    const stateDir = mkdtempSync(path.join(os.tmpdir(), "nodoassist-hosted-catalog-"));
     try {
       const body = JSON.stringify({
         schemaVersion: 1,
-        id: "openclaw-official-external-plugins",
+        id: "nodoassist-official-external-plugins",
         generatedAt: "2026-06-22T00:00:00.000Z",
         sequence: 7,
         entries: [
           {
-            name: "@openclaw/sqlite-snapshot-proof",
+            name: "@nodoassist/sqlite-snapshot-proof",
             kind: "plugin",
-            openclaw: { plugin: { id: "sqlite-snapshot-proof" } },
+            nodoassist: { plugin: { id: "sqlite-snapshot-proof" } },
           },
         ],
       });
@@ -1087,7 +1091,7 @@ describe("official external plugin catalog", () => {
       if (seeded.source !== "hosted") {
         throw new Error("expected seeded hosted feed");
       }
-      closeOpenClawStateDatabaseForTest();
+      closeNodoAssistStateDatabaseForTest();
 
       const result = await loadHostedOfficialExternalPluginCatalogEntries({
         stateDir,
@@ -1096,20 +1100,20 @@ describe("official external plugin catalog", () => {
 
       expect(result.source).toBe("hosted-snapshot");
       expect(result.entries.map((entry) => entry.name)).toEqual([
-        "@openclaw/sqlite-snapshot-proof",
+        "@nodoassist/sqlite-snapshot-proof",
       ]);
       if (result.source === "hosted-snapshot") {
         expect(result.snapshot.savedAt).toBe("2026-06-22T02:03:04.000Z");
         expect(result.metadata.checksum).toBe(seeded.metadata.checksum);
       }
     } finally {
-      closeOpenClawStateDatabaseForTest();
+      closeNodoAssistStateDatabaseForTest();
       rmSync(stateDir, { recursive: true, force: true });
     }
   });
 
   it("reads and updates hosted catalog snapshots in the SQLite store", async () => {
-    const stateDir = mkdtempSync(path.join(os.tmpdir(), "openclaw-hosted-store-"));
+    const stateDir = mkdtempSync(path.join(os.tmpdir(), "nodoassist-hosted-store-"));
     try {
       const store = createSqliteHostedOfficialExternalPluginCatalogSnapshotStore({ stateDir });
       const url = "https://clawhub.ai/v1/feeds/plugins";
@@ -1150,7 +1154,7 @@ describe("official external plugin catalog", () => {
         savedAt: "2026-06-22T03:04:05.000Z",
       });
     } finally {
-      closeOpenClawStateDatabaseForTest();
+      closeNodoAssistStateDatabaseForTest();
       rmSync(stateDir, { recursive: true, force: true });
     }
   });
@@ -1158,14 +1162,14 @@ describe("official external plugin catalog", () => {
   it("applies custom source-ref validation to exception snapshot fallback", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 12,
       entries: [
         {
           name: "@acme/snapshot-missing-source-ref",
           kind: "plugin",
-          openclaw: {
+          nodoassist: {
             plugin: { id: "snapshot-missing-source-ref" },
             install: { npmSpec: "@acme/snapshot-missing-source-ref" },
           },
@@ -1173,7 +1177,7 @@ describe("official external plugin catalog", () => {
         {
           name: "@acme/snapshot-known-source-ref",
           kind: "plugin",
-          openclaw: {
+          nodoassist: {
             plugin: { id: "snapshot-known-source-ref" },
             install: { sourceRef: "acme-npm", npmSpec: "@acme/snapshot-known-source-ref" },
           },
@@ -1211,14 +1215,14 @@ describe("official external plugin catalog", () => {
   it("uses the last known good snapshot when the hosted feed returns HTTP 304", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 4,
       entries: [
         {
-          name: "@openclaw/snapshot-proof",
+          name: "@nodoassist/snapshot-proof",
           kind: "plugin",
-          openclaw: { plugin: { id: "snapshot-proof" } },
+          nodoassist: { plugin: { id: "snapshot-proof" } },
         },
       ],
     });
@@ -1256,7 +1260,7 @@ describe("official external plugin catalog", () => {
     });
 
     expect(result.source).toBe("hosted-snapshot");
-    expect(result.entries.map((entry) => entry.name)).toEqual(["@openclaw/snapshot-proof"]);
+    expect(result.entries.map((entry) => entry.name)).toEqual(["@nodoassist/snapshot-proof"]);
     if (result.source === "hosted-snapshot") {
       expect(result.error).toContain("HTTP 304");
       expect(result.snapshot.savedAt).toBe("2026-06-22T01:02:03.000Z");
@@ -1267,14 +1271,14 @@ describe("official external plugin catalog", () => {
   it("does not use a stale snapshot when HTTP 304 validators do not match", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 4,
       entries: [
         {
-          name: "@openclaw/stale-snapshot-proof",
+          name: "@nodoassist/stale-snapshot-proof",
           kind: "plugin",
-          openclaw: { plugin: { id: "stale-snapshot-proof" } },
+          nodoassist: { plugin: { id: "stale-snapshot-proof" } },
         },
       ],
     });
@@ -1321,14 +1325,14 @@ describe("official external plugin catalog", () => {
   it("uses a valid snapshot before bundled fallback when hosted validation fails", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 5,
       entries: [
         {
-          name: "@openclaw/snapshot-validation-proof",
+          name: "@nodoassist/snapshot-validation-proof",
           kind: "plugin",
-          openclaw: { plugin: { id: "snapshot-validation-proof" } },
+          nodoassist: { plugin: { id: "snapshot-validation-proof" } },
         },
       ],
     });
@@ -1350,7 +1354,7 @@ describe("official external plugin catalog", () => {
 
     expect(result.source).toBe("hosted-snapshot");
     expect(result.entries.map((entry) => entry.name)).toEqual([
-      "@openclaw/snapshot-validation-proof",
+      "@nodoassist/snapshot-validation-proof",
     ]);
     if (result.source === "hosted-snapshot") {
       expect(result.error).toContain("JSON");
@@ -1360,14 +1364,14 @@ describe("official external plugin catalog", () => {
   it("does not use a stale snapshot when hosted validation fails with unmatched validators", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 5,
       entries: [
         {
-          name: "@openclaw/stale-validation-snapshot-proof",
+          name: "@nodoassist/stale-validation-snapshot-proof",
           kind: "plugin",
-          openclaw: { plugin: { id: "stale-validation-snapshot-proof" } },
+          nodoassist: { plugin: { id: "stale-validation-snapshot-proof" } },
         },
       ],
     });
@@ -1402,7 +1406,7 @@ describe("official external plugin catalog", () => {
       {
         body: JSON.stringify({
           schemaVersion: 1,
-          id: "openclaw-official-external-plugins",
+          id: "nodoassist-official-external-plugins",
           generatedAt: "2026-06-22T00:00:00.000Z",
           sequence: 1,
           entries: [],
@@ -1431,14 +1435,14 @@ describe("official external plugin catalog", () => {
   it("does not use a snapshot that violates the expected checksum", async () => {
     const body = JSON.stringify({
       schemaVersion: 1,
-      id: "openclaw-official-external-plugins",
+      id: "nodoassist-official-external-plugins",
       generatedAt: "2026-06-22T00:00:00.000Z",
       sequence: 6,
       entries: [
         {
-          name: "@openclaw/snapshot-pin-proof",
+          name: "@nodoassist/snapshot-pin-proof",
           kind: "plugin",
-          openclaw: { plugin: { id: "snapshot-pin-proof" } },
+          nodoassist: { plugin: { id: "snapshot-pin-proof" } },
         },
       ],
     });
@@ -1475,7 +1479,7 @@ describe("official external plugin catalog", () => {
           new Response(
             JSON.stringify({
               schemaVersion: 1,
-              id: "openclaw-official-external-plugins",
+              id: "nodoassist-official-external-plugins",
               generatedAt: "2026-06-22T00:00:00.000Z",
               sequence: 1,
               entries: [],
@@ -1507,18 +1511,18 @@ describe("official external plugin catalog", () => {
         name: "@legacy/plain-package",
         kind: "plugin",
         state: "available",
-        publisher: { id: "openclaw", trust: "official" },
+        publisher: { id: "nodoassist", trust: "official" },
         install: {
           candidates: [
             {
               sourceRef: "public-clawhub",
-              package: "@openclaw/candidate-package",
+              package: "@nodoassist/candidate-package",
               version: "1.2.3",
               integrity: "sha256:b355dda04403becaab8bbab069fd1e7b0578262e7459e598cc5b19615b5bdab9",
             },
           ],
         },
-        openclaw: {
+        nodoassist: {
           plugin: { id: "candidate-package" },
           install: {
             npmSpec: "@legacy/plain-package",
@@ -1529,7 +1533,7 @@ describe("official external plugin catalog", () => {
         },
       }),
     ).toEqual({
-      clawhubSpec: "clawhub:@openclaw/candidate-package@1.2.3",
+      clawhubSpec: "clawhub:@nodoassist/candidate-package@1.2.3",
       defaultChoice: "clawhub",
       expectedIntegrity: "sha256-s1XdoEQDvsqri7qwaf0eewV4Ji50WeWYzFsZYVtb2rk=",
       minHostVersion: ">=2026.6.1",
@@ -1625,43 +1629,43 @@ describe("official external plugin catalog", () => {
 
   it("lists the externalized provider and capability plugins with install metadata", () => {
     const providers = [
-      ["arcee", "@openclaw/arcee-provider"],
-      ["cerebras", "@openclaw/cerebras-provider"],
-      ["chutes", "@openclaw/chutes-provider"],
-      ["cloudflare-ai-gateway", "@openclaw/cloudflare-ai-gateway-provider"],
-      ["deepinfra", "@openclaw/deepinfra-provider"],
-      ["deepseek", "@openclaw/deepseek-provider"],
-      ["groq", "@openclaw/groq-provider"],
-      ["longcat", "@openclaw/longcat-provider"],
-      ["kilocode", "@openclaw/kilocode-provider"],
-      ["kimi", "@openclaw/kimi-provider"],
-      ["qianfan", "@openclaw/qianfan-provider"],
-      ["qwen", "@openclaw/qwen-provider"],
+      ["arcee", "@nodoassist/arcee-provider"],
+      ["cerebras", "@nodoassist/cerebras-provider"],
+      ["chutes", "@nodoassist/chutes-provider"],
+      ["cloudflare-ai-gateway", "@nodoassist/cloudflare-ai-gateway-provider"],
+      ["deepinfra", "@nodoassist/deepinfra-provider"],
+      ["deepseek", "@nodoassist/deepseek-provider"],
+      ["groq", "@nodoassist/groq-provider"],
+      ["longcat", "@nodoassist/longcat-provider"],
+      ["kilocode", "@nodoassist/kilocode-provider"],
+      ["kimi", "@nodoassist/kimi-provider"],
+      ["qianfan", "@nodoassist/qianfan-provider"],
+      ["qwen", "@nodoassist/qwen-provider"],
     ] as const;
     const plugins = [
-      ["exa", "@openclaw/exa-plugin"],
-      ["firecrawl", "@openclaw/firecrawl-plugin"],
-      ["gradium", "@openclaw/gradium-speech"],
-      ["inworld", "@openclaw/inworld-speech"],
-      ["parallel", "@openclaw/parallel-plugin"],
-      ["perplexity", "@openclaw/perplexity-plugin"],
+      ["exa", "@nodoassist/exa-plugin"],
+      ["firecrawl", "@nodoassist/firecrawl-plugin"],
+      ["gradium", "@nodoassist/gradium-speech"],
+      ["inworld", "@nodoassist/inworld-speech"],
+      ["parallel", "@nodoassist/parallel-plugin"],
+      ["perplexity", "@nodoassist/perplexity-plugin"],
     ] as const;
     const newlyExternalized = [
-      ["clickclack", "@openclaw/clickclack"],
-      ["fireworks", "@openclaw/fireworks-provider"],
-      ["irc", "@openclaw/irc"],
-      ["mattermost", "@openclaw/mattermost"],
-      ["moonshot", "@openclaw/moonshot-provider"],
-      ["searxng", "@openclaw/searxng-plugin"],
-      ["signal", "@openclaw/signal"],
-      ["sms", "@openclaw/sms"],
-      ["tavily", "@openclaw/tavily-plugin"],
-      ["tencent", "@openclaw/tencent-provider"],
-      ["venice", "@openclaw/venice-provider"],
-      ["vercel-ai-gateway", "@openclaw/vercel-ai-gateway-provider"],
-      ["zai", "@openclaw/zai-provider"],
+      ["clickclack", "@nodoassist/clickclack"],
+      ["fireworks", "@nodoassist/fireworks-provider"],
+      ["irc", "@nodoassist/irc"],
+      ["mattermost", "@nodoassist/mattermost"],
+      ["moonshot", "@nodoassist/moonshot-provider"],
+      ["searxng", "@nodoassist/searxng-plugin"],
+      ["signal", "@nodoassist/signal"],
+      ["sms", "@nodoassist/sms"],
+      ["tavily", "@nodoassist/tavily-plugin"],
+      ["tencent", "@nodoassist/tencent-provider"],
+      ["venice", "@nodoassist/venice-provider"],
+      ["vercel-ai-gateway", "@nodoassist/vercel-ai-gateway-provider"],
+      ["zai", "@nodoassist/zai-provider"],
     ] as const;
-    const currentExternalized = [["featherless", "@openclaw/featherless-provider"]] as const;
+    const currentExternalized = [["featherless", "@nodoassist/featherless-provider"]] as const;
 
     for (const [id, npmSpec] of [...providers, ...plugins]) {
       expect(resolveOfficialExternalPluginInstall(expectCatalogEntry(id))).toEqual({
@@ -1691,8 +1695,8 @@ describe("official external plugin catalog", () => {
 
   it("advertises StepFun with its ClawHub package and plugin API floor", () => {
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("stepfun"))).toEqual({
-      clawhubSpec: "clawhub:@openclaw/stepfun-provider",
-      npmSpec: "@openclaw/stepfun-provider",
+      clawhubSpec: "clawhub:@nodoassist/stepfun-provider",
+      npmSpec: "@nodoassist/stepfun-provider",
       defaultChoice: "npm",
       minHostVersion: ">=2026.6.9",
     });
@@ -1700,40 +1704,40 @@ describe("official external plugin catalog", () => {
 
   it("resolves third-party channel lookup aliases to published plugin ids", () => {
     const wecomByChannel = expectCatalogEntry("wecom");
-    const wecomByPlugin = expectCatalogEntry("wecom-openclaw-plugin");
+    const wecomByPlugin = expectCatalogEntry("wecom-nodoassist-plugin");
     const yuanbaoByChannel = expectCatalogEntry("yuanbao");
 
-    expect(resolveOfficialExternalPluginId(wecomByChannel)).toBe("wecom-openclaw-plugin");
-    expect(resolveOfficialExternalPluginId(wecomByPlugin)).toBe("wecom-openclaw-plugin");
+    expect(resolveOfficialExternalPluginId(wecomByChannel)).toBe("wecom-nodoassist-plugin");
+    expect(resolveOfficialExternalPluginId(wecomByPlugin)).toBe("wecom-nodoassist-plugin");
     expect(resolveOfficialExternalPluginInstall(wecomByChannel)?.npmSpec).toBe(
-      "@wecom/wecom-openclaw-plugin@2026.5.7",
+      "@wecom/wecom-nodoassist-plugin@2026.5.7",
     );
-    expect(resolveOfficialExternalPluginId(yuanbaoByChannel)).toBe("openclaw-plugin-yuanbao");
+    expect(resolveOfficialExternalPluginId(yuanbaoByChannel)).toBe("nodoassist-plugin-yuanbao");
     expect(resolveOfficialExternalPluginInstall(yuanbaoByChannel)?.npmSpec).toBe(
-      "openclaw-plugin-yuanbao@2.15.0",
+      "nodoassist-plugin-yuanbao@2.15.0",
     );
   });
 
   it("keeps official launch package specs on the production package names", () => {
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("acpx"))?.npmSpec).toBe(
-      "@openclaw/acpx",
+      "@nodoassist/acpx",
     );
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("googlechat"))?.npmSpec).toBe(
-      "@openclaw/googlechat",
+      "@nodoassist/googlechat",
     );
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("line"))?.npmSpec).toBe(
-      "@openclaw/line",
+      "@nodoassist/line",
     );
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("diffs-language-pack"))).toEqual(
       {
-        npmSpec: "@openclaw/diffs-language-pack",
-        clawhubSpec: "clawhub:@openclaw/diffs-language-pack",
+        npmSpec: "@nodoassist/diffs-language-pack",
+        clawhubSpec: "clawhub:@nodoassist/diffs-language-pack",
         defaultChoice: "npm",
         minHostVersion: ">=2026.5.27",
       },
     );
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("llama-cpp"))?.npmSpec).toBe(
-      "@openclaw/llama-cpp-provider",
+      "@nodoassist/llama-cpp-provider",
     );
   });
 
@@ -1743,8 +1747,8 @@ describe("official external plugin catalog", () => {
     expect(resolveOfficialExternalPluginId(gmi)).toBe("gmi");
     expect(getOfficialExternalPluginCatalogEntry("gmi-cloud")).toBe(gmi);
     expect(resolveOfficialExternalPluginInstall(gmi)).toEqual({
-      clawhubSpec: "clawhub:@openclaw/gmi-provider",
-      npmSpec: "@openclaw/gmi-provider",
+      clawhubSpec: "clawhub:@nodoassist/gmi-provider",
+      npmSpec: "@nodoassist/gmi-provider",
       defaultChoice: "npm",
       minHostVersion: ">=2026.6.8",
     });
@@ -1755,8 +1759,8 @@ describe("official external plugin catalog", () => {
 
     expect(resolveOfficialExternalPluginId(cohere)).toBe("cohere");
     expect(resolveOfficialExternalPluginInstall(cohere)).toEqual({
-      clawhubSpec: "clawhub:@openclaw/cohere-provider",
-      npmSpec: "@openclaw/cohere-provider",
+      clawhubSpec: "clawhub:@nodoassist/cohere-provider",
+      npmSpec: "@nodoassist/cohere-provider",
       defaultChoice: "npm",
       minHostVersion: ">=2026.6.8",
     });
@@ -1768,8 +1772,8 @@ describe("official external plugin catalog", () => {
     expect(resolveOfficialExternalPluginId(longcat)).toBe("longcat");
     expect(getOfficialExternalPluginCatalogEntry("meituan-longcat")).toBe(longcat);
     expect(resolveOfficialExternalPluginInstall(longcat)).toEqual({
-      clawhubSpec: "clawhub:@openclaw/longcat-provider",
-      npmSpec: "@openclaw/longcat-provider",
+      clawhubSpec: "clawhub:@nodoassist/longcat-provider",
+      npmSpec: "@nodoassist/longcat-provider",
       defaultChoice: "npm",
       minHostVersion: ">=2026.6.8",
     });
@@ -1881,10 +1885,10 @@ describe("official external plugin catalog", () => {
 
   it("keeps Tencent auth choices available through the cold-install auth catalog", () => {
     const tencent = expectCatalogEntry("tencent");
-    const tokenHub = tencent.openclaw?.providers?.find(
+    const tokenHub = tencent.nodoassist?.providers?.find(
       (provider) => provider.id === "tencent-tokenhub",
     );
-    const tokenPlan = tencent.openclaw?.providers?.find(
+    const tokenPlan = tencent.nodoassist?.providers?.find(
       (provider) => provider.id === "tencent-tokenplan",
     );
 
@@ -1906,7 +1910,7 @@ describe("official external plugin catalog", () => {
 
   it("keeps Groq available through the cold-install auth catalog", () => {
     const groq = expectCatalogEntry("groq");
-    const authChoice = groq.openclaw?.providers?.find((provider) => provider.id === "groq")
+    const authChoice = groq.nodoassist?.providers?.find((provider) => provider.id === "groq")
       ?.authChoices?.[0];
 
     expect(authChoice).toMatchObject({
@@ -1919,23 +1923,23 @@ describe("official external plugin catalog", () => {
 
   it("allows invalid-config recovery for externalized stock plugins", () => {
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("brave"))).toMatchObject({
-      npmSpec: "@openclaw/brave-plugin",
+      npmSpec: "@nodoassist/brave-plugin",
       allowInvalidConfigRecovery: true,
     });
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("slack"))).toMatchObject({
-      npmSpec: "@openclaw/slack",
+      npmSpec: "@nodoassist/slack",
       allowInvalidConfigRecovery: true,
     });
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("discord"))).toMatchObject({
-      npmSpec: "@openclaw/discord",
+      npmSpec: "@nodoassist/discord",
       allowInvalidConfigRecovery: true,
     });
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("mattermost"))).toMatchObject({
-      npmSpec: "@openclaw/mattermost",
+      npmSpec: "@nodoassist/mattermost",
       allowInvalidConfigRecovery: true,
     });
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("tavily"))).toMatchObject({
-      npmSpec: "@openclaw/tavily-plugin",
+      npmSpec: "@nodoassist/tavily-plugin",
       allowInvalidConfigRecovery: true,
     });
   });
@@ -1952,8 +1956,8 @@ describe("official external plugin catalog", () => {
     expect(ids.has("matrix")).toBe(true);
     expect(ids.has("mattermost")).toBe(true);
     expect(resolveOfficialExternalPluginInstall(expectCatalogEntry("matrix"))).toEqual({
-      clawhubSpec: "clawhub:@openclaw/matrix",
-      npmSpec: "@openclaw/matrix",
+      clawhubSpec: "clawhub:@nodoassist/matrix",
+      npmSpec: "@nodoassist/matrix",
       defaultChoice: "clawhub",
       minHostVersion: ">=2026.4.10",
       allowInvalidConfigRecovery: true,

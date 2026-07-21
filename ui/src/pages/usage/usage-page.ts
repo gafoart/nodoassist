@@ -666,4 +666,4 @@ class UsagePage extends LitElement {
   }
 }
 
-customElements.define("openclaw-usage-page", UsagePage);
+customElements.define("nodoassist-usage-page", UsagePage);

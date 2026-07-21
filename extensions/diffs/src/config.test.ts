@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   validateJsonSchemaValue,
   type JsonSchemaObject,
-} from "openclaw/plugin-sdk/json-schema-runtime";
+} from "nodoassist/plugin-sdk/json-schema-runtime";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import {
   DEFAULT_DIFFS_PLUGIN_SECURITY,
@@ -54,7 +54,7 @@ beforeAll(async () => {
 
 function compileManifestConfigSchema() {
   const manifest = JSON.parse(
-    fs.readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"),
+    fs.readFileSync(new URL("../nodoassist.plugin.json", import.meta.url), "utf8"),
   ) as { configSchema: JsonSchemaObject };
   return (value: unknown) =>
     validateJsonSchemaValue({
@@ -401,7 +401,7 @@ describe("diffs plugin schema surfaces", () => {
 
   it("keeps the runtime json schema in sync with the manifest config schema", () => {
     const manifest = JSON.parse(
-      fs.readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"),
+      fs.readFileSync(new URL("../nodoassist.plugin.json", import.meta.url), "utf8"),
     ) as { configSchema?: unknown };
 
     expect(diffsPluginConfigSchema.jsonSchema).toEqual(manifest.configSchema);
@@ -545,7 +545,7 @@ describe("viewer assets", () => {
     const runtime = await getServedViewerAsset(VIEWER_RUNTIME_PATH);
 
     expect(runtime?.contentType).toBe("text/javascript; charset=utf-8");
-    expect(String(runtime?.body)).toContain("openclawDiffsReady");
+    expect(String(runtime?.body)).toContain("nodoassistDiffsReady");
     expect(String(runtime?.body)).toContain('style.width="24px"');
     expect(String(runtime?.body)).toContain('style.gap="6px"');
   });
@@ -570,14 +570,14 @@ describe("resolveDiffsLanguagePackAvailability", () => {
   it.each(["assets", "dist/assets"])(
     "requires both the sibling language-pack manifest and generated runtime asset in %s",
     (assetDir) => {
-      const root = fs.mkdtempSync(join(os.tmpdir(), "openclaw-diffs-language-pack-"));
+      const root = fs.mkdtempSync(join(os.tmpdir(), "nodoassist-diffs-language-pack-"));
       try {
         const diffsRoot = join(root, "diffs");
         const languagePackRoot = join(root, "diffs-language-pack");
         fs.mkdirSync(diffsRoot, { recursive: true });
         fs.mkdirSync(languagePackRoot, { recursive: true });
         fs.writeFileSync(
-          join(languagePackRoot, "openclaw.plugin.json"),
+          join(languagePackRoot, "nodoassist.plugin.json"),
           '{"id":"diffs-language-pack"}\n',
         );
         const api = {

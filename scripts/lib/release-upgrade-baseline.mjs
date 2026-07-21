@@ -7,11 +7,11 @@ function parseVersion(version) {
   return parseReleaseVersion(String(version ?? "").trim()) ?? undefined;
 }
 
-export function compareOpenClawVersions(leftVersion, rightVersion) {
+export function compareNodoAssistVersions(leftVersion, rightVersion) {
   const left = parseVersion(leftVersion);
   const right = parseVersion(rightVersion);
   if (!left || !right) {
-    throw new Error(`cannot compare OpenClaw versions: ${leftVersion} ${rightVersion}`);
+    throw new Error(`cannot compare NodoAssist versions: ${leftVersion} ${rightVersion}`);
   }
   for (const key of ["year", "month", "patch"]) {
     const delta = left[key] - right[key];
@@ -36,29 +36,31 @@ export function compareOpenClawVersions(leftVersion, rightVersion) {
 function normalizePublishedVersions(publishedVersions) {
   return [...new Set(publishedVersions.map((version) => String(version).trim()).filter(Boolean))]
     .filter((version) => parseVersion(version))
-    .toSorted((left, right) => compareOpenClawVersions(right, left));
+    .toSorted((left, right) => compareNodoAssistVersions(right, left));
 }
 
 export function resolveDefaultReleaseUpgradeBaseline(candidateVersion, publishedVersions) {
   const candidate = parseVersion(candidateVersion);
   if (!candidate) {
-    throw new Error(`invalid candidate OpenClaw version: ${candidateVersion}`);
+    throw new Error(`invalid candidate NodoAssist version: ${candidateVersion}`);
   }
 
   const versions = normalizePublishedVersions(publishedVersions);
-  const older = versions.find((version) => compareOpenClawVersions(version, candidate.version) < 0);
+  const older = versions.find(
+    (version) => compareNodoAssistVersions(version, candidate.version) < 0,
+  );
   if (older) {
-    return `openclaw@${older}`;
+    return `nodoassist@${older}`;
   }
 
   const same = versions.find(
-    (version) => compareOpenClawVersions(version, candidate.version) === 0,
+    (version) => compareNodoAssistVersions(version, candidate.version) === 0,
   );
   if (same) {
-    return `openclaw@${same}`;
+    return `nodoassist@${same}`;
   }
 
-  throw new Error(`no published OpenClaw baseline is <= candidate ${candidate.version}`);
+  throw new Error(`no published NodoAssist baseline is <= candidate ${candidate.version}`);
 }
 
 export function parseArgs(argv) {
@@ -88,13 +90,13 @@ function readPublishedVersions(args) {
     }
     return parsed;
   }
-  const raw = execFileSync("npm", ["view", "openclaw", "versions", "--json", "--silent"], {
+  const raw = execFileSync("npm", ["view", "nodoassist", "versions", "--json", "--silent"], {
     encoding: "utf8",
     stdio: ["ignore", "pipe", "inherit"],
   });
   const parsed = JSON.parse(raw);
   if (!Array.isArray(parsed)) {
-    throw new Error("npm returned a non-array openclaw versions payload");
+    throw new Error("npm returned a non-array nodoassist versions payload");
   }
   return parsed;
 }

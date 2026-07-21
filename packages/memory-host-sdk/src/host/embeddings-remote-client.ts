@@ -1,6 +1,6 @@
 // Memory Host SDK module implements embeddings remote client behavior.
 import type { EmbeddingProviderOptions } from "./embeddings.types.js";
-import { requireApiKey, resolveApiKeyForProvider } from "./openclaw-runtime-auth.js";
+import { requireApiKey, resolveApiKeyForProvider } from "./nodoassist-runtime-auth.js";
 import { buildRemoteBaseUrlPolicy } from "./remote-http.js";
 import { resolveMemorySecretInputString } from "./secret-input.js";
 import type { SsrFPolicy } from "./ssrf-policy.js";
@@ -12,12 +12,13 @@ import { normalizeOptionalString } from "./string-utils.js";
 export type RemoteEmbeddingProviderId = string;
 
 /** Attribution headers for native OpenAI embedding calls. */
-function resolveOpenClawAttributionHeaders(): Record<string, string> {
-  const version = typeof process !== "undefined" ? process.env.OPENCLAW_VERSION?.trim() : undefined;
+function resolveNodoAssistAttributionHeaders(): Record<string, string> {
+  const version =
+    typeof process !== "undefined" ? process.env.NODOASSIST_VERSION?.trim() : undefined;
   return {
-    originator: "openclaw",
+    originator: "nodoassist",
     ...(version ? { version } : {}),
-    "User-Agent": version ? `openclaw/${version}` : "openclaw",
+    "User-Agent": version ? `nodoassist/${version}` : "nodoassist",
   };
 }
 
@@ -65,7 +66,7 @@ export async function resolveRemoteEmbeddingBearerClient(params: {
     ...headerOverrides,
   };
   if (isNativeOpenAIEmbeddingRoute(params.provider, baseUrl)) {
-    Object.assign(headers, resolveOpenClawAttributionHeaders());
+    Object.assign(headers, resolveNodoAssistAttributionHeaders());
   }
   return { baseUrl, headers, ssrfPolicy: buildRemoteBaseUrlPolicy(baseUrl) };
 }

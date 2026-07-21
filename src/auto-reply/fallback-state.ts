@@ -1,8 +1,8 @@
 /** Formats model-fallback notice state for UI/status messages and persisted transition tracking. */
-import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
+import { normalizeOptionalString } from "@nodoassist/normalization-core/string-coerce";
 import { formatRawAssistantErrorForUi } from "../agents/embedded-agent-helpers.js";
 import { areRuntimeModelRefsEquivalent } from "../agents/model-runtime-aliases.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type { FallbackNoticeState } from "../status/fallback-notice-state.js";
 import { formatProviderModelRef } from "./model-runtime.js";
 import type { RuntimeFallbackAttempt } from "./reply/agent-runner-execution.js";
@@ -99,7 +99,7 @@ export function buildFallbackNotice(params: {
   activeProvider: string;
   activeModel: string;
   attempts: RuntimeFallbackAttempt[];
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
 }): string | null {
   const selected = formatProviderModelRef(params.selectedProvider, params.selectedModel);
   const active = formatProviderModelRef(params.activeProvider, params.activeModel);
@@ -153,7 +153,7 @@ export function resolveFallbackTransition(params: {
   activeModel: string;
   attempts: RuntimeFallbackAttempt[];
   state?: FallbackNoticeState;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
 }): ResolvedFallbackTransition {
   const selectedModelRef = formatProviderModelRef(params.selectedProvider, params.selectedModel);
   const activeModelRef = formatProviderModelRef(params.activeProvider, params.activeModel);

@@ -1,17 +1,17 @@
-# @openclaw/zalo
+# @nodoassist/zalo
 
-Zalo channel plugin for OpenClaw (Bot API).
+Zalo channel plugin for NodoAssist (Bot API).
 
 ## Install (local checkout)
 
 ```bash
-openclaw plugins install ./path/to/local/zalo-plugin
+nodoassist plugins install ./path/to/local/zalo-plugin
 ```
 
 ## Install (npm)
 
 ```bash
-openclaw plugins install @openclaw/zalo
+nodoassist plugins install @nodoassist/zalo
 ```
 
 Onboarding: select Zalo and confirm the install prompt to fetch the plugin automatically.

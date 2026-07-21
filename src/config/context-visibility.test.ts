@@ -1,6 +1,6 @@
 // Covers config-controlled context visibility decisions.
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "./config.js";
+import type { NodoAssistConfig } from "./config.js";
 import {
   resolveChannelContextVisibilityMode,
   resolveDefaultContextVisibility,
@@ -46,7 +46,7 @@ describe("resolveChannelContextVisibilityMode", () => {
           },
         },
       },
-    } satisfies OpenClawConfig;
+    } satisfies NodoAssistConfig;
     expect(
       resolveChannelContextVisibilityMode({
         cfg,
@@ -67,7 +67,7 @@ describe("resolveChannelContextVisibilityMode", () => {
           channels: {
             defaults: { contextVisibility: "allowlist_quote" },
           },
-        } satisfies OpenClawConfig,
+        } satisfies NodoAssistConfig,
         channel: "signal",
       }),
     ).toBe("allowlist_quote");

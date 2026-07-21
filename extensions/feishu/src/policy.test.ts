@@ -1,5 +1,5 @@
 // Feishu tests cover policy plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/core";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/core";
 import { describe, expect, it } from "vitest";
 import { FeishuConfigSchema } from "./config-schema.js";
 import {
@@ -10,12 +10,12 @@ import {
 } from "./policy.js";
 import type { FeishuConfig } from "./types.js";
 
-function createCfg(feishu: Record<string, unknown>): OpenClawConfig {
+function createCfg(feishu: Record<string, unknown>): NodoAssistConfig {
   return {
     channels: {
       feishu,
     },
-  } as OpenClawConfig;
+  } as NodoAssistConfig;
 }
 
 function createFeishuConfig(overrides: Partial<FeishuConfig>): FeishuConfig {

@@ -6,9 +6,9 @@ import type { ChildProcess } from "node:child_process";
 import fs from "node:fs";
 import { createRequire } from "node:module";
 import os from "node:os";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import type { PluginLogger } from "openclaw/plugin-sdk/plugin-entry";
-import { isTruthyEnvValue } from "openclaw/plugin-sdk/runtime-env";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
+import type { PluginLogger } from "nodoassist/plugin-sdk/plugin-entry";
+import { isTruthyEnvValue } from "nodoassist/plugin-sdk/runtime-env";
 import { classifyCiaoProcessError, type CiaoProcessErrorClassification } from "./ciao.js";
 import { formatBonjourError } from "./errors.js";
 
@@ -22,7 +22,7 @@ type GatewayBonjourAdvertiser = {
   stop: () => Promise<void>;
 };
 
-/** Input data used to publish OpenClaw gateway Bonjour records. */
+/** Input data used to publish NodoAssist gateway Bonjour records. */
 type GatewayBonjourAdvertiseOpts = {
   instanceName?: string;
   gatewayPort: number;
@@ -120,7 +120,7 @@ let restoreCiaoExecHidePatchOnce: (() => void) | null = null;
 const loadCiaoModule = createLazyRuntimeModule(() => import(CIAO_MODULE_ID) as Promise<CiaoModule>);
 
 function readBonjourDisableOverride(): boolean | null {
-  const raw = process.env.OPENCLAW_DISABLE_BONJOUR;
+  const raw = process.env.NODOASSIST_DISABLE_BONJOUR;
   const normalized = raw?.trim().toLowerCase();
   if (!normalized) {
     return null;
@@ -206,7 +206,7 @@ function resolveSystemMdnsHostname(): string | null {
 const MAX_DNS_LABEL_BYTES = 63;
 const utf8Encoder = new TextEncoder();
 
-function truncateToDnsLabel(name: string, fallback = "OpenClaw"): string {
+function truncateToDnsLabel(name: string, fallback = "NodoAssist"): string {
   const encoded = utf8Encoder.encode(name);
   if (encoded.byteLength <= MAX_DNS_LABEL_BYTES) {
     return name;
@@ -224,12 +224,12 @@ function truncateToDnsLabel(name: string, fallback = "OpenClaw"): string {
 
 function safeServiceName(name: string) {
   const trimmed = name.trim();
-  return trimmed.length > 0 ? truncateToDnsLabel(trimmed) : "OpenClaw";
+  return trimmed.length > 0 ? truncateToDnsLabel(trimmed) : "NodoAssist";
 }
 
 function prettifyInstanceName(name: string) {
   const normalized = name.trim().replace(/\s+/g, " ");
-  return normalized.replace(/\s+\(OpenClaw\)\s*$/i, "").trim() || normalized;
+  return normalized.replace(/\s+\(NodoAssist\)\s*$/i, "").trim() || normalized;
 }
 
 function serviceSummary(label: string, svc: BonjourService): string {
@@ -430,18 +430,18 @@ export async function startGatewayBonjourAdvertiser(
     cleanupUncaughtException = deps.registerUncaughtExceptionHandler?.(handleCiaoProcessError);
 
     const hostnameRaw =
-      process.env.OPENCLAW_MDNS_HOSTNAME?.trim() || resolveSystemMdnsHostname() || "openclaw";
+      process.env.NODOASSIST_MDNS_HOSTNAME?.trim() || resolveSystemMdnsHostname() || "nodoassist";
     const hostname = truncateToDnsLabel(
       hostnameRaw
         .replace(/\.local$/i, "")
         .split(".")[0]
-        .trim() || "openclaw",
-      "openclaw",
+        .trim() || "nodoassist",
+      "nodoassist",
     );
     const instanceName =
       typeof opts.instanceName === "string" && opts.instanceName.trim()
         ? opts.instanceName.trim()
-        : `${hostname} (OpenClaw)`;
+        : `${hostname} (NodoAssist)`;
     const displayName = prettifyInstanceName(instanceName);
 
     const txtBase: Record<string, string> = {
@@ -484,7 +484,7 @@ export async function startGatewayBonjourAdvertiser(
 
       const gateway = responder.createService({
         name: safeServiceName(instanceName),
-        type: "openclaw-gw",
+        type: "nodoassist-gw",
         protocol: Protocol.TCP,
         port: opts.gatewayPort,
         domain: "local",
@@ -656,7 +656,7 @@ export async function startGatewayBonjourAdvertiser(
                   RESTART_WINDOW_MS / 60_000,
                 )} minutes`;
           logger.warn(
-            `bonjour: disabling advertiser after ${detail} (${reason}); set discovery.mdns.mode="off" or OPENCLAW_DISABLE_BONJOUR=1 to disable mDNS discovery`,
+            `bonjour: disabling advertiser after ${detail} (${reason}); set discovery.mdns.mode="off" or NODOASSIST_DISABLE_BONJOUR=1 to disable mDNS discovery`,
           );
           const previous = cycle;
           cycle = null;

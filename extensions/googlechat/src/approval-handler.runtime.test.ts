@@ -1,8 +1,8 @@
 import type {
   ExecApprovalPendingView,
   ResolvedApprovalView,
-} from "openclaw/plugin-sdk/approval-handler-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "nodoassist/plugin-sdk/approval-handler-runtime";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ResolvedGoogleChatAccount } from "./accounts.js";
 import {
@@ -40,7 +40,7 @@ const account = {
   },
 } as ResolvedGoogleChatAccount;
 
-const cfg: OpenClawConfig = {
+const cfg: NodoAssistConfig = {
   channels: {
     googlechat: {
       serviceAccount: {
@@ -444,7 +444,7 @@ describe("googleChatApprovalNativeRuntime", () => {
       view,
     });
 
-    expect(JSON.stringify(pendingPayload.cardsV2)).toContain("openclaw.approval");
+    expect(JSON.stringify(pendingPayload.cardsV2)).toContain("nodoassist.approval");
     expect(JSON.stringify(pendingPayload.cardsV2)).not.toContain(
       "https://chat-app.example.test/googlechat",
     );

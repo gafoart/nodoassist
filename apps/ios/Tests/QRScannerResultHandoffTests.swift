@@ -1,6 +1,6 @@
-import OpenClawKit
+import NodoAssistKit
 import Testing
-@testable import OpenClaw
+@testable import NodoAssist
 
 @MainActor
 struct QRScannerResultHandoffTests {

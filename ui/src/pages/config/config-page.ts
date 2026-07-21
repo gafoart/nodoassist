@@ -927,4 +927,4 @@ export class ConfigPage extends LitElement {
   }
 }
 
-customElements.define("openclaw-config-page", ConfigPage);
+customElements.define("nodoassist-config-page", ConfigPage);

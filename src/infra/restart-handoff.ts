@@ -1,11 +1,11 @@
 // Persists short-lived gateway restart handoff metadata.
 import { randomUUID } from "node:crypto";
 import { createSubsystemLogger } from "../logging/subsystem.js";
-import type { DB as OpenClawStateKyselyDatabase } from "../state/openclaw-state-db.generated.js";
+import type { DB as NodoAssistStateKyselyDatabase } from "../state/nodoassist-state-db.generated.js";
 import {
-  openOpenClawStateDatabase,
-  runOpenClawStateWriteTransaction,
-} from "../state/openclaw-state-db.js";
+  openNodoAssistStateDatabase,
+  runNodoAssistStateWriteTransaction,
+} from "../state/nodoassist-state-db.js";
 import {
   executeSqliteQuerySync,
   executeSqliteQueryTakeFirstSync,
@@ -23,7 +23,7 @@ const MAX_PROCESS_INSTANCE_ID_LENGTH = 120;
 const MAX_REASON_LENGTH = 200;
 
 const handoffLog = createSubsystemLogger("restart-handoff");
-type GatewayRestartHandoffDatabase = Pick<OpenClawStateKyselyDatabase, "gateway_restart_handoff">;
+type GatewayRestartHandoffDatabase = Pick<NodoAssistStateKyselyDatabase, "gateway_restart_handoff">;
 
 export type GatewayRestartHandoffRestartKind = "full-process" | "update-process";
 export type GatewayRestartHandoffSource =
@@ -257,7 +257,7 @@ function normalizeGatewayRestartHandoffRow(row: {
 
 function readGatewayRestartHandoffRowSync(env: NodeJS.ProcessEnv) {
   try {
-    const { db } = openOpenClawStateDatabase({ env });
+    const { db } = openNodoAssistStateDatabase({ env });
     const stateDb = getNodeSqliteKysely<GatewayRestartHandoffDatabase>(db);
     return executeSqliteQueryTakeFirstSync(
       db,
@@ -332,7 +332,7 @@ export function writeGatewayRestartHandoffSync(opts: {
   };
 
   try {
-    runOpenClawStateWriteTransaction(
+    runNodoAssistStateWriteTransaction(
       ({ db }) => {
         const stateDb = getNodeSqliteKysely<GatewayRestartHandoffDatabase>(db);
         executeSqliteQuerySync(

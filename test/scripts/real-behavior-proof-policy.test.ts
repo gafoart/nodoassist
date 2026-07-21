@@ -105,7 +105,7 @@ describe("real-behavior-proof-policy", () => {
     "![after](https://github.com/user-attachments/assets/abc123)",
     "Linked artifact: https://github.com/openclaw/openclaw/actions/runs/123456789/artifacts/987654321",
     "Redacted runtime log: gateway connected Discord channel and delivered the reply.",
-    ["Terminal transcript:", "```text", "$ openclaw gateway status", "discord ready", "```"].join(
+    ["Terminal transcript:", "```text", "$ nodoassist gateway status", "discord ready", "```"].join(
       "\n",
     ),
   ])("passes external PRs with evidence: %s", (evidence) => {
@@ -226,8 +226,8 @@ describe("real-behavior-proof-policy", () => {
           "## Real behavior proof",
           "",
           "- Behavior addressed: The gateway dropped the configured Discord channel during startup.",
-          "- Real environment tested: macOS 15.4, Node 24, local OpenClaw gateway.",
-          "- Exact steps or command run after this patch: pnpm openclaw gateway restart",
+          "- Real environment tested: macOS 15.4, Node 24, local NodoAssist gateway.",
+          "- Exact steps or command run after this patch: pnpm nodoassist gateway restart",
           "- Evidence after fix: ![after](https://github.com/user-attachments/assets/gateway-ready)",
           "- Observed result after fix: The gateway stayed connected and Discord reported ready.",
           "- What was not tested: No known gaps.",
@@ -253,7 +253,7 @@ describe("real-behavior-proof-policy", () => {
         "Observed result: not tested",
         "What was not tested: copied template text",
         "not tested",
-        "openclaw gateway status",
+        "nodoassist gateway status",
         "discord ready",
         "```",
       ].join("\n"),
@@ -271,7 +271,7 @@ describe("real-behavior-proof-policy", () => {
       [
         "Terminal transcript:",
         "```text",
-        "$ openclaw doctor --non-interactive",
+        "$ nodoassist doctor --non-interactive",
         "Discord external plugin is installed without explicit trust.",
         "Add plugins.entries.discord.enabled=true to trust it.",
         "```",
@@ -315,7 +315,7 @@ describe("real-behavior-proof-policy", () => {
       "  - `levels: off, minimal, low, medium, adaptive, high`",
       "  - `lowSupported: true`",
       "  - `fallbackFromLow: low`",
-      "  - `local command version: OpenClaw 2026.5.21`",
+      "  - `local command version: NodoAssist 2026.5.21`",
       "",
       "## Out-of-scope Follow-ups",
       "- No live systemd cron schedule was tested.",
@@ -337,17 +337,17 @@ describe("real-behavior-proof-policy", () => {
       "",
       "## Evidence",
       "",
-      "- Real environment tested: Local macOS source checkout, Node v24.8.0, OpenClaw 2026.5.21 (c8a35c4), local `openclaw` shim pointed at the freshly built checkout. No channel credentials or provider API keys were used.",
+      "- Real environment tested: Local macOS source checkout, Node v24.8.0, NodoAssist 2026.5.21 (c8a35c4), local `nodoassist` shim pointed at the freshly built checkout. No channel credentials or provider API keys were used.",
       "- Exact steps or command run after this patch:",
       "  1. Built the local checkout with `node scripts/build-all.mjs`.",
-      "  2. Updated `/Users/example/.local/bin/openclaw` to run this checkout's `openclaw.mjs` and verified `/Users/example/.local/bin/openclaw --version`.",
+      "  2. Updated `/Users/example/.local/bin/nodoassist` to run this checkout's `nodoassist.mjs` and verified `/Users/example/.local/bin/nodoassist --version`.",
       "  3. Ran a redacted behavior probe for the reported cron validation decision with `provider=google`, `model=gemini-3-flash-preview`, `configuredThinkingDefault=low`, and `catalogReasoning=false`.",
       '- Evidence after fix: `.artifacts/behavior-85156/after-installed.json` from the local checkout recorded `lowSupported: true` and `fallbackFromLow: "low"`.',
       "- Observed result after fix:",
       "  - `levels: off, minimal, low, medium, adaptive, high`",
       "  - `lowSupported: true`",
       "  - `fallbackFromLow: low`",
-      "  - `local command version: OpenClaw 2026.5.21 (c8a35c4)`",
+      "  - `local command version: NodoAssist 2026.5.21 (c8a35c4)`",
       "",
       "## Out-of-scope Follow-ups",
       "- No live systemd cron schedule is added in this PR.",
@@ -491,7 +491,7 @@ describe("real-behavior-proof-policy", () => {
     expect(evaluateClawSweeperExactHeadProof({ pullRequest, comments }).passed).toBe(true);
   });
 
-  it("accepts exact OpenClaw ClawSweeper bot pass verdict markers when GitHub omits the app source", () => {
+  it("accepts exact NodoAssist ClawSweeper bot pass verdict markers when GitHub omits the app source", () => {
     const pullRequest = {
       number: 83581,
       head: {
@@ -501,7 +501,7 @@ describe("real-behavior-proof-policy", () => {
     const comments = [
       {
         user: {
-          login: "openclaw-clawsweeper[bot]",
+          login: "nodoassist-clawsweeper[bot]",
           type: "Bot",
         },
         body: "<!-- clawsweeper-verdict:pass item=83581 sha=06ee95df6608d29a395c52ba8ab53fdd93a9dc4f confidence=high -->",
@@ -543,7 +543,7 @@ describe("isMaintainerTeamMember", () => {
     const fetch = vi.fn().mockResolvedValue(jsonResponse(200, { state: "active" }));
     const result = await isMaintainerTeamMember({
       token: "tok",
-      org: "openclaw",
+      org: "nodoassist",
       login: "private-maint",
       fetch,
     });

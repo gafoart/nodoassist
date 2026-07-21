@@ -19,7 +19,7 @@ jobs:
     name: Comment on PR
     runs-on: ubuntu-24.04
     if: >
-      github.repository == 'openclaw/openclaw' &&
+      github.repository == 'nodoassist/nodoassist' &&
       github.event.workflow_run.event == 'pull_request' &&
       github.event.workflow_run.name == 'iOS Periphery Dead Code'
     steps:
@@ -30,7 +30,7 @@ jobs:
             const path = require("node:path");
             const zlib = require("node:zlib");
 
-            const marker = "<!-- openclaw-ios-periphery-dead-code -->";
+            const marker = "<!-- nodoassist-ios-periphery-dead-code -->";
             const run = context.payload.workflow_run;
             const pr = run.pull_requests?.[0];
             if (!pr) {

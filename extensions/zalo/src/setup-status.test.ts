@@ -1,7 +1,7 @@
 // Zalo tests cover setup status plugin behavior.
-import { createPluginSetupWizardStatus } from "openclaw/plugin-sdk/plugin-test-runtime";
+import { createPluginSetupWizardStatus } from "nodoassist/plugin-sdk/plugin-test-runtime";
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../runtime-api.js";
+import type { NodoAssistConfig } from "../runtime-api.js";
 import { zaloSetupWizard } from "./setup-surface.js";
 
 const zaloGetStatus = createPluginSetupWizardStatus({
@@ -25,7 +25,7 @@ describe("zalo setup wizard status", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       accountOverrides: {},
     });
 

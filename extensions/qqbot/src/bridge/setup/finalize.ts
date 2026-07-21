@@ -1,29 +1,29 @@
 // Qqbot plugin module implements finalize behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { ChannelSetupWizard } from "openclaw/plugin-sdk/setup";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/setup";
-import { formatDocsLink } from "openclaw/plugin-sdk/setup-tools";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import type { ChannelSetupWizard } from "nodoassist/plugin-sdk/setup";
+import { DEFAULT_ACCOUNT_ID } from "nodoassist/plugin-sdk/setup";
+import { formatDocsLink } from "nodoassist/plugin-sdk/setup-tools";
 import { applyQQBotAccountConfig, resolveQQBotAccount } from "../config.js";
 
 type SetupPrompter = Parameters<NonNullable<ChannelSetupWizard["finalize"]>>[0]["prompter"];
 type SetupRuntime = Parameters<NonNullable<ChannelSetupWizard["finalize"]>>[0]["runtime"];
 
-function isQQBotAccountConfigured(cfg: OpenClawConfig, accountId: string): boolean {
+function isQQBotAccountConfigured(cfg: NodoAssistConfig, accountId: string): boolean {
   const account = resolveQQBotAccount(cfg, accountId, { allowUnresolvedSecretRef: true });
   return Boolean(account.appId && account.clientSecret);
 }
 
 async function linkViaQrCode(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId: string;
   prompter: SetupPrompter;
   runtime: SetupRuntime;
-}): Promise<OpenClawConfig> {
+}): Promise<NodoAssistConfig> {
   try {
     const { qrConnect } = await import("@tencent-connect/qqbot-connector");
 
     const accounts: { appId: string; appSecret: string }[] = await qrConnect({
-      source: "openclaw",
+      source: "nodoassist",
     });
 
     if (accounts.length === 0) {
@@ -66,10 +66,10 @@ async function linkViaQrCode(params: {
 }
 
 async function linkViaManualInput(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId: string;
   prompter: SetupPrompter;
-}): Promise<OpenClawConfig> {
+}): Promise<NodoAssistConfig> {
   const appId = await params.prompter.text({
     message: "请输入 QQ Bot AppID",
     validate: (value: string) => (value.trim() ? undefined : "AppID 不能为空"),
@@ -90,12 +90,12 @@ async function linkViaManualInput(params: {
 }
 
 export async function finalizeQQBotSetup(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId: string;
   forceAllowFrom: boolean;
   prompter: SetupPrompter;
   runtime: SetupRuntime;
-}): Promise<{ cfg: OpenClawConfig }> {
+}): Promise<{ cfg: NodoAssistConfig }> {
   const accountId = params.accountId.trim() || DEFAULT_ACCOUNT_ID;
   let next = params.cfg;
 
@@ -136,7 +136,7 @@ export async function finalizeQQBotSetup(params: {
     });
   } else if (!configured) {
     await params.prompter.note(
-      ["您可以稍后运行以下命令重新选择 QQ Bot 进行配置：", "  openclaw channels add"].join("\n"),
+      ["您可以稍后运行以下命令重新选择 QQ Bot 进行配置：", "  nodoassist channels add"].join("\n"),
       "QQ Bot",
     );
   }

@@ -11,32 +11,32 @@ Adds policy-backed doctor checks for workspace conformance.
 
 ## Distribution
 
-- Package: `@openclaw/policy`
-- Install route: included in OpenClaw
+- Package: `@nodoassist/policy`
+- Install route: included in NodoAssist
 
 ## Surface
 
 plugin
 
-<!-- openclaw-plugin-reference:manual-start -->
+<!-- nodoassist-plugin-reference:manual-start -->
 
 ## Behavior
 
-The Policy plugin contributes doctor health checks for policy-managed OpenClaw
+The Policy plugin contributes doctor health checks for policy-managed NodoAssist
 settings and governed workspace declarations. Policy currently covers channel
 conformance, governed tool metadata, MCP server posture, model-provider posture,
 private-network access posture, Gateway exposure posture, agent workspace/tool
 posture, configured global/per-agent tool posture, configured sandbox runtime
-posture, ingress/channel access posture, data-handling posture, and OpenClaw config secret
+posture, ingress/channel access posture, data-handling posture, and NodoAssist config secret
 provider/auth profile posture.
 
 Policy stores authored requirements in `policy.jsonc`, observes existing
-OpenClaw settings and workspace declarations as evidence, and reports drift
-through `openclaw policy check` and `openclaw doctor --lint`. A clean policy
+NodoAssist settings and workspace declarations as evidence, and reports drift
+through `nodoassist policy check` and `nodoassist doctor --lint`. A clean policy
 check emits policy, evidence, findings, and attestation hashes that operators
 can record for audit.
 
-`openclaw policy compare --baseline <file>` compares one policy file to another
+`nodoassist policy compare --baseline <file>` compares one policy file to another
 policy file. It is config-level conformance only: it uses policy rule metadata
 to verify that the checked policy is not missing or weaker than the authored
 baseline, and it does not inspect runtime state, credentials, or secret values.
@@ -72,7 +72,7 @@ for its selector. Overlay rules are additional claims, so they do not weaken
 top-level policy and can produce their own findings when the same observed
 config violates both scopes.
 
-<!-- openclaw-plugin-reference:manual-end -->
+<!-- nodoassist-plugin-reference:manual-end -->
 
 ## Related docs
 

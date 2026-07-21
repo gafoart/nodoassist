@@ -1,5 +1,5 @@
 // Discord plugin module implements inbound context behavior.
-import type { MsgContext } from "openclaw/plugin-sdk/reply-runtime";
+import type { MsgContext } from "nodoassist/plugin-sdk/reply-runtime";
 import {
   resolveDiscordMemberAllowed,
   resolveDiscordOwnerAllowFrom,

@@ -1,22 +1,22 @@
 /** Resolves plugin ids that should load during Gateway startup. */
-import { collectConfiguredModelRefs } from "@openclaw/model-catalog-core/configured-model-refs";
+import { collectConfiguredModelRefs } from "@nodoassist/model-catalog-core/configured-model-refs";
 import {
   buildModelCatalogMergeKey,
   parseModelCatalogRef,
-} from "@openclaw/model-catalog-core/model-catalog-refs";
+} from "@nodoassist/model-catalog-core/model-catalog-refs";
 import {
   findNormalizedProviderValue,
   normalizeProviderId,
-} from "@openclaw/model-catalog-core/provider-id";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
-import { normalizeOptionalLowercaseString } from "@openclaw/normalization-core/string-coerce";
+} from "@nodoassist/model-catalog-core/provider-id";
+import { isRecord } from "@nodoassist/normalization-core/record-coerce";
+import { normalizeOptionalLowercaseString } from "@nodoassist/normalization-core/string-coerce";
 import { collectConfiguredAgentHarnessRuntimes } from "../agents/harness-runtimes.js";
 import { splitTrailingAuthProfile } from "../agents/model-ref-profile.js";
 import {
   listExplicitlyDisabledChannelIdsForConfig,
   listPotentialConfiguredChannelIds,
 } from "../channels/config-presence.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import {
   DEFAULT_MEMORY_DREAMING_PLUGIN_ID,
   resolveMemoryDreamingConfig,
@@ -91,7 +91,7 @@ function sortUniquePluginIds(values: Iterable<string>): string[] {
 }
 
 function normalizePluginsConfigForInstalledIndex(
-  config: OpenClawConfig["plugins"] | undefined,
+  config: NodoAssistConfig["plugins"] | undefined,
   lookup: InstalledPluginIndexScopeLookup,
 ) {
   return normalizePluginsConfigWithResolver(config, lookup.normalizePluginId);
@@ -107,7 +107,10 @@ function isConfigActivationValueEnabled(value: unknown): boolean {
   return true;
 }
 
-function listPotentialEnabledChannelIds(config: OpenClawConfig, env: NodeJS.ProcessEnv): string[] {
+function listPotentialEnabledChannelIds(
+  config: NodoAssistConfig,
+  env: NodeJS.ProcessEnv,
+): string[] {
   const disabled = new Set(listExplicitlyDisabledChannelIdsForConfig(config));
   return listPotentialConfiguredChannelIds(config, env, { includePersistedAuthState: false })
     .map((id) => normalizeOptionalLowercaseString(id) ?? "")
@@ -118,7 +121,7 @@ function isGatewayStartupMemoryPlugin(plugin: InstalledPluginIndexRecord): boole
   return plugin.startup.memory;
 }
 
-function resolveGatewayStartupDreamingEngineId(config: OpenClawConfig): string | undefined {
+function resolveGatewayStartupDreamingEngineId(config: NodoAssistConfig): string | undefined {
   const dreamingConfig = resolveMemoryDreamingConfig({
     pluginConfig: resolveMemoryDreamingPluginConfig(config),
     cfg: config,
@@ -132,7 +135,9 @@ function resolveGatewayStartupDreamingEngineId(config: OpenClawConfig): string |
   return DEFAULT_MEMORY_DREAMING_PLUGIN_ID;
 }
 
-function resolveGatewayStartupDreamingSelectedPluginId(config: OpenClawConfig): string | undefined {
+function resolveGatewayStartupDreamingSelectedPluginId(
+  config: NodoAssistConfig,
+): string | undefined {
   const selectedPluginId = normalizeOptionalLowercaseString(resolveMemoryDreamingPluginId(config));
   return selectedPluginId && selectedPluginId !== DEFAULT_MEMORY_DREAMING_PLUGIN_ID
     ? selectedPluginId
@@ -153,11 +158,11 @@ function blocksPluginStartup(params: {
 }
 
 function resolveAuthorizedGatewayStartupDreamingPluginIds(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: NormalizedPluginsConfig;
   activationSource: {
     plugins: NormalizedPluginsConfig;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   activationSourcePlugins: NormalizedPluginsConfig;
   selectedMemoryPluginId?: string;
@@ -200,7 +205,7 @@ function resolveAuthorizedGatewayStartupDreamingPluginIds(params: {
 }
 
 function resolveMemorySlotStartupPluginId(params: {
-  activationSourceConfig: OpenClawConfig;
+  activationSourceConfig: NodoAssistConfig;
   activationSourcePlugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   normalizePluginId: (pluginId: string) => string;
 }): string | undefined {
@@ -226,7 +231,7 @@ function resolveMemorySlotStartupPluginId(params: {
 }
 
 function resolveContextEngineSlotStartupPluginId(params: {
-  activationSourceConfig: OpenClawConfig;
+  activationSourceConfig: NodoAssistConfig;
   activationSourcePlugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   normalizePluginId: (pluginId: string) => string;
 }): string | undefined {
@@ -305,7 +310,7 @@ function findManifestPlugin(
 
 function hasConfiguredActivationPath(params: {
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
 }): boolean {
   return hasConfiguredActivationPathPatterns({
     paths: params.manifest?.activation?.onConfigPaths,
@@ -315,7 +320,7 @@ function hasConfiguredActivationPath(params: {
 
 function hasConfiguredActivationPathPatterns(params: {
   paths: readonly string[] | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
 }): boolean {
   const paths = params.paths;
   if (!paths?.length) {
@@ -332,7 +337,7 @@ function hasConfiguredActivationPathPatterns(params: {
 function addConfiguredActivationPathPluginIds(
   target: Set<string>,
   params: {
-    activationSourceConfig: OpenClawConfig;
+    activationSourceConfig: NodoAssistConfig;
     index: InstalledPluginIndex;
   },
 ): void {
@@ -364,7 +369,7 @@ function manifestOwnsConfiguredSpeechProvider(params: {
   });
 }
 
-function collectConfiguredWebSearchProviderIds(config: OpenClawConfig): ReadonlySet<string> {
+function collectConfiguredWebSearchProviderIds(config: NodoAssistConfig): ReadonlySet<string> {
   const search = config.tools?.web?.search;
   if (search?.enabled === false || typeof search?.provider !== "string") {
     return new Set();
@@ -447,7 +452,7 @@ function buildManifestModelProviderLookup(
 }
 
 function collectConfiguredAgentModelProviderIds(
-  config: OpenClawConfig,
+  config: NodoAssistConfig,
   manifestRegistry: PluginManifestRegistry,
 ): ReadonlySet<string> {
   const modelIdsByProvider = new Map<string, Set<string>>();
@@ -500,7 +505,7 @@ function collectConfiguredAgentModelProviderIds(
 }
 
 function configuredModelProviderNeedsRuntimePlugin(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   manifestModelProviders: ManifestModelProviderLookup;
   providerId: string;
   modelId: string;
@@ -532,7 +537,7 @@ function manifestOwnsConfiguredModelProvider(params: {
 }
 
 function collectConfiguredGenerationProviderIds(
-  config: OpenClawConfig,
+  config: NodoAssistConfig,
 ): ConfiguredGenerationProviderIds {
   const defaults = config.agents?.defaults;
   return {
@@ -542,7 +547,7 @@ function collectConfiguredGenerationProviderIds(
   };
 }
 
-function collectConfiguredVoiceProviderIds(config: OpenClawConfig): ConfiguredVoiceProviderIds {
+function collectConfiguredVoiceProviderIds(config: NodoAssistConfig): ConfiguredVoiceProviderIds {
   const providerIds = collectModelProviderIds(config.agents?.defaults?.voiceModel);
   return {
     speechProviders: providerIds,
@@ -577,7 +582,7 @@ function readMemorySearchEnabled(
   return typeof enabled === "boolean" ? enabled : undefined;
 }
 
-function isMemorySlotExplicitlyDisabled(config: OpenClawConfig): boolean {
+function isMemorySlotExplicitlyDisabled(config: NodoAssistConfig): boolean {
   return normalizeOptionalLowercaseString(config.plugins?.slots?.memory) === "none";
 }
 
@@ -605,7 +610,7 @@ export type ConfiguredMemoryEmbeddingStartupProviderOwner = {
  */
 function resolveMemoryEmbeddingProviderOwnerIds(
   providerId: string,
-  config: OpenClawConfig,
+  config: NodoAssistConfig,
 ): string[] {
   const ownerIds = [providerId];
   const genericOwnerId = normalizeOptionalLowercaseString(
@@ -668,7 +673,7 @@ function resolveEffectiveMemoryEmbeddingProviderEntries(
  * their API-owner adapter ids.
  */
 export function collectConfiguredMemoryEmbeddingStartupProviderOwners(
-  config: OpenClawConfig,
+  config: NodoAssistConfig,
 ): ConfiguredMemoryEmbeddingStartupProviderOwner[] {
   if (isMemorySlotExplicitlyDisabled(config)) {
     return [];
@@ -710,7 +715,7 @@ export function collectConfiguredMemoryEmbeddingStartupProviderOwners(
  * custom `models.providers` ids so the owning plugin loads at startup.
  */
 export function collectConfiguredMemoryEmbeddingProviderIds(
-  config: OpenClawConfig,
+  config: NodoAssistConfig,
 ): ReadonlySet<string> {
   const providerIds = new Set<string>();
   for (const provider of collectConfiguredMemoryEmbeddingStartupProviderOwners(config)) {
@@ -729,7 +734,7 @@ export function collectConfiguredMemoryEmbeddingProviderIds(
  * once that plugin loads.
  */
 export function collectUnregisteredConfiguredMemoryEmbeddingProviders(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   registeredProviderIds: ReadonlySet<string>;
 }): Array<{ configuredId: string; source: MemoryEmbeddingStartupProviderSource }> {
   const configured = collectConfiguredMemoryEmbeddingStartupProviderOwners(params.config);
@@ -783,7 +788,7 @@ function addPluginConfigEntryIds(
 function addConfiguredSlotPluginIds(
   target: Set<string>,
   params: {
-    activationSourceConfig: OpenClawConfig;
+    activationSourceConfig: NodoAssistConfig;
     activationSourcePlugins: ReturnType<typeof normalizePluginsConfigForInstalledIndex>;
     lookup: InstalledPluginIndexScopeLookup;
   },
@@ -807,8 +812,8 @@ function addConfiguredSlotPluginIds(
 }
 
 function collectConfiguredStartupChannelIds(params: {
-  activationSourceConfig: OpenClawConfig;
-  config: OpenClawConfig;
+  activationSourceConfig: NodoAssistConfig;
+  config: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
 }): string[] {
   return sortUniquePluginIds([
@@ -817,7 +822,7 @@ function collectConfiguredStartupChannelIds(params: {
   ]);
 }
 
-function collectValidationHeartbeatTargetChannelIds(config: OpenClawConfig): string[] {
+function collectValidationHeartbeatTargetChannelIds(config: NodoAssistConfig): string[] {
   const channelIds: string[] = [];
   const pushTarget = (target: unknown) => {
     if (typeof target !== "string") {
@@ -838,7 +843,7 @@ function collectValidationHeartbeatTargetChannelIds(config: OpenClawConfig): str
   return sortUniquePluginIds(channelIds);
 }
 
-function collectValidationChannelConfigIds(config: OpenClawConfig): string[] {
+function collectValidationChannelConfigIds(config: NodoAssistConfig): string[] {
   const channels = isRecord(config.channels) ? config.channels : null;
   if (!channels) {
     return [];
@@ -851,7 +856,7 @@ function collectValidationChannelConfigIds(config: OpenClawConfig): string[] {
 }
 
 function collectConfigValidationChannelIds(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
 }): string[] {
   return sortUniquePluginIds([
@@ -865,7 +870,7 @@ function collectConfigValidationChannelIds(params: {
   ]);
 }
 
-function collectConfiguredProviderIds(config: OpenClawConfig): string[] {
+function collectConfiguredProviderIds(config: NodoAssistConfig): string[] {
   const configuredWebSearchProviderIds = collectConfiguredWebSearchProviderIds(config);
   const configuredGenerationProviderIds = collectConfiguredGenerationProviderIds(config);
   const configuredVoiceProviderIds = collectConfiguredVoiceProviderIds(config);
@@ -882,7 +887,7 @@ function collectConfiguredProviderIds(config: OpenClawConfig): string[] {
   ]);
 }
 
-function collectValidationConfiguredProviderIds(config: OpenClawConfig): string[] {
+function collectValidationConfiguredProviderIds(config: NodoAssistConfig): string[] {
   const providerIds: string[] = [];
   const pushProviderId = (value: unknown) => {
     if (typeof value !== "string") {
@@ -918,7 +923,7 @@ function collectValidationConfiguredProviderIds(config: OpenClawConfig): string[
   return sortUniquePluginIds(providerIds);
 }
 
-function collectValidationConfiguredShorthandModelIds(config: OpenClawConfig): string[] {
+function collectValidationConfiguredShorthandModelIds(config: NodoAssistConfig): string[] {
   return sortUniquePluginIds(
     collectConfiguredModelRefs(config)
       .map((ref) => ref.value)
@@ -931,13 +936,13 @@ function collectValidationConfiguredShorthandModelIds(config: OpenClawConfig): s
 function addRequiredAgentHarnessPluginIds(
   target: Set<string>,
   params: {
-    activationSourceConfig: OpenClawConfig;
-    config: OpenClawConfig;
+    activationSourceConfig: NodoAssistConfig;
+    config: NodoAssistConfig;
     index: InstalledPluginIndex;
     pluginsConfig: ReturnType<typeof normalizePluginsConfigForInstalledIndex>;
     activationSource: {
       plugins: ReturnType<typeof normalizePluginsConfigForInstalledIndex>;
-      rootConfig?: OpenClawConfig;
+      rootConfig?: NodoAssistConfig;
     };
     env: NodeJS.ProcessEnv;
     platform?: NodeJS.Platform;
@@ -968,8 +973,8 @@ function addRequiredAgentHarnessPluginIds(
 }
 
 export function resolveGatewayStartupMetadataPluginIds(params: {
-  config: OpenClawConfig;
-  activationSourceConfig?: OpenClawConfig;
+  config: NodoAssistConfig;
+  activationSourceConfig?: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
   index: InstalledPluginIndex;
   platform?: NodeJS.Platform;
@@ -1094,8 +1099,8 @@ export function resolveGatewayStartupMetadataPluginIds(params: {
 }
 
 export function createGatewayStartupMetadataPluginIdScope(params: {
-  config: OpenClawConfig;
-  activationSourceConfig?: OpenClawConfig;
+  config: NodoAssistConfig;
+  activationSourceConfig?: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
   platform?: NodeJS.Platform;
 }): PluginMetadataSnapshotPluginIdScope {
@@ -1128,7 +1133,7 @@ export function createGatewayStartupMetadataPluginIdScope(params: {
 function addValidationPluginConfigReferences(
   target: Set<string>,
   params: {
-    config: OpenClawConfig;
+    config: NodoAssistConfig;
     pluginsConfig: ReturnType<typeof normalizePluginsConfigForInstalledIndex>;
     normalizePluginId: (pluginId: string) => string;
   },
@@ -1158,7 +1163,7 @@ function addValidationPluginConfigReferences(
 }
 
 export function resolveConfigValidationMetadataPluginIds(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
   index: InstalledPluginIndex;
   platform?: NodeJS.Platform;
@@ -1224,7 +1229,7 @@ export function resolveConfigValidationMetadataPluginIds(params: {
 }
 
 export function createConfigValidationMetadataPluginIdScope(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
   platform?: NodeJS.Platform;
 }): PluginMetadataSnapshotPluginIdScope {
@@ -1341,11 +1346,11 @@ function manifestOwnsConfiguredMemoryEmbeddingProvider(params: {
 function canStartConfiguredGenerationProviderPlugin(params: {
   plugin: InstalledPluginIndexRecord;
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSource: {
     plugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   configuredGenerationProviderIds: ConfiguredGenerationProviderIds;
   platform?: NodeJS.Platform;
@@ -1390,11 +1395,11 @@ function canStartConfiguredGenerationProviderPlugin(params: {
 function canStartConfiguredVoiceProviderPlugin(params: {
   plugin: InstalledPluginIndexRecord;
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSource: {
     plugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   configuredVoiceProviderIds: ConfiguredVoiceProviderIds;
   platform?: NodeJS.Platform;
@@ -1439,11 +1444,11 @@ function canStartConfiguredVoiceProviderPlugin(params: {
 function canStartConfiguredMemoryEmbeddingProviderPlugin(params: {
   plugin: InstalledPluginIndexRecord;
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSource: {
     plugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   configuredMemoryEmbeddingProviderIds: ReadonlySet<string>;
   platform?: NodeJS.Platform;
@@ -1485,11 +1490,11 @@ function canStartConfiguredMemoryEmbeddingProviderPlugin(params: {
 function canStartConfiguredModelProviderPlugin(params: {
   plugin: InstalledPluginIndexRecord;
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSource: {
     plugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   configuredModelProviderIds: ReadonlySet<string>;
   platform?: NodeJS.Platform;
@@ -1536,9 +1541,9 @@ function canStartRequiredAgentHarnessPlugin(params: {
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSource: {
     plugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   requiredAgentHarnessRuntimes: ReadonlySet<string>;
   platform?: NodeJS.Platform;
 }): boolean {
@@ -1590,11 +1595,11 @@ function canStartRequiredAgentHarnessPlugin(params: {
 function canStartConfiguredSpeechProviderPlugin(params: {
   plugin: InstalledPluginIndexRecord;
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSource: {
     plugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   configuredSpeechProviderIds: ReadonlySet<string>;
   platform?: NodeJS.Platform;
@@ -1636,11 +1641,11 @@ function canStartConfiguredSpeechProviderPlugin(params: {
 function canStartConfiguredWebSearchProviderPlugin(params: {
   plugin: InstalledPluginIndexRecord;
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSource: {
     plugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   configuredWebSearchProviderIds: ReadonlySet<string>;
   platform?: NodeJS.Platform;
@@ -1682,7 +1687,7 @@ function canStartConfiguredWebSearchProviderPlugin(params: {
 function canStartConfiguredRootPlugin(params: {
   plugin: InstalledPluginIndexRecord;
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSourcePlugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
 }): boolean {
@@ -1737,11 +1742,11 @@ function hasHookRuntimeStartupIntent(params: {
 function canStartExplicitHookPlugin(params: {
   plugin: InstalledPluginIndexRecord;
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: NormalizedPluginsConfig;
   activationSource: {
     plugins: NormalizedPluginsConfig;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   activationSourcePlugins: NormalizedPluginsConfig;
   platform?: NodeJS.Platform;
@@ -1787,11 +1792,11 @@ function canStartExplicitHookPlugin(params: {
 function canStartTrustedToolPolicyPlugin(params: {
   plugin: InstalledPluginIndexRecord;
   manifest: PluginManifestRecord | undefined;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: NormalizedPluginsConfig;
   activationSource: {
     plugins: NormalizedPluginsConfig;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   platform?: NodeJS.Platform;
 }): boolean {
@@ -1829,11 +1834,11 @@ function canStartTrustedToolPolicyPlugin(params: {
 
 function canStartConfiguredChannelPlugin(params: {
   plugin: InstalledPluginIndexRecord;
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSource: {
     plugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   manifestLookup: ManifestRegistryLookup;
   platform?: NodeJS.Platform;
@@ -1877,7 +1882,7 @@ function canStartConfiguredChannelPlugin(params: {
 }
 
 export function resolveChannelPluginIds(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;
 }): string[] {
@@ -1894,7 +1899,7 @@ export function resolveChannelPluginIdsFromRegistry(params: {
 }
 
 export function resolveConfiguredDeferredChannelPluginIdsFromRegistry(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
   index: PluginRegistrySnapshot;
   manifestRegistry: PluginManifestRegistry;
@@ -1922,13 +1927,13 @@ export function resolveConfiguredDeferredChannelPluginIdsFromRegistry(params: {
 }
 
 function resolveConfiguredDeferredChannelPluginIdsFromPrepared(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   index: PluginRegistrySnapshot;
   configuredChannelIds: ReadonlySet<string>;
   pluginsConfig: ReturnType<typeof normalizePluginsConfigWithRegistry>;
   activationSource: {
     plugins: ReturnType<typeof normalizePluginsConfigWithRegistry>;
-    rootConfig?: OpenClawConfig;
+    rootConfig?: NodoAssistConfig;
   };
   manifestLookup: ManifestRegistryLookup;
   platform?: NodeJS.Platform;
@@ -1958,7 +1963,7 @@ function resolveConfiguredDeferredChannelPluginIdsFromPrepared(params: {
 }
 
 export function resolveConfiguredDeferredChannelPluginIds(params: {
-  config: OpenClawConfig;
+  config: NodoAssistConfig;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;
 }): string[] {
@@ -1966,8 +1971,8 @@ export function resolveConfiguredDeferredChannelPluginIds(params: {
 }
 
 export function resolveGatewayStartupPluginPlanFromRegistry(params: {
-  config: OpenClawConfig;
-  activationSourceConfig?: OpenClawConfig;
+  config: NodoAssistConfig;
+  activationSourceConfig?: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
   index: PluginRegistrySnapshot;
   manifestRegistry: PluginManifestRegistry;
@@ -2256,8 +2261,8 @@ export function resolveGatewayStartupPluginPlanFromRegistry(params: {
 }
 
 export function resolveGatewayStartupPluginIdsFromRegistry(params: {
-  config: OpenClawConfig;
-  activationSourceConfig?: OpenClawConfig;
+  config: NodoAssistConfig;
+  activationSourceConfig?: NodoAssistConfig;
   env: NodeJS.ProcessEnv;
   index: PluginRegistrySnapshot;
   manifestRegistry: PluginManifestRegistry;
@@ -2267,8 +2272,8 @@ export function resolveGatewayStartupPluginIdsFromRegistry(params: {
 }
 
 export function loadGatewayStartupPluginPlan(params: {
-  config: OpenClawConfig;
-  activationSourceConfig?: OpenClawConfig;
+  config: NodoAssistConfig;
+  activationSourceConfig?: NodoAssistConfig;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;
   index?: PluginRegistrySnapshot;
@@ -2320,8 +2325,8 @@ export function loadGatewayStartupPluginPlan(params: {
 }
 
 export function resolveGatewayStartupPluginIds(params: {
-  config: OpenClawConfig;
-  activationSourceConfig?: OpenClawConfig;
+  config: NodoAssistConfig;
+  activationSourceConfig?: NodoAssistConfig;
   workspaceDir?: string;
   env: NodeJS.ProcessEnv;
   platform?: NodeJS.Platform;

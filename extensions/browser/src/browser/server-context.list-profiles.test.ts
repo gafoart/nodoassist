@@ -25,7 +25,7 @@ describe("browser server-context listProfiles", () => {
 
     expect(isChromeReachable).toHaveBeenCalledWith("http://127.0.0.1:18800", 200, undefined);
     expect(profiles).toHaveLength(1);
-    expect(profiles[0]?.name).toBe("openclaw");
+    expect(profiles[0]?.name).toBe("nodoassist");
     expect(profiles[0]?.running).toBe(true);
   });
 
@@ -38,7 +38,7 @@ describe("browser server-context listProfiles", () => {
         cdpIsLoopback: true,
         cdpPort: 9222,
         color: "#00AA00",
-        driver: "openclaw",
+        driver: "nodoassist",
         headless: false,
         attachOnly: true,
       },
@@ -72,7 +72,7 @@ describe("browser server-context listProfiles", () => {
         cdpIsLoopback: true,
         cdpPort: 9222,
         color: "#00AA00",
-        driver: "openclaw",
+        driver: "nodoassist",
         headless: false,
         attachOnly: true,
       },

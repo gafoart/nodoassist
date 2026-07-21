@@ -1,17 +1,17 @@
-// SQLite state benchmark seeds OpenClaw DBs and reports hot-query proof lines.
+// SQLite state benchmark seeds NodoAssist DBs and reports hot-query proof lines.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { pathToFileURL } from "node:url";
 import {
-  openOpenClawAgentDatabase,
-  closeOpenClawAgentDatabasesForTest,
-} from "../src/state/openclaw-agent-db.js";
+  openNodoAssistAgentDatabase,
+  closeNodoAssistAgentDatabasesForTest,
+} from "../src/state/nodoassist-agent-db.js";
 import {
-  closeOpenClawStateDatabaseForTest,
-  openOpenClawStateDatabase,
-} from "../src/state/openclaw-state-db.js";
+  closeNodoAssistStateDatabaseForTest,
+  openNodoAssistStateDatabase,
+} from "../src/state/nodoassist-state-db.js";
 import { parseStrictIntegerOption } from "./lib/dev-tooling-safety.ts";
 
 type ProfileId = "smoke" | "default" | "large";
@@ -200,7 +200,7 @@ function applyScale(config: ProfileConfig): ProfileConfig {
 }
 
 function printUsage(): void {
-  console.log(`OpenClaw SQLite state benchmark
+  console.log(`NodoAssist SQLite state benchmark
 
 Usage:
   node --import tsx scripts/bench-sqlite-state.ts [options]
@@ -577,13 +577,13 @@ function main(): void {
   const options = parseOptions(argv);
   const config = applyScale(PROFILES[options.profile]);
   const stateDir =
-    options.stateDir ?? fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-sqlite-perf-"));
-  const env = { OPENCLAW_STATE_DIR: stateDir };
+    options.stateDir ?? fs.mkdtempSync(path.join(os.tmpdir(), "nodoassist-sqlite-perf-"));
+  const env = { NODOASSIST_STATE_DIR: stateDir };
   const started = nowMs();
   try {
-    const stateDatabase = openOpenClawStateDatabase({ env });
+    const stateDatabase = openNodoAssistStateDatabase({ env });
     const agentDatabases = Array.from({ length: config.agentCount }, (_, index) =>
-      openOpenClawAgentDatabase({ agentId: `perf-agent-${index}`, env }),
+      openNodoAssistAgentDatabase({ agentId: `perf-agent-${index}`, env }),
     );
 
     const seedStarted = nowMs();
@@ -652,8 +652,8 @@ function main(): void {
     }
     printProofLines(report);
   } finally {
-    closeOpenClawAgentDatabasesForTest();
-    closeOpenClawStateDatabaseForTest();
+    closeNodoAssistAgentDatabasesForTest();
+    closeNodoAssistStateDatabaseForTest();
     if (!options.stateDir) {
       fs.rmSync(stateDir, { recursive: true, force: true });
     }

@@ -1,5 +1,5 @@
 // Registers transcript providers and resolves enabled source runtimes.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import {
   resolvePluginCapabilityProvider,
   resolvePluginCapabilityProviders,
@@ -23,14 +23,16 @@ export function normalizeTranscriptSourceProviderId(
   return normalizeCapabilityProviderId(providerId);
 }
 
-function resolveTranscriptsSourceProviderEntries(cfg?: OpenClawConfig): TranscriptSourceProvider[] {
+function resolveTranscriptsSourceProviderEntries(
+  cfg?: NodoAssistConfig,
+): TranscriptSourceProvider[] {
   return resolvePluginCapabilityProviders({
     key: "transcriptSourceProviders",
     cfg,
   });
 }
 
-function buildProviderMaps(cfg?: OpenClawConfig): {
+function buildProviderMaps(cfg?: NodoAssistConfig): {
   canonical: Map<string, TranscriptSourceProvider>;
   aliases: Map<string, TranscriptSourceProvider>;
 } {
@@ -38,14 +40,14 @@ function buildProviderMaps(cfg?: OpenClawConfig): {
 }
 
 /** List canonical transcript source providers for a config snapshot. */
-export function listTranscriptSourceProviders(cfg?: OpenClawConfig): TranscriptSourceProvider[] {
+export function listTranscriptSourceProviders(cfg?: NodoAssistConfig): TranscriptSourceProvider[] {
   return [...buildProviderMaps(cfg).canonical.values()];
 }
 
 /** Resolve a transcript provider by canonical id or alias. */
 export function getTranscriptSourceProvider(
   providerId: string | undefined,
-  cfg?: OpenClawConfig,
+  cfg?: NodoAssistConfig,
 ): TranscriptSourceProvider | undefined {
   const normalized = normalizeTranscriptSourceProviderId(providerId);
   if (!normalized) {

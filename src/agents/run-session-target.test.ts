@@ -3,14 +3,14 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { loadSessionStore } from "../config/sessions/store.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import { resolveAgentRunSessionTarget } from "./run-session-target.js";
 
 describe("agent run session target", () => {
   let tempDir: string;
 
   beforeEach(() => {
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-run-session-target-"));
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "nodoassist-run-session-target-"));
   });
 
   afterEach(() => {
@@ -23,7 +23,7 @@ describe("agent run session target", () => {
 
     const target = await resolveAgentRunSessionTarget({
       agentId: "helper",
-      config: { session: { store: storePath } } as OpenClawConfig,
+      config: { session: { store: storePath } } as NodoAssistConfig,
       sessionId: "test-run",
       sessionKey,
     });
@@ -44,7 +44,7 @@ describe("agent run session target", () => {
     const sessionKey = "agent:helper:main";
 
     const target = await resolveAgentRunSessionTarget({
-      config: { session: { store: storeRoot } } as OpenClawConfig,
+      config: { session: { store: storeRoot } } as NodoAssistConfig,
       sessionId: "helper-session",
       sessionKey,
     });

@@ -1,5 +1,5 @@
 /**
- * Bridges Codex item/tool user-input requests to OpenClaw messaging prompts and
+ * Bridges Codex item/tool user-input requests to NodoAssist messaging prompts and
  * turns replies into app-server answer payloads.
  */
 import {
@@ -10,7 +10,7 @@ import {
   type AgentHarnessUserInputOption,
   type AgentHarnessUserInputQuestion,
   type EmbeddedRunAttemptParams,
-} from "openclaw/plugin-sdk/agent-harness-runtime";
+} from "nodoassist/plugin-sdk/agent-harness-runtime";
 import { formatCodexDisplayText } from "../command-formatters.js";
 import {
   isJsonObject,

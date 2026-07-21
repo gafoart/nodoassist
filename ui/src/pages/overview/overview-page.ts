@@ -441,6 +441,6 @@ class OverviewPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-overview-page")) {
-  customElements.define("openclaw-overview-page", OverviewPage);
+if (!customElements.get("nodoassist-overview-page")) {
+  customElements.define("nodoassist-overview-page", OverviewPage);
 }

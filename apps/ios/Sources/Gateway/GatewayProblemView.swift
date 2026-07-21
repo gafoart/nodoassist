@@ -1,4 +1,4 @@
-import OpenClawKit
+import NodoAssistKit
 import SwiftUI
 import UIKit
 
@@ -9,13 +9,13 @@ struct GatewayProblemBanner: View {
     var onShowDetails: (() -> Void)?
 
     var body: some View {
-        OpenClawNoticeBanner(
+        NodoAssistNoticeBanner(
             icon: self.iconName,
             title: self.problem.title,
             message: self.problem.message,
             ownerLabel: self.ownerLabel,
             tint: self.tint,
-            detail: self.problem.requestId.map(OpenClawNoticeDetail.requestID),
+            detail: self.problem.requestId.map(NodoAssistNoticeDetail.requestID),
             primaryActionTitle: self.primaryActionTitle,
             onPrimaryAction: self.onPrimaryAction,
             secondaryActionTitle: "Details",
@@ -50,11 +50,11 @@ struct GatewayProblemBanner: View {
              .pairingRoleUpgradeRequired,
              .pairingScopeUpgradeRequired,
              .pairingMetadataUpgradeRequired:
-            OpenClawBrand.warn
+            NodoAssistBrand.warn
         case .timeout, .connectionRefused, .reachabilityFailed, .websocketCancelled:
-            OpenClawBrand.warn
+            NodoAssistBrand.warn
         default:
-            OpenClawBrand.danger
+            NodoAssistBrand.danger
         }
     }
 
@@ -89,12 +89,12 @@ struct GatewayProblemDetailsSheet: View {
                 Section {
                     VStack(alignment: .leading, spacing: 10) {
                         Text(self.problem.title)
-                            .font(OpenClawType.title3)
+                            .font(NodoAssistType.title3)
                         Text(self.problem.message)
-                            .font(OpenClawType.body)
+                            .font(NodoAssistType.body)
                             .foregroundStyle(.secondary)
                         Text(self.ownerSummary)
-                            .font(OpenClawType.footnoteSemiBold)
+                            .font(NodoAssistType.footnoteSemiBold)
                             .foregroundStyle(.secondary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -104,38 +104,38 @@ struct GatewayProblemDetailsSheet: View {
                 if let requestId = self.problem.requestId {
                     Section {
                         Text(verbatim: requestId)
-                            .font(OpenClawType.mono)
+                            .font(NodoAssistType.mono)
                             .textSelection(.enabled)
                         Button {
                             UIPasteboard.general.string = requestId
                             self.copyFeedback = "Copied request ID"
                         } label: {
                             Text("Copy request ID")
-                                .font(OpenClawType.subheadSemiBold)
+                                .font(NodoAssistType.subheadSemiBold)
                         }
-                        .font(OpenClawType.subheadSemiBold)
+                        .font(NodoAssistType.subheadSemiBold)
                     } header: {
                         Text("Request")
-                            .font(OpenClawType.captionSemiBold)
+                            .font(NodoAssistType.captionSemiBold)
                     }
                 }
 
                 if let actionCommand = self.problem.actionCommand {
                     Section {
                         Text(verbatim: actionCommand)
-                            .font(OpenClawType.mono)
+                            .font(NodoAssistType.mono)
                             .textSelection(.enabled)
                         Button {
                             UIPasteboard.general.string = actionCommand
                             self.copyFeedback = "Copied command"
                         } label: {
                             Text("Copy command")
-                                .font(OpenClawType.subheadSemiBold)
+                                .font(NodoAssistType.subheadSemiBold)
                         }
-                        .font(OpenClawType.subheadSemiBold)
+                        .font(NodoAssistType.subheadSemiBold)
                     } header: {
                         Text("Gateway command")
-                            .font(OpenClawType.captionSemiBold)
+                            .font(NodoAssistType.captionSemiBold)
                     }
                 }
 
@@ -143,35 +143,35 @@ struct GatewayProblemDetailsSheet: View {
                     Section {
                         Link(destination: docsURL) {
                             Label("Open docs", systemImage: "book")
-                                .font(OpenClawType.subheadSemiBold)
+                                .font(NodoAssistType.subheadSemiBold)
                         }
-                        .font(OpenClawType.subheadSemiBold)
+                        .font(NodoAssistType.subheadSemiBold)
                         Text(verbatim: docsURL.absoluteString)
-                            .font(OpenClawType.footnote)
+                            .font(NodoAssistType.footnote)
                             .foregroundStyle(.secondary)
                             .textSelection(.enabled)
                     } header: {
                         Text("Help")
-                            .font(OpenClawType.captionSemiBold)
+                            .font(NodoAssistType.captionSemiBold)
                     }
                 }
 
                 if let technicalDetails = self.problem.technicalDetails {
                     Section {
                         Text(verbatim: technicalDetails)
-                            .font(OpenClawType.monoFootnote)
+                            .font(NodoAssistType.monoFootnote)
                             .foregroundStyle(.secondary)
                             .textSelection(.enabled)
                     } header: {
                         Text("Technical details")
-                            .font(OpenClawType.captionSemiBold)
+                            .font(NodoAssistType.captionSemiBold)
                     }
                 }
 
                 if let copyFeedback {
                     Section {
                         Text(copyFeedback)
-                            .font(OpenClawType.footnote)
+                            .font(NodoAssistType.footnote)
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -181,7 +181,7 @@ struct GatewayProblemDetailsSheet: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text("Connection problem")
-                        .font(OpenClawType.headline)
+                        .font(NodoAssistType.headline)
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     if let primaryActionTitle, let onPrimaryAction {
@@ -190,9 +190,9 @@ struct GatewayProblemDetailsSheet: View {
                             onPrimaryAction()
                         } label: {
                             Text(primaryActionTitle)
-                                .font(OpenClawType.subheadSemiBold)
+                                .font(NodoAssistType.subheadSemiBold)
                         }
-                        .font(OpenClawType.subheadSemiBold)
+                        .font(NodoAssistType.subheadSemiBold)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -200,9 +200,9 @@ struct GatewayProblemDetailsSheet: View {
                         self.dismiss()
                     } label: {
                         Text("Done")
-                            .font(OpenClawType.subheadSemiBold)
+                            .font(NodoAssistType.subheadSemiBold)
                     }
-                    .font(OpenClawType.subheadSemiBold)
+                    .font(NodoAssistType.subheadSemiBold)
                 }
             }
         }

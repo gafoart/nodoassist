@@ -1,12 +1,12 @@
 // Logbook node-host command: screen capture for headless node hosts (macOS).
-// Nodes without the OpenClaw app (plain `openclaw node host run`) advertise
+// Nodes without the NodoAssist app (plain `nodoassist node host run`) advertise
 // logbook.snapshot so capture works anywhere the plugin is enabled.
 import { execFile } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { chmod, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
-import { resolvePreferredOpenClawTmpDir } from "openclaw/plugin-sdk/temp-path";
+import { resolvePreferredNodoAssistTmpDir } from "nodoassist/plugin-sdk/temp-path";
 
 const execFileAsync = promisify(execFile);
 
@@ -47,8 +47,8 @@ export async function handleLogbookSnapshot(rawParams: unknown): Promise<Logbook
     ),
   );
   // The shared helper rejects unsafe temp roots; the private subdirectory
-  // keeps captures out of the broader OpenClaw temp namespace.
-  const captureDir = path.join(resolvePreferredOpenClawTmpDir(), "logbook");
+  // keeps captures out of the broader NodoAssist temp namespace.
+  const captureDir = path.join(resolvePreferredNodoAssistTmpDir(), "logbook");
   await mkdir(captureDir, { recursive: true, mode: 0o700 });
   await chmod(captureDir, 0o700);
   const filePath = path.join(captureDir, `logbook-snapshot-${randomUUID()}.jpg`);

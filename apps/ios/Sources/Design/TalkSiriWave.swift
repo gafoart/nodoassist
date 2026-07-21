@@ -17,7 +17,7 @@ struct TalkSiriWaveView: View {
     private static let born = Date()
 
     private static let monoColors: [Color] = [
-        OpenClawBrand.accent,
+        NodoAssistBrand.accent,
         Color(red: 0.95, green: 0.45, blue: 0.30),
         Color(red: 0.45, green: 0.08, blue: 0.12),
     ]

@@ -62,7 +62,7 @@ function expectRuntimeArg(value: unknown) {
 const mockConfig = vi.hoisted(() => {
   const initial = {};
   const state = {
-    path: "/tmp/openclaw.json",
+    path: "/tmp/nodoassist.json",
     exists: true,
     config: initial as TestConfig,
     hash: "mock-hash-0" as string | undefined,
@@ -88,7 +88,7 @@ const mockConfig = vi.hoisted(() => {
   };
   return {
     reset() {
-      state.path = "/tmp/openclaw.json";
+      state.path = "/tmp/nodoassist.json";
       state.exists = true;
       state.config = {};
       state.hash = "mock-hash-0";
@@ -150,7 +150,7 @@ vi.mock("./overview.js", () => ({
       { id: "main", isDefault: true },
       { id: "work", isDefault: false, model: "openai/gpt-5.2" },
     ],
-    config: { path: "/tmp/openclaw.json", exists: true, valid: true, issues: [], hash: null },
+    config: { path: "/tmp/nodoassist.json", exists: true, valid: true, issues: [], hash: null },
     tools: {
       codex: { command: "codex", found: false, error: "not found" },
       claude: { command: "claude", found: false, error: "not found" },
@@ -208,8 +208,8 @@ describe("parseCrestodianOperation", () => {
 
   beforeEach(() => {
     mockConfig.reset();
-    stateDirSnapshot = captureEnv(["OPENCLAW_STATE_DIR"]);
-    vi.stubEnv("OPENCLAW_TEST_FAST", "1");
+    stateDirSnapshot = captureEnv(["NODOASSIST_STATE_DIR"]);
+    vi.stubEnv("NODOASSIST_TEST_FAST", "1");
   });
 
   afterEach(() => {
@@ -290,17 +290,17 @@ describe("parseCrestodianOperation", () => {
       kind: "plugin-search",
       query: "calendar sync",
     });
-    expect(parseCrestodianOperation("install npm plugin @openclaw/demo")).toEqual({
+    expect(parseCrestodianOperation("install npm plugin @nodoassist/demo")).toEqual({
       kind: "plugin-install",
-      spec: "npm:@openclaw/demo",
+      spec: "npm:@nodoassist/demo",
     });
-    expect(parseCrestodianOperation("plugin install clawhub:openclaw-demo")).toEqual({
+    expect(parseCrestodianOperation("plugin install clawhub:nodoassist-demo")).toEqual({
       kind: "plugin-install",
-      spec: "clawhub:openclaw-demo",
+      spec: "clawhub:nodoassist-demo",
     });
-    expect(parseCrestodianOperation("plugin uninstall openclaw-demo")).toEqual({
+    expect(parseCrestodianOperation("plugin uninstall nodoassist-demo")).toEqual({
       kind: "plugin-uninstall",
-      pluginId: "openclaw-demo",
+      pluginId: "nodoassist-demo",
     });
   });
 
@@ -414,7 +414,7 @@ describe("parseCrestodianOperation", () => {
   });
 
   it("validates missing config without exiting the process", async () => {
-    mockConfig.missing("/tmp/openclaw.json");
+    mockConfig.missing("/tmp/nodoassist.json");
     const { runtime, lines } = createCrestodianTestRuntime();
 
     const result = await executeCrestodianOperation({ kind: "config-validate" }, runtime);
@@ -425,7 +425,7 @@ describe("parseCrestodianOperation", () => {
 
   it("applies config set through typed deps and writes an audit entry", async () => {
     const tempDir = opTempDirs.make("crestodian-config-set-");
-    setTestEnvValue("OPENCLAW_STATE_DIR", tempDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", tempDir);
     const { runtime, lines } = createCrestodianTestRuntime();
     const runConfigSet = vi.fn(async () => {});
 
@@ -461,7 +461,7 @@ describe("parseCrestodianOperation", () => {
 
   it("applies SecretRef config set through typed deps and writes an audit entry", async () => {
     const tempDir = opTempDirs.make("crestodian-config-ref-");
-    setTestEnvValue("OPENCLAW_STATE_DIR", tempDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", tempDir);
     const { runtime, lines } = createCrestodianTestRuntime();
     const runConfigSet = vi.fn(async () => {});
 
@@ -470,7 +470,7 @@ describe("parseCrestodianOperation", () => {
         kind: "config-set-ref",
         path: "gateway.auth.token",
         source: "env",
-        id: "OPENCLAW_GATEWAY_TOKEN",
+        id: "NODOASSIST_GATEWAY_TOKEN",
       },
       runtime,
       {
@@ -486,7 +486,7 @@ describe("parseCrestodianOperation", () => {
       cliOptions: {
         refProvider: "default",
         refSource: "env",
-        refId: "OPENCLAW_GATEWAY_TOKEN",
+        refId: "NODOASSIST_GATEWAY_TOKEN",
       },
     });
     expect(lines.join("\n")).toContain("[crestodian] done: config.setRef");
@@ -538,25 +538,25 @@ describe("parseCrestodianOperation", () => {
 
   it("installs plugins only after approval and audits the write", async () => {
     const tempDir = opTempDirs.make("crestodian-plugin-install-");
-    setTestEnvValue("OPENCLAW_STATE_DIR", tempDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", tempDir);
     const { runtime, lines } = createCrestodianTestRuntime();
     const runPluginInstall = vi.fn(async (spec: string, pluginRuntime: RuntimeEnv) => {
       pluginRuntime.log(`installed ${spec}`);
     });
 
     const plan = await executeCrestodianOperation(
-      { kind: "plugin-install", spec: "clawhub:openclaw-demo" },
+      { kind: "plugin-install", spec: "clawhub:nodoassist-demo" },
       runtime,
       { deps: { runPluginInstall } },
     );
     expectRecordFields(plan as unknown as Record<string, unknown>, {
       applied: false,
-      message: "Plan: install plugin clawhub:openclaw-demo. Say yes to apply.",
+      message: "Plan: install plugin clawhub:nodoassist-demo. Say yes to apply.",
     });
     expect(runPluginInstall).not.toHaveBeenCalled();
 
     const result = await executeCrestodianOperation(
-      { kind: "plugin-install", spec: "clawhub:openclaw-demo" },
+      { kind: "plugin-install", spec: "clawhub:nodoassist-demo" },
       runtime,
       {
         approved: true,
@@ -567,7 +567,7 @@ describe("parseCrestodianOperation", () => {
     expect(result.applied).toBe(true);
 
     const installCall = requireFirstMockCall(runPluginInstall, "runPluginInstall");
-    expect(installCall[0]).toBe("clawhub:openclaw-demo");
+    expect(installCall[0]).toBe("clawhub:nodoassist-demo");
     expectRuntimeArg(installCall[1]);
     expect(lines.join("\n")).toContain("[crestodian] done: plugin.install");
     const auditPath = path.join(tempDir, "audit", "crestodian.jsonl");
@@ -576,33 +576,33 @@ describe("parseCrestodianOperation", () => {
       audit,
       {
         operation: "plugin.install",
-        summary: "Installed plugin clawhub:openclaw-demo",
+        summary: "Installed plugin clawhub:nodoassist-demo",
       },
-      { rescue: true, spec: "clawhub:openclaw-demo" },
+      { rescue: true, spec: "clawhub:nodoassist-demo" },
     );
   });
 
   it("uninstalls plugins only after approval and audits the write", async () => {
     const tempDir = opTempDirs.make("crestodian-plugin-uninstall-");
-    setTestEnvValue("OPENCLAW_STATE_DIR", tempDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", tempDir);
     const { runtime, lines } = createCrestodianTestRuntime();
     const runPluginUninstall = vi.fn(async (pluginId: string, pluginRuntime: RuntimeEnv) => {
       pluginRuntime.log(`uninstalled ${pluginId}`);
     });
 
     const plan = await executeCrestodianOperation(
-      { kind: "plugin-uninstall", pluginId: "openclaw-demo" },
+      { kind: "plugin-uninstall", pluginId: "nodoassist-demo" },
       runtime,
       { deps: { runPluginUninstall } },
     );
     expectRecordFields(plan as unknown as Record<string, unknown>, {
       applied: false,
-      message: "Plan: uninstall plugin openclaw-demo. Say yes to apply.",
+      message: "Plan: uninstall plugin nodoassist-demo. Say yes to apply.",
     });
     expect(runPluginUninstall).not.toHaveBeenCalled();
 
     const result = await executeCrestodianOperation(
-      { kind: "plugin-uninstall", pluginId: "openclaw-demo" },
+      { kind: "plugin-uninstall", pluginId: "nodoassist-demo" },
       runtime,
       {
         approved: true,
@@ -613,7 +613,7 @@ describe("parseCrestodianOperation", () => {
     expect(result.applied).toBe(true);
 
     const uninstallCall = requireFirstMockCall(runPluginUninstall, "runPluginUninstall");
-    expect(uninstallCall[0]).toBe("openclaw-demo");
+    expect(uninstallCall[0]).toBe("nodoassist-demo");
     expectRuntimeArg(uninstallCall[1]);
     expect(lines.join("\n")).toContain("[crestodian] done: plugin.uninstall");
     const auditPath = path.join(tempDir, "audit", "crestodian.jsonl");
@@ -622,19 +622,19 @@ describe("parseCrestodianOperation", () => {
       audit,
       {
         operation: "plugin.uninstall",
-        summary: "Uninstalled plugin openclaw-demo",
+        summary: "Uninstalled plugin nodoassist-demo",
       },
-      { rescue: true, pluginId: "openclaw-demo" },
+      { rescue: true, pluginId: "nodoassist-demo" },
     );
   });
 
   it("runs setup bootstrap only after approval and audits it", async () => {
     const tempDir = opTempDirs.make("crestodian-setup-");
-    setTestEnvValue("OPENCLAW_STATE_DIR", tempDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", tempDir);
     vi.stubEnv("OPENAI_API_KEY", "test-key");
     const { runtime, lines } = createCrestodianTestRuntime();
     const applySetup = vi.fn(async () => ({
-      configPath: path.join(tempDir, "openclaw.json"),
+      configPath: path.join(tempDir, "nodoassist.json"),
       lines: ["Workspace: /tmp/work", "Default model: openai/gpt-5.5"],
     }));
 
@@ -686,10 +686,10 @@ describe("parseCrestodianOperation", () => {
 
   it("offers provider setup after a providerless bootstrap", async () => {
     const tempDir = opTempDirs.make("crestodian-providerless-setup-");
-    setTestEnvValue("OPENCLAW_STATE_DIR", tempDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", tempDir);
     const { runtime, lines } = createCrestodianTestRuntime();
     const applySetup = vi.fn(async () => ({
-      configPath: path.join(tempDir, "openclaw.json"),
+      configPath: path.join(tempDir, "nodoassist.json"),
       lines: ["Workspace: /tmp/work"],
     }));
     const deps = {
@@ -723,7 +723,7 @@ describe("parseCrestodianOperation", () => {
 
   it("runs doctor repairs only after approval and audits them", async () => {
     const tempDir = opTempDirs.make("crestodian-doctor-fix-");
-    setTestEnvValue("OPENCLAW_STATE_DIR", tempDir);
+    setTestEnvValue("NODOASSIST_STATE_DIR", tempDir);
     const { runtime, lines } = createCrestodianTestRuntime();
     const runDoctor = vi.fn(async () => {});
 

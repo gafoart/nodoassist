@@ -87,11 +87,11 @@ describe("webHandlers web.login.start", () => {
       pluginId: "whatsapp",
       channelId: "whatsapp",
       label: "WhatsApp",
-      installSpec: "clawhub:@openclaw/whatsapp",
-      installCommand: "openclaw plugins install clawhub:@openclaw/whatsapp",
-      doctorFixCommand: "openclaw doctor --fix",
+      installSpec: "clawhub:@nodoassist/whatsapp",
+      installCommand: "nodoassist plugins install clawhub:@nodoassist/whatsapp",
+      doctorFixCommand: "nodoassist doctor --fix",
       repairHint:
-        "Install the official external plugin with: openclaw plugins install clawhub:@openclaw/whatsapp, or run: openclaw doctor --fix.",
+        "Install the official external plugin with: nodoassist plugins install clawhub:@nodoassist/whatsapp, or run: nodoassist doctor --fix.",
     });
     const respond = vi.fn();
 
@@ -110,7 +110,7 @@ describe("webHandlers web.login.start", () => {
       expect.objectContaining({
         code: "INVALID_REQUEST",
         message:
-          "web login provider is not available. Install the official external plugin with: openclaw plugins install clawhub:@openclaw/whatsapp, or run: openclaw doctor --fix.",
+          "web login provider is not available. Install the official external plugin with: nodoassist plugins install clawhub:@nodoassist/whatsapp, or run: nodoassist doctor --fix.",
       }),
     );
     expect(mocks.resolveMissingOfficialExternalChannelPluginRepairHint).toHaveBeenCalledWith({
@@ -121,30 +121,31 @@ describe("webHandlers web.login.start", () => {
 
   it("joins multiple missing official external plugin hints when more than one configured channel is missing", async () => {
     mocks.listChannelPlugins.mockReturnValue([]);
-    mocks.resolveMissingOfficialExternalChannelPluginRepairHint.mockImplementation(({ channelId }) =>
-      channelId === "whatsapp"
-        ? {
-            pluginId: "whatsapp",
-            channelId: "whatsapp",
-            label: "WhatsApp",
-            installSpec: "clawhub:@openclaw/whatsapp",
-            installCommand: "openclaw plugins install clawhub:@openclaw/whatsapp",
-            doctorFixCommand: "openclaw doctor --fix",
-            repairHint:
-              "Install the official external plugin with: openclaw plugins install clawhub:@openclaw/whatsapp, or run: openclaw doctor --fix.",
-          }
-        : channelId === "signal"
+    mocks.resolveMissingOfficialExternalChannelPluginRepairHint.mockImplementation(
+      ({ channelId }) =>
+        channelId === "whatsapp"
           ? {
-              pluginId: "signal",
-              channelId: "signal",
-              label: "Signal",
-              installSpec: "clawhub:@openclaw/signal",
-              installCommand: "openclaw plugins install clawhub:@openclaw/signal",
-              doctorFixCommand: "openclaw doctor --fix",
+              pluginId: "whatsapp",
+              channelId: "whatsapp",
+              label: "WhatsApp",
+              installSpec: "clawhub:@nodoassist/whatsapp",
+              installCommand: "nodoassist plugins install clawhub:@nodoassist/whatsapp",
+              doctorFixCommand: "nodoassist doctor --fix",
               repairHint:
-                "Install the official external plugin with: openclaw plugins install clawhub:@openclaw/signal, or run: openclaw doctor --fix.",
+                "Install the official external plugin with: nodoassist plugins install clawhub:@nodoassist/whatsapp, or run: nodoassist doctor --fix.",
             }
-          : null,
+          : channelId === "signal"
+            ? {
+                pluginId: "signal",
+                channelId: "signal",
+                label: "Signal",
+                installSpec: "clawhub:@nodoassist/signal",
+                installCommand: "nodoassist plugins install clawhub:@nodoassist/signal",
+                doctorFixCommand: "nodoassist doctor --fix",
+                repairHint:
+                  "Install the official external plugin with: nodoassist plugins install clawhub:@nodoassist/signal, or run: nodoassist doctor --fix.",
+              }
+            : null,
     );
     const respond = vi.fn();
 
@@ -174,7 +175,7 @@ describe("webHandlers web.login.start", () => {
       expect.objectContaining({
         code: "INVALID_REQUEST",
         message:
-          "web login provider is not available. Configured official external channel plugins are missing for WhatsApp, Signal. Install them with: openclaw plugins install clawhub:@openclaw/whatsapp; openclaw plugins install clawhub:@openclaw/signal, or run: openclaw doctor --fix.",
+          "web login provider is not available. Configured official external channel plugins are missing for WhatsApp, Signal. Install them with: nodoassist plugins install clawhub:@nodoassist/whatsapp; nodoassist plugins install clawhub:@nodoassist/signal, or run: nodoassist doctor --fix.",
       }),
     );
   });

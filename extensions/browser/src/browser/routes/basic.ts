@@ -273,7 +273,7 @@ async function runBrowserLiveProbe(req: BrowserRequest, ctx: BrowserRouteContext
       label: "Live snapshot",
       status: "fail" as const,
       summary: String(err),
-      fixHint: "Run openclaw browser start, then retry with openclaw browser doctor --deep.",
+      fixHint: "Run nodoassist browser start, then retry with nodoassist browser doctor --deep.",
     };
   }
 }
@@ -299,14 +299,14 @@ function parseHeadlessStartOverride(params: {
 
   const capabilities = getBrowserProfileCapabilities(params.profileCtx.profile);
   if (
-    params.profileCtx.profile.driver !== "openclaw" ||
+    params.profileCtx.profile.driver !== "nodoassist" ||
     params.profileCtx.profile.attachOnly ||
     capabilities.isRemote
   ) {
     jsonError(
       params.res,
       400,
-      `Headless start override is only supported for locally launched openclaw profiles. Profile "${params.profileCtx.profile.name}" is attach-only, remote, or existing-session.`,
+      `Headless start override is only supported for locally launched nodoassist profiles. Profile "${params.profileCtx.profile.name}" is attach-only, remote, or existing-session.`,
     );
     return { ok: false };
   }
@@ -398,11 +398,16 @@ export function registerBrowserBasicRoutes(app: BrowserRouteRegistrar, ctx: Brow
       if (!name) {
         return jsonError(res, 400, "name is required");
       }
-      if (driver && driver !== "openclaw" && driver !== "clawd" && driver !== "existing-session") {
+      if (
+        driver &&
+        driver !== "nodoassist" &&
+        driver !== "clawd" &&
+        driver !== "existing-session"
+      ) {
         return jsonError(
           res,
           400,
-          `unsupported profile driver "${driver}"; use "openclaw", "clawd", or "existing-session"`,
+          `unsupported profile driver "${driver}"; use "nodoassist", "clawd", or "existing-session"`,
         );
       }
 
@@ -418,8 +423,8 @@ export function registerBrowserBasicRoutes(app: BrowserRouteRegistrar, ctx: Brow
             driver:
               driver === "existing-session"
                 ? "existing-session"
-                : driver === "openclaw" || driver === "clawd"
-                  ? "openclaw"
+                : driver === "nodoassist" || driver === "clawd"
+                  ? "nodoassist"
                   : undefined,
           }),
       });

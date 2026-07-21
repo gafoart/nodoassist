@@ -1,12 +1,12 @@
-# OpenClaw StepFun Provider
+# NodoAssist StepFun Provider
 
-Official OpenClaw provider plugin for StepFun.
+Official NodoAssist provider plugin for StepFun.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/stepfun-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/stepfun-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/stepfun> for setup and configuration.

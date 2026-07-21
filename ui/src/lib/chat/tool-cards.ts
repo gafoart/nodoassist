@@ -1,4 +1,4 @@
-import { truncateUtf16Safe } from "@openclaw/normalization-core/utf16-slice";
+import { truncateUtf16Safe } from "@nodoassist/normalization-core/utf16-slice";
 // Control UI chat domain owns pure tool-card extraction rules.
 import { extractCanvasFromText } from "../../../../src/chat/canvas-render.js";
 import {
@@ -16,10 +16,10 @@ function resolveTranscriptMessageId(message: Record<string, unknown>): string | 
   if (typeof message.messageId === "string" && message.messageId.trim()) {
     return message.messageId;
   }
-  const openClawMeta = message["__openclaw"];
+  const nodoAssistMeta = message["__nodoassist"];
   const transcriptMeta =
-    openClawMeta && typeof openClawMeta === "object" && !Array.isArray(openClawMeta)
-      ? (openClawMeta as Record<string, unknown>)
+    nodoAssistMeta && typeof nodoAssistMeta === "object" && !Array.isArray(nodoAssistMeta)
+      ? (nodoAssistMeta as Record<string, unknown>)
       : null;
   return typeof transcriptMeta?.id === "string" && transcriptMeta.id.trim()
     ? transcriptMeta.id

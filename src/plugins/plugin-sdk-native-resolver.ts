@@ -1,4 +1,4 @@
-/** Installs native Node resolution aliases so plugins can import the OpenClaw SDK in dev and tests. */
+/** Installs native Node resolution aliases so plugins can import the NodoAssist SDK in dev and tests. */
 import fs from "node:fs";
 import Module from "node:module";
 import path from "node:path";
@@ -38,7 +38,7 @@ type NativeAliasEntry = {
 };
 
 /** Resolver install options for CJS `_resolveFilename` and modern ESM loader hooks. */
-export type InstallOpenClawPluginSdkNativeResolverOptions = {
+export type InstallNodoAssistPluginSdkNativeResolverOptions = {
   modulePath?: string;
   pluginModulePath?: string;
   allowedParentRoots?: readonly string[];
@@ -50,10 +50,10 @@ export type InstallOpenClawPluginSdkNativeResolverOptions = {
 
 const moduleWithResolver = Module as ModuleWithResolver;
 const nodeResolveFilenameProperty = "_resolveFilename" as const;
-const PLUGIN_SDK_PACKAGE_PREFIXES = ["openclaw/plugin-sdk", "@openclaw/plugin-sdk"] as const;
+const PLUGIN_SDK_PACKAGE_PREFIXES = ["nodoassist/plugin-sdk", "@nodoassist/plugin-sdk"] as const;
 const INTERNAL_CORE_PACKAGE_ALIASES = [
   {
-    packageName: "@openclaw/markdown-core",
+    packageName: "@nodoassist/markdown-core",
     packageDir: "markdown-core",
     subpaths: [
       ["", "index.ts"],
@@ -68,7 +68,7 @@ const INTERNAL_CORE_PACKAGE_ALIASES = [
     ],
   },
   {
-    packageName: "@openclaw/normalization-core",
+    packageName: "@nodoassist/normalization-core",
     packageDir: "normalization-core",
     subpaths: [
       ["", "index.ts"],
@@ -85,7 +85,7 @@ const INTERNAL_CORE_PACKAGE_ALIASES = [
     // Mirrors packages/ai/package.json exports; dist file names do not follow
     // the src layout (dist/diagnostics.mjs <- src/utils/diagnostics.ts), so the
     // generic export-map derivation cannot be used here.
-    packageName: "@openclaw/ai",
+    packageName: "@nodoassist/ai",
     packageDir: "ai",
     subpaths: [
       ["", "index.ts"],
@@ -101,7 +101,7 @@ const INTERNAL_CORE_PACKAGE_ALIASES = [
     ],
   },
   {
-    packageName: "@openclaw/media-core",
+    packageName: "@nodoassist/media-core",
     packageDir: "media-core",
     subpaths: [
       ["", "index.ts"],
@@ -117,7 +117,7 @@ const INTERNAL_CORE_PACKAGE_ALIASES = [
     ],
   },
   {
-    packageName: "@openclaw/llm-core",
+    packageName: "@nodoassist/llm-core",
     packageDir: "llm-core",
     subpaths: [
       ["", "index.ts"],
@@ -133,7 +133,7 @@ let installed = false;
 let previousResolveFilename: ResolveFilename | undefined;
 let esmHooks: { deregister: () => void } | undefined;
 
-function resolveLoaderModulePath(options: InstallOpenClawPluginSdkNativeResolverOptions): string {
+function resolveLoaderModulePath(options: InstallNodoAssistPluginSdkNativeResolverOptions): string {
   return options.modulePath ?? fileURLToPath(options.moduleUrl ?? import.meta.url);
 }
 
@@ -205,10 +205,10 @@ function resolveLoaderPackageRootFromModulePath(modulePath: string): string {
           name?: unknown;
         };
         if (
-          packageJson.name === "openclaw" ||
+          packageJson.name === "nodoassist" ||
           (typeof packageJson.bin === "object" &&
             packageJson.bin !== null &&
-            typeof (packageJson.bin as { openclaw?: unknown }).openclaw === "string")
+            typeof (packageJson.bin as { nodoassist?: unknown }).nodoassist === "string")
         ) {
           return cursor;
         }
@@ -230,7 +230,7 @@ function resolveAllowedParentRoot(modulePath: string): string {
 }
 
 function resolveAllowedParentRoots(
-  options: InstallOpenClawPluginSdkNativeResolverOptions,
+  options: InstallNodoAssistPluginSdkNativeResolverOptions,
 ): string[] {
   const roots = new Set<string>();
   if (options.pluginModulePath) {
@@ -280,7 +280,7 @@ function resolveAliasTargetForParentPath(
 }
 
 function listPluginSdkNativeAliases(
-  options: InstallOpenClawPluginSdkNativeResolverOptions,
+  options: InstallNodoAssistPluginSdkNativeResolverOptions,
 ): Array<readonly [string, string]> {
   const modulePath = options.pluginModulePath ?? resolveLoaderModulePath(options);
   return Object.entries(
@@ -308,7 +308,7 @@ function listPluginSdkNativeAliases(
 }
 
 function listInternalCorePackageNativeAliases(
-  options: InstallOpenClawPluginSdkNativeResolverOptions,
+  options: InstallNodoAssistPluginSdkNativeResolverOptions,
 ): Array<{
   request: string;
   target: string;
@@ -331,11 +331,11 @@ function listInternalCorePackageNativeAliases(
   const internalCorePackageAliases = [
     ...INTERNAL_CORE_PACKAGE_ALIASES,
     {
-      packageName: "@openclaw/acp-core",
+      packageName: "@nodoassist/acp-core",
       packageDir: "acp-core",
       subpaths: listWorkspacePackageExportAliasEntries({
         packageRoot,
-        packageName: "@openclaw/acp-core",
+        packageName: "@nodoassist/acp-core",
         packageDir: "acp-core",
       }).map((entry) => [entry.subpath, entry.srcFile] as const),
     },
@@ -413,8 +413,8 @@ function clearNativeAliasesForParentRoots(parentRoots: readonly string[]): void 
   }
 }
 
-export function installOpenClawPluginSdkNativeResolver(
-  options: InstallOpenClawPluginSdkNativeResolverOptions = {},
+export function installNodoAssistPluginSdkNativeResolver(
+  options: InstallNodoAssistPluginSdkNativeResolverOptions = {},
 ): string[] {
   const parentRoots = resolveAllowedParentRoots(options);
   clearNativeAliasesForParentRoots(parentRoots);
@@ -428,8 +428,8 @@ export function installOpenClawPluginSdkNativeResolver(
   return [...pluginSdkNativeAliases.keys()].toSorted();
 }
 
-export function installOpenClawInternalCorePackageNativeResolver(
-  options: Pick<InstallOpenClawPluginSdkNativeResolverOptions, "moduleUrl"> = {},
+export function installNodoAssistInternalCorePackageNativeResolver(
+  options: Pick<InstallNodoAssistPluginSdkNativeResolverOptions, "moduleUrl"> = {},
 ): string[] {
   for (const alias of listInternalCorePackageNativeAliases(options)) {
     registerNativeAlias(alias);
@@ -438,7 +438,7 @@ export function installOpenClawInternalCorePackageNativeResolver(
   return [...pluginSdkNativeAliases.keys()].toSorted();
 }
 
-export function resetOpenClawPluginSdkNativeResolverForTest(): void {
+export function resetNodoAssistPluginSdkNativeResolverForTest(): void {
   pluginSdkNativeAliases.clear();
   esmHooks?.deregister();
   esmHooks = undefined;

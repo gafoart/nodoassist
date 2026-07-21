@@ -1,13 +1,13 @@
-# Fireworks OpenClaw provider
+# Fireworks NodoAssist provider
 
-Official OpenClaw provider plugin for Fireworks.
+Official NodoAssist provider plugin for Fireworks.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/fireworks-provider
+nodoassist plugins install @nodoassist/fireworks-provider
 ```
 
 ## Docs
 
-See `docs/providers/fireworks.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/providers/fireworks`.
+See `docs/providers/fireworks.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/providers/fireworks`.

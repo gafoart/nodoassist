@@ -1,7 +1,7 @@
 // Irc plugin module implements gateway behavior.
-import { runStoppablePassiveMonitor } from "openclaw/plugin-sdk/extension-shared";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import type { ChannelAccountSnapshot } from "openclaw/plugin-sdk/status-helpers";
+import { runStoppablePassiveMonitor } from "nodoassist/plugin-sdk/extension-shared";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
+import type { ChannelAccountSnapshot } from "nodoassist/plugin-sdk/status-helpers";
 import type { ResolvedIrcAccount } from "./accounts.js";
 import { createAccountStatusSink } from "./channel-api.js";
 import type { RuntimeEnv } from "./runtime-api.js";

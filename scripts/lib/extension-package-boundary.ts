@@ -1,4 +1,4 @@
-// Extension Package Boundary script supports OpenClaw repository automation.
+// Extension Package Boundary script supports NodoAssist repository automation.
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, posix, resolve } from "node:path";
 import { privateLocalOnlyPluginSdkEntrypoints } from "./plugin-sdk-entries.mjs";
@@ -16,7 +16,7 @@ export const EXTENSION_PACKAGE_BOUNDARY_EXCLUDE = [
 
 const privateLocalOnlyPluginSdkPackageDtsPaths = Object.fromEntries(
   privateLocalOnlyPluginSdkEntrypoints.map((entrypoint) => [
-    `openclaw/plugin-sdk/${entrypoint}`,
+    `nodoassist/plugin-sdk/${entrypoint}`,
     [`../packages/plugin-sdk/dist/src/plugin-sdk/${entrypoint}.d.ts`],
   ]),
 ) as Record<string, readonly string[]>;
@@ -54,192 +54,202 @@ function buildPackageBoundaryDtsPaths(params: {
 }
 
 export const EXTENSION_PACKAGE_BOUNDARY_BASE_PATHS = {
-  "openclaw/extension-api": ["../src/extensionAPI.ts"],
-  "openclaw/plugin-sdk": ["../dist/plugin-sdk/index.d.ts"],
-  "openclaw/plugin-sdk/*": ["../dist/plugin-sdk/*.d.ts"],
+  "nodoassist/extension-api": ["../src/extensionAPI.ts"],
+  "nodoassist/plugin-sdk": ["../dist/plugin-sdk/index.d.ts"],
+  "nodoassist/plugin-sdk/*": ["../dist/plugin-sdk/*.d.ts"],
   ...privateLocalOnlyPluginSdkPackageDtsPaths,
-  "openclaw/plugin-sdk/account-id": ["../dist/plugin-sdk/account-id.d.ts"],
-  "openclaw/plugin-sdk/channel-entry-contract": ["../dist/plugin-sdk/channel-entry-contract.d.ts"],
-  "openclaw/plugin-sdk/browser-maintenance": [
+  "nodoassist/plugin-sdk/account-id": ["../dist/plugin-sdk/account-id.d.ts"],
+  "nodoassist/plugin-sdk/channel-entry-contract": [
+    "../dist/plugin-sdk/channel-entry-contract.d.ts",
+  ],
+  "nodoassist/plugin-sdk/browser-maintenance": [
     "../packages/plugin-sdk/dist/extensions/browser/browser-maintenance.d.ts",
   ],
-  "openclaw/plugin-sdk/channel-secret-basic-runtime": [
+  "nodoassist/plugin-sdk/channel-secret-basic-runtime": [
     "../dist/plugin-sdk/channel-secret-basic-runtime.d.ts",
   ],
-  "openclaw/plugin-sdk/channel-secret-runtime": ["../dist/plugin-sdk/channel-secret-runtime.d.ts"],
-  "openclaw/plugin-sdk/channel-secret-tts-runtime": [
+  "nodoassist/plugin-sdk/channel-secret-runtime": [
+    "../dist/plugin-sdk/channel-secret-runtime.d.ts",
+  ],
+  "nodoassist/plugin-sdk/channel-secret-tts-runtime": [
     "../dist/plugin-sdk/channel-secret-tts-runtime.d.ts",
   ],
-  "openclaw/plugin-sdk/channel-streaming": ["../dist/plugin-sdk/channel-streaming.d.ts"],
-  "openclaw/plugin-sdk/error-runtime": ["../dist/plugin-sdk/error-runtime.d.ts"],
-  "openclaw/plugin-sdk/provider-catalog-live-runtime": [
+  "nodoassist/plugin-sdk/channel-streaming": ["../dist/plugin-sdk/channel-streaming.d.ts"],
+  "nodoassist/plugin-sdk/error-runtime": ["../dist/plugin-sdk/error-runtime.d.ts"],
+  "nodoassist/plugin-sdk/provider-catalog-live-runtime": [
     "../dist/plugin-sdk/provider-catalog-live-runtime.d.ts",
   ],
-  "openclaw/plugin-sdk/provider-catalog-shared": [
+  "nodoassist/plugin-sdk/provider-catalog-shared": [
     "../dist/plugin-sdk/provider-catalog-shared.d.ts",
   ],
-  "openclaw/plugin-sdk/provider-entry": ["../dist/plugin-sdk/provider-entry.d.ts"],
-  "openclaw/plugin-sdk/secret-ref-runtime": ["../dist/plugin-sdk/secret-ref-runtime.d.ts"],
-  "openclaw/plugin-sdk/ssrf-runtime": ["../dist/plugin-sdk/ssrf-runtime.d.ts"],
-  "@openclaw/qa-channel/api.js": ["../dist/plugin-sdk/extensions/qa-channel/api.d.ts"],
-  "@openclaw/discord/api.js": ["../dist/plugin-sdk/extensions/discord/api.d.ts"],
-  "@openclaw/slack/api.js": ["../dist/plugin-sdk/extensions/slack/api.d.ts"],
-  "@openclaw/telegram/api.js": ["../dist/plugin-sdk/extensions/telegram/api.d.ts"],
-  "@openclaw/whatsapp/api.js": ["../dist/plugin-sdk/extensions/whatsapp/api.d.ts"],
-  "@openclaw/ai": ["../dist/plugin-sdk/packages/ai/src/index.d.ts"],
-  "@openclaw/ai/diagnostics": ["../dist/plugin-sdk/packages/ai/src/utils/diagnostics.d.ts"],
-  "@openclaw/ai/event-stream": ["../dist/plugin-sdk/packages/ai/src/utils/event-stream.d.ts"],
-  "@openclaw/ai/providers": ["../dist/plugin-sdk/packages/ai/src/providers.d.ts"],
-  "@openclaw/ai/types": ["../dist/plugin-sdk/packages/ai/src/types.d.ts"],
-  "@openclaw/ai/validation": ["../dist/plugin-sdk/packages/ai/src/validation.d.ts"],
-  "@openclaw/ai/internal/*": ["../dist/plugin-sdk/packages/ai/src/internal/*.d.ts"],
-  "@openclaw/llm-core": ["../dist/plugin-sdk/packages/llm-core/src/index.d.ts"],
-  "@openclaw/llm-core/diagnostics": [
+  "nodoassist/plugin-sdk/provider-entry": ["../dist/plugin-sdk/provider-entry.d.ts"],
+  "nodoassist/plugin-sdk/secret-ref-runtime": ["../dist/plugin-sdk/secret-ref-runtime.d.ts"],
+  "nodoassist/plugin-sdk/ssrf-runtime": ["../dist/plugin-sdk/ssrf-runtime.d.ts"],
+  "@nodoassist/qa-channel/api.js": ["../dist/plugin-sdk/extensions/qa-channel/api.d.ts"],
+  "@nodoassist/discord/api.js": ["../dist/plugin-sdk/extensions/discord/api.d.ts"],
+  "@nodoassist/slack/api.js": ["../dist/plugin-sdk/extensions/slack/api.d.ts"],
+  "@nodoassist/telegram/api.js": ["../dist/plugin-sdk/extensions/telegram/api.d.ts"],
+  "@nodoassist/whatsapp/api.js": ["../dist/plugin-sdk/extensions/whatsapp/api.d.ts"],
+  "@nodoassist/ai": ["../dist/plugin-sdk/packages/ai/src/index.d.ts"],
+  "@nodoassist/ai/diagnostics": ["../dist/plugin-sdk/packages/ai/src/utils/diagnostics.d.ts"],
+  "@nodoassist/ai/event-stream": ["../dist/plugin-sdk/packages/ai/src/utils/event-stream.d.ts"],
+  "@nodoassist/ai/providers": ["../dist/plugin-sdk/packages/ai/src/providers.d.ts"],
+  "@nodoassist/ai/types": ["../dist/plugin-sdk/packages/ai/src/types.d.ts"],
+  "@nodoassist/ai/validation": ["../dist/plugin-sdk/packages/ai/src/validation.d.ts"],
+  "@nodoassist/ai/internal/*": ["../dist/plugin-sdk/packages/ai/src/internal/*.d.ts"],
+  "@nodoassist/llm-core": ["../dist/plugin-sdk/packages/llm-core/src/index.d.ts"],
+  "@nodoassist/llm-core/diagnostics": [
     "../dist/plugin-sdk/packages/llm-core/src/utils/diagnostics.d.ts",
   ],
-  "@openclaw/llm-core/event-stream": [
+  "@nodoassist/llm-core/event-stream": [
     "../dist/plugin-sdk/packages/llm-core/src/utils/event-stream.d.ts",
   ],
-  "@openclaw/llm-core/types": ["../dist/plugin-sdk/packages/llm-core/src/types.d.ts"],
-  "@openclaw/llm-core/validation": ["../dist/plugin-sdk/packages/llm-core/src/validation.d.ts"],
-  "@openclaw/llm-core/*": ["../dist/plugin-sdk/packages/llm-core/src/*.d.ts"],
-  "@openclaw/model-catalog-core": ["../dist/plugin-sdk/packages/model-catalog-core/src/index.d.ts"],
-  "@openclaw/model-catalog-core/configured-model-refs": [
+  "@nodoassist/llm-core/types": ["../dist/plugin-sdk/packages/llm-core/src/types.d.ts"],
+  "@nodoassist/llm-core/validation": ["../dist/plugin-sdk/packages/llm-core/src/validation.d.ts"],
+  "@nodoassist/llm-core/*": ["../dist/plugin-sdk/packages/llm-core/src/*.d.ts"],
+  "@nodoassist/model-catalog-core": [
+    "../dist/plugin-sdk/packages/model-catalog-core/src/index.d.ts",
+  ],
+  "@nodoassist/model-catalog-core/configured-model-refs": [
     "../dist/plugin-sdk/packages/model-catalog-core/src/configured-model-refs.d.ts",
   ],
-  "@openclaw/model-catalog-core/model-catalog-refs": [
+  "@nodoassist/model-catalog-core/model-catalog-refs": [
     "../dist/plugin-sdk/packages/model-catalog-core/src/model-catalog-refs.d.ts",
   ],
-  "@openclaw/model-catalog-core/model-catalog-normalize": [
+  "@nodoassist/model-catalog-core/model-catalog-normalize": [
     "../dist/plugin-sdk/packages/model-catalog-core/src/model-catalog-normalize.d.ts",
   ],
-  "@openclaw/model-catalog-core/model-catalog-types": [
+  "@nodoassist/model-catalog-core/model-catalog-types": [
     "../dist/plugin-sdk/packages/model-catalog-core/src/model-catalog-types.d.ts",
   ],
-  "@openclaw/model-catalog-core/provider-id": [
+  "@nodoassist/model-catalog-core/provider-id": [
     "../dist/plugin-sdk/packages/model-catalog-core/src/provider-id.d.ts",
   ],
-  "@openclaw/model-catalog-core/provider-model-id-normalization": [
+  "@nodoassist/model-catalog-core/provider-model-id-normalization": [
     "../dist/plugin-sdk/packages/model-catalog-core/src/provider-model-id-normalization.d.ts",
   ],
-  "@openclaw/model-catalog-core/provider-model-id-normalize": [
+  "@nodoassist/model-catalog-core/provider-model-id-normalize": [
     "../dist/plugin-sdk/packages/model-catalog-core/src/provider-model-id-normalize.d.ts",
   ],
-  "@openclaw/model-catalog-core/*": ["../dist/plugin-sdk/packages/model-catalog-core/src/*.d.ts"],
-  "@openclaw/markdown-core": ["../dist/plugin-sdk/packages/markdown-core/src/index.d.ts"],
-  "@openclaw/markdown-core/code-spans": [
+  "@nodoassist/model-catalog-core/*": ["../dist/plugin-sdk/packages/model-catalog-core/src/*.d.ts"],
+  "@nodoassist/markdown-core": ["../dist/plugin-sdk/packages/markdown-core/src/index.d.ts"],
+  "@nodoassist/markdown-core/code-spans": [
     "../dist/plugin-sdk/packages/markdown-core/src/code-spans.d.ts",
   ],
-  "@openclaw/markdown-core/fences": ["../dist/plugin-sdk/packages/markdown-core/src/fences.d.ts"],
-  "@openclaw/markdown-core/frontmatter": [
+  "@nodoassist/markdown-core/fences": ["../dist/plugin-sdk/packages/markdown-core/src/fences.d.ts"],
+  "@nodoassist/markdown-core/frontmatter": [
     "../dist/plugin-sdk/packages/markdown-core/src/frontmatter.d.ts",
   ],
-  "@openclaw/markdown-core/ir": ["../dist/plugin-sdk/packages/markdown-core/src/ir.d.ts"],
-  "@openclaw/markdown-core/render": ["../dist/plugin-sdk/packages/markdown-core/src/render.d.ts"],
-  "@openclaw/markdown-core/render-aware-chunking": [
+  "@nodoassist/markdown-core/ir": ["../dist/plugin-sdk/packages/markdown-core/src/ir.d.ts"],
+  "@nodoassist/markdown-core/render": ["../dist/plugin-sdk/packages/markdown-core/src/render.d.ts"],
+  "@nodoassist/markdown-core/render-aware-chunking": [
     "../dist/plugin-sdk/packages/markdown-core/src/render-aware-chunking.d.ts",
   ],
-  "@openclaw/markdown-core/tables": ["../dist/plugin-sdk/packages/markdown-core/src/tables.d.ts"],
-  "@openclaw/markdown-core/types": ["../dist/plugin-sdk/packages/markdown-core/src/types.d.ts"],
-  "@openclaw/markdown-core/*": ["../dist/plugin-sdk/packages/markdown-core/src/*.d.ts"],
-  "@openclaw/media-generation-core": [
+  "@nodoassist/markdown-core/tables": ["../dist/plugin-sdk/packages/markdown-core/src/tables.d.ts"],
+  "@nodoassist/markdown-core/types": ["../dist/plugin-sdk/packages/markdown-core/src/types.d.ts"],
+  "@nodoassist/markdown-core/*": ["../dist/plugin-sdk/packages/markdown-core/src/*.d.ts"],
+  "@nodoassist/media-generation-core": [
     "../dist/plugin-sdk/packages/media-generation-core/src/index.d.ts",
   ],
-  "@openclaw/media-generation-core/capability-model-ref": [
+  "@nodoassist/media-generation-core/capability-model-ref": [
     "../dist/plugin-sdk/packages/media-generation-core/src/capability-model-ref.d.ts",
   ],
-  "@openclaw/media-generation-core/catalog": [
+  "@nodoassist/media-generation-core/catalog": [
     "../dist/plugin-sdk/packages/media-generation-core/src/catalog.d.ts",
   ],
-  "@openclaw/media-generation-core/model-ref": [
+  "@nodoassist/media-generation-core/model-ref": [
     "../dist/plugin-sdk/packages/media-generation-core/src/model-ref.d.ts",
   ],
-  "@openclaw/media-generation-core/normalization": [
+  "@nodoassist/media-generation-core/normalization": [
     "../dist/plugin-sdk/packages/media-generation-core/src/normalization.d.ts",
   ],
-  "@openclaw/media-generation-core/*": [
+  "@nodoassist/media-generation-core/*": [
     "../dist/plugin-sdk/packages/media-generation-core/src/*.d.ts",
   ],
-  "@openclaw/media-core": ["../dist/plugin-sdk/packages/media-core/src/index.d.ts"],
-  "@openclaw/media-core/base64": ["../dist/plugin-sdk/packages/media-core/src/base64.d.ts"],
-  "@openclaw/media-core/constants": ["../dist/plugin-sdk/packages/media-core/src/constants.d.ts"],
-  "@openclaw/media-core/content-length": [
+  "@nodoassist/media-core": ["../dist/plugin-sdk/packages/media-core/src/index.d.ts"],
+  "@nodoassist/media-core/base64": ["../dist/plugin-sdk/packages/media-core/src/base64.d.ts"],
+  "@nodoassist/media-core/constants": ["../dist/plugin-sdk/packages/media-core/src/constants.d.ts"],
+  "@nodoassist/media-core/content-length": [
     "../dist/plugin-sdk/packages/media-core/src/content-length.d.ts",
   ],
-  "@openclaw/media-core/file-name": ["../dist/plugin-sdk/packages/media-core/src/file-name.d.ts"],
-  "@openclaw/media-core/inbound-path-policy": [
+  "@nodoassist/media-core/file-name": ["../dist/plugin-sdk/packages/media-core/src/file-name.d.ts"],
+  "@nodoassist/media-core/inbound-path-policy": [
     "../dist/plugin-sdk/packages/media-core/src/inbound-path-policy.d.ts",
   ],
-  "@openclaw/media-core/inline-image-data-url": [
+  "@nodoassist/media-core/inline-image-data-url": [
     "../dist/plugin-sdk/packages/media-core/src/inline-image-data-url.d.ts",
   ],
-  "@openclaw/media-core/media-source-url": [
+  "@nodoassist/media-core/media-source-url": [
     "../dist/plugin-sdk/packages/media-core/src/media-source-url.d.ts",
   ],
-  "@openclaw/media-core/mime": ["../dist/plugin-sdk/packages/media-core/src/mime.d.ts"],
-  "@openclaw/media-core/read-byte-stream-with-limit": [
+  "@nodoassist/media-core/mime": ["../dist/plugin-sdk/packages/media-core/src/mime.d.ts"],
+  "@nodoassist/media-core/read-byte-stream-with-limit": [
     "../dist/plugin-sdk/packages/media-core/src/read-byte-stream-with-limit.d.ts",
   ],
-  "@openclaw/media-core/*": ["../dist/plugin-sdk/packages/media-core/src/*.d.ts"],
-  "@openclaw/normalization-core/record-coerce": [
+  "@nodoassist/media-core/*": ["../dist/plugin-sdk/packages/media-core/src/*.d.ts"],
+  "@nodoassist/normalization-core/record-coerce": [
     "../dist/plugin-sdk/packages/normalization-core/src/record-coerce.d.ts",
   ],
-  "@openclaw/normalization-core/string-coerce": [
+  "@nodoassist/normalization-core/string-coerce": [
     "../dist/plugin-sdk/packages/normalization-core/src/string-coerce.d.ts",
   ],
-  "@openclaw/normalization-core/*": ["../dist/plugin-sdk/packages/normalization-core/src/*.d.ts"],
+  "@nodoassist/normalization-core/*": ["../dist/plugin-sdk/packages/normalization-core/src/*.d.ts"],
   ...buildPackageBoundaryDtsPaths({
-    packageName: "@openclaw/acp-core",
+    packageName: "@nodoassist/acp-core",
     packageDir: "acp-core",
   }),
-  "@openclaw/acp-core/*": ["../dist/plugin-sdk/packages/acp-core/src/*.d.ts"],
-  "@openclaw/terminal-core": ["../dist/plugin-sdk/packages/terminal-core/src/index.d.ts"],
-  "@openclaw/terminal-core/ansi": ["../dist/plugin-sdk/packages/terminal-core/src/ansi.d.ts"],
-  "@openclaw/terminal-core/decorative-emoji": [
+  "@nodoassist/acp-core/*": ["../dist/plugin-sdk/packages/acp-core/src/*.d.ts"],
+  "@nodoassist/terminal-core": ["../dist/plugin-sdk/packages/terminal-core/src/index.d.ts"],
+  "@nodoassist/terminal-core/ansi": ["../dist/plugin-sdk/packages/terminal-core/src/ansi.d.ts"],
+  "@nodoassist/terminal-core/decorative-emoji": [
     "../dist/plugin-sdk/packages/terminal-core/src/decorative-emoji.d.ts",
   ],
-  "@openclaw/terminal-core/health-style": [
+  "@nodoassist/terminal-core/health-style": [
     "../dist/plugin-sdk/packages/terminal-core/src/health-style.d.ts",
   ],
-  "@openclaw/terminal-core/links": ["../dist/plugin-sdk/packages/terminal-core/src/links.d.ts"],
-  "@openclaw/terminal-core/note": ["../dist/plugin-sdk/packages/terminal-core/src/note.d.ts"],
-  "@openclaw/terminal-core/osc-progress": [
+  "@nodoassist/terminal-core/links": ["../dist/plugin-sdk/packages/terminal-core/src/links.d.ts"],
+  "@nodoassist/terminal-core/note": ["../dist/plugin-sdk/packages/terminal-core/src/note.d.ts"],
+  "@nodoassist/terminal-core/osc-progress": [
     "../dist/plugin-sdk/packages/terminal-core/src/osc-progress.d.ts",
   ],
-  "@openclaw/terminal-core/palette": ["../dist/plugin-sdk/packages/terminal-core/src/palette.d.ts"],
-  "@openclaw/terminal-core/progress-line": [
+  "@nodoassist/terminal-core/palette": [
+    "../dist/plugin-sdk/packages/terminal-core/src/palette.d.ts",
+  ],
+  "@nodoassist/terminal-core/progress-line": [
     "../dist/plugin-sdk/packages/terminal-core/src/progress-line.d.ts",
   ],
-  "@openclaw/terminal-core/prompt-select-styled": [
+  "@nodoassist/terminal-core/prompt-select-styled": [
     "../dist/plugin-sdk/packages/terminal-core/src/prompt-select-styled.d.ts",
   ],
-  "@openclaw/terminal-core/prompt-select-styled-params": [
+  "@nodoassist/terminal-core/prompt-select-styled-params": [
     "../dist/plugin-sdk/packages/terminal-core/src/prompt-select-styled-params.d.ts",
   ],
-  "@openclaw/terminal-core/prompt-style": [
+  "@nodoassist/terminal-core/prompt-style": [
     "../dist/plugin-sdk/packages/terminal-core/src/prompt-style.d.ts",
   ],
-  "@openclaw/terminal-core/restore": ["../dist/plugin-sdk/packages/terminal-core/src/restore.d.ts"],
-  "@openclaw/terminal-core/safe-text": [
+  "@nodoassist/terminal-core/restore": [
+    "../dist/plugin-sdk/packages/terminal-core/src/restore.d.ts",
+  ],
+  "@nodoassist/terminal-core/safe-text": [
     "../dist/plugin-sdk/packages/terminal-core/src/safe-text.d.ts",
   ],
-  "@openclaw/terminal-core/stream-writer": [
+  "@nodoassist/terminal-core/stream-writer": [
     "../dist/plugin-sdk/packages/terminal-core/src/stream-writer.d.ts",
   ],
-  "@openclaw/terminal-core/table": ["../dist/plugin-sdk/packages/terminal-core/src/table.d.ts"],
-  "@openclaw/terminal-core/terminal-link": [
+  "@nodoassist/terminal-core/table": ["../dist/plugin-sdk/packages/terminal-core/src/table.d.ts"],
+  "@nodoassist/terminal-core/terminal-link": [
     "../dist/plugin-sdk/packages/terminal-core/src/terminal-link.d.ts",
   ],
-  "@openclaw/terminal-core/theme": ["../dist/plugin-sdk/packages/terminal-core/src/theme.d.ts"],
-  "@openclaw/terminal-core/*": ["../dist/plugin-sdk/packages/terminal-core/src/*.d.ts"],
-  "@openclaw/*.js": ["../packages/plugin-sdk/dist/extensions/*.d.ts", "../extensions/*"],
-  "@openclaw/*": ["../packages/plugin-sdk/dist/extensions/*", "../extensions/*"],
-  "openclaw/plugin-sdk/qa-channel": ["../dist/plugin-sdk/src/plugin-sdk/qa-channel.d.ts"],
-  "openclaw/plugin-sdk/qa-channel-protocol": [
+  "@nodoassist/terminal-core/theme": ["../dist/plugin-sdk/packages/terminal-core/src/theme.d.ts"],
+  "@nodoassist/terminal-core/*": ["../dist/plugin-sdk/packages/terminal-core/src/*.d.ts"],
+  "@nodoassist/*.js": ["../packages/plugin-sdk/dist/extensions/*.d.ts", "../extensions/*"],
+  "@nodoassist/*": ["../packages/plugin-sdk/dist/extensions/*", "../extensions/*"],
+  "nodoassist/plugin-sdk/qa-channel": ["../dist/plugin-sdk/src/plugin-sdk/qa-channel.d.ts"],
+  "nodoassist/plugin-sdk/qa-channel-protocol": [
     "../dist/plugin-sdk/src/plugin-sdk/qa-channel-protocol.d.ts",
   ],
-  "openclaw/plugin-sdk/qa-runtime": ["../dist/plugin-sdk/src/plugin-sdk/qa-runtime.d.ts"],
-  "@openclaw/plugin-sdk/*": ["../dist/plugin-sdk/*.d.ts"],
+  "nodoassist/plugin-sdk/qa-runtime": ["../dist/plugin-sdk/src/plugin-sdk/qa-runtime.d.ts"],
+  "@nodoassist/plugin-sdk/*": ["../dist/plugin-sdk/*.d.ts"],
 } as const;
 
 function prefixExtensionPackageBoundaryPaths(
@@ -257,42 +267,42 @@ function prefixExtensionPackageBoundaryPaths(
 export const EXTENSION_PACKAGE_BOUNDARY_XAI_PATHS = {
   ...prefixExtensionPackageBoundaryPaths(
     (({
-      "openclaw/plugin-sdk/channel-secret-basic-runtime": _omitBasic,
-      "openclaw/plugin-sdk/channel-secret-tts-runtime": _omitTts,
-      "@openclaw/discord/api.js": _omitDiscord,
-      "@openclaw/slack/api.js": _omitSlack,
-      "@openclaw/telegram/api.js": _omitTelegram,
-      "@openclaw/whatsapp/api.js": _omitWhatsApp,
+      "nodoassist/plugin-sdk/channel-secret-basic-runtime": _omitBasic,
+      "nodoassist/plugin-sdk/channel-secret-tts-runtime": _omitTts,
+      "@nodoassist/discord/api.js": _omitDiscord,
+      "@nodoassist/slack/api.js": _omitSlack,
+      "@nodoassist/telegram/api.js": _omitTelegram,
+      "@nodoassist/whatsapp/api.js": _omitWhatsApp,
       ...rest
     }) => rest)(EXTENSION_PACKAGE_BOUNDARY_BASE_PATHS),
     "../",
   ),
-  "openclaw/plugin-sdk/channel-entry-contract": [
+  "nodoassist/plugin-sdk/channel-entry-contract": [
     "../../dist/plugin-sdk/channel-entry-contract.d.ts",
   ],
-  "openclaw/plugin-sdk/browser-maintenance": [
+  "nodoassist/plugin-sdk/browser-maintenance": [
     "../../dist/plugin-sdk/src/plugin-sdk/browser-maintenance.d.ts",
   ],
-  "openclaw/plugin-sdk/cli-runtime": ["../../dist/plugin-sdk/cli-runtime.d.ts"],
-  "openclaw/plugin-sdk/provider-catalog-live-runtime": [
+  "nodoassist/plugin-sdk/cli-runtime": ["../../dist/plugin-sdk/cli-runtime.d.ts"],
+  "nodoassist/plugin-sdk/provider-catalog-live-runtime": [
     "../../dist/plugin-sdk/provider-catalog-live-runtime.d.ts",
   ],
-  "openclaw/plugin-sdk/provider-catalog-shared": [
+  "nodoassist/plugin-sdk/provider-catalog-shared": [
     "../../dist/plugin-sdk/provider-catalog-shared.d.ts",
   ],
-  "openclaw/plugin-sdk/provider-env-vars": ["../../dist/plugin-sdk/provider-env-vars.d.ts"],
-  "openclaw/plugin-sdk/provider-entry": ["../../dist/plugin-sdk/provider-entry.d.ts"],
-  "openclaw/plugin-sdk/provider-web-search-contract": [
+  "nodoassist/plugin-sdk/provider-env-vars": ["../../dist/plugin-sdk/provider-env-vars.d.ts"],
+  "nodoassist/plugin-sdk/provider-entry": ["../../dist/plugin-sdk/provider-entry.d.ts"],
+  "nodoassist/plugin-sdk/provider-web-search-contract": [
     "../../dist/plugin-sdk/provider-web-search-contract.d.ts",
   ],
-  "@openclaw/qa-channel/api.js": ["../../dist/plugin-sdk/extensions/qa-channel/api.d.ts"],
-  "@openclaw/*.js": ["../../packages/plugin-sdk/dist/extensions/*.d.ts", "../*"],
-  "@openclaw/*": ["../*"],
-  "@openclaw/plugin-sdk/*": ["../../dist/plugin-sdk/*.d.ts"],
-  "@openclaw/anthropic-vertex/api.js": ["./.boundary-stubs/anthropic-vertex-api.d.ts"],
-  "@openclaw/ollama/api.js": ["./.boundary-stubs/ollama-api.d.ts"],
-  "@openclaw/ollama/runtime-api.js": ["./.boundary-stubs/ollama-runtime-api.d.ts"],
-  "@openclaw/speech-core/runtime-api.js": ["./.boundary-stubs/speech-core-runtime-api.d.ts"],
+  "@nodoassist/qa-channel/api.js": ["../../dist/plugin-sdk/extensions/qa-channel/api.d.ts"],
+  "@nodoassist/*.js": ["../../packages/plugin-sdk/dist/extensions/*.d.ts", "../*"],
+  "@nodoassist/*": ["../*"],
+  "@nodoassist/plugin-sdk/*": ["../../dist/plugin-sdk/*.d.ts"],
+  "@nodoassist/anthropic-vertex/api.js": ["./.boundary-stubs/anthropic-vertex-api.d.ts"],
+  "@nodoassist/ollama/api.js": ["./.boundary-stubs/ollama-api.d.ts"],
+  "@nodoassist/ollama/runtime-api.js": ["./.boundary-stubs/ollama-runtime-api.d.ts"],
+  "@nodoassist/speech-core/runtime-api.js": ["./.boundary-stubs/speech-core-runtime-api.d.ts"],
 } as const;
 
 type ExtensionPackageBoundaryTsConfigJson = {

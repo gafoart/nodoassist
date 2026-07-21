@@ -1,12 +1,12 @@
-# OpenClaw Groq Provider
+# NodoAssist Groq Provider
 
-Official OpenClaw provider plugin for Groq.
+Official NodoAssist provider plugin for Groq.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/groq-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/groq-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/groq> for setup and configuration.

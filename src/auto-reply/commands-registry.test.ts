@@ -276,8 +276,8 @@ describe("commands registry", () => {
       "/skill demo_skill first line\nsecond line",
     );
     expect(
-      normalizeCommandBody("/skill@openclaw: demo_skill first line\nsecond line", {
-        botUsername: "openclaw",
+      normalizeCommandBody("/skill@nodoassist: demo_skill first line\nsecond line", {
+        botUsername: "nodoassist",
       }),
     ).toBe("/skill demo_skill first line\nsecond line");
     expect(resolveTextCommand("/skill demo_skill first line\nsecond line")?.args).toBe(
@@ -634,21 +634,21 @@ describe("commands registry", () => {
   });
 
   it("normalizes telegram-style command mentions for the current bot", () => {
-    expect(normalizeCommandBody("/help@openclaw", { botUsername: "openclaw" })).toBe("/help");
+    expect(normalizeCommandBody("/help@nodoassist", { botUsername: "nodoassist" })).toBe("/help");
     expect(
-      normalizeCommandBody("/help@openclaw args", {
-        botUsername: "openclaw",
+      normalizeCommandBody("/help@nodoassist args", {
+        botUsername: "nodoassist",
       }),
     ).toBe("/help args");
     expect(
-      normalizeCommandBody("/help@openclaw: args", {
-        botUsername: "openclaw",
+      normalizeCommandBody("/help@nodoassist: args", {
+        botUsername: "nodoassist",
       }),
     ).toBe("/help args");
   });
 
   it("keeps telegram-style command mentions for other bots", () => {
-    expect(normalizeCommandBody("/help@otherbot", { botUsername: "openclaw" })).toBe(
+    expect(normalizeCommandBody("/help@otherbot", { botUsername: "nodoassist" })).toBe(
       "/help@otherbot",
     );
   });

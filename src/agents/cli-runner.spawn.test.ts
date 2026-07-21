@@ -293,10 +293,10 @@ async function withTempExecApprovalsFile(
   file: Record<string, unknown>,
   run: () => Promise<void>,
 ): Promise<void> {
-  const home = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-cli-exec-approvals-"));
-  await fs.mkdir(path.join(home, ".openclaw"), { recursive: true });
+  const home = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-cli-exec-approvals-"));
+  await fs.mkdir(path.join(home, ".nodoassist"), { recursive: true });
   await fs.writeFile(
-    path.join(home, ".openclaw", "exec-approvals.json"),
+    path.join(home, ".nodoassist", "exec-approvals.json"),
     `${JSON.stringify(file)}\n`,
     "utf-8",
   );
@@ -307,10 +307,10 @@ async function withTempExecApprovalsFile(
   }
 }
 
-async function withTempOpenClawHome(run: (home: string) => Promise<void>): Promise<void> {
-  const home = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-cli-home-"));
+async function withTempNodoAssistHome(run: (home: string) => Promise<void>): Promise<void> {
+  const home = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-cli-home-"));
   try {
-    await withEnvAsync({ OPENCLAW_HOME: home }, async () => run(home));
+    await withEnvAsync({ NODOASSIST_HOME: home }, async () => run(home));
   } finally {
     await fs.rm(home, { recursive: true, force: true });
   }
@@ -431,7 +431,7 @@ describe("runCliAgent spawn path", () => {
     expect(allArgs).toContain("You are a helpful assistant.");
   });
 
-  it("includes the OpenClaw skills prompt in CLI system prompts", () => {
+  it("includes the NodoAssist skills prompt in CLI system prompts", () => {
     const systemPrompt = buildCliAgentSystemPrompt({
       workspaceDir: "/tmp",
       modelDisplay: "claude-cli/sonnet",
@@ -488,7 +488,7 @@ describe("runCliAgent spawn path", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = (args[0] ?? {}) as { argv?: string[] };
       systemPromptPath = requireArgAfter(input.argv, "--append-system-prompt-file");
-      expect(systemPromptPath).toContain("openclaw-cli-system-prompt-");
+      expect(systemPromptPath).toContain("nodoassist-cli-system-prompt-");
       await expect(fs.readFile(systemPromptPath, "utf-8")).resolves.toBe(
         "You are a helpful assistant.",
       );
@@ -518,7 +518,7 @@ describe("runCliAgent spawn path", () => {
 
   it("resends system prompts through a file for soft-resumed prompt-tool drift", async () => {
     const writeSoftResumeSystemPromptFile = vi.fn(async () => ({
-      filePath: "/tmp/openclaw-soft-resume-system-prompt.md",
+      filePath: "/tmp/nodoassist-soft-resume-system-prompt.md",
       cleanup: async () => {},
     }));
     setCliRunnerExecuteTestDeps({
@@ -528,7 +528,7 @@ describe("runCliAgent spawn path", () => {
       const input = (args[0] ?? {}) as { argv?: string[] };
       expect(input.argv).toContain("resume");
       expect(input.argv).toContain("soft-cli-session");
-      expect(input.argv?.join(" ")).toContain("/tmp/openclaw-soft-resume-system-prompt.md");
+      expect(input.argv?.join(" ")).toContain("/tmp/nodoassist-soft-resume-system-prompt.md");
       return createManagedRun({
         reason: "exit",
         exitCode: 0,
@@ -645,22 +645,22 @@ describe("runCliAgent spawn path", () => {
           },
         },
         preparedEnv: {
-          GEMINI_CLI_HOME: "/tmp/openclaw-gemini-profile-home",
-          GEMINI_CLI_SYSTEM_SETTINGS_PATH: "/tmp/openclaw-gemini-system-settings.json",
+          GEMINI_CLI_HOME: "/tmp/nodoassist-gemini-profile-home",
+          GEMINI_CLI_SYSTEM_SETTINGS_PATH: "/tmp/nodoassist-gemini-system-settings.json",
         },
       }),
     );
 
     const input = mockCallArg(supervisorSpawnMock) as { env?: Record<string, string> };
     expect(input.env?.STATIC_BACKEND_FLAG).toBe("set");
-    expect(input.env?.GEMINI_CLI_HOME).toBe("/tmp/openclaw-gemini-profile-home");
+    expect(input.env?.GEMINI_CLI_HOME).toBe("/tmp/nodoassist-gemini-profile-home");
     expect(input.env?.GEMINI_CLI_SYSTEM_SETTINGS_PATH).toBe(
-      "/tmp/openclaw-gemini-system-settings.json",
+      "/tmp/nodoassist-gemini-system-settings.json",
     );
   });
 
-  it("passes OpenClaw skills to Claude as a session plugin", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-cli-skills-"));
+  it("passes NodoAssist skills to Claude as a session plugin", async () => {
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-cli-skills-"));
     const skillDir = path.join(workspaceDir, "skills", "weather");
     await fs.mkdir(skillDir, { recursive: true });
     await fs.writeFile(
@@ -683,7 +683,7 @@ describe("runCliAgent spawn path", () => {
       const manifest = JSON.parse(
         await fs.readFile(path.join(pluginDir, ".claude-plugin", "plugin.json"), "utf-8"),
       ) as { name?: string; skills?: string };
-      expect(manifest.name).toBe("openclaw-skills");
+      expect(manifest.name).toBe("nodoassist-skills");
       expect(manifest.skills).toBe("./skills");
       await expect(
         fs.readFile(path.join(pluginDir, "skills", "weather", "SKILL.md"), "utf-8"),
@@ -1405,7 +1405,7 @@ describe("runCliAgent spawn path", () => {
 
   it("keeps captured live prepared backend cleanup with the whole-run owner", async () => {
     const mcpConfigDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "openclaw-cli-captured-mcp-config-"),
+      path.join(os.tmpdir(), "nodoassist-cli-captured-mcp-config-"),
     );
     const mcpConfigPath = path.join(mcpConfigDir, "mcp.json");
     await fs.writeFile(
@@ -1413,7 +1413,7 @@ describe("runCliAgent spawn path", () => {
       `${JSON.stringify(
         {
           mcpServers: {
-            openclaw: {
+            nodoassist: {
               type: "http",
               url: "http://127.0.0.1:23119/mcp",
               headers: {},
@@ -1515,7 +1515,7 @@ describe("runCliAgent spawn path", () => {
     supervisorSpawnMock.mockImplementationOnce(async (...args: unknown[]) => {
       const input = args[0] as Parameters<ReturnType<typeof getProcessSupervisor>["spawn"]>[0];
       const captureHandle = markMcpLoopbackToolCallStarted({
-        captureKey: input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "",
+        captureKey: input.env?.NODOASSIST_MCP_CLI_CAPTURE_KEY ?? "",
         toolName: "message",
         args: { action: "send", target: "chat123", message: "done" },
       });
@@ -2018,7 +2018,7 @@ describe("runCliAgent spawn path", () => {
         "--resume",
         "claude-session",
         "--session-id",
-        "openclaw-session",
+        "nodoassist-session",
         "--append-system-prompt",
         "old prompt",
         "--append-system-prompt-file",
@@ -2032,7 +2032,7 @@ describe("runCliAgent spawn path", () => {
     expect(args).toContain("--resume");
     expect(args).toContain("claude-session");
     expect(args).not.toContain("--session-id");
-    expect(args).not.toContain("openclaw-session");
+    expect(args).not.toContain("nodoassist-session");
     expect(args).not.toContain("--append-system-prompt-file");
     expect(args).not.toContain("/tmp/system-prompt.md");
     expect(args).not.toContain("--append-system-prompt");
@@ -2357,7 +2357,7 @@ ${JSON.stringify({
                   {
                     type: "mcp_tool_use",
                     id: "tool-live-blocked",
-                    name: "mcp__openclaw__message",
+                    name: "mcp__nodoassist__message",
                     input: { action: "react" },
                   },
                 ],
@@ -2391,7 +2391,7 @@ ${JSON.stringify({
         onStdout?: (chunk: string) => void;
       };
       stdoutListener = input.onStdout;
-      captureKey = input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "";
+      captureKey = input.env?.NODOASSIST_MCP_CLI_CAPTURE_KEY ?? "";
       return {
         runId: "live-run-blocked",
         pid: 3061,
@@ -2458,13 +2458,13 @@ ${JSON.stringify({
                   {
                     type: "mcp_tool_use",
                     id: "tool-live-identical-a",
-                    name: "mcp__openclaw__message",
+                    name: "mcp__nodoassist__message",
                     input: toolArgs,
                   },
                   {
                     type: "mcp_tool_use",
                     id: "tool-live-identical-b",
-                    name: "mcp__openclaw__message",
+                    name: "mcp__nodoassist__message",
                     input: toolArgs,
                   },
                 ],
@@ -2513,7 +2513,7 @@ ${JSON.stringify({
         onStdout?: (chunk: string) => void;
       };
       stdoutListener = input.onStdout;
-      captureKey = input.env?.OPENCLAW_MCP_CLI_CAPTURE_KEY ?? "";
+      captureKey = input.env?.NODOASSIST_MCP_CLI_CAPTURE_KEY ?? "";
       return {
         runId: "live-run-identical",
         pid: 3062,
@@ -2924,8 +2924,8 @@ ${JSON.stringify({
   });
 
   it("does not create exec approvals file while resolving Claude live policy", async () => {
-    await withTempOpenClawHome(async (home) => {
-      const approvalsPath = path.join(home, ".openclaw", "exec-approvals.json");
+    await withTempNodoAssistHome(async (home) => {
+      const approvalsPath = path.join(home, ".nodoassist", "exec-approvals.json");
       let stdoutListener: ((chunk: string) => void) | undefined;
       const stdin = {
         write: vi.fn((_data: string, cb?: (err?: Error | null) => void) => {
@@ -3410,7 +3410,7 @@ ${JSON.stringify({
     );
   });
 
-  it("answers Claude live control_request can_use_tool with allow when OpenClaw exec is YOLO despite raw --permission-mode default", async () => {
+  it("answers Claude live control_request can_use_tool with allow when NodoAssist exec is YOLO despite raw --permission-mode default", async () => {
     let stdoutListener: ((chunk: string) => void) | undefined;
     const writes: string[] = [];
     const stdin = {
@@ -3459,7 +3459,7 @@ ${JSON.stringify({
     });
 
     // tools.exec resolves to full/off (would normally allow native Bash),
-    // and OpenClaw policy is authoritative over raw Claude permission-mode
+    // and NodoAssist policy is authoritative over raw Claude permission-mode
     // args. The live launch is normalized back to bypassPermissions.
     const result = await executePreparedCliRun(
       buildPreparedCliRunContext({
@@ -4084,7 +4084,7 @@ ${JSON.stringify({
   });
 
   it("restarts Claude live sessions when selected skills change", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-live-skills-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "nodoassist-live-skills-"));
     const weatherDir = path.join(workspaceDir, "skills", "weather");
     const gitDir = path.join(workspaceDir, "skills", "git");
     await fs.mkdir(weatherDir, { recursive: true });
@@ -4466,7 +4466,7 @@ ${JSON.stringify({
 
   it("can preserve selected clearEnv keys for live CLI backend probes", async () => {
     try {
-      process.env.OPENCLAW_LIVE_CLI_BACKEND_PRESERVE_ENV = '["SAFE_CLEAR"]';
+      process.env.NODOASSIST_LIVE_CLI_BACKEND_PRESERVE_ENV = '["SAFE_CLEAR"]';
       process.env.SAFE_CLEAR = "from-base";
       mockSuccessfulCliRun();
       await executePreparedCliRun(
@@ -4487,7 +4487,7 @@ ${JSON.stringify({
       expect(input.env?.SAFE_CLEAR).toBe("from-base");
       expect(input.env?.SAFE_DROP).toBeUndefined();
     } finally {
-      delete process.env.OPENCLAW_LIVE_CLI_BACKEND_PRESERVE_ENV;
+      delete process.env.NODOASSIST_LIVE_CLI_BACKEND_PRESERVE_ENV;
       delete process.env.SAFE_CLEAR;
     }
   });
@@ -4655,7 +4655,7 @@ ${JSON.stringify({
 
   it("loads workspace bootstrap files into the Claude CLI system prompt", async () => {
     const workspaceDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "openclaw-cli-bootstrap-context-"),
+      path.join(os.tmpdir(), "nodoassist-cli-bootstrap-context-"),
     );
 
     await fs.writeFile(

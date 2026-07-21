@@ -4,12 +4,12 @@ description: "Run BOOT.md on gateway startup"
 homepage: https://docs.openclaw.ai/automation/hooks#boot-md
 metadata:
   {
-    "openclaw":
+    "nodoassist":
       {
         "emoji": "🚀",
         "events": ["gateway:startup"],
         "requires": { "config": ["workspace.dir"] },
-        "install": [{ "id": "bundled", "kind": "bundled", "label": "Bundled with OpenClaw" }],
+        "install": [{ "id": "bundled", "kind": "bundled", "label": "Bundled with NodoAssist" }],
       },
   }
 ---

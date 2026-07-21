@@ -7,7 +7,7 @@ title: "Audio and voice notes"
 
 ## What it does
 
-When audio understanding is enabled (or auto-detected), OpenClaw:
+When audio understanding is enabled (or auto-detected), NodoAssist:
 
 1. Locates the first audio attachment (local path or URL) and downloads it if needed.
 2. Enforces `maxBytes` before sending to each model entry.
@@ -18,7 +18,7 @@ When transcription succeeds, `CommandBody`/`RawBody` are also set to the transcr
 
 ## Auto-detection (default)
 
-If you have not configured models and `tools.media.audio.enabled` is not `false`, OpenClaw auto-detects in this order and stops at the first working option:
+If you have not configured models and `tools.media.audio.enabled` is not `false`, NodoAssist auto-detects in this order and stops at the first working option:
 
 1. **Active reply model**, when its provider supports audio understanding.
 2. **Configured provider auth** — any `models.providers.*` entry with auth available for a provider that supports audio transcription. This is checked before local CLIs, so a configured API key always wins over a local binary on `PATH`.
@@ -160,7 +160,7 @@ Binary detection is best-effort across macOS/Linux/Windows. Make sure the CLI is
 - `tools.media.audio.echoTranscript` is off by default; enable it to send a transcript confirmation back to the originating chat before agent processing.
 - `tools.media.audio.echoFormat` customizes the echo text (placeholder: `{transcript}`; default `📝 "{transcript}"`).
 - CLI stdout is capped at 5MB; keep CLI output concise.
-- CLI `args` should use `{{MediaPath}}` for the local audio file path. Run `openclaw doctor --fix` to migrate deprecated `{input}` placeholders from older `audio.transcription.command` configs (retired key: `audio.transcription`, replaced by `tools.media.audio.models`).
+- CLI `args` should use `{{MediaPath}}` for the local audio file path. Run `nodoassist doctor --fix` to migrate deprecated `{input}` placeholders from older `audio.transcription.command` configs (retired key: `audio.transcription`, replaced by `tools.media.audio.models`).
 
 ### Proxy environment support
 
@@ -170,15 +170,15 @@ Provider-based audio transcription honors standard outbound proxy env vars, matc
 - `HTTP_PROXY` / `http_proxy`
 - `ALL_PROXY` / `all_proxy`
 
-Lowercase variables take precedence over uppercase; `NO_PROXY`/`no_proxy` entries (hostnames, `*.suffix`, or `host:port`) bypass the proxy. If no proxy env vars are set, direct egress is used. If proxy setup fails (malformed URL), OpenClaw logs a warning and falls back to direct fetch.
+Lowercase variables take precedence over uppercase; `NO_PROXY`/`no_proxy` entries (hostnames, `*.suffix`, or `host:port`) bypass the proxy. If no proxy env vars are set, direct egress is used. If proxy setup fails (malformed URL), NodoAssist logs a warning and falls back to direct fetch.
 
 ## Mention detection in groups
 
-When `requireMention: true` is set for a group chat, OpenClaw transcribes audio **before** checking for mentions. This lets voice notes pass the mention gate even when the message has no text body.
+When `requireMention: true` is set for a group chat, NodoAssist transcribes audio **before** checking for mentions. This lets voice notes pass the mention gate even when the message has no text body.
 
 **How it works:**
 
-1. If a voice message has no text body and the group requires mentions, OpenClaw performs a preflight transcription of the first audio attachment.
+1. If a voice message has no text body and the group requires mentions, NodoAssist performs a preflight transcription of the first audio attachment.
 2. The transcript is checked for mention patterns (for example `@BotName`, emoji triggers).
 3. If a mention is found, the message proceeds through the full reply pipeline.
 
@@ -196,7 +196,7 @@ When `requireMention: true` is set for a group chat, OpenClaw transcribes audio 
 
 - Scope rules use first-match-wins; `chatType` is normalized to `direct`, `group`, or `channel`.
 - Ensure your CLI exits 0 and prints plain text; JSON output needs to be massaged via `jq -r .text`.
-- For `parakeet-mlx`, if you pass `--output-dir`, OpenClaw reads `<output-dir>/<media-basename>.txt` when `--output-format` is `txt` (or omitted); non-`txt` output formats fall back to stdout parsing.
+- For `parakeet-mlx`, if you pass `--output-dir`, NodoAssist reads `<output-dir>/<media-basename>.txt` when `--output-format` is `txt` (or omitted); non-`txt` output formats fall back to stdout parsing.
 - Keep timeouts reasonable (`timeoutSeconds`, default 60s) to avoid blocking the reply queue.
 - Preflight transcription only processes the **first** audio attachment for mention detection. Additional audio attachments are processed during the main media-understanding phase.
 

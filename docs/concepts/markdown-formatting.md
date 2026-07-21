@@ -7,7 +7,7 @@ read_when:
 title: "Markdown formatting"
 ---
 
-OpenClaw converts outbound Markdown into a shared intermediate representation
+NodoAssist converts outbound Markdown into a shared intermediate representation
 (IR) before rendering channel-specific output. The IR keeps plain text plus
 style/link spans, so one parse step feeds every channel and chunking never
 splits formatting mid-span.

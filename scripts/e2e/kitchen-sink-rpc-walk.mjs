@@ -15,8 +15,9 @@ import {
 } from "../lib/windows-taskkill.mjs";
 
 const PLUGIN_SPEC =
-  process.env.OPENCLAW_KITCHEN_SINK_NPM_SPEC || "npm:@openclaw/kitchen-sink@latest";
-const PLUGIN_ID = process.env.OPENCLAW_KITCHEN_SINK_PLUGIN_ID || "openclaw-kitchen-sink-fixture";
+  process.env.NODOASSIST_KITCHEN_SINK_NPM_SPEC || "npm:@nodoassist/kitchen-sink@latest";
+const PLUGIN_ID =
+  process.env.NODOASSIST_KITCHEN_SINK_PLUGIN_ID || "nodoassist-kitchen-sink-fixture";
 const CHANNEL_ID = "kitchen-sink-channel";
 const CHANNEL_ACCOUNT_ID = "local";
 const TOKEN = "kitchen-sink-rpc-token";
@@ -101,24 +102,24 @@ const commandSignalHandlers = new Map(
 function usage() {
   return `Usage: node scripts/e2e/kitchen-sink-rpc-walk.mjs
 
-Runs the external Kitchen Sink plugin RPC walk against a built OpenClaw entry.
+Runs the external Kitchen Sink plugin RPC walk against a built NodoAssist entry.
 
 Environment:
-  OPENCLAW_ENTRY                         Built OpenClaw entrypoint. Defaults to dist/index.mjs or dist/index.js.
-  OPENCLAW_KITCHEN_SINK_NPM_SPEC         Plugin package spec. Default: npm:@openclaw/kitchen-sink@latest.
-  OPENCLAW_KITCHEN_SINK_PLUGIN_ID        Plugin id. Default: openclaw-kitchen-sink-fixture.
-  OPENCLAW_KITCHEN_SINK_PERSONALITY      Plugin fixture personality. Default: conformance.
-  OPENCLAW_KITCHEN_SINK_RPC_PORT         Gateway loopback port. Default: OS-selected free port.
-  OPENCLAW_KITCHEN_SINK_RPC_READY_MS     Gateway readiness timeout.
-  OPENCLAW_KITCHEN_SINK_RPC_COMMAND_MS   OpenClaw command timeout.
-  OPENCLAW_KITCHEN_SINK_RPC_INSTALL_MS   Plugin install timeout.
-  OPENCLAW_KITCHEN_SINK_RPC_CALL_MS      RPC call timeout.
-  OPENCLAW_KITCHEN_SINK_RPC_FETCH_MS     HTTP readiness probe timeout.
-  OPENCLAW_KITCHEN_SINK_RPC_FETCH_BODY_BYTES  HTTP readiness probe response ceiling.
-  OPENCLAW_KITCHEN_SINK_MAX_RSS_MIB      Gateway RSS ceiling.
-  OPENCLAW_KITCHEN_SINK_COMMAND_MAX_RSS_MIB  Install/CLI command RSS ceiling.
-  OPENCLAW_KITCHEN_SINK_OUTPUT_CAPTURE_CHARS  Per-command stdout/stderr capture ceiling.
-  OPENCLAW_KITCHEN_SINK_KEEP_TMP=1       Preserve the isolated temp home.
+  NODOASSIST_ENTRY                         Built NodoAssist entrypoint. Defaults to dist/index.mjs or dist/index.js.
+  NODOASSIST_KITCHEN_SINK_NPM_SPEC         Plugin package spec. Default: npm:@nodoassist/kitchen-sink@latest.
+  NODOASSIST_KITCHEN_SINK_PLUGIN_ID        Plugin id. Default: nodoassist-kitchen-sink-fixture.
+  NODOASSIST_KITCHEN_SINK_PERSONALITY      Plugin fixture personality. Default: conformance.
+  NODOASSIST_KITCHEN_SINK_RPC_PORT         Gateway loopback port. Default: OS-selected free port.
+  NODOASSIST_KITCHEN_SINK_RPC_READY_MS     Gateway readiness timeout.
+  NODOASSIST_KITCHEN_SINK_RPC_COMMAND_MS   NodoAssist command timeout.
+  NODOASSIST_KITCHEN_SINK_RPC_INSTALL_MS   Plugin install timeout.
+  NODOASSIST_KITCHEN_SINK_RPC_CALL_MS      RPC call timeout.
+  NODOASSIST_KITCHEN_SINK_RPC_FETCH_MS     HTTP readiness probe timeout.
+  NODOASSIST_KITCHEN_SINK_RPC_FETCH_BODY_BYTES  HTTP readiness probe response ceiling.
+  NODOASSIST_KITCHEN_SINK_MAX_RSS_MIB      Gateway RSS ceiling.
+  NODOASSIST_KITCHEN_SINK_COMMAND_MAX_RSS_MIB  Install/CLI command RSS ceiling.
+  NODOASSIST_KITCHEN_SINK_OUTPUT_CAPTURE_CHARS  Per-command stdout/stderr capture ceiling.
+  NODOASSIST_KITCHEN_SINK_KEEP_TMP=1       Preserve the isolated temp home.
 `;
 }
 
@@ -163,51 +164,51 @@ export function readPositiveTimerMs(raw, fallback, label = "value") {
 
 export function resolveKitchenSinkRpcConfig(env = process.env) {
   const commandTimeoutMs = readPositiveTimerMs(
-    env.OPENCLAW_KITCHEN_SINK_RPC_COMMAND_MS,
+    env.NODOASSIST_KITCHEN_SINK_RPC_COMMAND_MS,
     DEFAULT_COMMAND_TIMEOUT_MS,
-    "OPENCLAW_KITCHEN_SINK_RPC_COMMAND_MS",
+    "NODOASSIST_KITCHEN_SINK_RPC_COMMAND_MS",
   );
   return {
     commandMaxRssMiB: readPositiveInt(
-      env.OPENCLAW_KITCHEN_SINK_COMMAND_MAX_RSS_MIB,
+      env.NODOASSIST_KITCHEN_SINK_COMMAND_MAX_RSS_MIB,
       DEFAULT_MAX_COMMAND_RSS_MIB,
-      "OPENCLAW_KITCHEN_SINK_COMMAND_MAX_RSS_MIB",
+      "NODOASSIST_KITCHEN_SINK_COMMAND_MAX_RSS_MIB",
     ),
     commandTimeoutMs,
     fetchBodyMaxBytes: readPositiveInt(
-      env.OPENCLAW_KITCHEN_SINK_RPC_FETCH_BODY_BYTES,
+      env.NODOASSIST_KITCHEN_SINK_RPC_FETCH_BODY_BYTES,
       DEFAULT_FETCH_BODY_MAX_BYTES,
-      "OPENCLAW_KITCHEN_SINK_RPC_FETCH_BODY_BYTES",
+      "NODOASSIST_KITCHEN_SINK_RPC_FETCH_BODY_BYTES",
     ),
     fetchTimeoutMs: readPositiveTimerMs(
-      env.OPENCLAW_KITCHEN_SINK_RPC_FETCH_MS,
+      env.NODOASSIST_KITCHEN_SINK_RPC_FETCH_MS,
       DEFAULT_FETCH_TIMEOUT_MS,
-      "OPENCLAW_KITCHEN_SINK_RPC_FETCH_MS",
+      "NODOASSIST_KITCHEN_SINK_RPC_FETCH_MS",
     ),
     installTimeoutMs: readPositiveTimerMs(
-      env.OPENCLAW_KITCHEN_SINK_RPC_INSTALL_MS,
+      env.NODOASSIST_KITCHEN_SINK_RPC_INSTALL_MS,
       Math.max(commandTimeoutMs, DEFAULT_INSTALL_TIMEOUT_MS),
-      "OPENCLAW_KITCHEN_SINK_RPC_INSTALL_MS",
+      "NODOASSIST_KITCHEN_SINK_RPC_INSTALL_MS",
     ),
     maxRssMiB: readPositiveInt(
-      env.OPENCLAW_KITCHEN_SINK_MAX_RSS_MIB,
+      env.NODOASSIST_KITCHEN_SINK_MAX_RSS_MIB,
       DEFAULT_MAX_RSS_MIB,
-      "OPENCLAW_KITCHEN_SINK_MAX_RSS_MIB",
+      "NODOASSIST_KITCHEN_SINK_MAX_RSS_MIB",
     ),
     outputCaptureChars: readPositiveInt(
-      env.OPENCLAW_KITCHEN_SINK_OUTPUT_CAPTURE_CHARS,
+      env.NODOASSIST_KITCHEN_SINK_OUTPUT_CAPTURE_CHARS,
       DEFAULT_OUTPUT_CAPTURE_CHARS,
-      "OPENCLAW_KITCHEN_SINK_OUTPUT_CAPTURE_CHARS",
+      "NODOASSIST_KITCHEN_SINK_OUTPUT_CAPTURE_CHARS",
     ),
     readyTimeoutMs: readPositiveTimerMs(
-      env.OPENCLAW_KITCHEN_SINK_RPC_READY_MS,
+      env.NODOASSIST_KITCHEN_SINK_RPC_READY_MS,
       DEFAULT_READY_TIMEOUT_MS,
-      "OPENCLAW_KITCHEN_SINK_RPC_READY_MS",
+      "NODOASSIST_KITCHEN_SINK_RPC_READY_MS",
     ),
     rpcTimeoutMs: readPositiveTimerMs(
-      env.OPENCLAW_KITCHEN_SINK_RPC_CALL_MS,
+      env.NODOASSIST_KITCHEN_SINK_RPC_CALL_MS,
       DEFAULT_RPC_TIMEOUT_MS,
-      "OPENCLAW_KITCHEN_SINK_RPC_CALL_MS",
+      "NODOASSIST_KITCHEN_SINK_RPC_CALL_MS",
     ),
   };
 }
@@ -241,12 +242,12 @@ async function findAvailableLoopbackPort(options = {}) {
 }
 
 export async function resolveKitchenSinkRpcPort(env = process.env, options = {}) {
-  const rawPort = (env.OPENCLAW_KITCHEN_SINK_RPC_PORT || "").trim();
+  const rawPort = (env.NODOASSIST_KITCHEN_SINK_RPC_PORT || "").trim();
   if (rawPort) {
-    const port = readPositiveInt(rawPort, 0, "OPENCLAW_KITCHEN_SINK_RPC_PORT");
+    const port = readPositiveInt(rawPort, 0, "NODOASSIST_KITCHEN_SINK_RPC_PORT");
     if (port > 65535) {
       throw new Error(
-        `OPENCLAW_KITCHEN_SINK_RPC_PORT must be a TCP port from 1 to 65535. Got: ${JSON.stringify(rawPort)}`,
+        `NODOASSIST_KITCHEN_SINK_RPC_PORT must be a TCP port from 1 to 65535. Got: ${JSON.stringify(rawPort)}`,
       );
     }
     return port;
@@ -254,12 +255,12 @@ export async function resolveKitchenSinkRpcPort(env = process.env, options = {})
   return await (options.findAvailablePort ?? findAvailableLoopbackPort)();
 }
 
-function resolveOpenClawRunner() {
-  if (process.env.OPENCLAW_ENTRY) {
+function resolveNodoAssistRunner() {
+  if (process.env.NODOASSIST_ENTRY) {
     return {
       command: "node",
-      baseArgs: [process.env.OPENCLAW_ENTRY],
-      label: process.env.OPENCLAW_ENTRY,
+      baseArgs: [process.env.NODOASSIST_ENTRY],
+      label: process.env.NODOASSIST_ENTRY,
     };
   }
   for (const candidate of ["dist/index.mjs", "dist/index.js"]) {
@@ -268,13 +269,13 @@ function resolveOpenClawRunner() {
       return { command: "node", baseArgs: [resolved], label: resolved };
     }
   }
-  return { pnpm: true, baseArgs: ["openclaw"], label: "pnpm openclaw" };
+  return { pnpm: true, baseArgs: ["nodoassist"], label: "pnpm nodoassist" };
 }
 
 export function makeEnv() {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-kitchen-sink-rpc-"));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "nodoassist-kitchen-sink-rpc-"));
   const home = path.join(root, "home");
-  const stateDir = path.join(home, ".openclaw");
+  const stateDir = path.join(home, ".nodoassist");
   fs.mkdirSync(stateDir, { recursive: true });
   return {
     root,
@@ -282,13 +283,13 @@ export function makeEnv() {
       ...process.env,
       HOME: home,
       USERPROFILE: home,
-      OPENCLAW_HOME: home,
-      OPENCLAW_STATE_DIR: stateDir,
-      OPENCLAW_CONFIG_PATH: path.join(stateDir, "openclaw.json"),
-      OPENCLAW_NO_ONBOARD: "1",
-      OPENCLAW_SKIP_PROVIDERS: "0",
-      OPENCLAW_KITCHEN_SINK_PERSONALITY:
-        process.env.OPENCLAW_KITCHEN_SINK_PERSONALITY || "conformance",
+      NODOASSIST_HOME: home,
+      NODOASSIST_STATE_DIR: stateDir,
+      NODOASSIST_CONFIG_PATH: path.join(stateDir, "nodoassist.json"),
+      NODOASSIST_NO_ONBOARD: "1",
+      NODOASSIST_SKIP_PROVIDERS: "0",
+      NODOASSIST_KITCHEN_SINK_PERSONALITY:
+        process.env.NODOASSIST_KITCHEN_SINK_PERSONALITY || "conformance",
     },
   };
 }
@@ -570,7 +571,7 @@ async function shutdownActiveCommands(signal) {
 }
 
 function resolveCommandParentSignalKillGraceMs(env) {
-  const raw = env.VITEST && env.OPENCLAW_TEST_KITCHEN_SINK_PARENT_SIGNAL_KILL_GRACE_MS;
+  const raw = env.VITEST && env.NODOASSIST_TEST_KITCHEN_SINK_PARENT_SIGNAL_KILL_GRACE_MS;
   if (!raw) {
     return COMMAND_PARENT_SIGNAL_KILL_GRACE_MS;
   }
@@ -652,9 +653,9 @@ export function signalProcessGroup(
   }
 }
 
-async function runOpenClaw(runner, args, env, options = {}) {
+async function runNodoAssist(runner, args, env, options = {}) {
   const config = resolveKitchenSinkRpcConfig(env);
-  const command = await resolveOpenClawCommand(runner, args, env, {
+  const command = await resolveNodoAssistCommand(runner, args, env, {
     stdio: ["ignore", "pipe", "pipe"],
   });
   return runCommand(command.command, command.args, {
@@ -670,7 +671,7 @@ async function runOpenClaw(runner, args, env, options = {}) {
   });
 }
 
-async function resolveOpenClawCommand(runner, args, env, options = {}) {
+async function resolveNodoAssistCommand(runner, args, env, options = {}) {
   if (runner.pnpm) {
     const { createPnpmRunnerSpawnSpec } = await import("../pnpm-runner.mjs");
     return createPnpmRunnerSpawnSpec({
@@ -912,8 +913,8 @@ async function rpcCall(method, params, options) {
   const module = await loadCallGatewayModule(options.runner);
   const payload = module
     ? await module.callGateway({
-        config: readJson(options.env.OPENCLAW_CONFIG_PATH),
-        configPath: options.env.OPENCLAW_CONFIG_PATH,
+        config: readJson(options.env.NODOASSIST_CONFIG_PATH),
+        configPath: options.env.NODOASSIST_CONFIG_PATH,
         url: `ws://127.0.0.1:${options.port}`,
         token: TOKEN,
         method,
@@ -926,7 +927,7 @@ async function rpcCall(method, params, options) {
 }
 
 async function loadCallGatewayModule(runner) {
-  if (!usesBuiltOpenClawEntry(runner)) {
+  if (!usesBuiltNodoAssistEntry(runner)) {
     return null;
   }
   callGatewayModulePromise ??= importCallGatewayModule();
@@ -949,7 +950,7 @@ async function rpcCallViaCli(method, params, options) {
   const config = resolveKitchenSinkRpcConfig(options.env);
   let stdout;
   try {
-    ({ stdout } = await runOpenClaw(
+    ({ stdout } = await runNodoAssist(
       options.runner,
       [
         "gateway",
@@ -993,12 +994,12 @@ export function findDistCallGatewayModuleFiles(cwd = process.cwd()) {
     : [];
 }
 
-export function usesBuiltOpenClawEntry(runner, cwd = process.cwd(), env = process.env) {
+export function usesBuiltNodoAssistEntry(runner, cwd = process.cwd(), env = process.env) {
   if (runner?.pnpm || !runner?.baseArgs?.[0]) {
     return false;
   }
   const entry = runner.baseArgs[0];
-  if (env.OPENCLAW_ENTRY && entry === env.OPENCLAW_ENTRY) {
+  if (env.NODOASSIST_ENTRY && entry === env.NODOASSIST_ENTRY) {
     return true;
   }
   const relative = path.relative(path.resolve(cwd, "dist"), path.resolve(cwd, entry));
@@ -1227,7 +1228,7 @@ function cancelReaderSoon(reader) {
 }
 
 function configureKitchenSink(env, port) {
-  const configPath = env.OPENCLAW_CONFIG_PATH;
+  const configPath = env.NODOASSIST_CONFIG_PATH;
   const config = fs.existsSync(configPath) ? readJson(configPath) : {};
   config.gateway = {
     ...config.gateway,
@@ -1250,7 +1251,7 @@ function configureKitchenSink(env, port) {
         enabled: true,
         config: {
           ...config.plugins?.entries?.[PLUGIN_ID]?.config,
-          personality: env.OPENCLAW_KITCHEN_SINK_PERSONALITY,
+          personality: env.NODOASSIST_KITCHEN_SINK_PERSONALITY,
         },
         hooks: {
           ...config.plugins?.entries?.[PLUGIN_ID]?.hooks,
@@ -1286,7 +1287,7 @@ function configureKitchenSink(env, port) {
 
 async function startGateway(runner, port, env, logPath) {
   const log = fs.openSync(logPath, "w");
-  const command = await resolveOpenClawCommand(
+  const command = await resolveNodoAssistCommand(
     runner,
     ["gateway", "--port", String(port), "--bind", "loopback", "--allow-unconfigured"],
     env,
@@ -2080,7 +2081,7 @@ async function samplePosixProcessTree(pid, run, commandLineNeedles) {
     const commandMatches = descendants.filter(matchesCommandNeedles);
     const rootCommandMatches = rootRow && matchesCommandNeedles(rootRow) ? [rootRow] : [];
     const gatewayTitleMatches = descendants.filter((row) =>
-      row.command.toLowerCase().includes("openclaw-gateway"),
+      row.command.toLowerCase().includes("nodoassist-gateway"),
     );
     const selected = selectPeakRssProcess(
       commandMatches.length > 0
@@ -2565,11 +2566,11 @@ function isNonEmptyString(value) {
 
 export async function main() {
   const config = resolveKitchenSinkRpcConfig();
-  let runner = resolveOpenClawRunner();
+  let runner = resolveNodoAssistRunner();
   const port = await resolveKitchenSinkRpcPort();
   const { root, env } = makeEnv();
   const logPath = path.join(root, "gateway.log");
-  const keepTmp = process.env.OPENCLAW_KITCHEN_SINK_KEEP_TMP === "1";
+  const keepTmp = process.env.NODOASSIST_KITCHEN_SINK_KEEP_TMP === "1";
   let failed = false;
   let child;
 
@@ -2583,23 +2584,23 @@ export async function main() {
   let sampleTimer;
   try {
     console.log(`Kitchen Sink RPC walk using ${PLUGIN_SPEC} via ${runner.label}`);
-    await runOpenClaw(runner, ["plugins", "install", PLUGIN_SPEC], env, {
+    await runNodoAssist(runner, ["plugins", "install", PLUGIN_SPEC], env, {
       ...commandResourceOptions,
       requireResourceSample: true,
       resourceLabel: "plugins install",
       timeoutMs: config.installTimeoutMs,
     });
-    runner = resolveOpenClawRunner();
+    runner = resolveNodoAssistRunner();
     console.log(`Kitchen Sink RPC runtime runner: ${runner.label}`);
     configureKitchenSink(env, port);
-    await runOpenClaw(runner, ["plugins", "enable", PLUGIN_ID], env, {
+    await runNodoAssist(runner, ["plugins", "enable", PLUGIN_ID], env, {
       ...commandResourceOptions,
       resourceLabel: "plugins enable",
       timeoutMs: 60000,
     });
     const inspect = parseJsonOutput(
       (
-        await runOpenClaw(runner, ["plugins", "inspect", PLUGIN_ID, "--runtime", "--json"], env, {
+        await runNodoAssist(runner, ["plugins", "inspect", PLUGIN_ID, "--runtime", "--json"], env, {
           ...commandResourceOptions,
           resourceLabel: "plugins inspect",
         })
@@ -2743,7 +2744,7 @@ export async function main() {
 
     const uiDescriptors = await retryRpcCall("plugins.uiDescriptors", {}, rpcOptions);
     assertKitchenSinkUiDescriptors(uiDescriptors, {
-      expectDescriptor: env.OPENCLAW_KITCHEN_SINK_PERSONALITY !== "conformance",
+      expectDescriptor: env.NODOASSIST_KITCHEN_SINK_PERSONALITY !== "conformance",
     });
     const stability = await retryRpcCall("diagnostics.stability", {}, rpcOptions);
     assertDiagnosticStabilityClean(stability);

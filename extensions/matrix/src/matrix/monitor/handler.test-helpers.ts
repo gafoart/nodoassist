@@ -1,6 +1,6 @@
 // Matrix helper module supports handler helpers behavior.
-import type { PreparedInboundReply } from "openclaw/plugin-sdk/channel-inbound";
-import { finalizeInboundContext as finalizeCoreInboundContext } from "openclaw/plugin-sdk/reply-runtime";
+import type { PreparedInboundReply } from "nodoassist/plugin-sdk/channel-inbound";
+import { finalizeInboundContext as finalizeCoreInboundContext } from "nodoassist/plugin-sdk/reply-runtime";
 import { vi, type Mock } from "vitest";
 import type { RuntimeEnv, RuntimeLogger } from "../../runtime-api.js";
 import type {

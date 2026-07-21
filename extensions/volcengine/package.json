@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/volcengine-provider",
+  "name": "@nodoassist/volcengine-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw Volcengine provider plugin",
+  "description": "NodoAssist Volcengine provider plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

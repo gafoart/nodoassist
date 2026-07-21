@@ -1,17 +1,17 @@
 // Voice Call helper module supports config behavior.
-import { REALTIME_VOICE_AGENT_CONSULT_TOOL_POLICIES } from "openclaw/plugin-sdk/realtime-voice";
-import { normalizeAgentId, parseAgentSessionKey } from "openclaw/plugin-sdk/routing";
+import { REALTIME_VOICE_AGENT_CONSULT_TOOL_POLICIES } from "nodoassist/plugin-sdk/realtime-voice";
+import { normalizeAgentId, parseAgentSessionKey } from "nodoassist/plugin-sdk/routing";
 import {
   buildSecretInputSchema,
   hasConfiguredSecretInput,
   normalizeResolvedSecretInputString,
   type SecretInput,
-} from "openclaw/plugin-sdk/secret-input";
+} from "nodoassist/plugin-sdk/secret-input";
 import {
   canonicalizeMainSessionAlias,
   type SessionScope,
-} from "openclaw/plugin-sdk/session-store-runtime";
-import { normalizeWebhookPath } from "openclaw/plugin-sdk/webhook-ingress";
+} from "nodoassist/plugin-sdk/session-store-runtime";
+import { normalizeWebhookPath } from "nodoassist/plugin-sdk/webhook-ingress";
 import { z } from "zod";
 import { TtsConfigSchema } from "../api.js";
 import { deepMergeDefined } from "./deep-merge.js";
@@ -315,9 +315,9 @@ const VoiceCallRealtimeConfigSchema = z
     streamPath: z.string().min(1).optional(),
     /** System instructions passed to the realtime provider. */
     instructions: z.string().default(DEFAULT_VOICE_CALL_REALTIME_INSTRUCTIONS),
-    /** Tool policy for the shared OpenClaw agent consult tool. */
+    /** Tool policy for the shared NodoAssist agent consult tool. */
     toolPolicy: VoiceCallRealtimeToolPolicySchema.default("safe-read-only"),
-    /** Guidance for when the realtime model should call the OpenClaw agent consult tool. */
+    /** Guidance for when the realtime model should call the NodoAssist agent consult tool. */
     consultPolicy: VoiceCallRealtimeConsultPolicySchema.default("auto"),
     /** Optional thinking level override for the regular agent behind realtime consults. */
     consultThinkingLevel: VoiceCallRealtimeConsultThinkingLevelSchema.optional(),

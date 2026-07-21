@@ -1,12 +1,12 @@
-# OpenClaw Kilo Gateway Provider
+# NodoAssist Kilo Gateway Provider
 
-Official OpenClaw provider plugin for Kilo Gateway.
+Official NodoAssist provider plugin for Kilo Gateway.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/kilocode-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/kilocode-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/kilocode> for setup and configuration.

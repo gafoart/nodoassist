@@ -4,7 +4,7 @@ import {
   normalizeLegacyDotBetaVersion,
 } from "../infra/semver-compare.js";
 
-type OpenClawVersion = {
+type NodoAssistVersion = {
   major: number;
   minor: number;
   patch: number;
@@ -14,8 +14,8 @@ type OpenClawVersion = {
 
 const VERSION_RE = /^v?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/;
 
-/** Parses stable, prerelease, and legacy dot-beta OpenClaw versions. */
-export function parseOpenClawVersion(raw: string | null | undefined): OpenClawVersion | null {
+/** Parses stable, prerelease, and legacy dot-beta NodoAssist versions. */
+export function parseNodoAssistVersion(raw: string | null | undefined): NodoAssistVersion | null {
   if (!raw) {
     return null;
   }
@@ -35,20 +35,20 @@ export function parseOpenClawVersion(raw: string | null | undefined): OpenClawVe
   };
 }
 
-export function normalizeOpenClawVersionBase(raw: string | null | undefined): string | null {
-  const parsed = parseOpenClawVersion(raw);
+export function normalizeNodoAssistVersionBase(raw: string | null | undefined): string | null {
+  const parsed = parseNodoAssistVersion(raw);
   if (!parsed) {
     return null;
   }
   return `${parsed.major}.${parsed.minor}.${parsed.patch}`;
 }
 
-export function isSameOpenClawStableFamily(
+export function isSameNodoAssistStableFamily(
   a: string | null | undefined,
   b: string | null | undefined,
 ): boolean {
-  const parsedA = parseOpenClawVersion(a);
-  const parsedB = parseOpenClawVersion(b);
+  const parsedA = parseNodoAssistVersion(a);
+  const parsedB = parseNodoAssistVersion(b);
   if (!parsedA || !parsedB) {
     return false;
   }
@@ -62,12 +62,12 @@ export function isSameOpenClawStableFamily(
   );
 }
 
-export function compareOpenClawVersions(
+export function compareNodoAssistVersions(
   a: string | null | undefined,
   b: string | null | undefined,
 ): number | null {
-  const parsedA = parseOpenClawVersion(a);
-  const parsedB = parseOpenClawVersion(b);
+  const parsedA = parseNodoAssistVersion(a);
+  const parsedB = parseNodoAssistVersion(b);
   if (!parsedA || !parsedB) {
     return null;
   }
@@ -106,8 +106,8 @@ export function shouldWarnOnTouchedVersion(
   current: string | null | undefined,
   touched: string | null | undefined,
 ): boolean {
-  const parsedCurrent = parseOpenClawVersion(current);
-  const parsedTouched = parseOpenClawVersion(touched);
+  const parsedCurrent = parseNodoAssistVersion(current);
+  const parsedTouched = parseNodoAssistVersion(touched);
   if (
     parsedCurrent &&
     parsedTouched &&
@@ -119,14 +119,14 @@ export function shouldWarnOnTouchedVersion(
       return false;
     }
   }
-  if (isSameOpenClawStableFamily(current, touched)) {
+  if (isSameNodoAssistStableFamily(current, touched)) {
     return false;
   }
-  const cmp = compareOpenClawVersions(current, touched);
+  const cmp = compareNodoAssistVersions(current, touched);
   return cmp !== null && cmp < 0;
 }
 
-function releaseRank(version: OpenClawVersion): number {
+function releaseRank(version: NodoAssistVersion): number {
   if (version.prerelease?.length) {
     return 0;
   }

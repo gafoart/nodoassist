@@ -7,7 +7,7 @@ import {
   serializeDurableMessagePayloadOutcomes,
   type SerializedDurableMessagePayloadOutcome,
 } from "../../channels/message/runtime.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import type { OutboundMediaAccess } from "../../media/load-options.js";
 import type { PollInput } from "../../polls.js";
 import { normalizePollInput } from "../../polls.js";
@@ -84,7 +84,7 @@ type MessageSendParams = {
   payloads?: ReplyPayload[];
   mediaAccess?: OutboundMediaAccess;
   deps?: OutboundSendDeps;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   gateway?: MessageGatewayOptions;
   idempotencyKey?: string;
   mirror?: OutboundMirror;
@@ -121,7 +121,7 @@ type MessagePollParams = {
   silent?: boolean;
   isAnonymous?: boolean;
   dryRun?: boolean;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   gateway?: MessageGatewayOptions;
   idempotencyKey?: string;
 };
@@ -190,7 +190,7 @@ function assertPollOptionSupport(params: {
 }
 
 async function resolveRequiredChannel(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   channel?: string;
 }): Promise<string> {
   return (
@@ -201,7 +201,7 @@ async function resolveRequiredChannel(params: {
   ).channel;
 }
 
-function resolveRequiredPlugin(channel: string, cfg: OpenClawConfig) {
+function resolveRequiredPlugin(channel: string, cfg: NodoAssistConfig) {
   const plugin = resolveOutboundChannelPlugin({ channel, cfg });
   if (!plugin) {
     throw new Error(`Unknown channel: ${channel}`);
@@ -257,7 +257,7 @@ function deriveRequiredMessageSendCapabilities(params: {
 }
 
 async function assertRequiredMessageSendDurability(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   channel: Exclude<string, "none">;
   payloads: ReplyPayload[];
   replyToId?: string | null;
@@ -305,7 +305,7 @@ async function callMessageGateway<T>(params: {
   });
 }
 
-async function resolveMessageConfig(cfg?: OpenClawConfig): Promise<OpenClawConfig> {
+async function resolveMessageConfig(cfg?: NodoAssistConfig): Promise<NodoAssistConfig> {
   if (cfg) {
     return cfg;
   }

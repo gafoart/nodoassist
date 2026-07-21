@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/qqbot",
+  "name": "@nodoassist/qqbot",
   "version": "2026.6.11",
   "private": false,
-  "description": "OpenClaw QQ Bot channel plugin for group and direct-message workflows.",
+  "description": "NodoAssist QQ Bot channel plugin for group and direct-message workflows.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -16,19 +16,19 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
+    "@nodoassist/plugin-sdk": "workspace:*",
     "@types/ws": "8.18.1",
-    "openclaw": "workspace:*"
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
@@ -44,7 +44,7 @@
       "systemImage": "bubble.left.and.bubble.right"
     },
     "install": {
-      "npmSpec": "@openclaw/qqbot",
+      "npmSpec": "@nodoassist/qqbot",
       "localPath": "extensions/qqbot",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.10"
@@ -53,7 +53,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11"
+      "nodoassistVersion": "2026.6.11"
     },
     "release": {
       "publishToClawHub": true,

@@ -71,7 +71,7 @@ function measureRoutedRender<T>(routeId: string, render: () => T): T {
   const result = render();
   const durationMs = Math.round((globalThis.performance?.now() ?? startedAt) - startedAt);
   if (durationMs >= 16) {
-    console.debug("[openclaw] routed render", { routeId, durationMs });
+    console.debug("[nodoassist] routed render", { routeId, durationMs });
   }
   return result;
 }
@@ -287,7 +287,7 @@ function routerOutlet<TRouteId extends string, TModule, TData, TContext>(
   return routerOutletDirective(router, options.retryContext, boundaryOptions);
 }
 
-class OpenClawRouterOutlet<
+class NodoAssistRouterOutlet<
   TRouteId extends string = string,
   TLoadContext = unknown,
   TModule = unknown,
@@ -315,6 +315,6 @@ class OpenClawRouterOutlet<
   }
 }
 
-if (!customElements.get("openclaw-router-outlet")) {
-  customElements.define("openclaw-router-outlet", OpenClawRouterOutlet);
+if (!customElements.get("nodoassist-router-outlet")) {
+  customElements.define("nodoassist-router-outlet", NodoAssistRouterOutlet);
 }

@@ -137,7 +137,7 @@ describe("exa web search provider", () => {
   it("partitions Exa cache keys by resolved endpoint", () => {
     const base = {
       type: "auto" as const,
-      query: "openclaw",
+      query: "nodoassist",
       count: 5,
     };
     expect(

@@ -190,7 +190,7 @@ function renderExecApprovalPrompt(props: ExecApprovalProps) {
     }
   };
   return html`
-    <openclaw-modal-dialog label=${title} description=${remaining} @modal-cancel=${handleCancel}>
+    <nodoassist-modal-dialog label=${title} description=${remaining} @modal-cancel=${handleCancel}>
       <div class="exec-approval-card">
         <div class="exec-approval-header">
           <div>
@@ -220,7 +220,7 @@ function renderExecApprovalPrompt(props: ExecApprovalProps) {
           )}
         </div>
       </div>
-    </openclaw-modal-dialog>
+    </nodoassist-modal-dialog>
   `;
 }
 
@@ -241,6 +241,6 @@ class ExecApproval extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-exec-approval")) {
-  customElements.define("openclaw-exec-approval", ExecApproval);
+if (!customElements.get("nodoassist-exec-approval")) {
+  customElements.define("nodoassist-exec-approval", ExecApproval);
 }

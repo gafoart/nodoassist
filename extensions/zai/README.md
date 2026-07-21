@@ -1,13 +1,13 @@
-# Z.AI OpenClaw provider
+# Z.AI NodoAssist provider
 
-Official OpenClaw provider plugin for Z.AI.
+Official NodoAssist provider plugin for Z.AI.
 
 ## Install
 
 ```sh
-openclaw plugins install @openclaw/zai-provider
+nodoassist plugins install @nodoassist/zai-provider
 ```
 
 ## Docs
 
-See `docs/providers/zai.md` in the OpenClaw repository, or the published docs at `https://docs.openclaw.ai/providers/zai`.
+See `docs/providers/zai.md` in the NodoAssist repository, or the published docs at `https://docs.openclaw.ai/providers/zai`.

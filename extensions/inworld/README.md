@@ -1,12 +1,12 @@
-# OpenClaw Inworld Plugin
+# NodoAssist Inworld Plugin
 
-Official OpenClaw plugin for Inworld.
+Official NodoAssist plugin for Inworld.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/inworld-speech
-openclaw gateway restart
+nodoassist plugins install @nodoassist/inworld-speech
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/inworld> for setup and configuration.

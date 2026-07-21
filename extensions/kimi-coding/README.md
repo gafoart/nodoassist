@@ -1,12 +1,12 @@
-# OpenClaw Kimi Coding Provider
+# NodoAssist Kimi Coding Provider
 
-Official OpenClaw provider plugin for Kimi Coding.
+Official NodoAssist provider plugin for Kimi Coding.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/kimi-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/kimi-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/moonshot> for setup and configuration.

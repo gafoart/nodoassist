@@ -1,5 +1,5 @@
 // Plugin entry contracts define the manifest-facing hooks implemented by plugin packages.
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import { emptyPluginConfigSchema } from "../plugins/config-schema.js";
 import { createCachedLazyValueGetter } from "./lazy-value.js";
 
@@ -18,32 +18,33 @@ export type MigrationPlan = import("../plugins/types.js").MigrationPlan;
 export type MigrationProviderContext = import("../plugins/types.js").MigrationProviderContext;
 export type MigrationProviderPlugin = import("../plugins/types.js").MigrationProviderPlugin;
 export type MigrationSummary = import("../plugins/types.js").MigrationSummary;
-export type OpenClawPluginApi = import("../plugins/types.js").OpenClawPluginApi;
-export type OpenClawPluginCommandDefinition =
-  import("../plugins/types.js").OpenClawPluginCommandDefinition;
-export type OpenClawPluginConfigSchema = import("../plugins/types.js").OpenClawPluginConfigSchema;
-export type OpenClawPluginDefinition = import("../plugins/types.js").OpenClawPluginDefinition;
-export type OpenClawPluginHttpRouteHandler =
-  import("../plugins/types.js").OpenClawPluginHttpRouteHandler;
-export type OpenClawPluginNodeHostCommand =
-  import("../plugins/types.js").OpenClawPluginNodeHostCommand;
-export type OpenClawPluginNodeInvokePolicy =
-  import("../plugins/types.js").OpenClawPluginNodeInvokePolicy;
-export type OpenClawPluginNodeInvokePolicyContext =
-  import("../plugins/types.js").OpenClawPluginNodeInvokePolicyContext;
-export type OpenClawPluginNodeInvokePolicyResult =
-  import("../plugins/types.js").OpenClawPluginNodeInvokePolicyResult;
-export type OpenClawPluginReloadRegistration =
-  import("../plugins/types.js").OpenClawPluginReloadRegistration;
-export type OpenClawPluginSecurityAuditCollector =
-  import("../plugins/types.js").OpenClawPluginSecurityAuditCollector;
-export type OpenClawPluginSecurityAuditContext =
-  import("../plugins/types.js").OpenClawPluginSecurityAuditContext;
-export type OpenClawPluginService = import("../plugins/types.js").OpenClawPluginService;
-export type OpenClawPluginServiceContext =
-  import("../plugins/types.js").OpenClawPluginServiceContext;
-export type OpenClawPluginToolContext = import("../plugins/types.js").OpenClawPluginToolContext;
-export type OpenClawPluginToolFactory = import("../plugins/types.js").OpenClawPluginToolFactory;
+export type NodoAssistPluginApi = import("../plugins/types.js").NodoAssistPluginApi;
+export type NodoAssistPluginCommandDefinition =
+  import("../plugins/types.js").NodoAssistPluginCommandDefinition;
+export type NodoAssistPluginConfigSchema =
+  import("../plugins/types.js").NodoAssistPluginConfigSchema;
+export type NodoAssistPluginDefinition = import("../plugins/types.js").NodoAssistPluginDefinition;
+export type NodoAssistPluginHttpRouteHandler =
+  import("../plugins/types.js").NodoAssistPluginHttpRouteHandler;
+export type NodoAssistPluginNodeHostCommand =
+  import("../plugins/types.js").NodoAssistPluginNodeHostCommand;
+export type NodoAssistPluginNodeInvokePolicy =
+  import("../plugins/types.js").NodoAssistPluginNodeInvokePolicy;
+export type NodoAssistPluginNodeInvokePolicyContext =
+  import("../plugins/types.js").NodoAssistPluginNodeInvokePolicyContext;
+export type NodoAssistPluginNodeInvokePolicyResult =
+  import("../plugins/types.js").NodoAssistPluginNodeInvokePolicyResult;
+export type NodoAssistPluginReloadRegistration =
+  import("../plugins/types.js").NodoAssistPluginReloadRegistration;
+export type NodoAssistPluginSecurityAuditCollector =
+  import("../plugins/types.js").NodoAssistPluginSecurityAuditCollector;
+export type NodoAssistPluginSecurityAuditContext =
+  import("../plugins/types.js").NodoAssistPluginSecurityAuditContext;
+export type NodoAssistPluginService = import("../plugins/types.js").NodoAssistPluginService;
+export type NodoAssistPluginServiceContext =
+  import("../plugins/types.js").NodoAssistPluginServiceContext;
+export type NodoAssistPluginToolContext = import("../plugins/types.js").NodoAssistPluginToolContext;
+export type NodoAssistPluginToolFactory = import("../plugins/types.js").NodoAssistPluginToolFactory;
 export type PluginLogger = import("../plugins/types.js").PluginLogger;
 export type ProviderAugmentModelCatalogContext =
   import("../plugins/types.js").ProviderAugmentModelCatalogContext;
@@ -134,10 +135,10 @@ export type UnifiedModelCatalogProviderContext =
   import("../plugins/types.js").UnifiedModelCatalogProviderContext;
 export type UnifiedModelCatalogProviderPlugin =
   import("../plugins/types.js").UnifiedModelCatalogProviderPlugin;
-export type OpenClawGatewayDiscoveryAdvertiseContext =
-  import("../plugins/types.js").OpenClawGatewayDiscoveryAdvertiseContext;
-export type OpenClawGatewayDiscoveryService =
-  import("../plugins/types.js").OpenClawGatewayDiscoveryService;
+export type NodoAssistGatewayDiscoveryAdvertiseContext =
+  import("../plugins/types.js").NodoAssistGatewayDiscoveryAdvertiseContext;
+export type NodoAssistGatewayDiscoveryService =
+  import("../plugins/types.js").NodoAssistGatewayDiscoveryService;
 export type SpeechProviderPlugin = import("../plugins/types.js").SpeechProviderPlugin;
 export type PluginCommandContext = import("../plugins/types.js").PluginCommandContext;
 export type PluginCommandResult = import("../plugins/types.js").PluginCommandResult;
@@ -206,8 +207,8 @@ export type {
   UnifiedModelCatalogEntry,
   UnifiedModelCatalogKind,
   UnifiedModelCatalogSource,
-} from "@openclaw/model-catalog-core/model-catalog-types";
-export type { OpenClawConfig };
+} from "@nodoassist/model-catalog-core/model-catalog-types";
+export type { NodoAssistConfig };
 
 export {
   buildJsonPluginConfigSchema,
@@ -221,27 +222,27 @@ type DefinePluginEntryOptions = {
   name: string;
   description: string;
   /**
-   * @deprecated Declare exclusive plugin kind in `openclaw.plugin.json` via
+   * @deprecated Declare exclusive plugin kind in `nodoassist.plugin.json` via
    * manifest `kind`. Runtime-entry `kind` remains only as a compatibility
    * fallback for older plugins.
    */
-  kind?: OpenClawPluginDefinition["kind"];
-  configSchema?: OpenClawPluginConfigSchema | (() => OpenClawPluginConfigSchema);
-  reload?: OpenClawPluginDefinition["reload"];
-  nodeHostCommands?: OpenClawPluginDefinition["nodeHostCommands"];
-  securityAuditCollectors?: OpenClawPluginDefinition["securityAuditCollectors"];
-  register: (api: OpenClawPluginApi) => void;
+  kind?: NodoAssistPluginDefinition["kind"];
+  configSchema?: NodoAssistPluginConfigSchema | (() => NodoAssistPluginConfigSchema);
+  reload?: NodoAssistPluginDefinition["reload"];
+  nodeHostCommands?: NodoAssistPluginDefinition["nodeHostCommands"];
+  securityAuditCollectors?: NodoAssistPluginDefinition["securityAuditCollectors"];
+  register: (api: NodoAssistPluginApi) => void;
 };
 
-/** Normalized object shape that OpenClaw loads from a plugin entry module. */
+/** Normalized object shape that NodoAssist loads from a plugin entry module. */
 type DefinedPluginEntry = {
   id: string;
   name: string;
   description: string;
-  configSchema: OpenClawPluginConfigSchema;
-  register: NonNullable<OpenClawPluginDefinition["register"]>;
+  configSchema: NodoAssistPluginConfigSchema;
+  register: NonNullable<NodoAssistPluginDefinition["register"]>;
 } & Pick<
-  OpenClawPluginDefinition,
+  NodoAssistPluginDefinition,
   "kind" | "reload" | "nodeHostCommands" | "securityAuditCollectors"
 >;
 
@@ -250,7 +251,7 @@ type DefinedPluginEntry = {
  *
  * Use this for provider, tool, command, service, memory, and context-engine
  * plugins. Channel plugins should use `defineChannelPluginEntry(...)` from
- * `openclaw/plugin-sdk/core` so they inherit the channel capability wiring.
+ * `nodoassist/plugin-sdk/core` so they inherit the channel capability wiring.
  */
 export function definePluginEntry({
   id,

@@ -1,11 +1,11 @@
 {
-  "name": "@openclaw/media-understanding-core",
+  "name": "@nodoassist/media-understanding-core",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw media understanding runtime package",
+  "description": "NodoAssist media understanding runtime package",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {}
+  "nodoassist": {}
 }

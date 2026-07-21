@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import OpenClaw
+@testable import NodoAssist
 
 struct WatchSessionActivationGateTests {
     @Test func `iPhone observes watch pairing and install changes`() throws {

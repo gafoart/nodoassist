@@ -2,12 +2,12 @@
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import * as providerAuth from "openclaw/plugin-sdk/provider-auth-runtime";
+import * as providerAuth from "nodoassist/plugin-sdk/provider-auth-runtime";
 import {
-  type OpenClawConfig,
+  type NodoAssistConfig,
   resolveAgentModelPrimaryValue,
-} from "openclaw/plugin-sdk/provider-onboard";
-import { captureEnv } from "openclaw/plugin-sdk/test-env";
+} from "nodoassist/plugin-sdk/provider-onboard";
+import { captureEnv } from "nodoassist/plugin-sdk/test-env";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   applyDeepInfraConfig,
@@ -18,7 +18,7 @@ import { DEEPINFRA_DEFAULT_MODEL_ID } from "./provider-models.js";
 
 const { resolveEnvApiKey } = providerAuth;
 
-const emptyCfg: OpenClawConfig = {};
+const emptyCfg: NodoAssistConfig = {};
 
 describe("DeepInfra provider config", () => {
   describe("constants", () => {
@@ -57,7 +57,7 @@ describe("DeepInfra provider config", () => {
     });
 
     it("preserves an existing alias on the selected model", () => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             models: {
@@ -104,7 +104,7 @@ describe("DeepInfra provider config", () => {
     });
 
     it("resolves the deepinfra api key via resolveApiKeyForProvider", async () => {
-      const agentDir = mkdtempSync(join(tmpdir(), "openclaw-test-"));
+      const agentDir = mkdtempSync(join(tmpdir(), "nodoassist-test-"));
       const envSnapshot = captureEnv(["DEEPINFRA_API_KEY"]);
       process.env.DEEPINFRA_API_KEY = "deepinfra-provider-test-key";
 

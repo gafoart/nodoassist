@@ -73,7 +73,7 @@ describe("loadCodexSupervisorEndpoints", () => {
   it("parses websocket shorthand endpoints", () => {
     expect(
       loadCodexSupervisorEndpoints({
-        OPENCLAW_CODEX_SUPERVISOR_ENDPOINTS: "crab=ws://127.0.0.1:18080,local",
+        NODOASSIST_CODEX_SUPERVISOR_ENDPOINTS: "crab=ws://127.0.0.1:18080,local",
       }),
     ).toEqual([
       {
@@ -93,7 +93,8 @@ describe("loadCodexSupervisorEndpoints", () => {
   it("keeps equals signs inside endpoint URLs", () => {
     expect(
       loadCodexSupervisorEndpoints({
-        OPENCLAW_CODEX_SUPERVISOR_ENDPOINTS: "prod=wss://example.invalid/control?token=a=b&next=c",
+        NODOASSIST_CODEX_SUPERVISOR_ENDPOINTS:
+          "prod=wss://example.invalid/control?token=a=b&next=c",
       }),
     ).toEqual([
       {
@@ -107,7 +108,8 @@ describe("loadCodexSupervisorEndpoints", () => {
   it("does not derive generated endpoint ids from secret-bearing URLs", () => {
     expect(
       loadCodexSupervisorEndpoints({
-        OPENCLAW_CODEX_SUPERVISOR_ENDPOINTS: "wss://user:secret@example.invalid/control?token=a=b",
+        NODOASSIST_CODEX_SUPERVISOR_ENDPOINTS:
+          "wss://user:secret@example.invalid/control?token=a=b",
       }),
     ).toEqual([
       {
@@ -118,7 +120,7 @@ describe("loadCodexSupervisorEndpoints", () => {
     ]);
     expect(
       loadCodexSupervisorEndpoints({
-        OPENCLAW_CODEX_SUPERVISOR_ENDPOINTS: JSON.stringify([
+        NODOASSIST_CODEX_SUPERVISOR_ENDPOINTS: JSON.stringify([
           {
             transport: "websocket",
             url: "wss://example.invalid/control?token=secret",
@@ -137,7 +139,7 @@ describe("loadCodexSupervisorEndpoints", () => {
   it("rejects duplicate normalized endpoint ids", () => {
     expect(() =>
       loadCodexSupervisorEndpoints({
-        OPENCLAW_CODEX_SUPERVISOR_ENDPOINTS: "fleet/a=ws://one.invalid,fleet-a=ws://two.invalid",
+        NODOASSIST_CODEX_SUPERVISOR_ENDPOINTS: "fleet/a=ws://one.invalid,fleet-a=ws://two.invalid",
       }),
     ).toThrow("duplicate Codex supervisor endpoint id: fleet-a");
     expect(() =>
@@ -165,7 +167,7 @@ describe("loadCodexSupervisorEndpoints", () => {
           allowWriteControls: true,
         },
         {
-          OPENCLAW_CODEX_SUPERVISOR_ENDPOINTS: "local",
+          NODOASSIST_CODEX_SUPERVISOR_ENDPOINTS: "local",
         },
       ),
     ).toEqual({
@@ -770,7 +772,7 @@ describe("resolveSafeApprovalResult", () => {
       contentItems: [
         {
           type: "inputText",
-          text: "OpenClaw Codex supervisor did not register a handler for this app-server tool call.",
+          text: "NodoAssist Codex supervisor did not register a handler for this app-server tool call.",
         },
       ],
       success: false,

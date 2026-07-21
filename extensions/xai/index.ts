@@ -1,9 +1,9 @@
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-// Xai plugin entrypoint registers its OpenClaw integration.
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
-import { OPENAI_COMPATIBLE_REPLAY_HOOKS } from "openclaw/plugin-sdk/provider-model-shared";
-import { defaultToolStreamExtraParams } from "openclaw/plugin-sdk/provider-stream-shared";
-import { jsonResult } from "openclaw/plugin-sdk/provider-web-search";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
+// Xai plugin entrypoint registers its NodoAssist integration.
+import { defineSingleProviderPluginEntry } from "nodoassist/plugin-sdk/provider-entry";
+import { OPENAI_COMPATIBLE_REPLAY_HOOKS } from "nodoassist/plugin-sdk/provider-model-shared";
+import { defaultToolStreamExtraParams } from "nodoassist/plugin-sdk/provider-stream-shared";
+import { jsonResult } from "nodoassist/plugin-sdk/provider-web-search";
 import {
   applyXaiRuntimeModelCompat,
   buildXaiImageGenerationProvider,
@@ -175,7 +175,7 @@ export default defineSingleProviderPluginEntry({
         const auth = ctx.resolveProviderAuth(PROVIDER_ID);
         try {
           const { resolveApiKeyForProvider } =
-            await import("openclaw/plugin-sdk/provider-auth-runtime");
+            await import("nodoassist/plugin-sdk/provider-auth-runtime");
           const runtimeAuth = await resolveApiKeyForProvider({
             provider: PROVIDER_ID,
             cfg: ctx.config,

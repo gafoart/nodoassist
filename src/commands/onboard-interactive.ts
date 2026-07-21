@@ -49,7 +49,7 @@ export async function runConversationalOnboarding(
 ) {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
     runtime.error(
-      "Onboarding needs an interactive TTY. Use `openclaw onboard --non-interactive --accept-risk ...` for automation.",
+      "Onboarding needs an interactive TTY. Use `nodoassist onboard --non-interactive --accept-risk ...` for automation.",
     );
     runtime.exit(1);
     return;

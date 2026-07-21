@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { detectSkillWorkshopToolPolicyDiagnostic } from "./tool-policy-diagnostic.js";
 
-function detect(config: OpenClawConfig, workshopEnabled = true) {
+function detect(config: NodoAssistConfig, workshopEnabled = true) {
   return detectSkillWorkshopToolPolicyDiagnostic({ config, workshopEnabled });
 }
 

@@ -34,6 +34,6 @@ export const page = definePage({
     import("./nodes-page.ts").then(() => ({
       header: true,
       render: (data: NodesRouteData | undefined) =>
-        html`<openclaw-nodes-page .routeData=${data}></openclaw-nodes-page>`,
+        html`<nodoassist-nodes-page .routeData=${data}></nodoassist-nodes-page>`,
     })),
 });

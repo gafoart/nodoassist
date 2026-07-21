@@ -9,8 +9,8 @@ struct ExecApprovalNotificationPrompt: Codable, Equatable, Hashable {
 enum ExecApprovalNotificationBridge {
     static let requestedKind = "exec.approval.requested"
     static let resolvedKind = "exec.approval.resolved"
-    static let categoryIdentifier = "openclaw.exec-approval"
-    static let reviewActionIdentifier = "openclaw.exec-approval.review"
+    static let categoryIdentifier = "nodoassist.exec-approval"
+    static let reviewActionIdentifier = "nodoassist.exec-approval.review"
 
     private static let localRequestPrefix = "exec.approval."
 
@@ -89,13 +89,13 @@ enum ExecApprovalNotificationBridge {
     }
 
     static func approvalID(from userInfo: [AnyHashable: Any]) -> String? {
-        let raw = self.openClawPayload(userInfo: userInfo)?["approvalId"] as? String
+        let raw = self.nodoAssistPayload(userInfo: userInfo)?["approvalId"] as? String
         let trimmed = raw?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         return trimmed.isEmpty ? nil : trimmed
     }
 
     private static func gatewayDeviceID(from userInfo: [AnyHashable: Any]) -> String? {
-        let raw = self.openClawPayload(userInfo: userInfo)?["gatewayDeviceId"] as? String
+        let raw = self.nodoAssistPayload(userInfo: userInfo)?["gatewayDeviceId"] as? String
         let trimmed = raw?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         return trimmed.isEmpty ? nil : trimmed
     }
@@ -120,16 +120,16 @@ enum ExecApprovalNotificationBridge {
     }
 
     static func payloadKind(userInfo: [AnyHashable: Any]) -> String {
-        let raw = self.openClawPayload(userInfo: userInfo)?["kind"] as? String
+        let raw = self.nodoAssistPayload(userInfo: userInfo)?["kind"] as? String
         let trimmed = raw?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         return trimmed.isEmpty ? "unknown" : trimmed
     }
 
-    private static func openClawPayload(userInfo: [AnyHashable: Any]) -> [String: Any]? {
-        if let payload = userInfo["openclaw"] as? [String: Any] {
+    private static func nodoAssistPayload(userInfo: [AnyHashable: Any]) -> [String: Any]? {
+        if let payload = userInfo["nodoassist"] as? [String: Any] {
             return payload
         }
-        if let payload = userInfo["openclaw"] as? [AnyHashable: Any] {
+        if let payload = userInfo["nodoassist"] as? [AnyHashable: Any] {
             return payload.reduce(into: [String: Any]()) { partialResult, pair in
                 guard let key = pair.key as? String else { return }
                 partialResult[key] = pair.value

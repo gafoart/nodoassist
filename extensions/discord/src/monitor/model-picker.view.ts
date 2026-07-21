@@ -4,9 +4,9 @@ import { ButtonStyle } from "discord-api-types/v10";
 import type {
   ModelsProviderData,
   ModelsRuntimeChoice,
-} from "openclaw/plugin-sdk/models-provider-runtime";
-import { normalizeProviderId } from "openclaw/plugin-sdk/provider-model-shared";
-import { sliceUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "nodoassist/plugin-sdk/models-provider-runtime";
+import { normalizeProviderId } from "nodoassist/plugin-sdk/provider-model-shared";
+import { sliceUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import {
   Button,
   Container,
@@ -215,9 +215,9 @@ function getRuntimeChoices(params: {
   }
   return [
     {
-      id: "openclaw",
-      label: "OpenClaw Default",
-      description: "Use the built-in OpenClaw runtime.",
+      id: "nodoassist",
+      label: "NodoAssist Default",
+      description: "Use the built-in NodoAssist runtime.",
     },
   ];
 }
@@ -238,7 +238,7 @@ function resolveSelectedRuntime(params: {
   if (current && allowed.has(current)) {
     return current;
   }
-  return choices[0]?.id ?? "openclaw";
+  return choices[0]?.id ?? "nodoassist";
 }
 
 function resolveExplicitRuntimeState(params: {

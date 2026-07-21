@@ -7,7 +7,7 @@ import type { PluginMetadataSnapshot } from "../plugins/plugin-metadata-snapshot
 import type { PluginOrigin } from "../plugins/plugin-origin.types.js";
 import { clearPluginSetupRegistryCache } from "../plugins/setup-registry.js";
 import { cleanupTrackedTempDirs, makeTrackedTempDir } from "../plugins/test-helpers/fs-fixtures.js";
-import type { OpenClawConfig } from "./types.openclaw.js";
+import type { NodoAssistConfig } from "./types.nodoassist.js";
 
 const tempDirs: string[] = [];
 
@@ -19,15 +19,15 @@ export function resetPluginAutoEnableTestState(): void {
 }
 
 export function makeTempDir(): string {
-  return makeTrackedTempDir("openclaw-plugin-auto-enable", tempDirs);
+  return makeTrackedTempDir("nodoassist-plugin-auto-enable", tempDirs);
 }
 
 export function makeIsolatedEnv(overrides: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   const rootDir = makeTempDir();
   return {
-    OPENCLAW_STATE_DIR: path.join(rootDir, "state"),
-    OPENCLAW_BUNDLED_PLUGINS_DIR: path.join(process.cwd(), "extensions"),
-    OPENCLAW_TEST_TRUST_BUNDLED_PLUGINS_DIR: "1",
+    NODOASSIST_STATE_DIR: path.join(rootDir, "state"),
+    NODOASSIST_BUNDLED_PLUGINS_DIR: path.join(process.cwd(), "extensions"),
+    NODOASSIST_TEST_TRUST_BUNDLED_PLUGINS_DIR: "1",
     VITEST: "true",
     ...overrides,
   };
@@ -73,14 +73,14 @@ export function makeRegistry(
       origin: plugin.origin ?? "config",
       rootDir: `/fake/${plugin.id}`,
       source: `/fake/${plugin.id}/index.js`,
-      manifestPath: `/fake/${plugin.id}/openclaw.plugin.json`,
+      manifestPath: `/fake/${plugin.id}/nodoassist.plugin.json`,
     })),
     diagnostics: [],
   };
 }
 
 export function createPluginMetadataSnapshot(params: {
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   manifestRegistry: PluginManifestRegistry;
   workspaceDir?: string;
 }): PluginMetadataSnapshot {

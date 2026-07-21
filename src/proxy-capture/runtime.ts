@@ -17,7 +17,7 @@ import type {
   CaptureProtocol,
 } from "./types.js";
 
-const DEBUG_PROXY_FETCH_PATCH_KEY = Symbol.for("openclaw.debugProxy.fetchPatch");
+const DEBUG_PROXY_FETCH_PATCH_KEY = Symbol.for("nodoassist.debugProxy.fetchPatch");
 const REDACTED_CAPTURE_HEADER_VALUE = "[REDACTED]";
 // Cap captured response bodies so debug proxy capture cannot be turned into an
 // out-of-memory vector. The patched global fetch tees every outbound response
@@ -284,7 +284,7 @@ function createHttpCaptureEventBase(params: {
   return {
     sessionId: params.settings.sessionId,
     ts: Date.now(),
-    sourceScope: "openclaw",
+    sourceScope: "nodoassist",
     sourceProcess: params.settings.sourceProcess,
     protocol: params.transport ?? protocolFromUrl(params.rawUrl),
     direction: params.direction,
@@ -359,7 +359,7 @@ function installDebugProxyGlobalFetchPatch(
         store.recordEvent({
           sessionId: settings.sessionId,
           ts: Date.now(),
-          sourceScope: "openclaw",
+          sourceScope: "nodoassist",
           sourceProcess: settings.sourceProcess,
           protocol: protocolFromUrl(captureUrl),
           direction: "local",
@@ -415,7 +415,7 @@ export function initializeDebugProxyCapture(
     id: settings.sessionId,
     startedAt: Date.now(),
     mode,
-    sourceScope: "openclaw",
+    sourceScope: "nodoassist",
     sourceProcess: settings.sourceProcess,
     proxyUrl: settings.proxyUrl,
   });
@@ -613,7 +613,7 @@ export function captureWsEvent(params: {
   store.recordEvent({
     sessionId: settings.sessionId,
     ts: Date.now(),
-    sourceScope: "openclaw",
+    sourceScope: "nodoassist",
     sourceProcess: settings.sourceProcess,
     protocol: protocolFromUrl(params.url),
     direction: params.direction,

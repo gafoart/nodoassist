@@ -4,7 +4,7 @@ title: "Plugin SDK overview"
 sidebarTitle: "Plugin SDK overview"
 read_when:
   - You need to know which SDK subpath to import from
-  - You want a reference for all registration methods on OpenClawPluginApi
+  - You want a reference for all registration methods on NodoAssistPluginApi
   - You are looking up a specific SDK export
 ---
 
@@ -12,8 +12,8 @@ The plugin SDK is the typed contract between plugins and core. This page is the
 reference for **what to import** and **what you can register**.
 
 <Note>
-  This page is for plugin authors using `openclaw/plugin-sdk/*` inside
-  OpenClaw. For external apps, scripts, dashboards, CI jobs, and IDE extensions
+  This page is for plugin authors using `nodoassist/plugin-sdk/*` inside
+  NodoAssist. For external apps, scripts, dashboards, CI jobs, and IDE extensions
   that want to run agents through the Gateway, use
   [Gateway integrations for external apps](/gateway/external-apps) instead.
 </Note>
@@ -27,19 +27,19 @@ Looking for a how-to guide instead? Start with [Building plugins](/plugins/build
 Always import from a specific subpath:
 
 ```typescript
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { defineChannelPluginEntry } from "openclaw/plugin-sdk/channel-core";
+import { definePluginEntry } from "nodoassist/plugin-sdk/plugin-entry";
+import { defineChannelPluginEntry } from "nodoassist/plugin-sdk/channel-core";
 ```
 
 Each subpath is a small, self-contained module. This keeps startup fast and
 prevents circular dependency issues. For channel-specific entry/build helpers,
-prefer `openclaw/plugin-sdk/channel-core`; keep `openclaw/plugin-sdk/core` for
+prefer `nodoassist/plugin-sdk/channel-core`; keep `nodoassist/plugin-sdk/core` for
 the broader umbrella surface and shared helpers such as
 `buildChannelConfigSchema`.
 
 For channel config, publish the channel-owned JSON Schema through
-`openclaw.plugin.json#channelConfigs`. The `plugin-sdk/channel-config-schema`
-subpath is for shared schema primitives and the generic builder. OpenClaw's
+`nodoassist.plugin.json#channelConfigs`. The `plugin-sdk/channel-config-schema`
+subpath is for shared schema primitives and the generic builder. NodoAssist's
 bundled plugins use `plugin-sdk/bundled-channel-config-schema` for retained
 bundled-channel schemas. Deprecated compatibility exports remain on
 `plugin-sdk/channel-config-schema-legacy`; neither bundled schema subpath is a
@@ -47,7 +47,7 @@ pattern for new plugins.
 
 <Warning>
   Do not import provider- or channel-branded convenience seams (for example
-  `openclaw/plugin-sdk/slack`, `.../discord`, `.../signal`, `.../whatsapp`).
+  `nodoassist/plugin-sdk/slack`, `.../discord`, `.../signal`, `.../whatsapp`).
   Bundled plugins compose generic SDK subpaths inside their own `api.ts` /
   `runtime-api.ts` barrels; core consumers should either use those plugin-local
   barrels or add a narrow generic SDK contract when a need is truly
@@ -58,7 +58,7 @@ map when they have tracked owner usage. They exist for bundled-plugin
 maintenance only and are not recommended import paths for new third-party
 plugins.
 
-`openclaw/plugin-sdk/discord` and `openclaw/plugin-sdk/telegram-account` are
+`nodoassist/plugin-sdk/discord` and `nodoassist/plugin-sdk/telegram-account` are
 also kept as deprecated compatibility facades for tracked owner usage. Do not
 copy those import paths into new plugins; use injected runtime helpers and
 generic channel SDK subpaths instead.
@@ -83,7 +83,7 @@ deprecated re-export barrels are tracked in
 
 ## Registration API
 
-The `register(api)` callback receives an `OpenClawPluginApi` object with these
+The `register(api)` callback receives an `NodoAssistPluginApi` object with these
 methods:
 
 ### Capability registration
@@ -147,13 +147,13 @@ structured entries:
 ```ts
 agentPromptGuidance: [
   "Global command hint.",
-  { text: "Only show this in the main OpenClaw prompt.", surfaces: ["openclaw_main"] },
+  { text: "Only show this in the main NodoAssist prompt.", surfaces: ["nodoassist_main"] },
 ];
 ```
 
-Structured `surfaces` may include `openclaw_main`, `codex_app_server`,
+Structured `surfaces` may include `nodoassist_main`, `codex_app_server`,
 `cli_backend`, `acp_backend`, or `subagent`. `pi_main` remains a deprecated alias
-for `openclaw_main`. Omit `surfaces` for intentional all-surface guidance. Do
+for `nodoassist_main`. Omit `surfaces` for intentional all-surface guidance. Do
 not pass an empty `surfaces` array; it is rejected so accidental scope loss does
 not become global prompt text.
 
@@ -171,7 +171,7 @@ guidance remain available to non-Codex prompt surfaces for compatibility.
 | `api.registerGatewayMethod(name, handler)`      | Gateway RPC method                                           |
 | `api.registerGatewayDiscoveryService(service)`  | Local Gateway discovery advertiser                           |
 | `api.registerCli(registrar, opts?)`             | CLI subcommand                                               |
-| `api.registerNodeCliFeature(registrar, opts?)`  | Node feature CLI under `openclaw nodes`                      |
+| `api.registerNodeCliFeature(registrar, opts?)`  | Node feature CLI under `nodoassist nodes`                    |
 | `api.registerService(service)`                  | Background service                                           |
 | `api.registerInteractiveHandler(registration)`  | Interactive handler                                          |
 | `api.registerAgentToolResultMiddleware(...)`    | Runtime tool-result middleware                               |
@@ -180,15 +180,15 @@ guidance remain available to non-Codex prompt surfaces for compatibility.
 | `api.registerHostedMediaResolver(resolver)`     | Resolver for browser-style hosted media URLs                 |
 | `api.registerTextTransforms(transforms)`        | Plugin-owned prompt/message compatibility text rewrites      |
 | `api.registerConfigMigration(migrate)`          | Lightweight config migration run before plugin runtime loads |
-| `api.registerMigrationProvider(provider)`       | Importer for `openclaw migrate`                              |
+| `api.registerMigrationProvider(provider)`       | Importer for `nodoassist migrate`                            |
 | `api.registerAutoEnableProbe(probe)`            | Config probe that can auto-enable this plugin                |
 | `api.registerReload(registration)`              | Restart/hot/noop config-prefix policy for reload handling    |
 | `api.registerNodeHostCommand(command)`          | Command handler exposed to paired nodes                      |
 | `api.registerNodeInvokePolicy(policy)`          | Allowlist/approval policy for node-invoked commands          |
-| `api.registerSecurityAuditCollector(collector)` | Findings collector for `openclaw security audit`             |
+| `api.registerSecurityAuditCollector(collector)` | Findings collector for `nodoassist security audit`           |
 
 Telegram interactive handlers can return `{ submitText }` to route text through
-Telegram's normal inbound agent path after the handler succeeds. OpenClaw keeps
+Telegram's normal inbound agent path after the handler succeeds. NodoAssist keeps
 the callback button when inbound policy skips the text or processing fails, so
 the user can retry after the blocking condition changes. This result field is
 Telegram-specific; other channels keep their own interactive result contracts.
@@ -310,9 +310,9 @@ Examples of non-Plan consumers:
   seam for async output reducers such as tokenjuice.
 
 Plugins must declare `contracts.agentToolResultMiddleware` for each targeted
-runtime, for example `["openclaw", "codex"]`. Installed plugins without that
+runtime, for example `["nodoassist", "codex"]`. Installed plugins without that
 contract, or without explicit enablement, cannot register this middleware; keep
-normal OpenClaw plugin hooks for work that does not need pre-model tool-result
+normal NodoAssist plugin hooks for work that does not need pre-model tool-result
 timing. The old
 embedded-runner-only extension factory registration path has been removed.
 </Accordion>
@@ -320,7 +320,7 @@ embedded-runner-only extension factory registration path has been removed.
 ### Gateway discovery registration
 
 `api.registerGatewayDiscoveryService(...)` lets a plugin advertise the active
-Gateway on a local discovery transport such as mDNS/Bonjour. OpenClaw calls the
+Gateway on a local discovery transport such as mDNS/Bonjour. NodoAssist calls the
 service during Gateway startup when local discovery is enabled, passes the
 current Gateway ports and non-secret TXT hint data, and calls the returned
 `stop` handler during Gateway shutdown.
@@ -356,7 +356,7 @@ own trust.
 For paired-node features, prefer
 `api.registerNodeCliFeature(registrar, opts?)`. It is a small wrapper around
 `api.registerCli(..., { parentPath: ["nodes"] })` and makes commands such as
-`openclaw nodes canvas` explicit plugin-owned node features.
+`nodoassist nodes canvas` explicit plugin-owned node features.
 
 If you want a plugin command to stay lazy-loaded in the normal root CLI path,
 provide `descriptors` that cover every top-level command root exposed by that
@@ -412,12 +412,12 @@ AI CLI backend such as `claude-cli` or `my-cli`.
 
 - The backend `id` becomes the provider prefix in model refs like `my-cli/gpt-5`.
 - The backend `config` uses the same shape as `agents.defaults.cliBackends.<id>`.
-- User config still wins. OpenClaw merges `agents.defaults.cliBackends.<id>` over the
+- User config still wins. NodoAssist merges `agents.defaults.cliBackends.<id>` over the
   plugin default before running the CLI.
 - Use `normalizeConfig` when a backend needs compatibility rewrites after merge
   (for example normalizing old flag shapes).
 - Use `resolveExecutionArgs` for request-scoped argv rewrites that belong to
-  the CLI dialect, such as mapping OpenClaw thinking levels to a native effort
+  the CLI dialect, such as mapping NodoAssist thinking levels to a native effort
   flag. The hook receives `ctx.executionMode`; use `"side-question"` to add
   backend-native isolation flags for ephemeral `/btw` calls. If those flags
   reliably disable native tools for an otherwise always-on CLI, declare
@@ -445,7 +445,7 @@ For an end-to-end authoring guide, see
 - `registerMemoryCapability` is the preferred exclusive memory-plugin API.
 - `registerMemoryCapability` may also expose `publicArtifacts.listArtifacts(...)`
   so companion plugins can consume exported memory artifacts through
-  `openclaw/plugin-sdk/memory-host-core` instead of reaching into a specific
+  `nodoassist/plugin-sdk/memory-host-core` instead of reaching into a specific
   memory plugin's private layout.
 - `registerMemoryPromptSection`, `registerMemoryFlushPlan`, and
   `registerMemoryRuntime` are legacy-compatible exclusive memory-plugin APIs.
@@ -485,7 +485,7 @@ cover CLI and Gateway-backed install or update paths.
 - `message_received`: use the typed `threadId` field when you need inbound thread/topic routing. Keep `metadata` for channel-specific extras.
 - `message_sending`: use typed `replyToId` / `threadId` routing fields before falling back to channel-specific `metadata`.
 - `gateway_start`: use `ctx.config`, `ctx.workspaceDir`, and `ctx.getCron?.()` for gateway-owned startup state instead of relying on internal `gateway:startup` hooks.
-- `cron_changed`: observe gateway-owned cron lifecycle changes. Use `event.job?.state?.nextRunAtMs` and `ctx.getCron?.()` when syncing external wake schedulers, and keep OpenClaw as the source of truth for due checks and execution.
+- `cron_changed`: observe gateway-owned cron lifecycle changes. Use `event.job?.state?.nextRunAtMs` and `ctx.getCron?.()` when syncing external wake schedulers, and keep NodoAssist as the source of truth for due checks and execution.
 
 ### API object fields
 
@@ -497,7 +497,7 @@ cover CLI and Gateway-backed install or update paths.
 | `api.description`        | `string?`                 | Plugin description (optional)                                                               |
 | `api.source`             | `string`                  | Plugin source path                                                                          |
 | `api.rootDir`            | `string?`                 | Plugin root directory (optional)                                                            |
-| `api.config`             | `OpenClawConfig`          | Current config snapshot (active in-memory runtime snapshot when available)                  |
+| `api.config`             | `NodoAssistConfig`        | Current config snapshot (active in-memory runtime snapshot when available)                  |
 | `api.pluginConfig`       | `Record<string, unknown>` | Plugin-specific config from `plugins.entries.<id>.config`                                   |
 | `api.runtime`            | `PluginRuntime`           | [Runtime helpers](/plugins/sdk-runtime)                                                     |
 | `api.logger`             | `PluginLogger`            | Scoped logger (`debug`, `info`, `warn`, `error`)                                            |
@@ -517,16 +517,16 @@ my-plugin/
 ```
 
 <Warning>
-  Never import your own plugin through `openclaw/plugin-sdk/<your-plugin>`
+  Never import your own plugin through `nodoassist/plugin-sdk/<your-plugin>`
   from production code. Route internal imports through `./api.ts` or
   `./runtime-api.ts`. The SDK path is the external contract only.
 </Warning>
 
 Facade-loaded bundled plugin public surfaces (`api.ts`, `runtime-api.ts`,
 `index.ts`, `setup-entry.ts`, and similar public entry files) prefer the
-active runtime config snapshot when OpenClaw is already running. If no runtime
+active runtime config snapshot when NodoAssist is already running. If no runtime
 snapshot exists yet, they fall back to the resolved config file on disk.
-Packaged bundled plugin facades should be loaded through OpenClaw's plugin
+Packaged bundled plugin facades should be loaded through NodoAssist's plugin
 facade loaders; direct imports from `dist/extensions/...` bypass the manifest
 and runtime sidecar checks that packaged installs use for plugin-owned code.
 
@@ -536,15 +536,15 @@ subpath yet. Bundled examples:
 
 - **Anthropic**: public `api.ts` / `contract-api.ts` seam for Claude
   beta-header and `service_tier` stream helpers.
-- **`@openclaw/openai-provider`**: `api.ts` exports provider builders,
+- **`@nodoassist/openai-provider`**: `api.ts` exports provider builders,
   default-model helpers, and realtime provider builders.
-- **`@openclaw/openrouter-provider`**: `api.ts` exports the provider builder
+- **`@nodoassist/openrouter-provider`**: `api.ts` exports the provider builder
   plus onboarding/config helpers.
 
 <Warning>
-  Extension production code should also avoid `openclaw/plugin-sdk/<other-plugin>`
+  Extension production code should also avoid `nodoassist/plugin-sdk/<other-plugin>`
   imports. If a helper is truly shared, promote it to a neutral SDK subpath
-  such as `openclaw/plugin-sdk/speech`, `.../provider-model-shared`, or another
+  such as `nodoassist/plugin-sdk/speech`, `.../provider-model-shared`, or another
   capability-oriented surface instead of coupling two plugins together.
 </Warning>
 

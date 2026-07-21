@@ -3,11 +3,11 @@
  * dispatch and local Browser control route dispatch.
  */
 import crypto from "node:crypto";
-import { clampTimerTimeoutMs } from "openclaw/plugin-sdk/number-runtime";
+import { clampTimerTimeoutMs } from "nodoassist/plugin-sdk/number-runtime";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   ErrorCodes,
   applyBrowserProxyPaths,
@@ -26,7 +26,7 @@ import {
   withTimeout,
   type GatewayRequestHandlers,
   type NodeSession,
-  type OpenClawConfig,
+  type NodoAssistConfig,
 } from "../core-api.js";
 
 type BrowserRequestParams = {
@@ -94,7 +94,7 @@ function resolveBrowserNode(nodes: NodeSession[], query: string): NodeSession | 
 }
 
 function resolveBrowserNodeTarget(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   nodes: NodeSession[];
 }): NodeSession | null {
   const policy = params.cfg.gateway?.nodes?.browser;

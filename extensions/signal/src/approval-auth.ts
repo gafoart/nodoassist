@@ -2,8 +2,8 @@
 import {
   createResolvedApproverActionAuthAdapter,
   resolveApprovalApprovers,
-} from "openclaw/plugin-sdk/approval-auth-runtime";
-import { normalizeE164 } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "nodoassist/plugin-sdk/approval-auth-runtime";
+import { normalizeE164 } from "nodoassist/plugin-sdk/text-utility-runtime";
 import { resolveSignalAccount } from "./accounts.js";
 import { resolveSignalTarget } from "./aliases.js";
 import { normalizeSignalMessagingTarget } from "./normalize.js";

@@ -1,12 +1,12 @@
-// Whatsapp plugin entrypoint registers its OpenClaw integration.
+// Whatsapp plugin entrypoint registers its NodoAssist integration.
 import {
   defineBundledChannelEntry,
   loadBundledEntryExportSync,
-} from "openclaw/plugin-sdk/channel-entry-contract";
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/channel-entry-contract";
+} from "nodoassist/plugin-sdk/channel-entry-contract";
+import type { NodoAssistPluginApi } from "nodoassist/plugin-sdk/channel-entry-contract";
 
-function registerWhatsAppCallTool(api: OpenClawPluginApi): void {
-  const registerTool = loadBundledEntryExportSync<(api: OpenClawPluginApi) => void>(
+function registerWhatsAppCallTool(api: NodoAssistPluginApi): void {
+  const registerTool = loadBundledEntryExportSync<(api: NodoAssistPluginApi) => void>(
     import.meta.url,
     {
       specifier: "./call-tool-api.js",

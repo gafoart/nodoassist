@@ -1,5 +1,5 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import type { ReplyPayload } from "../types.js";
 import {
   createDispatcher,
@@ -95,7 +95,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       dispatcher,
       replyResolver,
     });
@@ -154,7 +154,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       dispatcher,
       replyResolver,
     });
@@ -235,7 +235,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       dispatcher,
       replyResolver,
     });
@@ -308,7 +308,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       dispatcher,
       replyResolver,
     });
@@ -379,7 +379,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       dispatcher,
       replyResolver,
     });
@@ -451,7 +451,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       dispatcher,
       replyResolver,
     });
@@ -506,7 +506,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       dispatcher,
       replyResolver,
     });
@@ -559,7 +559,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       dispatcher,
       replyResolver,
     });
@@ -609,7 +609,7 @@ describe("dispatchReplyFromConfig stale visible admission recovery", () => {
           stuckSessionWarnMs: 1_000,
           stuckSessionAbortMs: 1_000,
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       dispatcher,
       replyResolver,
     });

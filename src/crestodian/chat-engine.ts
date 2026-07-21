@@ -653,7 +653,7 @@ export class CrestodianChatEngine {
   }
 
   /**
-   * Post-write hook: re-validate openclaw.json after every applied operation.
+   * Post-write hook: re-validate nodoassist.json after every applied operation.
    * On failure the exact schema issues go straight back into the conversation
    * (and to the AI, which proposes one corrective command) so a bad write is
    * caught and fixed in the same chat instead of surfacing at gateway start.
@@ -674,7 +674,7 @@ export class CrestodianChatEngine {
     } catch {
       return null;
     }
-    const notice = `⚠ openclaw.json failed validation after that write:\n${issuesText}`;
+    const notice = `⚠ nodoassist.json failed validation after that write:\n${issuesText}`;
     const recovery = await this.resolveAssistantTurn(
       `[config-verify] The config file is now invalid:\n${issuesText}\nPropose one corrective command from the allowed list.`,
       false,
@@ -829,11 +829,11 @@ export class CrestodianChatEngine {
         return bridge.kind === "model"
           ? [
               "Sensitive input is not accepted in the Crestodian TUI because terminal input is visible.",
-              "Run `openclaw configure --section model` to finish setup with masked prompts.",
+              "Run `nodoassist configure --section model` to finish setup with masked prompts.",
             ].join("\n")
           : [
               "Sensitive input is not accepted in the Crestodian TUI because terminal input is visible.",
-              `Run \`openclaw channels add --channel ${bridge.label}\` to finish setup with masked prompts.`,
+              `Run \`nodoassist channels add --channel ${bridge.label}\` to finish setup with masked prompts.`,
             ].join("\n");
       }
       if (bridge.step.type === "note" || bridge.step.type === "progress") {

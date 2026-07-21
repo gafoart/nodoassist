@@ -1,9 +1,9 @@
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 
 export const POST_CORE_UPDATE_SOURCE_CONFIG_PATH_ENV =
-  "OPENCLAW_UPDATE_POST_CORE_SOURCE_CONFIG_PATH";
+  "NODOASSIST_UPDATE_POST_CORE_SOURCE_CONFIG_PATH";
 
 export type PreUpdateConfigRestoreInput = {
-  sourceConfig: OpenClawConfig;
-  authoredConfig: OpenClawConfig;
+  sourceConfig: NodoAssistConfig;
+  authoredConfig: NodoAssistConfig;
 };

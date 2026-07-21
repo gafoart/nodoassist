@@ -1,8 +1,8 @@
 // Inspects installed package metadata for update/install verification.
 import fsSync from "node:fs";
 import path from "node:path";
+import { isRecord } from "@nodoassist/normalization-core/record-coerce";
 import { readRootJsonObjectSync } from "@openclaw/fs-safe/json";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
 
 // Package update utilities inspect installed package metadata without trusting
 // paths outside the provided package root.
@@ -56,15 +56,15 @@ export function readInstalledPackagePeerDependencies(dir: string): Record<string
   );
 }
 
-/** Return true when an installed package needs an openclaw peer link repair. */
-export function installedPackageNeedsOpenClawPeerLinkRepair(dir: string): boolean {
+/** Return true when an installed package needs an nodoassist peer link repair. */
+export function installedPackageNeedsNodoAssistPeerLinkRepair(dir: string): boolean {
   const peerDependencies = readInstalledPackagePeerDependencies(dir);
-  if (!Object.hasOwn(peerDependencies, "openclaw")) {
+  if (!Object.hasOwn(peerDependencies, "nodoassist")) {
     return false;
   }
 
   try {
-    fsSync.statSync(path.join(dir, "node_modules", "openclaw"));
+    fsSync.statSync(path.join(dir, "node_modules", "nodoassist"));
     return false;
   } catch (error) {
     const code = (error as NodeJS.ErrnoException | undefined)?.code;

@@ -32,7 +32,7 @@ describe("OCM npm workspace dependency adapter", () => {
           "--omit=dev",
           "--no-save",
           "--package-lock=false",
-          "openclaw.tgz",
+          "nodoassist.tgz",
         ],
         ["/repo/packages/ai"],
         "/repo",
@@ -47,25 +47,25 @@ describe("OCM npm workspace dependency adapter", () => {
         "--package-lock=false",
       ],
       prefixDir: "/repo/runtime",
-      rootArchive: "/repo/openclaw.tgz",
+      rootArchive: "/repo/nodoassist.tgz",
     });
   });
 
   it("keeps normal npm commands unchanged", () => {
     expect(resolveWorkspaceInstallPlan(["pack", "--silent"], ["/repo/packages/ai"])).toBeNull();
-    expect(resolveWorkspaceInstallPlan(["install", "openclaw.tgz"], [])).toBeNull();
+    expect(resolveWorkspaceInstallPlan(["install", "nodoassist.tgz"], [])).toBeNull();
   });
 
   it("builds a manifest with the root and local workspace tarballs", () => {
     expect(
-      buildInstallManifest("/tmp/openclaw.tgz", [
-        { name: "@openclaw/ai", tarball: "/tmp/openclaw-ai.tgz" },
+      buildInstallManifest("/tmp/nodoassist.tgz", [
+        { name: "@nodoassist/ai", tarball: "/tmp/nodoassist-ai.tgz" },
       ]),
     ).toEqual({
       private: true,
       dependencies: {
-        "@openclaw/ai": "file:///tmp/openclaw-ai.tgz",
-        openclaw: "file:///tmp/openclaw.tgz",
+        "@nodoassist/ai": "file:///tmp/nodoassist-ai.tgz",
+        nodoassist: "file:///tmp/nodoassist.tgz",
       },
     });
   });
@@ -73,7 +73,7 @@ describe("OCM npm workspace dependency adapter", () => {
   it("rewrites packed workspace protocols to the local package version", () => {
     const packageJson = {
       dependencies: {
-        "@openclaw/ai": "workspace:*",
+        "@nodoassist/ai": "workspace:*",
         chalk: "5.6.2",
       },
     };
@@ -81,40 +81,40 @@ describe("OCM npm workspace dependency adapter", () => {
     expect(
       rewriteWorkspaceDependencyVersions(packageJson, [
         {
-          name: "@openclaw/ai",
+          name: "@nodoassist/ai",
           version: "2026.7.1-beta.3",
-          tarball: "/tmp/openclaw-ai.tgz",
+          tarball: "/tmp/nodoassist-ai.tgz",
         },
       ]),
     ).toBe(1);
     expect(packageJson.dependencies).toEqual({
-      "@openclaw/ai": "2026.7.1-beta.3",
+      "@nodoassist/ai": "2026.7.1-beta.3",
       chalk: "5.6.2",
     });
   });
 
   it("installs a packed root with a local workspace dependency", () => {
-    const root = mkdtempSync(join(tmpdir(), "openclaw-ocm-adapter-test-"));
+    const root = mkdtempSync(join(tmpdir(), "nodoassist-ocm-adapter-test-"));
     try {
       const archiveRoot = join(root, "archive");
       const packagedRoot = join(archiveRoot, "package");
       const workspaceDir = join(root, "ai");
       const installDir = join(root, "install");
-      const rootArchive = join(root, "openclaw.tgz");
+      const rootArchive = join(root, "nodoassist.tgz");
       mkdirSync(packagedRoot, { recursive: true });
       mkdirSync(workspaceDir, { recursive: true });
       writeFileSync(
         join(packagedRoot, "package.json"),
         `${JSON.stringify({
-          name: "openclaw",
+          name: "nodoassist",
           version: "1.0.0",
-          dependencies: { "@openclaw/ai": "workspace:*" },
+          dependencies: { "@nodoassist/ai": "workspace:*" },
         })}\n`,
       );
       writeFileSync(
         join(workspaceDir, "package.json"),
         `${JSON.stringify({
-          name: "@openclaw/ai",
+          name: "@nodoassist/ai",
           version: "1.0.0",
           main: "index.js",
         })}\n`,
@@ -137,8 +137,8 @@ describe("OCM npm workspace dependency adapter", () => {
         {
           env: {
             ...process.env,
-            OPENCLAW_OCM_REAL_NPM_BIN: process.platform === "win32" ? "npm.cmd" : "npm",
-            OPENCLAW_OCM_WORKSPACE_DEPENDENCY_DIRS: workspaceDir,
+            NODOASSIST_OCM_REAL_NPM_BIN: process.platform === "win32" ? "npm.cmd" : "npm",
+            NODOASSIST_OCM_WORKSPACE_DEPENDENCY_DIRS: workspaceDir,
             npm_config_audit: "false",
             npm_config_cache: join(root, "npm-cache"),
             npm_config_fund: "false",
@@ -148,12 +148,13 @@ describe("OCM npm workspace dependency adapter", () => {
       );
 
       expect(
-        JSON.parse(readFileSync(join(installDir, "node_modules/openclaw/package.json"), "utf8"))
+        JSON.parse(readFileSync(join(installDir, "node_modules/nodoassist/package.json"), "utf8"))
           .version,
       ).toBe("1.0.0");
       expect(
-        JSON.parse(readFileSync(join(installDir, "node_modules/@openclaw/ai/package.json"), "utf8"))
-          .version,
+        JSON.parse(
+          readFileSync(join(installDir, "node_modules/@nodoassist/ai/package.json"), "utf8"),
+        ).version,
       ).toBe("1.0.0");
     } finally {
       rmSync(root, { force: true, recursive: true });

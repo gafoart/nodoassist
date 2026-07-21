@@ -75,7 +75,7 @@ diff --git a/b.ts b/b.ts
       candidates: [candidate],
       diffs,
       landed,
-      repo: "openclaw/openclaw",
+      repo: "nodoassist/nodoassist",
     });
 
     expect(plan).toStrictEqual([
@@ -122,7 +122,7 @@ Closing #70530 as a duplicate.`,
       candidates: [candidate],
       diffs,
       landed,
-      repo: "openclaw/openclaw",
+      repo: "nodoassist/nodoassist",
     });
 
     expect(plan[0]).toStrictEqual({
@@ -160,7 +160,7 @@ Closing #70592 as a duplicate.`,
         candidates: [candidate],
         diffs,
         landed,
-        repo: "openclaw/openclaw",
+        repo: "nodoassist/nodoassist",
       }),
     ).toThrow("Refusing to close #1");
   });
@@ -169,7 +169,7 @@ Closing #70592 as a duplicate.`,
     const calls: string[][] = [];
     const responses = new Map<string, string>([
       [
-        "pr view 70532 --repo openclaw/openclaw --json number,title,body,state,mergedAt,mergeCommit,closingIssuesReferences,files,url",
+        "pr view 70532 --repo nodoassist/nodoassist --json number,title,body,state,mergedAt,mergeCommit,closingIssuesReferences,files,url",
         JSON.stringify(
           pr({
             body: "Fixes #70491",
@@ -181,15 +181,15 @@ Closing #70592 as a duplicate.`,
         ),
       ],
       [
-        "pr view 70592 --repo openclaw/openclaw --json number,title,body,state,mergedAt,mergeCommit,closingIssuesReferences,files,url",
+        "pr view 70592 --repo nodoassist/nodoassist --json number,title,body,state,mergedAt,mergeCommit,closingIssuesReferences,files,url",
         JSON.stringify(pr({ body: "Closes #70491", number: 70592 })),
       ],
       [
-        "pr diff 70532 --repo openclaw/openclaw --color=never",
+        "pr diff 70532 --repo nodoassist/nodoassist --color=never",
         "diff --git a/ui/src/ui/chat/grouped-render.ts b/ui/src/ui/chat/grouped-render.ts\n@@ -402,8 +402,11 @@",
       ],
       [
-        "pr diff 70592 --repo openclaw/openclaw --color=never",
+        "pr diff 70592 --repo nodoassist/nodoassist --color=never",
         "diff --git a/ui/src/ui/chat/grouped-render.ts b/ui/src/ui/chat/grouped-render.ts\n@@ -286,8 +286,11 @@",
       ],
     ]);
@@ -204,7 +204,7 @@ Closing #70592 as a duplicate.`,
     };
 
     const args = parseArgs(["--landed-pr", "70532", "--duplicates", "70592"], {
-      GITHUB_REPOSITORY: "openclaw/openclaw",
+      GITHUB_REPOSITORY: "nodoassist/nodoassist",
     });
     const plan = runDuplicateCloseWorkflow(args, runGh);
 
@@ -229,7 +229,7 @@ Closing #70592 as a duplicate.`,
           evidence: { overlappingHunks: false, sharedFiles: [], sharedIssues: [70491] },
         },
       ],
-      repo: "openclaw/openclaw",
+      repo: "nodoassist/nodoassist",
       runGh: (args: string[]) => {
         calls.push(args);
         return "";
@@ -242,14 +242,14 @@ Closing #70592 as a duplicate.`,
         "edit",
         "70592",
         "--repo",
-        "openclaw/openclaw",
+        "nodoassist/nodoassist",
         "--add-label",
         "duplicate",
         "--add-label",
         "close:duplicate",
       ],
-      ["pr", "comment", "70592", "--repo", "openclaw/openclaw", "--body", "closing"],
-      ["pr", "close", "70592", "--repo", "openclaw/openclaw"],
+      ["pr", "comment", "70592", "--repo", "nodoassist/nodoassist", "--body", "closing"],
+      ["pr", "close", "70592", "--repo", "nodoassist/nodoassist"],
     ]);
   });
 });

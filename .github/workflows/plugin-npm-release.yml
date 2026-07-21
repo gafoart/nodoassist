@@ -35,7 +35,7 @@ on:
         required: false
         type: string
       release_publish_run_id:
-        description: Approved OpenClaw Release Publish workflow run id
+        description: Approved NodoAssist Release Publish workflow run id
         required: false
         type: string
       npm_dist_tag:
@@ -287,12 +287,12 @@ jobs:
 
       - name: Preview publish command
         env:
-          OPENCLAW_PLUGIN_NPM_PUBLISH_TAG: ${{ inputs.npm_dist_tag == 'extended-stable' && inputs.npm_dist_tag || '' }}
+          NODOASSIST_PLUGIN_NPM_PUBLISH_TAG: ${{ inputs.npm_dist_tag == 'extended-stable' && inputs.npm_dist_tag || '' }}
         run: bash scripts/plugin-npm-publish.sh --dry-run "${{ matrix.plugin.packageDir }}"
 
       - name: Preview npm pack contents
         env:
-          OPENCLAW_PLUGIN_NPM_PUBLISH_TAG: ${{ inputs.npm_dist_tag == 'extended-stable' && inputs.npm_dist_tag || '' }}
+          NODOASSIST_PLUGIN_NPM_PUBLISH_TAG: ${{ inputs.npm_dist_tag == 'extended-stable' && inputs.npm_dist_tag || '' }}
         run: bash scripts/plugin-npm-publish.sh --pack-dry-run "${{ matrix.plugin.packageDir }}"
 
   publish_plugins_npm:
@@ -341,8 +341,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ inputs.npm_dist_tag != 'extended-stable' && secrets.NPM_TOKEN || '' }}
           NPM_TOKEN: ${{ inputs.npm_dist_tag != 'extended-stable' && secrets.NPM_TOKEN || '' }}
-          OPENCLAW_NPM_PUBLISH_AUTH_MODE: trusted-publisher
-          OPENCLAW_PLUGIN_NPM_PUBLISH_TAG: ${{ inputs.npm_dist_tag == 'extended-stable' && inputs.npm_dist_tag || '' }}
+          NODOASSIST_NPM_PUBLISH_AUTH_MODE: trusted-publisher
+          NODOASSIST_PLUGIN_NPM_PUBLISH_TAG: ${{ inputs.npm_dist_tag == 'extended-stable' && inputs.npm_dist_tag || '' }}
         run: bash scripts/plugin-npm-publish.sh --publish "${{ matrix.plugin.packageDir }}"
 
       - name: Verify published runtime

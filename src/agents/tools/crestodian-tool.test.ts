@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => ({
   readConfigFileSnapshot: vi.fn(async () => ({
     exists: true,
     valid: true,
-    path: "/tmp/openclaw.json",
+    path: "/tmp/nodoassist.json",
     hash: "h",
     config: {},
     sourceConfig: {},
@@ -169,7 +169,7 @@ describe("crestodian tool", () => {
     mocks.readConfigFileSnapshot.mockResolvedValueOnce({
       exists: true,
       valid: false,
-      path: "/tmp/openclaw.json",
+      path: "/tmp/nodoassist.json",
       hash: "h",
       config: {},
       sourceConfig: {},

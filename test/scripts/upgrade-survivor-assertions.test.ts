@@ -41,7 +41,7 @@ function writeMigratedSessionState(stateDir: string): void {
     },
   });
 
-  const db = new DatabaseSync(join(agentDbDir, "openclaw-agent.sqlite"));
+  const db = new DatabaseSync(join(agentDbDir, "nodoassist-agent.sqlite"));
   try {
     db.exec(`
       CREATE TABLE IF NOT EXISTS cache_entries (
@@ -94,7 +94,7 @@ function writeMigratedSessionState(stateDir: string): void {
 }
 
 function assertConfiguredPluginState(params: { installPath?: string } = {}): void {
-  const root = mkdtempSync(join(tmpdir(), "openclaw-upgrade-survivor-"));
+  const root = mkdtempSync(join(tmpdir(), "nodoassist-upgrade-survivor-"));
   try {
     const stateDir = join(root, "state");
     const workspace = join(root, "workspace");
@@ -109,15 +109,15 @@ function assertConfiguredPluginState(params: { installPath?: string } = {}): voi
     });
     writeMigratedSessionState(stateDir);
     writeJson(join(matrixInstallDir, "package.json"), {
-      name: "@openclaw/matrix",
+      name: "@nodoassist/matrix",
     });
     writeJson(join(stateDir, "plugins", "installs.json"), {
       installRecords: {
         matrix: {
           source: "clawhub",
-          spec: "clawhub:@openclaw/matrix",
+          spec: "clawhub:@nodoassist/matrix",
           installPath: matrixInstallDir,
-          clawhubPackage: "@openclaw/matrix",
+          clawhubPackage: "@nodoassist/matrix",
           clawhubChannel: "official",
           artifactKind: "npm-pack",
         },
@@ -133,10 +133,10 @@ function assertConfiguredPluginState(params: { installPath?: string } = {}): voi
     execFileSync(process.execPath, [ASSERTIONS_PATH, "assert-state"], {
       env: {
         ...process.env,
-        OPENCLAW_STATE_DIR: stateDir,
-        OPENCLAW_TEST_WORKSPACE_DIR: workspace,
-        OPENCLAW_UPGRADE_SURVIVOR_CONFIG_COVERAGE_JSON: coveragePath,
-        OPENCLAW_UPGRADE_SURVIVOR_SCENARIO: "configured-plugin-installs",
+        NODOASSIST_STATE_DIR: stateDir,
+        NODOASSIST_TEST_WORKSPACE_DIR: workspace,
+        NODOASSIST_UPGRADE_SURVIVOR_CONFIG_COVERAGE_JSON: coveragePath,
+        NODOASSIST_UPGRADE_SURVIVOR_SCENARIO: "configured-plugin-installs",
       },
       stdio: "pipe",
     });
@@ -146,8 +146,8 @@ function assertConfiguredPluginState(params: { installPath?: string } = {}): voi
 }
 
 describe("upgrade survivor assertions", () => {
-  it("accepts the ACPX OpenClaw tools bridge scenario during seed", () => {
-    const root = mkdtempSync(join(tmpdir(), "openclaw-upgrade-survivor-acpx-"));
+  it("accepts the ACPX NodoAssist tools bridge scenario during seed", () => {
+    const root = mkdtempSync(join(tmpdir(), "nodoassist-upgrade-survivor-acpx-"));
     try {
       const stateDir = join(root, "state");
       const workspace = join(root, "workspace");
@@ -157,9 +157,9 @@ describe("upgrade survivor assertions", () => {
       execFileSync(process.execPath, [ASSERTIONS_PATH, "seed"], {
         env: {
           ...process.env,
-          OPENCLAW_STATE_DIR: stateDir,
-          OPENCLAW_TEST_WORKSPACE_DIR: workspace,
-          OPENCLAW_UPGRADE_SURVIVOR_SCENARIO: "acpx-openclaw-tools-bridge",
+          NODOASSIST_STATE_DIR: stateDir,
+          NODOASSIST_TEST_WORKSPACE_DIR: workspace,
+          NODOASSIST_UPGRADE_SURVIVOR_SCENARIO: "acpx-nodoassist-tools-bridge",
         },
         stdio: "pipe",
       });
@@ -168,10 +168,10 @@ describe("upgrade survivor assertions", () => {
     }
   });
 
-  it("asserts the ACPX OpenClaw tools bridge config survived", () => {
-    const root = mkdtempSync(join(tmpdir(), "openclaw-upgrade-survivor-acpx-config-"));
+  it("asserts the ACPX NodoAssist tools bridge config survived", () => {
+    const root = mkdtempSync(join(tmpdir(), "nodoassist-upgrade-survivor-acpx-config-"));
     try {
-      const configPath = join(root, "openclaw.json");
+      const configPath = join(root, "nodoassist.json");
       const coveragePath = join(root, "coverage.json");
       writeJson(configPath, {
         plugins: {
@@ -180,23 +180,23 @@ describe("upgrade survivor assertions", () => {
             acpx: {
               enabled: true,
               config: {
-                openClawToolsMcpBridge: true,
+                nodoAssistToolsMcpBridge: true,
               },
             },
           },
         },
       });
       writeJson(coveragePath, {
-        acceptedIntents: ["acpx-openclaw-tools-bridge"],
+        acceptedIntents: ["acpx-nodoassist-tools-bridge"],
         skippedIntents: [],
       });
 
       execFileSync(process.execPath, [ASSERTIONS_PATH, "assert-config"], {
         env: {
           ...process.env,
-          OPENCLAW_CONFIG_PATH: configPath,
-          OPENCLAW_UPGRADE_SURVIVOR_CONFIG_COVERAGE_JSON: coveragePath,
-          OPENCLAW_UPGRADE_SURVIVOR_SCENARIO: "acpx-openclaw-tools-bridge",
+          NODOASSIST_CONFIG_PATH: configPath,
+          NODOASSIST_UPGRADE_SURVIVOR_CONFIG_COVERAGE_JSON: coveragePath,
+          NODOASSIST_UPGRADE_SURVIVOR_SCENARIO: "acpx-nodoassist-tools-bridge",
         },
         stdio: "pipe",
       });
@@ -210,7 +210,7 @@ describe("upgrade survivor assertions", () => {
   });
 
   it("rejects ClawHub npm-pack installs outside the managed extensions root", () => {
-    const root = mkdtempSync(join(tmpdir(), "openclaw-upgrade-survivor-outside-"));
+    const root = mkdtempSync(join(tmpdir(), "nodoassist-upgrade-survivor-outside-"));
     try {
       expect(() =>
         assertConfiguredPluginState({ installPath: join(root, "outside-matrix") }),

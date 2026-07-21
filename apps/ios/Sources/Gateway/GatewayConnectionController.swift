@@ -7,8 +7,8 @@ import EventKit
 import Foundation
 import Network
 import Observation
-import OpenClawChatUI
-import OpenClawKit
+import NodoAssistChatUI
+import NodoAssistKit
 import os
 import Photos
 import ReplayKit
@@ -184,7 +184,7 @@ final class GatewayConnectionController {
                 endpoint.host,
                 endpoint.port,
                 GatewaySetupRouteProbeBudget.tcpConnectTimeoutSeconds,
-                "ai.openclaw.gateway.setup-route-\(index)")
+                "ai.nodoassist.gateway.setup-route-\(index)")
             if reachable {
                 return link.selectingEndpoint(endpoint)
             }
@@ -571,7 +571,7 @@ final class GatewayConnectionController {
                 }
                 await appModel.purgeChatTranscriptCache(gatewayID: stableID)
             } else if let databaseURL = NodeAppModel.chatTranscriptCacheDatabaseURL(gatewayID: stableID) {
-                OpenClawChatSQLiteTranscriptCache.removeDatabaseFiles(at: databaseURL)
+                NodoAssistChatSQLiteTranscriptCache.removeDatabaseFiles(at: databaseURL)
             }
         }
         self.pendingForgetCleanups[stableID] = (cleanupID, cleanupTask)
@@ -1575,7 +1575,7 @@ extension GatewayConnectionController {
         if manualClientId?.isEmpty == false {
             return manualClientId!
         }
-        return "openclaw-ios"
+        return "nodoassist-ios"
     }
 
     private func resolvedDisplayName(defaults: UserDefaults) -> String {
@@ -1594,8 +1594,8 @@ extension GatewayConnectionController {
 
     private func currentCaps() -> [String] {
         var caps = [
-            OpenClawCapability.canvas.rawValue,
-            OpenClawCapability.screen.rawValue,
+            NodoAssistCapability.canvas.rawValue,
+            NodoAssistCapability.screen.rawValue,
         ]
 
         // Default-on: if the key doesn't exist yet, treat it as enabled.
@@ -1603,26 +1603,26 @@ extension GatewayConnectionController {
             UserDefaults.standard.object(forKey: "camera.enabled") == nil
                 ? true
                 : UserDefaults.standard.bool(forKey: "camera.enabled")
-        if cameraEnabled { caps.append(OpenClawCapability.camera.rawValue) }
+        if cameraEnabled { caps.append(NodoAssistCapability.camera.rawValue) }
 
         let voiceWakeEnabled = UserDefaults.standard.bool(forKey: VoiceWakePreferences.enabledKey)
-        if voiceWakeEnabled { caps.append(OpenClawCapability.voiceWake.rawValue) }
+        if voiceWakeEnabled { caps.append(NodoAssistCapability.voiceWake.rawValue) }
 
         let locationModeRaw = UserDefaults.standard.string(forKey: "location.enabledMode") ?? "off"
-        let locationMode = OpenClawLocationMode(rawValue: locationModeRaw) ?? .off
-        if locationMode != .off { caps.append(OpenClawCapability.location.rawValue) }
+        let locationMode = NodoAssistLocationMode(rawValue: locationModeRaw) ?? .off
+        if locationMode != .off { caps.append(NodoAssistCapability.location.rawValue) }
 
-        caps.append(OpenClawCapability.device.rawValue)
-        caps.append(OpenClawCapability.talk.rawValue)
+        caps.append(NodoAssistCapability.device.rawValue)
+        caps.append(NodoAssistCapability.talk.rawValue)
         if WatchMessagingService.isSupportedOnDevice() {
-            caps.append(OpenClawCapability.watch.rawValue)
+            caps.append(NodoAssistCapability.watch.rawValue)
         }
-        caps.append(OpenClawCapability.photos.rawValue)
-        caps.append(OpenClawCapability.contacts.rawValue)
-        caps.append(OpenClawCapability.calendar.rawValue)
-        caps.append(OpenClawCapability.reminders.rawValue)
+        caps.append(NodoAssistCapability.photos.rawValue)
+        caps.append(NodoAssistCapability.contacts.rawValue)
+        caps.append(NodoAssistCapability.calendar.rawValue)
+        caps.append(NodoAssistCapability.reminders.rawValue)
         if Self.motionAvailable() {
-            caps.append(OpenClawCapability.motion.rawValue)
+            caps.append(NodoAssistCapability.motion.rawValue)
         }
 
         return caps
@@ -1630,58 +1630,58 @@ extension GatewayConnectionController {
 
     private func currentCommands() -> [String] {
         var commands: [String] = [
-            OpenClawCanvasCommand.present.rawValue,
-            OpenClawCanvasCommand.hide.rawValue,
-            OpenClawCanvasCommand.navigate.rawValue,
-            OpenClawCanvasCommand.evalJS.rawValue,
-            OpenClawCanvasCommand.snapshot.rawValue,
-            OpenClawCanvasA2UICommand.push.rawValue,
-            OpenClawCanvasA2UICommand.pushJSONL.rawValue,
-            OpenClawCanvasA2UICommand.reset.rawValue,
-            OpenClawScreenCommand.record.rawValue,
-            OpenClawSystemCommand.notify.rawValue,
-            OpenClawChatCommand.push.rawValue,
-            OpenClawTalkCommand.pttStart.rawValue,
-            OpenClawTalkCommand.pttStop.rawValue,
-            OpenClawTalkCommand.pttCancel.rawValue,
-            OpenClawTalkCommand.pttOnce.rawValue,
+            NodoAssistCanvasCommand.present.rawValue,
+            NodoAssistCanvasCommand.hide.rawValue,
+            NodoAssistCanvasCommand.navigate.rawValue,
+            NodoAssistCanvasCommand.evalJS.rawValue,
+            NodoAssistCanvasCommand.snapshot.rawValue,
+            NodoAssistCanvasA2UICommand.push.rawValue,
+            NodoAssistCanvasA2UICommand.pushJSONL.rawValue,
+            NodoAssistCanvasA2UICommand.reset.rawValue,
+            NodoAssistScreenCommand.record.rawValue,
+            NodoAssistSystemCommand.notify.rawValue,
+            NodoAssistChatCommand.push.rawValue,
+            NodoAssistTalkCommand.pttStart.rawValue,
+            NodoAssistTalkCommand.pttStop.rawValue,
+            NodoAssistTalkCommand.pttCancel.rawValue,
+            NodoAssistTalkCommand.pttOnce.rawValue,
         ]
 
         let caps = Set(self.currentCaps())
-        if caps.contains(OpenClawCapability.camera.rawValue) {
-            commands.append(OpenClawCameraCommand.list.rawValue)
-            commands.append(OpenClawCameraCommand.snap.rawValue)
-            commands.append(OpenClawCameraCommand.clip.rawValue)
+        if caps.contains(NodoAssistCapability.camera.rawValue) {
+            commands.append(NodoAssistCameraCommand.list.rawValue)
+            commands.append(NodoAssistCameraCommand.snap.rawValue)
+            commands.append(NodoAssistCameraCommand.clip.rawValue)
         }
-        if caps.contains(OpenClawCapability.location.rawValue) {
-            commands.append(OpenClawLocationCommand.get.rawValue)
+        if caps.contains(NodoAssistCapability.location.rawValue) {
+            commands.append(NodoAssistLocationCommand.get.rawValue)
         }
-        if caps.contains(OpenClawCapability.device.rawValue) {
-            commands.append(OpenClawDeviceCommand.status.rawValue)
-            commands.append(OpenClawDeviceCommand.info.rawValue)
+        if caps.contains(NodoAssistCapability.device.rawValue) {
+            commands.append(NodoAssistDeviceCommand.status.rawValue)
+            commands.append(NodoAssistDeviceCommand.info.rawValue)
         }
-        if caps.contains(OpenClawCapability.watch.rawValue) {
-            commands.append(OpenClawWatchCommand.status.rawValue)
-            commands.append(OpenClawWatchCommand.notify.rawValue)
+        if caps.contains(NodoAssistCapability.watch.rawValue) {
+            commands.append(NodoAssistWatchCommand.status.rawValue)
+            commands.append(NodoAssistWatchCommand.notify.rawValue)
         }
-        if caps.contains(OpenClawCapability.photos.rawValue) {
-            commands.append(OpenClawPhotosCommand.latest.rawValue)
+        if caps.contains(NodoAssistCapability.photos.rawValue) {
+            commands.append(NodoAssistPhotosCommand.latest.rawValue)
         }
-        if caps.contains(OpenClawCapability.contacts.rawValue) {
-            commands.append(OpenClawContactsCommand.search.rawValue)
-            commands.append(OpenClawContactsCommand.add.rawValue)
+        if caps.contains(NodoAssistCapability.contacts.rawValue) {
+            commands.append(NodoAssistContactsCommand.search.rawValue)
+            commands.append(NodoAssistContactsCommand.add.rawValue)
         }
-        if caps.contains(OpenClawCapability.calendar.rawValue) {
-            commands.append(OpenClawCalendarCommand.events.rawValue)
-            commands.append(OpenClawCalendarCommand.add.rawValue)
+        if caps.contains(NodoAssistCapability.calendar.rawValue) {
+            commands.append(NodoAssistCalendarCommand.events.rawValue)
+            commands.append(NodoAssistCalendarCommand.add.rawValue)
         }
-        if caps.contains(OpenClawCapability.reminders.rawValue) {
-            commands.append(OpenClawRemindersCommand.list.rawValue)
-            commands.append(OpenClawRemindersCommand.add.rawValue)
+        if caps.contains(NodoAssistCapability.reminders.rawValue) {
+            commands.append(NodoAssistRemindersCommand.list.rawValue)
+            commands.append(NodoAssistRemindersCommand.add.rawValue)
         }
-        if caps.contains(OpenClawCapability.motion.rawValue) {
-            commands.append(OpenClawMotionCommand.activity.rawValue)
-            commands.append(OpenClawMotionCommand.pedometer.rawValue)
+        if caps.contains(NodoAssistCapability.motion.rawValue) {
+            commands.append(NodoAssistMotionCommand.activity.rawValue)
+            commands.append(NodoAssistMotionCommand.pedometer.rawValue)
         }
 
         return commands

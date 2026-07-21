@@ -17,12 +17,12 @@ export type {
   AcpRuntimeTurnResult,
   AcpRuntimeTurnResultError,
   AcpSessionUpdateTag,
-} from "@openclaw/acp-core/runtime/types";
+} from "@nodoassist/acp-core/runtime/types";
 export type {
-  OpenClawPluginApi,
-  OpenClawPluginConfigSchema,
-  OpenClawPluginService,
-  OpenClawPluginServiceContext,
+  NodoAssistPluginApi,
+  NodoAssistPluginConfigSchema,
+  NodoAssistPluginService,
+  NodoAssistPluginServiceContext,
   PluginLogger,
 } from "../plugins/types.js";
 export type {

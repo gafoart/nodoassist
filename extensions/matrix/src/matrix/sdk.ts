@@ -12,14 +12,14 @@ import {
 } from "matrix-js-sdk/lib/matrix.js";
 import type { Direction } from "matrix-js-sdk/lib/models/event-timeline.js";
 import { VerificationMethod } from "matrix-js-sdk/lib/types.js";
-import { KeyedAsyncQueue } from "openclaw/plugin-sdk/keyed-async-queue";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import type { PinnedDispatcherPolicy } from "openclaw/plugin-sdk/ssrf-dispatcher";
+import { KeyedAsyncQueue } from "nodoassist/plugin-sdk/keyed-async-queue";
+import { createLazyRuntimeModule } from "nodoassist/plugin-sdk/lazy-runtime";
+import type { PinnedDispatcherPolicy } from "nodoassist/plugin-sdk/ssrf-dispatcher";
 import {
   normalizeNullableString,
   normalizeStringEntries,
   uniqueStrings,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import type { SsrFPolicy } from "../runtime-api.js";
 import { resolveMatrixRoomKeyBackupReadinessError } from "./backup-health.js";
 import { SqliteBackedMatrixSyncStore } from "./client/file-sync-store.js";

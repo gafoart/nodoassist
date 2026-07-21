@@ -4,12 +4,12 @@ import { writeClaudeMcpConfig } from "./attach-cli.js";
 
 const MCP_CONFIG = {
   mcpServers: {
-    openclaw: {
+    nodoassist: {
       type: "http",
       url: "http://127.0.0.1:54321/mcp",
       headers: {
-        Authorization: "Bearer ${OPENCLAW_MCP_TOKEN}",
-        "x-session-key": "${OPENCLAW_MCP_SESSION_KEY}",
+        Authorization: "Bearer ${NODOASSIST_MCP_TOKEN}",
+        "x-session-key": "${NODOASSIST_MCP_SESSION_KEY}",
       },
     },
   },

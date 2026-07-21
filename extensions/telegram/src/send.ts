@@ -2,22 +2,22 @@
 import * as grammy from "grammy";
 import { type ApiClientOptions, Bot, HttpError } from "grammy";
 import type { ReactionType, ReactionTypeEmoji } from "grammy/types";
-import { recordChannelActivity } from "openclaw/plugin-sdk/channel-activity-runtime";
+import { recordChannelActivity } from "nodoassist/plugin-sdk/channel-activity-runtime";
 import {
   createMessageReceiptFromOutboundResults,
   type MessageReceipt,
-} from "openclaw/plugin-sdk/channel-outbound";
-import type { MarkdownTableMode, ReplyToMode } from "openclaw/plugin-sdk/config-contracts";
-import { isDiagnosticFlagEnabled } from "openclaw/plugin-sdk/diagnostic-runtime";
-import { formatUncaughtError } from "openclaw/plugin-sdk/error-runtime";
-import { redactSensitiveText } from "openclaw/plugin-sdk/logging-core";
-import { parseStrictInteger } from "openclaw/plugin-sdk/number-runtime";
-import { resolveChunkMode, resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-chunking";
-import { isSingleUseReplyToMode } from "openclaw/plugin-sdk/reply-reference";
-import { createTelegramRetryRunner, type RetryConfig } from "openclaw/plugin-sdk/retry-runtime";
-import { createSubsystemLogger, logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { formatErrorMessage } from "openclaw/plugin-sdk/ssrf-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/channel-outbound";
+import type { MarkdownTableMode, ReplyToMode } from "nodoassist/plugin-sdk/config-contracts";
+import { isDiagnosticFlagEnabled } from "nodoassist/plugin-sdk/diagnostic-runtime";
+import { formatUncaughtError } from "nodoassist/plugin-sdk/error-runtime";
+import { redactSensitiveText } from "nodoassist/plugin-sdk/logging-core";
+import { parseStrictInteger } from "nodoassist/plugin-sdk/number-runtime";
+import { resolveChunkMode, resolveTextChunkLimit } from "nodoassist/plugin-sdk/reply-chunking";
+import { isSingleUseReplyToMode } from "nodoassist/plugin-sdk/reply-reference";
+import { createTelegramRetryRunner, type RetryConfig } from "nodoassist/plugin-sdk/retry-runtime";
+import { createSubsystemLogger, logVerbose } from "nodoassist/plugin-sdk/runtime-env";
+import { formatErrorMessage } from "nodoassist/plugin-sdk/ssrf-runtime";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { getOrCreateAccountThrottler } from "./account-throttler.js";
 import { type ResolvedTelegramAccount, resolveTelegramAccount } from "./accounts.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
@@ -76,7 +76,7 @@ import {
   type MediaKind,
   normalizePollInput,
   probeVideoDimensions,
-  type OpenClawConfig,
+  type NodoAssistConfig,
   type PollInput,
   requireRuntimeConfig,
   resolveMarkdownTableMode,
@@ -109,7 +109,7 @@ const MAX_TELEGRAM_PHOTO_DIMENSION_SUM = 10_000;
 const MAX_TELEGRAM_PHOTO_ASPECT_RATIO = 20;
 
 type TelegramSendOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   token?: string;
   accountId?: string;
   verbose?: boolean;
@@ -177,7 +177,7 @@ type TelegramOutboundSuccessLogParams = {
 };
 
 type TelegramReactionOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   token?: string;
   accountId?: string;
   api?: TelegramApiOverride;
@@ -188,7 +188,7 @@ type TelegramReactionOpts = {
 };
 
 type TelegramTypingOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   token?: string;
   accountId?: string;
   verbose?: boolean;
@@ -316,7 +316,7 @@ export function resetTelegramClientOptionsCacheForTests(): void {
   telegramClientOptionsCache.clear();
 }
 
-function createTelegramHttpLogger(cfg: OpenClawConfig) {
+function createTelegramHttpLogger(cfg: NodoAssistConfig) {
   const enabled = isDiagnosticFlagEnabled("telegram.http", cfg);
   if (!enabled) {
     return () => {};
@@ -454,7 +454,7 @@ async function resolveChatId(
 }
 
 async function resolveAndPersistChatId(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   api: TelegramApiOverride;
   lookupTarget: string;
   persistTarget: string;
@@ -564,7 +564,7 @@ async function withTelegramNativeQuoteFallback<T>(params: {
 }
 
 type TelegramApiContext = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   account: ResolvedTelegramAccount;
   api: TelegramApi;
 };
@@ -573,7 +573,7 @@ function resolveTelegramApiContext(opts: {
   token?: string;
   accountId?: string;
   api?: TelegramApiOverride;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
 }): TelegramApiContext {
   const cfg = requireRuntimeConfig(opts.cfg, "Telegram API context");
   const account = resolveTelegramAccount({
@@ -600,7 +600,7 @@ type TelegramRequestWithDiag = <T>(
 ) => Promise<T>;
 
 function createTelegramRequestWithDiag(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   account: ResolvedTelegramAccount;
   retry?: RetryConfig;
   verbose?: boolean;
@@ -684,7 +684,7 @@ function createRequestWithChatNotFound(params: {
 }
 
 function createTelegramNonIdempotentRequestWithDiag(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   account: ResolvedTelegramAccount;
   retry?: RetryConfig;
   verbose?: boolean;
@@ -1507,7 +1507,7 @@ export async function reactMessageTelegram(
 }
 
 type TelegramDeleteOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   token?: string;
   accountId?: string;
   notify?: boolean;
@@ -1727,7 +1727,7 @@ type TelegramEditOpts = {
   /** Use Telegram's media-caption edit endpoint, or fall back to it when text edits target media. */
   editMode?: "text" | "caption" | "auto";
   /** Resolved runtime config from the command or gateway boundary. */
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
 };
 
 type TelegramEditReplyMarkupOpts = {
@@ -1740,7 +1740,7 @@ type TelegramEditReplyMarkupOpts = {
   /** Inline keyboard buttons (reply markup). Pass empty array to remove buttons. */
   buttons?: TelegramInlineButtons;
   /** Resolved runtime config from the command or gateway boundary. */
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
 };
 
 export async function editMessageReplyMarkupTelegram(
@@ -1996,7 +1996,7 @@ function inferFilename(kind: MediaKind) {
 }
 
 type TelegramStickerOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   token?: string;
   accountId?: string;
   verbose?: boolean;
@@ -2078,7 +2078,7 @@ export async function sendStickerTelegram(
 }
 
 type TelegramPollOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   token?: string;
   accountId?: string;
   verbose?: boolean;
@@ -2188,7 +2188,7 @@ export async function sendPollTelegram(
 // ---------------------------------------------------------------------------
 
 type TelegramCreateForumTopicOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   token?: string;
   accountId?: string;
   api?: TelegramApiOverride;

@@ -1,13 +1,13 @@
-/** Row builders used by `openclaw models list` source orchestration. */
-import type { NormalizedModelCatalogRow } from "@openclaw/model-catalog-core/model-catalog-types";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
+/** Row builders used by `nodoassist models list` source orchestration. */
+import type { NormalizedModelCatalogRow } from "@nodoassist/model-catalog-core/model-catalog-types";
+import { normalizeProviderId } from "@nodoassist/model-catalog-core/provider-id";
 import { DEFAULT_CONTEXT_TOKENS } from "../../agents/defaults.js";
 import {
   shouldSuppressBuiltInModel,
   shouldSuppressBuiltInModelFromManifest,
 } from "../../agents/model-suppression.js";
 import type { ModelDefinitionConfig, ModelProviderConfig } from "../../config/types.models.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import type { ModelRegistry } from "../../llm/model-registry.js";
 import type { Model } from "../../llm/types.js";
 import type { PluginMetadataSnapshot } from "../../plugins/plugin-metadata-snapshot.types.js";
@@ -34,7 +34,7 @@ type RowFilter = {
 
 /** Context shared by every model-list row source builder. */
 export type RowBuilderContext = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   agentDir: string;
   authIndex: ModelListAuthIndex;
   availableKeys?: Set<string>;
@@ -267,7 +267,7 @@ function shouldListConfiguredProviderModel(params: {
 }
 
 function findConfiguredProviderModel(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   provider: string;
   modelId: string;
 }): ListRowModel | undefined {
@@ -283,7 +283,10 @@ function findConfiguredProviderModel(params: {
   });
 }
 
-function toFallbackConfiguredListModel(entry: ConfiguredEntry, cfg: OpenClawConfig): ListRowModel {
+function toFallbackConfiguredListModel(
+  entry: ConfiguredEntry,
+  cfg: NodoAssistConfig,
+): ListRowModel {
   return (
     findConfiguredProviderModel({
       cfg,

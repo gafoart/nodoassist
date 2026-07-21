@@ -8,21 +8,21 @@ import {
   toLocationContext,
   type NormalizedLocation,
   type InboundEventKind,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { normalizeCommandBody } from "openclaw/plugin-sdk/command-surface";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "nodoassist/plugin-sdk/channel-inbound";
+import { normalizeCommandBody } from "nodoassist/plugin-sdk/command-surface";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import type {
   TelegramDirectConfig,
   TelegramGroupConfig,
   TelegramTopicConfig,
-} from "openclaw/plugin-sdk/config-contracts";
-import { resolveChannelContextVisibilityMode } from "openclaw/plugin-sdk/context-visibility-runtime";
-import { timestampMsToIsoString } from "openclaw/plugin-sdk/number-runtime";
-import { createChannelHistoryWindow, type HistoryEntry } from "openclaw/plugin-sdk/reply-history";
-import type { ResolvedAgentRoute } from "openclaw/plugin-sdk/routing";
-import { logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { evaluateSupplementalContextVisibility } from "openclaw/plugin-sdk/security-runtime";
-import { normalizeOptionalLowercaseString } from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/config-contracts";
+import { resolveChannelContextVisibilityMode } from "nodoassist/plugin-sdk/context-visibility-runtime";
+import { timestampMsToIsoString } from "nodoassist/plugin-sdk/number-runtime";
+import { createChannelHistoryWindow, type HistoryEntry } from "nodoassist/plugin-sdk/reply-history";
+import type { ResolvedAgentRoute } from "nodoassist/plugin-sdk/routing";
+import { logVerbose, shouldLogVerbose } from "nodoassist/plugin-sdk/runtime-env";
+import { evaluateSupplementalContextVisibility } from "nodoassist/plugin-sdk/security-runtime";
+import { normalizeOptionalLowercaseString } from "nodoassist/plugin-sdk/string-coerce-runtime";
 import type { NormalizedAllowFrom } from "./bot-access.js";
 import { isSenderAllowed, normalizeAllowFrom } from "./bot-access.js";
 import type {
@@ -105,7 +105,7 @@ async function loadTelegramMessageContextSessionRuntime(
 }
 
 export async function resolveTelegramMessageContextStorePath(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   agentId: string;
   sessionRuntime?: TelegramMessageContextSessionRuntimeOverrides;
 }): Promise<string> {
@@ -169,7 +169,7 @@ function formatReplyChainEntry(entry: TelegramReplyChainEntry, index: number): s
 }
 
 export async function buildTelegramInboundContextPayload(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   primaryCtx: TelegramContext;
   msg: TelegramContext["message"];
   allMedia: TelegramMediaRef[];

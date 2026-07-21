@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { withTempHome } from "../../config/home-env.test-harness.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { expectObjectFields, mockFirstObjectArg } from "../../test-utils/mock-call-assertions.js";
 import { createCommandWorkspaceHarness } from "./commands-filesystem.test-support.js";
 import { handlePluginsCommand } from "./commands-plugins.js";
@@ -59,13 +59,13 @@ vi.mock("../../cli/plugins-install-persist.js", async (importOriginal) => ({
   persistPluginInstall: persistPluginInstallMock,
 }));
 
-const workspaceHarness = createCommandWorkspaceHarness("openclaw-command-plugins-install-");
+const workspaceHarness = createCommandWorkspaceHarness("nodoassist-command-plugins-install-");
 
 function buildPluginsParams(
   commandBodyNormalized: string,
   workspaceDir: string,
   options: {
-    cfg?: OpenClawConfig;
+    cfg?: NodoAssistConfig;
     gatewayClientScopes?: string[];
     omitGatewayClientScopes?: boolean;
     senderIsOwner?: boolean;
@@ -98,8 +98,8 @@ function expectPersistedInstall(pluginId: string, expectedInstall: Record<string
   expectObjectFields(persisted.snapshot, {
     writeOptions: expect.objectContaining({
       assertConfigPathForWrite: expect.any(Function),
-      expectedConfigPath: expect.stringContaining("openclaw.json"),
-      ownedConfigPathForWrite: expect.stringContaining("openclaw.json"),
+      expectedConfigPath: expect.stringContaining("nodoassist.json"),
+      ownedConfigPathForWrite: expect.stringContaining("nodoassist.json"),
     }),
   });
   expect(writeOptions).not.toHaveProperty("basePluginMetadataSnapshot");
@@ -117,7 +117,7 @@ describe("handleCommands /plugins install", () => {
   });
 
   it("passes the active config to npm install policy preflight", async () => {
-    const policyConfig: OpenClawConfig = {
+    const policyConfig: NodoAssistConfig = {
       commands: {
         text: true,
         plugins: true,
@@ -151,9 +151,9 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async (home) => {
+    await withTempHome("nodoassist-command-plugins-home-", async (home) => {
       await fs.writeFile(
-        path.join(home, ".openclaw", "openclaw.json"),
+        path.join(home, ".nodoassist", "nodoassist.json"),
         `${JSON.stringify(policyConfig, null, 2)}\n`,
       );
       const workspaceDir = await workspaceHarness.createWorkspace();
@@ -192,7 +192,7 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const pluginDir = path.join(workspaceDir, "fixtures", "path-install-plugin");
       await fs.mkdir(pluginDir, { recursive: true });
@@ -214,7 +214,7 @@ describe("handleCommands /plugins install", () => {
   });
 
   it("blocks channel-authorized non-owner plugin installs before installer side effects", async () => {
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const pluginDir = path.join(workspaceDir, "fixtures", "channel-installed-plugin");
       await fs.mkdir(pluginDir, { recursive: true });
@@ -249,7 +249,7 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const pluginDir = path.join(workspaceDir, "fixtures", "gateway-admin-plugin");
       await fs.mkdir(pluginDir, { recursive: true });
@@ -280,11 +280,11 @@ describe("handleCommands /plugins install", () => {
       targetDir: "/tmp/clawhub-demo",
       version: "1.2.3",
       extensions: ["index.js"],
-      packageName: "@openclaw/clawhub-demo",
+      packageName: "@nodoassist/clawhub-demo",
       clawhub: {
         source: "clawhub",
         clawhubUrl: "https://clawhub.ai",
-        clawhubPackage: "@openclaw/clawhub-demo",
+        clawhubPackage: "@nodoassist/clawhub-demo",
         clawhubFamily: "code-plugin",
         clawhubChannel: "official",
         version: "1.2.3",
@@ -304,10 +304,10 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
-        "/plugins install clawhub:@openclaw/clawhub-demo@1.2.3",
+        "/plugins install clawhub:@nodoassist/clawhub-demo@1.2.3",
         workspaceDir,
       );
       const result = await handlePluginsCommand(params, true);
@@ -316,15 +316,15 @@ describe("handleCommands /plugins install", () => {
       }
       expect(result.reply?.text).toContain('Installed plugin "clawhub-demo"');
       expect(mockFirstObjectArg(installPluginFromClawHubMock).spec).toBe(
-        "clawhub:@openclaw/clawhub-demo@1.2.3",
+        "clawhub:@nodoassist/clawhub-demo@1.2.3",
       );
       expectPersistedInstall("clawhub-demo", {
         source: "clawhub",
-        spec: "clawhub:@openclaw/clawhub-demo@1.2.3",
+        spec: "clawhub:@nodoassist/clawhub-demo@1.2.3",
         installPath: "/tmp/clawhub-demo",
         version: "1.2.3",
         integrity: "sha512-demo",
-        clawhubPackage: "@openclaw/clawhub-demo",
+        clawhubPackage: "@nodoassist/clawhub-demo",
         clawhubChannel: "official",
         artifactKind: "npm-pack",
         artifactFormat: "tgz",
@@ -342,7 +342,7 @@ describe("handleCommands /plugins install", () => {
 
   it("includes non-blocking ClawHub warnings in successful chat install replies", async () => {
     const warning =
-      'ClawHub trust warning for "@openclaw/clawhub-demo@1.2.3": scan=pending; reasons=pending.';
+      'ClawHub trust warning for "@nodoassist/clawhub-demo@1.2.3": scan=pending; reasons=pending.';
     const richWarning = `\u001b[33m${warning}\u001b[39m`;
     installPluginFromClawHubMock.mockImplementation(async (params: unknown) => {
       if (!params || typeof params !== "object" || !("logger" in params)) {
@@ -364,11 +364,11 @@ describe("handleCommands /plugins install", () => {
         targetDir: "/tmp/clawhub-demo",
         version: "1.2.3",
         extensions: ["index.js"],
-        packageName: "@openclaw/clawhub-demo",
+        packageName: "@nodoassist/clawhub-demo",
         clawhub: {
           source: "clawhub",
           clawhubUrl: "https://clawhub.ai",
-          clawhubPackage: "@openclaw/clawhub-demo",
+          clawhubPackage: "@nodoassist/clawhub-demo",
           clawhubFamily: "code-plugin",
           clawhubChannel: "official",
           version: "1.2.3",
@@ -379,10 +379,10 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
-        "/plugins install clawhub:@openclaw/clawhub-demo@1.2.3",
+        "/plugins install clawhub:@nodoassist/clawhub-demo@1.2.3",
         workspaceDir,
       );
       const result = await handlePluginsCommand(params, true);
@@ -397,7 +397,7 @@ describe("handleCommands /plugins install", () => {
       );
       expectPersistedInstall("clawhub-demo", {
         source: "clawhub",
-        spec: "clawhub:@openclaw/clawhub-demo@1.2.3",
+        spec: "clawhub:@nodoassist/clawhub-demo@1.2.3",
         installPath: "/tmp/clawhub-demo",
       });
     });
@@ -405,19 +405,19 @@ describe("handleCommands /plugins install", () => {
 
   it("reports risky ClawHub install failures without persisting install metadata", async () => {
     const warning =
-      'ClawHub trust warning for "@openclaw/risky-demo@1.2.3": scan=suspicious; moderation=none; blockedFromDownload=false; pending=false; stale=false; reasons=payload_string. Risk signals: scan status suspicious, payload_string.';
+      'ClawHub trust warning for "@nodoassist/risky-demo@1.2.3": scan=suspicious; moderation=none; blockedFromDownload=false; pending=false; stale=false; reasons=payload_string. Risk signals: scan status suspicious, payload_string.';
     installPluginFromClawHubMock.mockResolvedValue({
       ok: false,
       code: "clawhub_risk_acknowledgement_required",
       error:
-        'ClawHub release "@openclaw/risky-demo@1.2.3" has trust warnings. Review the package and rerun with --acknowledge-clawhub-risk to continue.',
+        'ClawHub release "@nodoassist/risky-demo@1.2.3" has trust warnings. Review the package and rerun with --acknowledge-clawhub-risk to continue.',
       warning,
     });
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
-        "/plugins install clawhub:@openclaw/risky-demo@1.2.3",
+        "/plugins install clawhub:@nodoassist/risky-demo@1.2.3",
         workspaceDir,
       );
       const result = await handlePluginsCommand(params, true);
@@ -429,10 +429,10 @@ describe("handleCommands /plugins install", () => {
       expect(result.reply?.text).toContain("scan=suspicious");
       expect(result.reply?.text).toContain("payload_string");
       expect(result.reply?.text).toContain("--acknowledge-clawhub-risk");
-      expect(result.reply?.text).toContain("local openclaw plugins install command");
+      expect(result.reply?.text).toContain("local nodoassist plugins install command");
       expect(result.reply?.text).toContain("trusted shell");
       expect(mockFirstObjectArg(installPluginFromClawHubMock).spec).toBe(
-        "clawhub:@openclaw/risky-demo@1.2.3",
+        "clawhub:@nodoassist/risky-demo@1.2.3",
       );
       expect(persistPluginInstallMock).not.toHaveBeenCalled();
     });
@@ -440,18 +440,19 @@ describe("handleCommands /plugins install", () => {
 
   it("includes ClawHub trust details for blocked chat install failures", async () => {
     const warning =
-      'ClawHub trust warning for "@openclaw/blocked-demo@1.2.3": scan=suspicious; moderation=blocked; blockedFromDownload=true; pending=false; stale=false; reasons=payload_string. Risk signals: blocked from download, scan status suspicious, moderation state blocked, payload_string.';
+      'ClawHub trust warning for "@nodoassist/blocked-demo@1.2.3": scan=suspicious; moderation=blocked; blockedFromDownload=true; pending=false; stale=false; reasons=payload_string. Risk signals: blocked from download, scan status suspicious, moderation state blocked, payload_string.';
     installPluginFromClawHubMock.mockResolvedValue({
       ok: false,
       code: "clawhub_download_blocked",
-      error: 'ClawHub release "@openclaw/blocked-demo@1.2.3" is blocked from download by ClawHub.',
+      error:
+        'ClawHub release "@nodoassist/blocked-demo@1.2.3" is blocked from download by ClawHub.',
       warning,
     });
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
-        "/plugins install clawhub:@openclaw/blocked-demo@1.2.3",
+        "/plugins install clawhub:@nodoassist/blocked-demo@1.2.3",
         workspaceDir,
       );
       const result = await handlePluginsCommand(params, true);
@@ -468,10 +469,10 @@ describe("handleCommands /plugins install", () => {
   });
 
   it("refuses plugin installs in Nix mode before package installer side effects", async () => {
-    const previousNixMode = process.env.OPENCLAW_NIX_MODE;
-    process.env.OPENCLAW_NIX_MODE = "1";
+    const previousNixMode = process.env.NODOASSIST_NIX_MODE;
+    process.env.NODOASSIST_NIX_MODE = "1";
     try {
-      await withTempHome("openclaw-command-plugins-home-", async () => {
+      await withTempHome("nodoassist-command-plugins-home-", async () => {
         const workspaceDir = await workspaceHarness.createWorkspace();
         const params = buildPluginsParams("/plugins install @acme/demo", workspaceDir);
         const result = await handlePluginsCommand(params, true);
@@ -479,8 +480,8 @@ describe("handleCommands /plugins install", () => {
           throw new Error("expected plugin install result");
         }
 
-        expect(result.reply?.text).toContain("OPENCLAW_NIX_MODE=1");
-        expect(result.reply?.text).toContain("nix-openclaw#quick-start");
+        expect(result.reply?.text).toContain("NODOASSIST_NIX_MODE=1");
+        expect(result.reply?.text).toContain("nix-nodoassist#quick-start");
         expect(installPluginFromNpmSpecMock).not.toHaveBeenCalled();
         expect(installPluginFromPathMock).not.toHaveBeenCalled();
         expect(installPluginFromClawHubMock).not.toHaveBeenCalled();
@@ -489,19 +490,19 @@ describe("handleCommands /plugins install", () => {
       });
     } finally {
       if (previousNixMode === undefined) {
-        delete process.env.OPENCLAW_NIX_MODE;
+        delete process.env.NODOASSIST_NIX_MODE;
       } else {
-        process.env.OPENCLAW_NIX_MODE = previousNixMode;
+        process.env.NODOASSIST_NIX_MODE = previousNixMode;
       }
     }
   });
 
   it("refuses installs through a root include before package installer side effects", async () => {
-    await withTempHome("openclaw-command-plugins-home-", async (home) => {
-      const sharedConfigPath = path.join(home, ".openclaw", "shared.json5");
+    await withTempHome("nodoassist-command-plugins-home-", async (home) => {
+      const sharedConfigPath = path.join(home, ".nodoassist", "shared.json5");
       await fs.writeFile(sharedConfigPath, `${JSON.stringify({ plugins: {} }, null, 2)}\n`);
       await fs.writeFile(
-        path.join(home, ".openclaw", "openclaw.json"),
+        path.join(home, ".nodoassist", "nodoassist.json"),
         `${JSON.stringify({ $include: "./shared.json5" }, null, 2)}\n`,
       );
       const workspaceDir = await workspaceHarness.createWorkspace();
@@ -537,7 +538,7 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
         "/plugins install git:github.com/acme/git-demo@v1.2.3",
@@ -570,11 +571,11 @@ describe("handleCommands /plugins install", () => {
       targetDir: "/tmp/alias-demo",
       version: "1.0.0",
       extensions: ["index.js"],
-      packageName: "@openclaw/alias-demo",
+      packageName: "@nodoassist/alias-demo",
       clawhub: {
         source: "clawhub",
         clawhubUrl: "https://clawhub.ai",
-        clawhubPackage: "@openclaw/alias-demo",
+        clawhubPackage: "@nodoassist/alias-demo",
         clawhubFamily: "code-plugin",
         clawhubChannel: "official",
         version: "1.0.0",
@@ -584,10 +585,10 @@ describe("handleCommands /plugins install", () => {
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
-        "/plugin add clawhub:@openclaw/alias-demo@1.0.0",
+        "/plugin add clawhub:@nodoassist/alias-demo@1.0.0",
         workspaceDir,
       );
       const result = await handlePluginsCommand(params, true);
@@ -596,7 +597,7 @@ describe("handleCommands /plugins install", () => {
       }
       expect(result.reply?.text).toContain('Installed plugin "alias-demo"');
       expect(mockFirstObjectArg(installPluginFromClawHubMock).spec).toBe(
-        "clawhub:@openclaw/alias-demo@1.0.0",
+        "clawhub:@nodoassist/alias-demo@1.0.0",
       );
     });
   });
@@ -604,44 +605,44 @@ describe("handleCommands /plugins install", () => {
   it("trusts catalog npm package installs with alternate selectors", async () => {
     installPluginFromNpmSpecMock.mockResolvedValue({
       ok: true,
-      pluginId: "wecom-openclaw-plugin",
-      targetDir: "/tmp/wecom-openclaw-plugin",
+      pluginId: "wecom-nodoassist-plugin",
+      targetDir: "/tmp/wecom-nodoassist-plugin",
       version: "2026.4.23",
       extensions: ["index.js"],
       npmResolution: {
-        name: "@wecom/wecom-openclaw-plugin",
+        name: "@wecom/wecom-nodoassist-plugin",
         version: "2026.4.23",
-        resolvedSpec: "@wecom/wecom-openclaw-plugin@2026.4.23",
+        resolvedSpec: "@wecom/wecom-nodoassist-plugin@2026.4.23",
         integrity: "sha512-wecom",
         resolvedAt: "2026-05-04T20:00:00.000Z",
       },
     });
     persistPluginInstallMock.mockResolvedValue({});
 
-    await withTempHome("openclaw-command-plugins-home-", async () => {
+    await withTempHome("nodoassist-command-plugins-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
       const params = buildPluginsParams(
-        "/plugins install @wecom/wecom-openclaw-plugin@latest",
+        "/plugins install @wecom/wecom-nodoassist-plugin@latest",
         workspaceDir,
       );
       const result = await handlePluginsCommand(params, true);
       if (result === null) {
         throw new Error("expected plugin install result");
       }
-      expect(result.reply?.text).toContain('Installed plugin "wecom-openclaw-plugin"');
+      expect(result.reply?.text).toContain('Installed plugin "wecom-nodoassist-plugin"');
       const npmInstallArgs = mockFirstObjectArg(installPluginFromNpmSpecMock);
       expectObjectFields(npmInstallArgs, {
-        spec: "@wecom/wecom-openclaw-plugin@latest",
-        expectedPluginId: "wecom-openclaw-plugin",
+        spec: "@wecom/wecom-nodoassist-plugin@latest",
+        expectedPluginId: "wecom-nodoassist-plugin",
         trustedSourceLinkedOfficialInstall: true,
       });
       expect(npmInstallArgs.expectedIntegrity).toBeUndefined();
-      expectPersistedInstall("wecom-openclaw-plugin", {
+      expectPersistedInstall("wecom-nodoassist-plugin", {
         source: "npm",
-        spec: "@wecom/wecom-openclaw-plugin@latest",
-        installPath: "/tmp/wecom-openclaw-plugin",
+        spec: "@wecom/wecom-nodoassist-plugin@latest",
+        installPath: "/tmp/wecom-nodoassist-plugin",
         version: "2026.4.23",
-        resolvedName: "@wecom/wecom-openclaw-plugin",
+        resolvedName: "@wecom/wecom-nodoassist-plugin",
         resolvedVersion: "2026.4.23",
       });
     });

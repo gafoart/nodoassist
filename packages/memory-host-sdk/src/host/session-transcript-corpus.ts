@@ -16,7 +16,7 @@ import {
   resolveSessionFilePath,
   resolveStorePath,
   type SessionEntry,
-} from "./openclaw-runtime-session.js";
+} from "./nodoassist-runtime-session.js";
 
 type SessionTranscriptCorpusArtifactKind =
   | "active-session"

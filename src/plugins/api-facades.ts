@@ -1,14 +1,17 @@
 // Builds plugin API facades exposed to bundled and external plugins.
-import type { OpenClawPluginApi } from "./types.js";
+import type { NodoAssistPluginApi } from "./types.js";
 
 type PluginApiFacadeFields = Pick<
-  OpenClawPluginApi,
+  NodoAssistPluginApi,
   "agent" | "lifecycle" | "runContext" | "session"
 >;
 /** Plugin API shape without nested facade namespaces attached. */
-export type OpenClawPluginApiWithoutFacades = Omit<OpenClawPluginApi, keyof PluginApiFacadeFields>;
+export type NodoAssistPluginApiWithoutFacades = Omit<
+  NodoAssistPluginApi,
+  keyof PluginApiFacadeFields
+>;
 type PluginApiFacadeSource = Pick<
-  OpenClawPluginApi,
+  NodoAssistPluginApi,
   | "clearRunContext"
   | "emitAgentEvent"
   | "enqueueNextTurnInjection"

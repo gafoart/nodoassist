@@ -2,7 +2,7 @@
 import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import {
   type ClawHubTrustErrorCode,
   ensureClawHubPackageTrustAcknowledged,
@@ -241,7 +241,7 @@ type ClawHubInstallParams = {
   acknowledgeClawHubRisk?: boolean;
   onClawHubRisk?: (request: ClawHubRiskAcknowledgementRequest) => boolean | Promise<boolean>;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
 };
 
 type ClawHubOfficialFlagContainer = {
@@ -1167,14 +1167,14 @@ async function installArchiveResolution(params: {
   version: string;
   archivePath: string;
   registry: string;
-  authority: "official" | "openclaw" | "third-party";
+  authority: "official" | "nodoassist" | "third-party";
   force?: boolean;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
 }) {
   return await withExtractedArchiveRoot({
     archivePath: params.archivePath,
-    tempDirPrefix: "openclaw-skill-clawhub-",
+    tempDirPrefix: "nodoassist-skill-clawhub-",
     timeoutMs: 120_000,
     rootMarkers: CLAWHUB_SKILL_ARCHIVE_ROOT_MARKERS,
     onExtracted: async (rootDir) =>
@@ -1219,11 +1219,11 @@ async function installGitHubResolution(params: {
   commit: string;
   force?: boolean;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
 }) {
   return await withExtractedArchiveRoot({
     archivePath: params.archivePath,
-    tempDirPrefix: "openclaw-skill-clawhub-github-",
+    tempDirPrefix: "nodoassist-skill-clawhub-github-",
     timeoutMs: 120_000,
     onExtracted: async (repoRoot) =>
       await installExtractedSkillRoot({
@@ -1267,7 +1267,7 @@ function assertInstallResolutionAllowed(
   if (resolution.reason === "ambiguous_slug") {
     const message = resolution.message ? ` ${resolution.message}` : "";
     throw new Error(
-      `Skill "${resolution.slug}" is ambiguous on ClawHub. Install an owner-qualified skill, for example: openclaw skills install @owner/${resolution.slug}.${message}`,
+      `Skill "${resolution.slug}" is ambiguous on ClawHub. Install an owner-qualified skill, for example: nodoassist skills install @owner/${resolution.slug}.${message}`,
     );
   }
   throw new Error(resolution.message || `Skill "${resolution.slug}" is not installable.`);
@@ -1314,7 +1314,7 @@ async function performClawHubSkillInstall(
   try {
     const targetDir = resolveWorkspaceSkillInstallDir(params.workspaceDir, params.slug);
     const registry = resolveClawHubBaseUrl(params.baseUrl);
-    const clawhubAuthority = isDefaultClawHubBaseUrl(params.baseUrl) ? "openclaw" : "third-party";
+    const clawhubAuthority = isDefaultClawHubBaseUrl(params.baseUrl) ? "nodoassist" : "third-party";
     if (!params.force && (await pathExists(targetDir))) {
       return {
         ok: false,
@@ -1601,7 +1601,7 @@ export async function installSkillFromClawHub(params: {
   acknowledgeClawHubRisk?: boolean;
   onClawHubRisk?: (request: ClawHubRiskAcknowledgementRequest) => boolean | Promise<boolean>;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
 }): Promise<InstallClawHubSkillResult> {
   return await installRequestedSkillFromClawHub(params);
 }
@@ -1614,7 +1614,7 @@ export async function updateSkillsFromClawHub(params: {
   acknowledgeClawHubRisk?: boolean;
   onClawHubRisk?: (request: ClawHubRiskAcknowledgementRequest) => boolean | Promise<boolean>;
   logger?: Logger;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
 }): Promise<UpdateClawHubSkillResult[]> {
   const lock = await readClawHubSkillsLockfile(params.workspaceDir);
   const slugs = params.slug

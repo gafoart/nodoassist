@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { NodoAssistConfig } from "../config/config.js";
 import { withTempDir } from "../test-helpers/temp-dir.js";
 
 const note = vi.hoisted(() => vi.fn());
@@ -31,7 +31,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
 
   beforeAll(async () => {
     listReadOnlyChannelPluginsForConfigMock.mockReturnValue([]);
-    await noteSecurityWarnings({ gateway: { bind: "loopback" } } as OpenClawConfig);
+    await noteSecurityWarnings({ gateway: { bind: "loopback" } } as NodoAssistConfig);
   });
 
   beforeEach(() => {
@@ -39,25 +39,25 @@ describe("noteSecurityWarnings gateway exposure", () => {
     listReadOnlyChannelPluginsForConfigMock.mockReset();
     listReadOnlyChannelPluginsForConfigMock.mockImplementation(() => pluginRegistry.list);
     pluginRegistry.list = [];
-    prevToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    prevPassword = process.env.OPENCLAW_GATEWAY_PASSWORD;
+    prevToken = process.env.NODOASSIST_GATEWAY_TOKEN;
+    prevPassword = process.env.NODOASSIST_GATEWAY_PASSWORD;
     prevHome = process.env.HOME;
-    prevServiceKind = process.env.OPENCLAW_SERVICE_KIND;
-    delete process.env.OPENCLAW_GATEWAY_TOKEN;
-    delete process.env.OPENCLAW_GATEWAY_PASSWORD;
-    delete process.env.OPENCLAW_SERVICE_KIND;
+    prevServiceKind = process.env.NODOASSIST_SERVICE_KIND;
+    delete process.env.NODOASSIST_GATEWAY_TOKEN;
+    delete process.env.NODOASSIST_GATEWAY_PASSWORD;
+    delete process.env.NODOASSIST_SERVICE_KIND;
   });
 
   afterEach(() => {
     if (prevToken === undefined) {
-      delete process.env.OPENCLAW_GATEWAY_TOKEN;
+      delete process.env.NODOASSIST_GATEWAY_TOKEN;
     } else {
-      process.env.OPENCLAW_GATEWAY_TOKEN = prevToken;
+      process.env.NODOASSIST_GATEWAY_TOKEN = prevToken;
     }
     if (prevPassword === undefined) {
-      delete process.env.OPENCLAW_GATEWAY_PASSWORD;
+      delete process.env.NODOASSIST_GATEWAY_PASSWORD;
     } else {
-      process.env.OPENCLAW_GATEWAY_PASSWORD = prevPassword;
+      process.env.NODOASSIST_GATEWAY_PASSWORD = prevPassword;
     }
     if (prevHome === undefined) {
       delete process.env.HOME;
@@ -65,9 +65,9 @@ describe("noteSecurityWarnings gateway exposure", () => {
       process.env.HOME = prevHome;
     }
     if (prevServiceKind === undefined) {
-      delete process.env.OPENCLAW_SERVICE_KIND;
+      delete process.env.NODOASSIST_SERVICE_KIND;
     } else {
-      process.env.OPENCLAW_SERVICE_KIND = prevServiceKind;
+      process.env.NODOASSIST_SERVICE_KIND = prevServiceKind;
     }
   });
 
@@ -77,11 +77,11 @@ describe("noteSecurityWarnings gateway exposure", () => {
     file: Record<string, unknown>,
     run: () => Promise<void>,
   ): Promise<void> {
-    await withTempDir({ prefix: "openclaw-doctor-security-" }, async (home) => {
+    await withTempDir({ prefix: "nodoassist-doctor-security-" }, async (home) => {
       process.env.HOME = home;
-      await fs.mkdir(path.join(home, ".openclaw"), { recursive: true });
+      await fs.mkdir(path.join(home, ".nodoassist"), { recursive: true });
       await fs.writeFile(
-        path.join(home, ".openclaw", "exec-approvals.json"),
+        path.join(home, ".nodoassist", "exec-approvals.json"),
         JSON.stringify(file, null, 2),
       );
       await run();
@@ -121,7 +121,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
               },
             ],
           },
-        } as OpenClawConfig);
+        } as NodoAssistConfig);
       },
     );
 
@@ -132,7 +132,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
   }
 
   it("warns when exposed without auth", async () => {
-    const cfg = { gateway: { bind: "lan" } } as OpenClawConfig;
+    const cfg = { gateway: { bind: "lan" } } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).toContain("CRITICAL");
@@ -142,8 +142,8 @@ describe("noteSecurityWarnings gateway exposure", () => {
   });
 
   it("uses env token to avoid critical warning", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "token-123";
-    const cfg = { gateway: { bind: "lan" } } as OpenClawConfig;
+    process.env.NODOASSIST_GATEWAY_TOKEN = "token-123";
+    const cfg = { gateway: { bind: "lan" } } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).toContain("WARNING");
@@ -156,91 +156,91 @@ describe("noteSecurityWarnings gateway exposure", () => {
         bind: "lan",
         auth: {
           mode: "token",
-          token: { source: "env", provider: "default", id: "OPENCLAW_GATEWAY_TOKEN" },
+          token: { source: "env", provider: "default", id: "NODOASSIST_GATEWAY_TOKEN" },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).toContain("WARNING");
     expect(message).not.toContain("CRITICAL");
   });
 
-  it("warns when OPENCLAW_GATEWAY_TOKEN env conflicts with gateway.auth.token config (#74271)", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-123";
+  it("warns when NODOASSIST_GATEWAY_TOKEN env conflicts with gateway.auth.token config (#74271)", async () => {
+    process.env.NODOASSIST_GATEWAY_TOKEN = "env-token-123";
     const cfg = {
       gateway: {
         auth: {
           token: "config-token-456",
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
-    expect(message).toContain("OPENCLAW_GATEWAY_TOKEN conflicts with gateway.auth.token");
+    expect(message).toContain("NODOASSIST_GATEWAY_TOKEN conflicts with gateway.auth.token");
     expect(message).toContain("Direct local Gateway clients commonly prefer the env token");
-    expect(message).toContain("~/.openclaw/.env");
+    expect(message).toContain("~/.nodoassist/.env");
   });
 
   it("does not warn when only env token is set without config token", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-only";
-    const cfg = { gateway: { bind: "lan" } } as OpenClawConfig;
+    process.env.NODOASSIST_GATEWAY_TOKEN = "env-token-only";
+    const cfg = { gateway: { bind: "lan" } } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
-    expect(message).not.toContain("OPENCLAW_GATEWAY_TOKEN overrides");
+    expect(message).not.toContain("NODOASSIST_GATEWAY_TOKEN overrides");
   });
 
   it("does not warn inside the managed gateway service credential context", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-123";
-    process.env.OPENCLAW_SERVICE_KIND = "gateway";
+    process.env.NODOASSIST_GATEWAY_TOKEN = "env-token-123";
+    process.env.NODOASSIST_SERVICE_KIND = "gateway";
     const cfg = {
       gateway: {
         auth: {
           token: "config-token-456",
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
-    expect(message).not.toContain("OPENCLAW_GATEWAY_TOKEN conflicts");
+    expect(message).not.toContain("NODOASSIST_GATEWAY_TOKEN conflicts");
   });
 
-  it("does not warn when config token uses OPENCLAW_GATEWAY_TOKEN SecretRef", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-123";
+  it("does not warn when config token uses NODOASSIST_GATEWAY_TOKEN SecretRef", async () => {
+    process.env.NODOASSIST_GATEWAY_TOKEN = "env-token-123";
     const cfg = {
-      gateway: { auth: { token: "${OPENCLAW_GATEWAY_TOKEN}" } },
+      gateway: { auth: { token: "${NODOASSIST_GATEWAY_TOKEN}" } },
       secrets: { providers: { default: { source: "env" } } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
-    expect(message).not.toContain("OPENCLAW_GATEWAY_TOKEN overrides");
+    expect(message).not.toContain("NODOASSIST_GATEWAY_TOKEN overrides");
   });
 
   it("does not warn about local gateway auth token precedence in remote mode", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-123";
+    process.env.NODOASSIST_GATEWAY_TOKEN = "env-token-123";
     const cfg = {
       gateway: {
         mode: "remote",
         remote: { token: "remote-token" },
         auth: { token: "local-token" },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
-    expect(message).not.toContain("OPENCLAW_GATEWAY_TOKEN overrides");
+    expect(message).not.toContain("NODOASSIST_GATEWAY_TOKEN overrides");
   });
 
   it("treats whitespace token as missing", async () => {
     const cfg = {
       gateway: { bind: "lan", auth: { mode: "token", token: "   " } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).toContain("CRITICAL");
   });
 
   it("skips warning for loopback bind", async () => {
-    const cfg = { gateway: { bind: "loopback" } } as OpenClawConfig;
+    const cfg = { gateway: { bind: "loopback" } } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).toContain("No channel security warnings detected");
@@ -248,7 +248,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
   });
 
   it("treats unset bind as loopback for host-side doctor checks", async () => {
-    const cfg = { gateway: {} } as OpenClawConfig;
+    const cfg = { gateway: {} } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).toContain("No channel security warnings detected");
@@ -277,7 +277,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
         },
       },
     ];
-    const cfg = { session: { dmScope: "main" } } as OpenClawConfig;
+    const cfg = { session: { dmScope: "main" } } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     expect(listReadOnlyChannelPluginsForConfigMock).toHaveBeenCalledWith(cfg, {
       includePersistedAuthState: true,
@@ -294,12 +294,12 @@ describe("noteSecurityWarnings gateway exposure", () => {
           enabled: false,
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).toContain("disables approval forwarding only");
     expect(message).toContain("exec-approvals.json");
-    expect(message).toContain("openclaw approvals get --gateway");
+    expect(message).toContain("nodoassist approvals get --gateway");
   });
 
   it("warns when filesystem tools are disabled but exec remains available", async () => {
@@ -308,7 +308,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
         allow: ["read", "exec", "process"],
         deny: ["write", "edit", "apply_patch"],
       },
-    } as OpenClawConfig);
+    } as NodoAssistConfig);
 
     const message = lastMessage();
     expect(message).toContain("filesystem write tools are disabled, but exec is still available");
@@ -331,7 +331,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
         allow: ["read", "exec", "process"],
         deny: ["write", "edit", "apply_patch"],
       },
-    } as OpenClawConfig);
+    } as NodoAssistConfig);
 
     const message = lastMessage();
     expect(message).not.toContain(
@@ -348,12 +348,12 @@ describe("noteSecurityWarnings gateway exposure", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as NodoAssistConfig);
 
     const message = lastMessage();
     expect(message).toContain("plaintext secret-bearing config fields");
     expect(message).toContain("models.providers.openai.apiKey");
-    expect(message).toContain("openclaw secrets audit --check");
+    expect(message).toContain("nodoassist secrets audit --check");
   });
 
   it("warns when sensitive model provider headers are stored as plaintext in config", async () => {
@@ -367,7 +367,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as NodoAssistConfig);
 
     const message = lastMessage();
     expect(message).toContain("plaintext secret-bearing config fields");
@@ -385,7 +385,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as NodoAssistConfig);
 
     const message = lastMessage();
     expect(message).not.toContain("plaintext secret-bearing config fields");
@@ -405,7 +405,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as NodoAssistConfig);
 
     const message = lastMessage();
     expect(message).toContain("plaintext secret-bearing config fields");
@@ -426,7 +426,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
           },
         },
       },
-    } as unknown as OpenClawConfig);
+    } as unknown as NodoAssistConfig);
 
     const message = lastMessage();
     expect(message).not.toContain("plaintext secret-bearing config fields");
@@ -449,7 +449,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
               ask: "off",
             },
           },
-        } as OpenClawConfig);
+        } as NodoAssistConfig);
       },
     );
 
@@ -476,7 +476,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
               mode: "full",
             },
           },
-        } as OpenClawConfig);
+        } as NodoAssistConfig);
       },
     );
 
@@ -484,7 +484,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
     expect(message).toContain("tools.exec is broader than the host exec policy");
     expect(message).toContain('tools.exec.mode="full"');
     expect(message).toContain('defaults.security="allowlist"');
-    expect(message).not.toContain("OpenClaw default");
+    expect(message).not.toContain("NodoAssist default");
   });
 
   it("attributes broader host policy warnings to wildcard agent entries", async () => {
@@ -505,7 +505,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
               ask: "on-miss",
             },
           },
-        } as OpenClawConfig);
+        } as NodoAssistConfig);
       },
     );
 
@@ -527,7 +527,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
               ask: "always",
             },
           },
-        } as OpenClawConfig);
+        } as NodoAssistConfig);
       },
     );
 
@@ -562,7 +562,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
           agents: {
             list: [{ id: "runner" }],
           },
-        } as OpenClawConfig);
+        } as NodoAssistConfig);
       },
     );
 
@@ -597,7 +597,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
           agents: {
             list: [{ id: "runner" }],
           },
-        } as OpenClawConfig);
+        } as NodoAssistConfig);
       },
     );
 
@@ -632,7 +632,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
               ask: "always",
             },
           },
-        } as OpenClawConfig);
+        } as NodoAssistConfig);
       },
     );
 
@@ -649,7 +649,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).toContain("Heartbeat defaults");
@@ -669,7 +669,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
           },
         ],
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).toContain('Heartbeat agent "ops"');
@@ -696,7 +696,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
       },
     ];
 
-    await noteSecurityWarnings({} as OpenClawConfig);
+    await noteSecurityWarnings({} as NodoAssistConfig);
     expect(listReadOnlyChannelPluginsForConfigMock).toHaveBeenCalledWith(
       {},
       {
@@ -707,7 +707,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
     const message = lastMessage();
     expect(message).toContain("[secrets]");
     expect(message).toContain("failed to resolve account");
-    expect(message).toContain("Run: openclaw security audit --deep");
+    expect(message).toContain("Run: nodoassist security audit --deep");
   });
 
   it("skips heartbeat directPolicy warning when delivery is internal-only or explicit", async () => {
@@ -728,7 +728,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
           },
         ],
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
     expect(message).not.toContain("Heartbeat defaults");

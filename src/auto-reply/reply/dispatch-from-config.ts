@@ -1,16 +1,16 @@
 /** Main reply dispatch pipeline from finalized config/context to delivery payloads. */
 import crypto from "node:crypto";
-import { isParentOwnedBackgroundAcpSession } from "@openclaw/acp-core/session-interaction-mode";
+import { isParentOwnedBackgroundAcpSession } from "@nodoassist/acp-core/session-interaction-mode";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalString,
-} from "@openclaw/normalization-core/string-coerce";
-import { truncateUtf16Safe } from "@openclaw/normalization-core/utf16-slice";
+} from "@nodoassist/normalization-core/string-coerce";
+import { truncateUtf16Safe } from "@nodoassist/normalization-core/utf16-slice";
 import {
   hasOutboundReplyContent,
   isFastModeAutoProgressPayload,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "nodoassist/plugin-sdk/reply-payload";
 import { readAcpSessionMeta } from "../../acp/runtime/session-meta.js";
 import {
   resolveAgentConfig,
@@ -52,7 +52,7 @@ import {
   type SessionTranscriptDeliveryMirror,
 } from "../../config/sessions/transcript.js";
 import type { SessionEntry } from "../../config/sessions/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { logVerbose } from "../../globals.js";
 import { fireAndForgetHook } from "../../hooks/fire-and-forget.js";
 import {
@@ -440,7 +440,7 @@ const resolveRoutedPolicyConversationType = (
 
 const resolveSessionStoreLookup = (
   ctx: FinalizedMsgContext,
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
 ): {
   sessionKey?: string;
   storePath?: string;
@@ -472,7 +472,7 @@ const resolveSessionStoreLookup = (
 
 const resolveBoundAcpDispatchSessionKey = (params: {
   ctx: FinalizedMsgContext;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
 }): string | undefined => {
   const bindingContext = resolveConversationBindingContextFromMessage({
     cfg: params.cfg,
@@ -593,7 +593,7 @@ function resolveTurnModelOverride(
 
 function resolveChannelModelCandidate(params: {
   aliasIndex: ModelAliasIndex;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   ctx: FinalizedMsgContext;
   defaultProvider: string;
   entry?: SessionEntry;
@@ -674,7 +674,7 @@ function resolveModelOverrideCandidate(params: {
 }
 
 const resolveHarnessSourceVisibleRepliesDefault = (params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   ctx: FinalizedMsgContext;
   entry?: SessionEntry;
   sessionAgentId: string;
@@ -756,7 +756,7 @@ const resolveHarnessSourceVisibleRepliesDefault = (params: {
 
 function shouldBypassPluginOwnedBindingForCommand(
   ctx: FinalizedMsgContext,
-  cfg: OpenClawConfig,
+  cfg: NodoAssistConfig,
 ): boolean {
   const commandTurn = resolveCommandTurnContext(ctx);
   if (
@@ -829,7 +829,7 @@ async function clearPendingFinalDeliveryAfterSuccess(params: {
 
 async function mirrorDeliveredReplyToTranscript(params: {
   metadata?: TranscriptMirror;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
 }): Promise<void> {
   const mirror = params.metadata;
   if (!mirror) {
@@ -1017,7 +1017,7 @@ async function mirrorTranscriptAfterDispatcherSettled(params: {
   dispatcher: ReplyDispatcher;
   before: { cancelled: number; failed: number };
   metadata: () => TranscriptMirror | undefined;
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
 }): Promise<void> {
   const after = getDispatcherFinalOutcomeCounts(params.dispatcher);
   const metadata = params.metadata();
@@ -3383,7 +3383,9 @@ export async function dispatchReplyFromConfig(
       (await traceReplyPhase("reply.load_reply_resolver", () => loadGetReplyFromConfigRuntime()))
         .getReplyFromConfig;
     const replyConfig = withFullRuntimeReplyConfig(
-      params.configOverride ? (applyMergePatch(cfg, params.configOverride) as OpenClawConfig) : cfg,
+      params.configOverride
+        ? (applyMergePatch(cfg, params.configOverride) as NodoAssistConfig)
+        : cfg,
     );
     recordAgentDispatchStarted();
     const replyResult = await runWithDispatchLifecycleAdmission(

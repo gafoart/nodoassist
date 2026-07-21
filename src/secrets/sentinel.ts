@@ -10,7 +10,7 @@ const valuesBySentinel = new Map<string, string>();
 const sentinelsByValueAndLabel = new Map<string, Map<string, string>>();
 
 function secretSentinelsEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  const configured = env.OPENCLAW_SECRET_SENTINELS?.trim().toLowerCase();
+  const configured = env.NODOASSIST_SECRET_SENTINELS?.trim().toLowerCase();
   return configured !== "off" && configured !== "0" && configured !== "false";
 }
 

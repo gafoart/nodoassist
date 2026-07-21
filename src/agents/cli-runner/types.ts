@@ -9,7 +9,7 @@ import type { InboundEventKind } from "../../channels/inbound-event/kind.js";
 import type { CliSessionBinding, SessionEntry } from "../../config/sessions.js";
 import type { SessionSystemPromptReport } from "../../config/sessions/types.js";
 import type { CliBackendConfig } from "../../config/types.js";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import type { ContextEngine } from "../../context-engine/types.js";
 import type { ImageContent } from "../../llm/types.js";
 import type { PromptImageOrderEntry } from "../../media/prompt-image-order.js";
@@ -46,7 +46,7 @@ export type RunCliAgentParams = {
   workspaceDir: string;
   /** Task working directory for CLI execution. Defaults to workspaceDir. */
   cwd?: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   prompt: string;
   transcriptPrompt?: string;
   /** Undecorated current-turn prompt used to merge inline and offloaded images. */
@@ -59,7 +59,7 @@ export type RunCliAgentParams = {
   suppressNextUserMessagePersistence?: boolean;
   userTurnTranscriptRecorder?: UserTurnTranscriptRecorder;
   onUserMessagePersisted?: (message: PersistedUserTurnMessage) => void | Promise<void>;
-  /** Persist the successful CLI assistant reply into the OpenClaw session transcript. */
+  /** Persist the successful CLI assistant reply into the NodoAssist session transcript. */
   persistAssistantTranscript?: boolean;
   /** Session store path used when assistant transcript persistence is enabled. */
   storePath?: string;
@@ -201,7 +201,7 @@ export type PreparedCliRunContext = {
   preparedBackend: CliPreparedBackend;
   reusableCliSession: CliReusableSession;
   hadSessionFile: boolean;
-  contextEngineConfig: OpenClawConfig;
+  contextEngineConfig: NodoAssistConfig;
   contextEngine?: ContextEngine;
   contextEngineTurnPrompt?: string;
   contextEngineDeferredTurnMaintenance?: Promise<void>;
@@ -212,7 +212,7 @@ export type PreparedCliRunContext = {
   systemPromptReport: SessionSystemPromptReport;
   claudeSkillsPluginArgs?: string[] | undefined;
   bootstrapPromptWarningLines: string[];
-  openClawHistoryPrompt?: string;
+  nodoAssistHistoryPrompt?: string;
   heartbeatPrompt?: string;
   authEpoch?: string;
   authEpochVersion: number;

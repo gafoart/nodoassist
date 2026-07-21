@@ -218,4 +218,4 @@ class WorktreesPage extends LitElement {
   }
 }
 
-customElements.define("openclaw-worktrees-page", WorktreesPage);
+customElements.define("nodoassist-worktrees-page", WorktreesPage);

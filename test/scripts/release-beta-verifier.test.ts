@@ -19,7 +19,7 @@ describe("parseReleaseVerifyBetaArgs", () => {
       version: "2026.5.10-beta.3",
       tag: "v2026.5.10-beta.3",
       distTag: "beta",
-      repo: "openclaw/openclaw",
+      repo: "nodoassist/nodoassist",
       registry: "https://clawhub.ai",
       workflowRef: undefined,
       clawHubWorkflowRef: undefined,
@@ -43,10 +43,10 @@ describe("parseReleaseVerifyBetaArgs", () => {
         "--clawhub-workflow-ref",
         "v2026.5.10-beta.3",
         "--plugins",
-        "@openclaw/plugin-a,@openclaw/plugin-b",
+        "@nodoassist/plugin-a,@nodoassist/plugin-b",
         "--full-release-validation-run",
         "10",
-        "--openclaw-npm-run",
+        "--nodoassist-npm-run",
         "11",
         "--plugin-npm-run",
         "22",
@@ -67,11 +67,11 @@ describe("parseReleaseVerifyBetaArgs", () => {
       version: "2026.5.10-beta.3",
       tag: "v2026.5.10-beta.3",
       distTag: "beta",
-      repo: "openclaw/openclaw",
+      repo: "nodoassist/nodoassist",
       registry: "https://clawhub.ai",
       workflowRef: "release/2026.5.10",
       clawHubWorkflowRef: "v2026.5.10-beta.3",
-      pluginSelection: ["@openclaw/plugin-a", "@openclaw/plugin-b"],
+      pluginSelection: ["@nodoassist/plugin-a", "@nodoassist/plugin-b"],
       evidenceOut: ".artifacts/release-evidence.json",
       skipPostpublish: true,
       skipGitHubRelease: true,
@@ -79,7 +79,7 @@ describe("parseReleaseVerifyBetaArgs", () => {
       rerunFailedClawHub: true,
       workflowRuns: {
         fullReleaseValidation: "10",
-        openclawNpm: "11",
+        nodoassistNpm: "11",
         pluginNpm: "22",
         pluginClawHub: "33",
         pluginClawHubBootstrap: "34",
@@ -137,7 +137,7 @@ describe("runNpmViewWithRetry", () => {
     const delays: number[] = [];
 
     await expect(
-      runNpmViewWithRetry(["view", "openclaw@2026.5.10-beta.3", "version", "--json"], {
+      runNpmViewWithRetry(["view", "nodoassist@2026.5.10-beta.3", "version", "--json"], {
         attempts: 3,
         delay: async (delayMs) => {
           delays.push(delayMs);

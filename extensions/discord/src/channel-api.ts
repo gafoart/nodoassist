@@ -1,13 +1,13 @@
 // Discord API module exposes the plugin public contract.
-export { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
+export { DEFAULT_ACCOUNT_ID } from "nodoassist/plugin-sdk/account-id";
 export {
   buildTokenChannelStatusSummary,
   PAIRING_APPROVED_MESSAGE,
   projectCredentialSnapshotFields,
   resolveConfiguredFromCredentialStatuses,
-} from "openclaw/plugin-sdk/channel-status";
-export type { ChannelPlugin } from "openclaw/plugin-sdk/channel-core";
-export type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+} from "nodoassist/plugin-sdk/channel-status";
+export type { ChannelPlugin } from "nodoassist/plugin-sdk/channel-core";
+export type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 
 const DISCORD_CHANNEL_META = {
   id: "discord",

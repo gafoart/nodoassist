@@ -27,7 +27,7 @@ function createDeferred() {
 }
 
 function createSessionStore(entries: Record<string, object>): string {
-  const root = tempDirs.make("openclaw-reply-admission-");
+  const root = tempDirs.make("nodoassist-reply-admission-");
   const storePath = path.join(root, "sessions.json");
   fs.writeFileSync(storePath, JSON.stringify(entries));
   return storePath;

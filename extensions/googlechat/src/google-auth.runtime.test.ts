@@ -29,7 +29,7 @@ const mocks = vi.hoisted(() => ({
   ),
 }));
 
-vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ({
+vi.mock("nodoassist/plugin-sdk/ssrf-runtime", () => ({
   buildHostnameAllowlistPolicyFromSuffixAllowlist:
     mocks.buildHostnameAllowlistPolicyFromSuffixAllowlist,
   fetchWithSsrFGuard: mocks.fetchWithSsrFGuard,
@@ -67,7 +67,7 @@ afterEach(() => {
 });
 
 afterAll(() => {
-  vi.doUnmock("openclaw/plugin-sdk/ssrf-runtime");
+  vi.doUnmock("nodoassist/plugin-sdk/ssrf-runtime");
   vi.doUnmock("gaxios");
   vi.resetModules();
 });

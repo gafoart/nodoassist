@@ -1,5 +1,5 @@
 // Signal plugin module implements monitor.tool result harness behavior.
-import type { MockFn } from "openclaw/plugin-sdk/plugin-test-runtime";
+import type { MockFn } from "nodoassist/plugin-sdk/plugin-test-runtime";
 import { beforeEach, vi } from "vitest";
 import type { SignalDaemonExitEvent, SignalDaemonHandle } from "./daemon.js";
 
@@ -29,7 +29,7 @@ const signalCheckMock = vi.hoisted(() => vi.fn()) as unknown as MockFn;
 const signalRpcRequestMock = vi.hoisted(() => vi.fn()) as unknown as MockFn;
 const spawnSignalDaemonMock = vi.hoisted(() => vi.fn()) as unknown as MockFn;
 const signalToolResultSessionStorePath = vi.hoisted(
-  () => `/tmp/openclaw-signal-tool-result-sessions-${process.pid}.json`,
+  () => `/tmp/nodoassist-signal-tool-result-sessions-${process.pid}.json`,
 );
 
 export function getSignalToolResultTestMocks(): SignalToolResultTestMocks {
@@ -94,20 +94,20 @@ export function createMockSignalDaemonHandle(
 
 // Use importActual so shared-worker mocks from earlier test files do not leak
 // into this harness's partial overrides.
-vi.mock("openclaw/plugin-sdk/runtime-config-snapshot", async () => {
+vi.mock("nodoassist/plugin-sdk/runtime-config-snapshot", async () => {
   const actual = await vi.importActual<
-    typeof import("openclaw/plugin-sdk/runtime-config-snapshot")
-  >("openclaw/plugin-sdk/runtime-config-snapshot");
+    typeof import("nodoassist/plugin-sdk/runtime-config-snapshot")
+  >("nodoassist/plugin-sdk/runtime-config-snapshot");
   return {
     ...actual,
     getRuntimeConfig: () => config,
   };
 });
 
-vi.mock("openclaw/plugin-sdk/session-store-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/session-store-runtime")>(
-    "openclaw/plugin-sdk/session-store-runtime",
-  );
+vi.mock("nodoassist/plugin-sdk/session-store-runtime", async () => {
+  const actual = await vi.importActual<
+    typeof import("nodoassist/plugin-sdk/session-store-runtime")
+  >("nodoassist/plugin-sdk/session-store-runtime");
   return {
     ...actual,
     resolveStorePath: vi.fn(() => signalToolResultSessionStorePath),
@@ -117,9 +117,9 @@ vi.mock("openclaw/plugin-sdk/session-store-runtime", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/reply-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/reply-runtime")>(
-    "openclaw/plugin-sdk/reply-runtime",
+vi.mock("nodoassist/plugin-sdk/reply-runtime", async () => {
+  const actual = await vi.importActual<typeof import("nodoassist/plugin-sdk/reply-runtime")>(
+    "nodoassist/plugin-sdk/reply-runtime",
   );
   return {
     ...actual,
@@ -209,9 +209,9 @@ vi.mock("./send.js", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/conversation-runtime")>(
-    "openclaw/plugin-sdk/conversation-runtime",
+vi.mock("nodoassist/plugin-sdk/conversation-runtime", async () => {
+  const actual = await vi.importActual<typeof import("nodoassist/plugin-sdk/conversation-runtime")>(
+    "nodoassist/plugin-sdk/conversation-runtime",
   );
   return {
     ...actual,
@@ -220,9 +220,9 @@ vi.mock("openclaw/plugin-sdk/conversation-runtime", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/security-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/security-runtime")>(
-    "openclaw/plugin-sdk/security-runtime",
+vi.mock("nodoassist/plugin-sdk/security-runtime", async () => {
+  const actual = await vi.importActual<typeof import("nodoassist/plugin-sdk/security-runtime")>(
+    "nodoassist/plugin-sdk/security-runtime",
   );
   return {
     ...actual,
@@ -250,9 +250,9 @@ vi.mock("./daemon.js", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/system-event-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/system-event-runtime")>(
-    "openclaw/plugin-sdk/system-event-runtime",
+vi.mock("nodoassist/plugin-sdk/system-event-runtime", async () => {
+  const actual = await vi.importActual<typeof import("nodoassist/plugin-sdk/system-event-runtime")>(
+    "nodoassist/plugin-sdk/system-event-runtime",
   );
   return {
     ...actual,
@@ -263,15 +263,15 @@ vi.mock("openclaw/plugin-sdk/system-event-runtime", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/transport-ready-runtime", () => ({
+vi.mock("nodoassist/plugin-sdk/transport-ready-runtime", () => ({
   waitForTransportReady: (...args: unknown[]) => waitForTransportReadyMock(...args),
 }));
 
 export function installSignalToolResultTestHooks() {
   beforeEach(async () => {
     const [{ resetInboundDedupe }, { resetSystemEventsForTest }] = await Promise.all([
-      import("openclaw/plugin-sdk/reply-runtime"),
-      import("openclaw/plugin-sdk/system-event-runtime"),
+      import("nodoassist/plugin-sdk/reply-runtime"),
+      import("nodoassist/plugin-sdk/system-event-runtime"),
     ]);
     resetInboundDedupe();
     config = {

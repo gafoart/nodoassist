@@ -1,6 +1,6 @@
-# @openclaw/zalouser
+# @nodoassist/zalouser
 
-OpenClaw extension for Zalo Personal Account messaging via native `zca-js` integration.
+NodoAssist extension for Zalo Personal Account messaging via native `zca-js` integration.
 
 > **Warning:** Using Zalo automation may result in account suspension or ban. Use at your own risk. This is an unofficial integration.
 
@@ -14,7 +14,7 @@ OpenClaw extension for Zalo Personal Account messaging via native `zca-js` integ
 
 ## Prerequisites
 
-- OpenClaw Gateway
+- NodoAssist Gateway
 - Zalo mobile app (for QR login)
 
 No external `zca`, `openzca`, or `zca-cli` binary is required.
@@ -24,14 +24,14 @@ No external `zca`, `openzca`, or `zca-cli` binary is required.
 ### Option A: npm
 
 ```bash
-openclaw plugins install @openclaw/zalouser
+nodoassist plugins install @nodoassist/zalouser
 ```
 
 ### Option B: local source checkout
 
 ```bash
 PLUGIN_SRC=./path/to/local/zalouser-plugin
-openclaw plugins install "$PLUGIN_SRC"
+nodoassist plugins install "$PLUGIN_SRC"
 cd "$PLUGIN_SRC" && pnpm install
 ```
 
@@ -42,7 +42,7 @@ Restart the Gateway after install.
 ### Login (QR)
 
 ```bash
-openclaw channels login --channel zalouser
+nodoassist channels login --channel zalouser
 ```
 
 Scan the QR code with the Zalo app on your phone.
@@ -59,7 +59,7 @@ channels:
 ### Send a message
 
 ```bash
-openclaw message send --channel zalouser --target <threadId> --message "Hello from OpenClaw"
+nodoassist message send --channel zalouser --target <threadId> --message "Hello from NodoAssist"
 ```
 
 ## Configuration
@@ -92,15 +92,15 @@ channels:
 ## Useful commands
 
 ```bash
-openclaw channels login --channel zalouser
-openclaw channels login --channel zalouser --account work
-openclaw channels status --probe
-openclaw channels logout --channel zalouser
+nodoassist channels login --channel zalouser
+nodoassist channels login --channel zalouser --account work
+nodoassist channels status --probe
+nodoassist channels logout --channel zalouser
 
-openclaw directory self --channel zalouser
-openclaw directory peers list --channel zalouser --query "name"
-openclaw directory groups list --channel zalouser --query "work"
-openclaw directory groups members --channel zalouser --group-id <id>
+nodoassist directory self --channel zalouser
+nodoassist directory peers list --channel zalouser --query "name"
+nodoassist directory groups list --channel zalouser --query "work"
+nodoassist directory groups members --channel zalouser --group-id <id>
 ```
 
 ## Agent tool
@@ -111,8 +111,8 @@ Available actions: `send`, `image`, `link`, `friends`, `groups`, `me`, `status`
 
 ## Troubleshooting
 
-- Login not persisted: `openclaw channels logout --channel zalouser && openclaw channels login --channel zalouser`
-- Probe status: `openclaw channels status --probe`
+- Login not persisted: `nodoassist channels logout --channel zalouser && nodoassist channels login --channel zalouser`
+- Probe status: `nodoassist channels status --probe`
 - Name resolution issues (allowlist/groups): use numeric IDs or exact Zalo names
 
 ## Credits

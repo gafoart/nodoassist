@@ -194,4 +194,4 @@ class DebugPage extends LitElement {
   }
 }
 
-customElements.define("openclaw-debug-page", DebugPage);
+customElements.define("nodoassist-debug-page", DebugPage);

@@ -1,10 +1,10 @@
 // Builds plugin metadata snapshots for gateway and diagnostics.
 import fs from "node:fs";
 import path from "node:path";
-import { normalizeProviderId } from "@openclaw/model-catalog-core/provider-id";
-import { isRecord } from "@openclaw/normalization-core/record-coerce";
+import { normalizeProviderId } from "@nodoassist/model-catalog-core/provider-id";
+import { isRecord } from "@nodoassist/normalization-core/record-coerce";
 import { resolveIsNixMode } from "../config/paths.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import {
   getActiveDiagnosticsTimelineSpan,
   measureDiagnosticsTimelineSpanSync,
@@ -64,15 +64,15 @@ registerPluginMetadataProcessMemoLifecycleClear(clearLoadPluginMetadataSnapshotM
 const MEMO_RELEVANT_ENV_KEYS = [
   "APPDATA",
   "HOME",
-  "OPENCLAW_BUNDLED_PLUGINS_DIR",
-  "OPENCLAW_COMPATIBILITY_HOST_VERSION",
-  "OPENCLAW_CONFIG_PATH",
-  "OPENCLAW_DISABLE_BUNDLED_PLUGINS",
-  "OPENCLAW_DISABLE_BUNDLED_SOURCE_OVERLAYS",
-  "OPENCLAW_DISABLE_PERSISTED_PLUGIN_REGISTRY",
-  "OPENCLAW_HOME",
-  "OPENCLAW_NIX_MODE",
-  "OPENCLAW_STATE_DIR",
+  "NODOASSIST_BUNDLED_PLUGINS_DIR",
+  "NODOASSIST_COMPATIBILITY_HOST_VERSION",
+  "NODOASSIST_CONFIG_PATH",
+  "NODOASSIST_DISABLE_BUNDLED_PLUGINS",
+  "NODOASSIST_DISABLE_BUNDLED_SOURCE_OVERLAYS",
+  "NODOASSIST_DISABLE_PERSISTED_PLUGIN_REGISTRY",
+  "NODOASSIST_HOME",
+  "NODOASSIST_NIX_MODE",
+  "NODOASSIST_STATE_DIR",
   "USERPROFILE",
   "XDG_CONFIG_HOME",
 ] as const;
@@ -180,7 +180,8 @@ function resolvePersistedRegistryFastMemoFingerprint(params: {
   preferPersisted?: boolean;
   stateDir?: string;
 }): Record<string, unknown> {
-  const disabledByEnv = params.env.OPENCLAW_DISABLE_PERSISTED_PLUGIN_REGISTRY?.trim().toLowerCase();
+  const disabledByEnv =
+    params.env.NODOASSIST_DISABLE_PERSISTED_PLUGIN_REGISTRY?.trim().toLowerCase();
   const disabled =
     params.preferPersisted === false ||
     (Boolean(disabledByEnv) &&
@@ -428,7 +429,7 @@ export function isPluginMetadataSnapshotCompatible(params: {
     PluginMetadataSnapshot,
     "configFingerprint" | "index" | "pluginIds" | "policyHash" | "workspaceDir"
   >;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   env?: NodeJS.ProcessEnv;
   allowScopedSnapshot?: boolean;
   pluginIds?: readonly string[];

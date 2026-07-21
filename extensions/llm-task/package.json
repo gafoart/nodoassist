@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/llm-task",
+  "name": "@nodoassist/llm-task",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw JSON-only LLM task plugin",
+  "description": "NodoAssist JSON-only LLM task plugin",
   "type": "module",
   "dependencies": {
     "typebox": "1.3.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

@@ -1,0 +1,28 @@
+package ai.nodoassist.app
+
+import android.content.Intent
+
+const val extraAndroidScreenshotMode = "nodoassist.screenshotMode"
+const val extraAndroidScreenshotScene = "nodoassist.screenshotScene"
+
+enum class AndroidScreenshotScene(
+  val rawValue: String,
+) {
+  Connect("connect"),
+  Chat("chat"),
+  Voice("voice"),
+  Screen("screen"),
+  Settings("settings"),
+  ;
+
+  companion object {
+    fun fromRawValue(raw: String?): AndroidScreenshotScene = entries.firstOrNull { it.rawValue == raw?.trim()?.lowercase() } ?: Connect
+  }
+}
+
+fun parseAndroidScreenshotModeIntent(intent: Intent?): AndroidScreenshotScene? {
+  if (intent?.getBooleanExtra(extraAndroidScreenshotMode, false) != true) {
+    return null
+  }
+  return AndroidScreenshotScene.fromRawValue(intent.getStringExtra(extraAndroidScreenshotScene))
+}

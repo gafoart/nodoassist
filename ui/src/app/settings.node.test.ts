@@ -26,15 +26,15 @@ function setControlUiBasePath(value: string | undefined) {
       "window",
       value == null
         ? ({} as TestWindow)
-        : ({ __OPENCLAW_CONTROL_UI_BASE_PATH__: value } as unknown as TestWindow),
+        : ({ __NODOASSIST_CONTROL_UI_BASE_PATH__: value } as unknown as TestWindow),
     );
     return;
   }
   if (value == null) {
-    delete (window as TestWindow)["__OPENCLAW_CONTROL_UI_BASE_PATH__"];
+    delete (window as TestWindow)["__NODOASSIST_CONTROL_UI_BASE_PATH__"];
     return;
   }
-  Object.defineProperty(window, "__OPENCLAW_CONTROL_UI_BASE_PATH__", {
+  Object.defineProperty(window, "__NODOASSIST_CONTROL_UI_BASE_PATH__", {
     value,
     writable: true,
     configurable: true,
@@ -88,9 +88,9 @@ describe("loadSettings default gateway URL derivation", () => {
       host: "gateway.example:8443",
       pathname: "/ignored/path",
     });
-    setControlUiBasePath(" /openclaw/ ");
+    setControlUiBasePath(" /nodoassist/ ");
 
-    expect(loadSettings().gatewayUrl).toBe(expectedGatewayUrl("/openclaw"));
+    expect(loadSettings().gatewayUrl).toBe(expectedGatewayUrl("/nodoassist"));
   });
 
   it("defaults chat auto-scroll to near-bottom", () => {
@@ -108,10 +108,10 @@ describe("loadSettings default gateway URL derivation", () => {
     setTestLocation({
       protocol: "http:",
       host: "gateway.example:18789",
-      pathname: "/apps/openclaw/chat",
+      pathname: "/apps/nodoassist/chat",
     });
 
-    expect(loadSettings().gatewayUrl).toBe(expectedGatewayUrl("/apps/openclaw"));
+    expect(loadSettings().gatewayUrl).toBe(expectedGatewayUrl("/apps/nodoassist"));
   });
 
   it("skips node sessionStorage accessors that warn without a storage file", () => {
@@ -142,23 +142,23 @@ describe("loadSettings default gateway URL derivation", () => {
       host: "gateway.example:8443",
       pathname: "/",
     });
-    sessionStorage.setItem("openclaw.control.token.v1", "legacy-session-token");
+    sessionStorage.setItem("nodoassist.control.token.v1", "legacy-session-token");
     localStorage.setItem(
-      "openclaw.control.settings.v1",
+      "nodoassist.control.settings.v1",
       JSON.stringify({
-        gatewayUrl: "wss://gateway.example:8443/openclaw",
+        gatewayUrl: "wss://gateway.example:8443/nodoassist",
         token: "persisted-token",
         sessionKey: "agent",
       }),
     );
 
     const settings = loadSettings();
-    expect(settings.gatewayUrl).toBe("wss://gateway.example:8443/openclaw");
+    expect(settings.gatewayUrl).toBe("wss://gateway.example:8443/nodoassist");
     expect(settings.token).toBe("");
     expect(settings.sessionKey).toBe("agent");
-    const scopedKey = "openclaw.control.settings.v1:wss://gateway.example:8443/openclaw";
+    const scopedKey = "nodoassist.control.settings.v1:wss://gateway.example:8443/nodoassist";
     expect(JSON.parse(localStorage.getItem(scopedKey) ?? "{}")).toEqual({
-      gatewayUrl: "wss://gateway.example:8443/openclaw",
+      gatewayUrl: "wss://gateway.example:8443/nodoassist",
       theme: "claw",
       themeMode: "system",
       chatShowThinking: true,
@@ -173,7 +173,7 @@ describe("loadSettings default gateway URL derivation", () => {
       borderRadius: 50,
       textScale: 100,
       sessionsByGateway: {
-        "wss://gateway.example:8443/openclaw": {
+        "wss://gateway.example:8443/nodoassist": {
           sessionKey: "agent",
           lastActiveSessionKey: "agent",
         },
@@ -292,7 +292,7 @@ describe("loadSettings default gateway URL derivation", () => {
     expect(settings.gatewayUrl).toBe(gwUrl);
     expect(settings.token).toBe("memory-only-token");
 
-    const scopedKey = `openclaw.control.settings.v1:${gwUrl}`;
+    const scopedKey = `nodoassist.control.settings.v1:${gwUrl}`;
     expect(JSON.parse(localStorage.getItem(scopedKey) ?? "{}")).toEqual({
       gatewayUrl: gwUrl,
       theme: "claw",
@@ -349,7 +349,7 @@ describe("loadSettings default gateway URL derivation", () => {
     expect(loadSettings().sidebarMoreExpanded).toBe(true);
 
     // Corrupt the persisted list; load falls back to the default pinned set.
-    const scopedKey = `openclaw.control.settings.v1:${gwUrl}`;
+    const scopedKey = `nodoassist.control.settings.v1:${gwUrl}`;
     const persisted = JSON.parse(localStorage.getItem(scopedKey) ?? "{}") as Record<
       string,
       unknown
@@ -371,7 +371,7 @@ describe("loadSettings default gateway URL derivation", () => {
 
     const gwUrl = expectedGatewayUrl("");
     localStorage.setItem(
-      `openclaw.control.settings.v1:${gwUrl}`,
+      `nodoassist.control.settings.v1:${gwUrl}`,
       JSON.stringify({
         gatewayUrl: gwUrl,
         textScale: 123,
@@ -390,7 +390,7 @@ describe("loadSettings default gateway URL derivation", () => {
 
     const gwUrl = expectedGatewayUrl("");
     localStorage.setItem(
-      `openclaw.control.settings.v1:${gwUrl}`,
+      `nodoassist.control.settings.v1:${gwUrl}`,
       JSON.stringify({
         gatewayUrl: gwUrl,
         chatAutoScroll: "off",
@@ -399,7 +399,7 @@ describe("loadSettings default gateway URL derivation", () => {
     expect(loadSettings().chatAutoScroll).toBe("off");
 
     localStorage.setItem(
-      `openclaw.control.settings.v1:${gwUrl}`,
+      `nodoassist.control.settings.v1:${gwUrl}`,
       JSON.stringify({
         gatewayUrl: gwUrl,
         chatAutoScroll: "disabled",
@@ -416,7 +416,7 @@ describe("loadSettings default gateway URL derivation", () => {
     });
 
     const gwUrl = expectedGatewayUrl("");
-    const scopedKey = `openclaw.control.settings.v1:${gwUrl}`;
+    const scopedKey = `nodoassist.control.settings.v1:${gwUrl}`;
     saveSettings({ ...loadSettings(), chatSendShortcut: "modifier-enter" });
     expect(JSON.parse(localStorage.getItem(scopedKey) ?? "{}").chatSendShortcut).toBe(
       "modifier-enter",
@@ -443,7 +443,7 @@ describe("loadSettings default gateway URL derivation", () => {
     });
 
     const gwUrl = expectedGatewayUrl("");
-    const scopedKey = `openclaw.control.settings.v1:${gwUrl}`;
+    const scopedKey = `nodoassist.control.settings.v1:${gwUrl}`;
     saveSettings({ ...loadSettings(), realtimeTalkInputDeviceId: " usb-mic " });
     expect(JSON.parse(localStorage.getItem(scopedKey) ?? "{}").realtimeTalkInputDeviceId).toBe(
       "usb-mic",
@@ -526,7 +526,7 @@ describe("loadSettings default gateway URL derivation", () => {
       borderRadius: 50,
     });
 
-    const scopedKey = `openclaw.control.settings.v1:${gwUrl}`;
+    const scopedKey = `nodoassist.control.settings.v1:${gwUrl}`;
     const persisted = JSON.parse(localStorage.getItem(scopedKey) ?? "{}") as Record<
       string,
       unknown
@@ -565,7 +565,7 @@ describe("loadSettings default gateway URL derivation", () => {
     });
     const gwUrl = expectedGatewayUrl("");
     localStorage.setItem(
-      `openclaw.control.settings.v1:${gwUrl}`,
+      `nodoassist.control.settings.v1:${gwUrl}`,
       JSON.stringify({ gatewayUrl: gwUrl, chatSplitLayout: { columns: "invalid" } }),
     );
 
@@ -614,7 +614,7 @@ describe("loadSettings default gateway URL derivation", () => {
 
     const gwUrl = expectedGatewayUrl("");
     localStorage.setItem(
-      `openclaw.control.settings.v1:${gwUrl}`,
+      `nodoassist.control.settings.v1:${gwUrl}`,
       JSON.stringify({
         gatewayUrl: gwUrl,
         theme: "custom",
@@ -688,7 +688,7 @@ describe("loadSettings default gateway URL derivation", () => {
     });
 
     const gwUrl = expectedGatewayUrl("");
-    const scopedKey = `openclaw.control.settings.v1:wss://gateway.example:8443`;
+    const scopedKey = `nodoassist.control.settings.v1:wss://gateway.example:8443`;
 
     // Pre-seed sessionsByGateway with 11 stale gateway entries so the next
     // saveSettings call pushes the total to 12 and triggers the cap (10).
@@ -751,14 +751,14 @@ describe("loadSettings default gateway URL derivation", () => {
     setControlUiBasePath("/gateway-b");
 
     expect(loadSettings().gatewayUrl).toBe(expectedGatewayUrl("/gateway-b"));
-    expect(localStorage.getItem("openclaw.control.settings.v1")).toBeNull();
+    expect(localStorage.getItem("nodoassist.control.settings.v1")).toBeNull();
   });
 
   it("leaves an ambiguous same-origin legacy sibling for its owning page", () => {
     setTestLocation({ protocol: "https:", host: "multi.example:8443", pathname: "/gateway-b/" });
     setControlUiBasePath("/gateway-b");
     localStorage.setItem(
-      "openclaw.control.settings.v1",
+      "nodoassist.control.settings.v1",
       JSON.stringify({
         gatewayUrl: "wss://multi.example:8443/gateway-a",
         sessionKey: "agent:a:main",
@@ -770,7 +770,7 @@ describe("loadSettings default gateway URL derivation", () => {
       sessionKey: "main",
       lastActiveSessionKey: "main",
     });
-    expect(localStorage.getItem("openclaw.control.settings.v1")).not.toBeNull();
+    expect(localStorage.getItem("nodoassist.control.settings.v1")).not.toBeNull();
   });
 
   it("migrates a legacy record that matches the current page", () => {
@@ -778,7 +778,7 @@ describe("loadSettings default gateway URL derivation", () => {
     setControlUiBasePath("/gateway-b");
     const gatewayUrl = expectedGatewayUrl("/gateway-b");
     localStorage.setItem(
-      "openclaw.control.settings.v1",
+      "nodoassist.control.settings.v1",
       JSON.stringify({
         gatewayUrl,
         sessionKey: "agent:b:main",
@@ -788,28 +788,30 @@ describe("loadSettings default gateway URL derivation", () => {
 
     expect(loadSettings()).toMatchObject({ gatewayUrl, sessionKey: "agent:b:main" });
     expect(
-      localStorage.getItem("openclaw.control.currentGateway.v1:wss://multi.example:8443/gateway-b"),
+      localStorage.getItem(
+        "nodoassist.control.currentGateway.v1:wss://multi.example:8443/gateway-b",
+      ),
     ).toBe(gatewayUrl);
-    expect(localStorage.getItem(`openclaw.control.settings.v1:${gatewayUrl}`)).not.toBeNull();
-    expect(localStorage.getItem("openclaw.control.settings.v1")).toBeNull();
+    expect(localStorage.getItem(`nodoassist.control.settings.v1:${gatewayUrl}`)).not.toBeNull();
+    expect(localStorage.getItem("nodoassist.control.settings.v1")).toBeNull();
   });
 
   it("migrates a legacy custom gateway on a different host", () => {
-    setTestLocation({ protocol: "https:", host: "control.example:8443", pathname: "/openclaw/" });
-    setControlUiBasePath("/openclaw");
+    setTestLocation({ protocol: "https:", host: "control.example:8443", pathname: "/nodoassist/" });
+    setControlUiBasePath("/nodoassist");
     const remoteUrl = "wss://remote-gateway.example.com";
     localStorage.setItem(
-      "openclaw.control.settings.v1",
+      "nodoassist.control.settings.v1",
       JSON.stringify({ gatewayUrl: remoteUrl, sessionKey: "remote-session" }),
     );
 
     expect(loadSettings()).toMatchObject({ gatewayUrl: remoteUrl, sessionKey: "remote-session" });
     expect(
       localStorage.getItem(
-        "openclaw.control.currentGateway.v1:wss://control.example:8443/openclaw",
+        "nodoassist.control.currentGateway.v1:wss://control.example:8443/nodoassist",
       ),
     ).toBe(remoteUrl);
-    expect(localStorage.getItem("openclaw.control.settings.v1")).toBeNull();
+    expect(localStorage.getItem("nodoassist.control.settings.v1")).toBeNull();
   });
 
   it("keeps custom gateway selections isolated per Control UI base path", () => {
@@ -843,7 +845,7 @@ describe("loadSettings default gateway URL derivation", () => {
       pathname: "/",
     });
     localStorage.setItem(
-      "openclaw.control.user.v1",
+      "nodoassist.control.user.v1",
       JSON.stringify({ name: "Buns", avatar: "🦞" }),
     );
 
@@ -851,7 +853,7 @@ describe("loadSettings default gateway URL derivation", () => {
       name: "Buns",
       avatar: "🦞",
     });
-    expect(JSON.parse(localStorage.getItem("openclaw.control.user.v1") ?? "{}")).toEqual({
+    expect(JSON.parse(localStorage.getItem("nodoassist.control.user.v1") ?? "{}")).toEqual({
       name: "Buns",
       avatar: "🦞",
     });
@@ -859,7 +861,7 @@ describe("loadSettings default gateway URL derivation", () => {
 
   it("normalizes invalid local user identity values on load", () => {
     localStorage.setItem(
-      "openclaw.control.user.v1",
+      "nodoassist.control.user.v1",
       JSON.stringify({
         name: "  ",
         avatar: "https://example.com/avatar.png",

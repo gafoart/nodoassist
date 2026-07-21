@@ -2,9 +2,9 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { ChannelDoctorAdapter } from "openclaw/plugin-sdk/channel-contract";
-import { migratePersistentDedupeLegacyJsonFile } from "openclaw/plugin-sdk/persistent-dedupe";
-import { resolveStateDir } from "openclaw/plugin-sdk/state-paths";
+import type { ChannelDoctorAdapter } from "nodoassist/plugin-sdk/channel-contract";
+import { migratePersistentDedupeLegacyJsonFile } from "nodoassist/plugin-sdk/persistent-dedupe";
+import { resolveStateDir } from "nodoassist/plugin-sdk/state-paths";
 import { listNextcloudTalkAccountIds, resolveNextcloudTalkAccount } from "./accounts.js";
 import { probeNextcloudTalkBotResponseFeature } from "./bot-preflight.js";
 import {

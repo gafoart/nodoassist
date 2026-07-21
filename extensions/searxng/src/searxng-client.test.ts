@@ -1,5 +1,5 @@
 // Searxng tests cover searxng client plugin behavior.
-import type { LookupFn } from "openclaw/plugin-sdk/ssrf-runtime";
+import type { LookupFn } from "nodoassist/plugin-sdk/ssrf-runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const endpointMockState = vi.hoisted(() => ({
@@ -7,8 +7,8 @@ const endpointMockState = vi.hoisted(() => ({
   responses: [] as Response[],
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-web-search", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/provider-web-search")>();
+vi.mock("nodoassist/plugin-sdk/provider-web-search", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("nodoassist/plugin-sdk/provider-web-search")>();
   const runEndpoint = async (
     params: { url: string; timeoutSeconds: number; init: RequestInit },
     run: (response: Response) => Promise<unknown>,
@@ -49,7 +49,7 @@ describe("searxng client", () => {
     expect(
       testing.buildSearxngSearchUrl({
         baseUrl: "https://search.example.com/searxng",
-        query: "openclaw",
+        query: "nodoassist",
         categories: "general,news",
         language: "en",
       }),
@@ -128,7 +128,7 @@ describe("searxng client", () => {
 
     const result = await runSearxngSearch({
       baseUrl: "http://127.0.0.1:8888",
-      query: "openclaw",
+      query: "nodoassist",
       categories: "general",
       count: 5,
     });
@@ -137,7 +137,7 @@ describe("searxng client", () => {
     const { tookMs, ...stableResult } = result;
     expect(typeof tookMs).toBe("number");
     expect(stableResult).toEqual({
-      query: "openclaw",
+      query: "nodoassist",
       provider: "searxng",
       count: 0,
       externalContent: {

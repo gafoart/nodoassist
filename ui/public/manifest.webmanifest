@@ -1,6 +1,6 @@
 {
-  "name": "OpenClaw Control",
-  "short_name": "OpenClaw",
+  "name": "NodoAssist Control",
+  "short_name": "NodoAssist",
   "description": "Multi-channel AI gateway control panel",
   "start_url": "./",
   "display": "standalone",

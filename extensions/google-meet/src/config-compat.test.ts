@@ -1,5 +1,5 @@
 // Google Meet tests cover config compat plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import {
   legacyConfigRules,
@@ -38,7 +38,7 @@ describe("google-meet config compatibility", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     const migration = migrateGoogleMeetLegacyRealtimeProvider(config);
 
@@ -79,7 +79,7 @@ describe("google-meet config compatibility", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     const migration = normalizeCompatibilityConfig({ cfg: config });
 

@@ -1,8 +1,8 @@
 // Slack tests cover exact delivery-queue reconciliation through message metadata.
 import type { MessageMetadata } from "@slack/types";
 import type { ChatPostMessageArguments, WebClient } from "@slack/web-api";
-import type { ChannelMessageUnknownSendContext } from "openclaw/plugin-sdk/channel-outbound";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { ChannelMessageUnknownSendContext } from "nodoassist/plugin-sdk/channel-outbound";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { reconcileSlackUnknownSend, sendMessageSlack } from "./send.js";
 
@@ -45,7 +45,7 @@ const cfg = {
       botToken: "xoxb-test",
     },
   },
-} as OpenClawConfig;
+} as NodoAssistConfig;
 
 function createSlackReconcileTestClient(): SlackReconcileTestClient {
   return {
@@ -191,7 +191,7 @@ describe("reconcileSlackUnknownSend", () => {
 
     expect(metadata.event_type).toBe("assistant_thread_context");
     expect(metadata.event_payload).toMatchObject({ channel_id: "C456", team_id: "T123" });
-    expect(metadata.event_payload.openclaw_delivery_id).toEqual(expect.any(String));
+    expect(metadata.event_payload.nodoassist_delivery_id).toEqual(expect.any(String));
   });
 
   it("reads history with the configured read token", async () => {
@@ -211,7 +211,7 @@ describe("reconcileSlackUnknownSend", () => {
           userToken: "xoxp-read",
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await expect(
       reconcileSlackUnknownSend(createUnknownSendContext({ cfg: tokenCfg })),
@@ -240,7 +240,7 @@ describe("reconcileSlackUnknownSend", () => {
           userToken: "xoxp-read",
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await expect(
       reconcileSlackUnknownSend(createUnknownSendContext({ cfg: tokenCfg, to: "U123" })),
@@ -268,7 +268,7 @@ describe("reconcileSlackUnknownSend", () => {
           userToken: "xoxp-read",
         },
       },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
 
     await expect(
       reconcileSlackUnknownSend(createUnknownSendContext({ cfg: tokenCfg })),
@@ -397,7 +397,7 @@ describe("reconcileSlackUnknownSend", () => {
     const client = createSlackReconcileTestClient();
     const chunkedCfg = {
       channels: { slack: { botToken: "xoxb-test", textChunkLimit: 5 } },
-    } as OpenClawConfig;
+    } as NodoAssistConfig;
     let postedPart = 0;
     client.chat.postMessage.mockImplementation(async () => ({
       ok: true,
@@ -416,17 +416,18 @@ describe("reconcileSlackUnknownSend", () => {
       ([request]) => (request as ChatPostMessageArguments).metadata as MessageMetadata,
     );
     expect(
-      postedMetadata.map((metadata) => metadata.event_payload.openclaw_delivery_part_index),
+      postedMetadata.map((metadata) => metadata.event_payload.nodoassist_delivery_part_index),
     ).toEqual([0, 1, 2]);
     expect(
-      postedMetadata.map((metadata) => metadata.event_payload.openclaw_delivery_part_count),
+      postedMetadata.map((metadata) => metadata.event_payload.nodoassist_delivery_part_count),
     ).toEqual([3, 3, 3]);
     expect(
-      new Set(postedMetadata.map((metadata) => metadata.event_payload.openclaw_delivery_id)).size,
+      new Set(postedMetadata.map((metadata) => metadata.event_payload.nodoassist_delivery_id)).size,
     ).toBe(1);
     expect(
-      new Set(postedMetadata.map((metadata) => metadata.event_payload.openclaw_delivery_signature))
-        .size,
+      new Set(
+        postedMetadata.map((metadata) => metadata.event_payload.nodoassist_delivery_signature),
+      ).size,
     ).toBe(3);
     client.conversations.history.mockResolvedValueOnce({
       messages: postedMetadata.map((metadata, index) => ({
@@ -454,7 +455,7 @@ describe("reconcileSlackUnknownSend", () => {
         ...postedMetadata[0],
         event_payload: {
           ...postedMetadata[0]?.event_payload,
-          openclaw_delivery_part_index: partIndex,
+          nodoassist_delivery_part_index: partIndex,
         },
       });
     }

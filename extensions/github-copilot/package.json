@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/github-copilot-provider",
+  "name": "@nodoassist/github-copilot-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw GitHub Copilot provider plugin",
+  "description": "NodoAssist GitHub Copilot provider plugin",
   "type": "module",
   "dependencies": {
     "@clack/prompts": "1.6.0"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

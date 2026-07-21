@@ -10,7 +10,7 @@ type FilePreviewModalFile = {
   contents: string;
 };
 
-export class OpenClawFilePreviewModal extends LitElement {
+export class NodoAssistFilePreviewModal extends LitElement {
   @property({ attribute: false }) files: FilePreviewModalFile[] = [];
   @property() activePath = "";
   @property() query = "";
@@ -744,8 +744,8 @@ function fileKind(path: string): string {
   return map[ext] ?? (ext ? ext.toUpperCase() : "File");
 }
 
-if (!customElements.get("openclaw-file-preview-modal")) {
-  customElements.define("openclaw-file-preview-modal", OpenClawFilePreviewModal);
+if (!customElements.get("nodoassist-file-preview-modal")) {
+  customElements.define("nodoassist-file-preview-modal", NodoAssistFilePreviewModal);
 }
 
 const CODE_EXTENSIONS = new Set([
@@ -788,6 +788,6 @@ function iconForFile(path: string) {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "openclaw-file-preview-modal": OpenClawFilePreviewModal;
+    "nodoassist-file-preview-modal": NodoAssistFilePreviewModal;
   }
 }

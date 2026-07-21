@@ -43,10 +43,10 @@ describe("plugin npm runtime build planning", () => {
       expectDistRelativePaths(plan.runtimeExtensions);
       expectDistRelativePaths(plan.runtimeBuildOutputs);
       expect(plan.packageFiles).toContain("dist/**");
-      expect(plan.packagePeerMetadata.peerDependencies.openclaw).toBe(
-        plan.packageJson.openclaw.compat.pluginApi,
+      expect(plan.packagePeerMetadata.peerDependencies.nodoassist).toBe(
+        plan.packageJson.nodoassist.compat.pluginApi,
       );
-      expect(plan.packagePeerMetadata.peerDependenciesMeta.openclaw.optional).toBe(true);
+      expect(plan.packagePeerMetadata.peerDependenciesMeta.nodoassist.optional).toBe(true);
     }
   });
 
@@ -83,7 +83,7 @@ describe("plugin npm runtime build planning", () => {
     });
     expect(diffsRuntimePlan.packageFiles).toEqual([
       "dist/**",
-      "openclaw.plugin.json",
+      "nodoassist.plugin.json",
       "npm-shrinkwrap.json",
       "README.md",
       "skills/**",

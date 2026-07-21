@@ -1,9 +1,9 @@
 // Msteams plugin module implements resolve allowlist behavior.
-import { mapAllowlistResolutionInputs } from "openclaw/plugin-sdk/allow-from";
+import { mapAllowlistResolutionInputs } from "nodoassist/plugin-sdk/allow-from";
 import {
   normalizeLowercaseStringOrEmpty,
   normalizeOptionalLowercaseString,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import { searchGraphUsers } from "./graph-users.js";
 import {
   listChannelsForTeam,

@@ -1,8 +1,8 @@
 // Discord tests cover provider plugin behavior.
 import { EventEmitter } from "node:events";
-import type { ChannelRuntimeSurface } from "openclaw/plugin-sdk/channel-contract";
-import { createPluginRuntimeMock } from "openclaw/plugin-sdk/channel-test-helpers";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import type { ChannelRuntimeSurface } from "nodoassist/plugin-sdk/channel-contract";
+import { createPluginRuntimeMock } from "nodoassist/plugin-sdk/channel-test-helpers";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { RateLimitError } from "../internal/discord.js";
 import {
@@ -45,7 +45,7 @@ const { voiceAutoJoinMock } = vi.hoisted(() => ({
 
 let monitorDiscordProvider: typeof import("./provider.js").monitorDiscordProvider;
 let providerTesting: typeof import("./provider.js").testing;
-let runtimeEnvModule: typeof import("openclaw/plugin-sdk/runtime-env");
+let runtimeEnvModule: typeof import("nodoassist/plugin-sdk/runtime-env");
 
 function createAcpRuntimeError(code: string, message: string): Error & { code: string } {
   return Object.assign(new Error(message), { code });
@@ -94,7 +94,7 @@ function createRateLimitError(
   return new RateLimitErrorCtor(response, body, fallbackRequest);
 }
 
-function createConfigWithDiscordAccount(overrides: Record<string, unknown> = {}): OpenClawConfig {
+function createConfigWithDiscordAccount(overrides: Record<string, unknown> = {}): NodoAssistConfig {
   return {
     channels: {
       discord: {
@@ -106,7 +106,7 @@ function createConfigWithDiscordAccount(overrides: Record<string, unknown> = {})
         },
       },
     },
-  } as OpenClawConfig;
+  } as NodoAssistConfig;
 }
 
 type MockCallReader = { mock: { calls: unknown[][] } };
@@ -154,7 +154,7 @@ vi.mock("../voice/manager.runtime.js", () => {
 });
 describe("monitorDiscordProvider", () => {
   type ReconcileHealthProbeParams = {
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     accountId: string;
     sessionKey: string;
     binding: unknown;
@@ -162,7 +162,7 @@ describe("monitorDiscordProvider", () => {
   };
 
   type ReconcileStartupParams = {
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     healthProbe?: (
       params: ReconcileHealthProbeParams,
     ) => Promise<{ status: string; reason?: string }>;
@@ -218,9 +218,9 @@ describe("monitorDiscordProvider", () => {
   };
 
   beforeAll(async () => {
-    vi.doMock("openclaw/plugin-sdk/plugin-runtime", async () => {
-      const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/plugin-runtime")>(
-        "openclaw/plugin-sdk/plugin-runtime",
+    vi.doMock("nodoassist/plugin-sdk/plugin-runtime", async () => {
+      const actual = await vi.importActual<typeof import("nodoassist/plugin-sdk/plugin-runtime")>(
+        "nodoassist/plugin-sdk/plugin-runtime",
       );
       return {
         ...actual,
@@ -251,7 +251,7 @@ describe("monitorDiscordProvider", () => {
     vi.doMock("../token.js", () => ({
       normalizeDiscordToken: (value?: string) => value,
     }));
-    runtimeEnvModule = await import("openclaw/plugin-sdk/runtime-env");
+    runtimeEnvModule = await import("nodoassist/plugin-sdk/runtime-env");
     vi.spyOn(runtimeEnvModule, "logVerbose").mockImplementation(() => undefined);
     ({ monitorDiscordProvider, testing: providerTesting } = await import("./provider.js"));
   });
@@ -827,7 +827,7 @@ describe("monitorDiscordProvider", () => {
     expect(drained[0]?.message).toContain("4014");
   });
 
-  it("passes OpenClaw event queue defaults to the Discord client", async () => {
+  it("passes NodoAssist event queue defaults to the Discord client", async () => {
     await monitorDiscordProvider({
       config: baseConfig(),
       runtime: baseRuntime(),

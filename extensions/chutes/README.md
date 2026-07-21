@@ -1,12 +1,12 @@
-# OpenClaw Chutes Provider
+# NodoAssist Chutes Provider
 
-Official OpenClaw provider plugin for Chutes.
+Official NodoAssist provider plugin for Chutes.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugins install @openclaw/chutes-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/chutes-provider
+nodoassist gateway restart
 ```
 
 See <https://docs.openclaw.ai/providers/chutes> for setup and configuration.

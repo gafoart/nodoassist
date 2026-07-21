@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/elevenlabs-speech",
+  "name": "@nodoassist/elevenlabs-speech",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw ElevenLabs speech plugin",
+  "description": "NodoAssist ElevenLabs speech plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

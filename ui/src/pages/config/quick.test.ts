@@ -78,7 +78,7 @@ function createProps(overrides: Partial<QuickSettingsProps> = {}): QuickSettings
     onSelectPreset: vi.fn(),
     connected: true,
     gatewayUrl: "ws://localhost:18789",
-    assistantName: "OpenClaw",
+    assistantName: "NodoAssist",
     assistantAvatar: null,
     assistantAvatarUrl: null,
     assistantAvatarSource: null,
@@ -159,7 +159,7 @@ describe("renderQuickSettings", () => {
             memoryFreeBytes: 17_179_869_184,
             diskTotalBytes: 994_662_584_320,
             diskAvailableBytes: 497_331_292_160,
-            diskPath: "/Users/operator/.openclaw",
+            diskPath: "/Users/operator/.nodoassist",
           },
         }),
       ),
@@ -277,7 +277,7 @@ describe("renderQuickSettings", () => {
 
     render(renderQuickSettings(createProps({ onPairMobile })), container);
 
-    expectRowByLabel(container, "OpenClaw mobile");
+    expectRowByLabel(container, "NodoAssist mobile");
     const button = expectButtonByText(container, "Pair mobile device");
     expect(button.disabled).toBe(false);
     button.click();

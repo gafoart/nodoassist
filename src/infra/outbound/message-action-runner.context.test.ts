@@ -2,7 +2,7 @@
 // decoration behavior.
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { ChannelPlugin } from "../../channels/plugins/types.js";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { NodoAssistConfig } from "../../config/config.js";
 import { setActivePluginRegistry } from "../../plugins/runtime.js";
 import {
   createChannelTestPluginBase,
@@ -190,7 +190,7 @@ describe("runMessageAction context isolation", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       actionParams: {
         channel: "slackdm",
         target: "user:U123",
@@ -300,7 +300,7 @@ describe("runMessageAction context isolation", () => {
             token: "forum-test",
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       action: "send" as const,
       actionParams: {
         message: "hi",
@@ -421,7 +421,7 @@ describe("runMessageAction context isolation", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       actionParams: {
         channel: "workspace",
         target: "channel:C99999999",
@@ -442,7 +442,7 @@ describe("runMessageAction context isolation", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       actionParams: {
         channel: "workspace",
         target: "channel:C99999999",
@@ -480,7 +480,7 @@ describe("runMessageAction context isolation", () => {
             },
           ],
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       agentId: "sandbox",
       actionParams: {
         channel: "workspace",

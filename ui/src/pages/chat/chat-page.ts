@@ -114,7 +114,7 @@ export class ChatPage extends LitElement {
       event.dataTransfer.dropEffect = "copy";
     }
     const target = event.target instanceof Element ? event.target : null;
-    const pane = target?.closest<ChatPaneElement>("openclaw-chat-pane");
+    const pane = target?.closest<ChatPaneElement>("nodoassist-chat-pane");
     if (!pane || !this.contains(pane)) {
       // Dividers and pane gaps sit between drop targets; keep the last preview
       // instead of flickering it away while the pointer crosses them.
@@ -165,7 +165,7 @@ export class ChatPage extends LitElement {
     event.preventDefault();
     const sessionKey = readSessionDragData(event.dataTransfer);
     const target = event.target instanceof Element ? event.target : null;
-    const pane = target?.closest<ChatPaneElement>("openclaw-chat-pane");
+    const pane = target?.closest<ChatPaneElement>("nodoassist-chat-pane");
     // Fall back to the retained preview when the drop lands on a divider or
     // gap, so the drop always matches what the indicator promised.
     const indicator =
@@ -375,7 +375,7 @@ export class ChatPage extends LitElement {
     // create invisible panes; keep session switching and close available.
     const canSplit = !this.narrow;
     return html`
-      <openclaw-chat-pane
+      <nodoassist-chat-pane
         class="chat-split-view__pane"
         style="flex: ${weight} 1 0"
         .paneId=${pane.id}
@@ -388,7 +388,7 @@ export class ChatPage extends LitElement {
         .onSplitRight=${canSplit ? this.handleSplitRight : undefined}
         .onSplitDown=${canSplit ? this.handleSplitDown : undefined}
         .onClosePane=${this.handleClosePane}
-      ></openclaw-chat-pane>
+      ></nodoassist-chat-pane>
     `;
   }
 
@@ -475,7 +475,7 @@ export class ChatPage extends LitElement {
         ${this.layout
           ? this.renderSplitLayout(this.layout)
           : html`
-              <openclaw-chat-pane
+              <nodoassist-chat-pane
                 .paneId=${"single"}
                 .sessionKey=${this.data?.sessionKey ?? ""}
                 .active=${true}
@@ -484,7 +484,7 @@ export class ChatPage extends LitElement {
                 .onFocusPane=${this.handleFocusPane}
                 .onPaneSessionChange=${this.handlePaneSessionChange}
                 .onOpenSplitView=${this.narrow ? undefined : this.openSplitView}
-              ></openclaw-chat-pane>
+              ></nodoassist-chat-pane>
             `}
         ${indicator
           ? html`<div
@@ -505,6 +505,6 @@ export class ChatPage extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-chat-page")) {
-  customElements.define("openclaw-chat-page", ChatPage);
+if (!customElements.get("nodoassist-chat-page")) {
+  customElements.define("nodoassist-chat-page", ChatPage);
 }

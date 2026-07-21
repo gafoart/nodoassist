@@ -2,8 +2,8 @@
  * Truncates oversized tool-result content in messages and transcripts.
  */
 import { existsSync } from "node:fs";
-import { normalizeLowercaseStringOrEmpty } from "@openclaw/normalization-core/string-coerce";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import { normalizeLowercaseStringOrEmpty } from "@nodoassist/normalization-core/string-coerce";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { formatErrorMessage } from "../../infra/errors.js";
 import type { TextContent } from "../../llm/types.js";
 import { emitSessionTranscriptUpdate } from "../../sessions/transcript-events.js";
@@ -278,7 +278,7 @@ export function calculateMaxToolResultCharsWithCap(
 
 export function resolveLiveToolResultMaxChars(params: {
   contextWindowTokens: number;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentId?: string | null;
 }): number {
   const configuredCap = resolveAgentContextLimits(params.cfg, params.agentId)?.toolResultMaxChars;
@@ -289,7 +289,7 @@ export function resolveLiveToolResultMaxChars(params: {
 export function resolveLiveToolResultAggregateMaxChars(params: {
   contextWindowTokens: number;
   perResultMaxChars?: number;
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   agentId?: string | null;
 }): number {
   const perResultMaxChars = Math.max(

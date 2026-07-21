@@ -20,7 +20,7 @@ describe("session cost usage stream errors", () => {
   });
 
   it("does not crash when the transcript stream emits an error mid-read", async () => {
-    const tempDir = tempDirs.make("openclaw-session-cost-stream-");
+    const tempDir = tempDirs.make("nodoassist-session-cost-stream-");
     const sessionsDir = path.join(tempDir, "agents", "main", "sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
     const sessionFile = path.join(sessionsDir, "sess-stream-error.jsonl");
@@ -53,7 +53,7 @@ describe("session cost usage stream errors", () => {
   });
 
   it("does not persist a partial durable cache entry after a stream error", async () => {
-    const tempDir = tempDirs.make("openclaw-session-cost-cache-stream-");
+    const tempDir = tempDirs.make("nodoassist-session-cost-cache-stream-");
     const sessionsDir = path.join(tempDir, "agents", "main", "sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
     const sessionFile = path.join(sessionsDir, "sess-cache-stream-error.jsonl");
@@ -68,7 +68,7 @@ describe("session cost usage stream errors", () => {
       });
     await fs.writeFile(sessionFile, `${usageEntry("2026-07-06T12:00:00.000Z", 10)}\n`, "utf-8");
 
-    await withEnvAsync({ OPENCLAW_STATE_DIR: tempDir }, async () => {
+    await withEnvAsync({ NODOASSIST_STATE_DIR: tempDir }, async () => {
       await refreshCostUsageCache();
       const cachePath = path.join(sessionsDir, ".usage-cost-cache.json");
       const cacheBefore = await fs.readFile(cachePath, "utf-8");

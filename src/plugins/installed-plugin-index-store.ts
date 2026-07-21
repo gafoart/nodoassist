@@ -3,9 +3,9 @@ import { existsSync, readFileSync } from "node:fs";
 import { z } from "zod";
 import { isBlockedObjectKey } from "../infra/prototype-keys.js";
 import {
-  openOpenClawStateDatabase,
-  runOpenClawStateWriteTransaction,
-} from "../state/openclaw-state-db.js";
+  openNodoAssistStateDatabase,
+  runNodoAssistStateWriteTransaction,
+} from "../state/nodoassist-state-db.js";
 import { safeParseWithSchema } from "../utils/zod-parse.js";
 import { resolveCompatibilityHostVersion } from "../version.js";
 import { normalizePluginsConfig, resolveEffectiveEnableState } from "./config-state.js";
@@ -245,7 +245,7 @@ function assertWritableInstalledPluginIndexStoreOptions(
 ): void {
   if (isExplicitLegacyJsonStorePath(options)) {
     throw new Error(
-      "Explicit JSON installed plugin index paths are retired. Use the shared SQLite state DB or run openclaw doctor --fix to migrate legacy plugins/installs.json.",
+      "Explicit JSON installed plugin index paths are retired. Use the shared SQLite state DB or run nodoassist doctor --fix to migrate legacy plugins/installs.json.",
     );
   }
 }
@@ -289,7 +289,7 @@ function readPersistedInstalledPluginIndexFromSqlite(
     return null;
   }
   try {
-    const database = openOpenClawStateDatabase(
+    const database = openNodoAssistStateDatabase(
       resolveInstalledPluginIndexStateDatabaseOptions(options),
     );
     const row = database.db
@@ -320,7 +320,7 @@ function writePersistedInstalledPluginIndexToSqlite(
     installRecords: copySafeInstallRecords(index.installRecords) ?? {},
   };
   const now = Date.now();
-  runOpenClawStateWriteTransaction(({ db }) => {
+  runNodoAssistStateWriteTransaction(({ db }) => {
     db.prepare(
       `
         INSERT INTO installed_plugin_index (

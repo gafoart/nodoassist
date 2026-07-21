@@ -2,9 +2,9 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { resolveGlobalSingleton } from "../shared/global-singleton.js";
 
-const PLUGIN_REGISTRY_STATE = Symbol.for("openclaw.pluginRegistryState");
+const PLUGIN_REGISTRY_STATE = Symbol.for("nodoassist.pluginRegistryState");
 const PINNED_PLUGIN_REGISTRY_WORKSPACE_KEY = Symbol.for(
-  "openclaw.pinnedPluginRegistryWorkspaceDir",
+  "nodoassist.pinnedPluginRegistryWorkspaceDir",
 );
 
 type GlobalRegistryWorkspaceState = typeof globalThis & {

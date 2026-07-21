@@ -2,11 +2,12 @@
 import {
   describeImageWithModel as describeImageWithModelImpl,
   transcribeFirstAudio as transcribeFirstAudioImpl,
-} from "openclaw/plugin-sdk/media-runtime";
+} from "nodoassist/plugin-sdk/media-runtime";
 
 type DescribeImageWithModel =
-  typeof import("openclaw/plugin-sdk/media-runtime").describeImageWithModel;
-type TranscribeFirstAudio = typeof import("openclaw/plugin-sdk/media-runtime").transcribeFirstAudio;
+  typeof import("nodoassist/plugin-sdk/media-runtime").describeImageWithModel;
+type TranscribeFirstAudio =
+  typeof import("nodoassist/plugin-sdk/media-runtime").transcribeFirstAudio;
 
 export async function describeImageWithModel(
   ...args: Parameters<DescribeImageWithModel>

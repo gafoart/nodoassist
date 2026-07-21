@@ -1,6 +1,6 @@
 // Telegram tests cover channel actions.contract plugin behavior.
-import { installChannelActionsContractSuite } from "openclaw/plugin-sdk/channel-test-helpers";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { installChannelActionsContractSuite } from "nodoassist/plugin-sdk/channel-test-helpers";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import { describe, expect, it } from "vitest";
 import { telegramPlugin } from "../api.js";
 
@@ -16,7 +16,7 @@ describe("telegram actions contract", () => {
               botToken: "123:telegram-test-token",
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
         expectedActions: ["send", "poll", "react", "delete", "edit", "topic-create", "topic-edit"],
         expectedCapabilities: ["delivery-pin", "presentation"],
       },
@@ -36,7 +36,7 @@ describe("telegram actions contract", () => {
             richMessages,
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
     });
 
     expect(capabilities).toContain("inlineButtons");
@@ -52,7 +52,7 @@ describe("telegram actions contract", () => {
             capabilities: [],
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
     });
 
     expect(capabilities).toContain("inlineButtons");
@@ -67,7 +67,7 @@ describe("telegram actions contract", () => {
             capabilities: ["vision"],
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
     });
 
     expect(capabilities).not.toContain("inlineButtons");
@@ -87,7 +87,7 @@ describe("telegram actions contract", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
       accountId: "ops",
     });
 
@@ -104,7 +104,7 @@ describe("telegram actions contract", () => {
               richMessages: true,
             },
           },
-        } as OpenClawConfig,
+        } as NodoAssistConfig,
       }),
     ).not.toThrow();
   });
@@ -127,7 +127,7 @@ describe("telegram actions contract", () => {
             },
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
     });
 
     expect(capabilities).toContain("richText");

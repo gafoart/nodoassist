@@ -5,8 +5,8 @@ import { join } from "node:path";
 import {
   registerProviderPlugin,
   requireRegisteredProvider,
-} from "openclaw/plugin-sdk/plugin-test-runtime";
-import { isLiveTestEnabled } from "openclaw/plugin-sdk/test-env";
+} from "nodoassist/plugin-sdk/plugin-test-runtime";
+import { isLiveTestEnabled } from "nodoassist/plugin-sdk/test-env";
 import { describe, expect, it } from "vitest";
 import plugin from "./index.js";
 

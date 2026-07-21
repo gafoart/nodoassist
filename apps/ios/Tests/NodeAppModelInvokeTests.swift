@@ -1,11 +1,11 @@
 import Foundation
-import OpenClawKit
-import OpenClawProtocol
+import NodoAssistKit
+import NodoAssistProtocol
 import Testing
 import UIKit
 import UserNotifications
-@testable import OpenClaw
-@testable import OpenClawChatUI
+@testable import NodoAssist
+@testable import NodoAssistChatUI
 
 @MainActor
 private final class MockVoiceNoteAudioCapture: VoiceNoteAudioCapture {
@@ -37,7 +37,7 @@ private func makeAgentDeepLinkURL(
     key: String? = nil) -> URL
 {
     var components = URLComponents()
-    components.scheme = "openclaw"
+    components.scheme = "nodoassist"
     components.host = "agent"
     var queryItems: [URLQueryItem] = [URLQueryItem(name: "message", value: message)]
     if deliver {
@@ -64,10 +64,10 @@ private func makeWatchChatRawMessage(
     idempotencyKey: String? = nil,
     stopReason: String? = nil) throws -> AnyCodable
 {
-    let message = OpenClawChatMessage(
+    let message = NodoAssistChatMessage(
         role: role,
         content: [
-            OpenClawChatMessageContent(
+            NodoAssistChatMessageContent(
                 type: type,
                 text: text,
                 mimeType: nil,
@@ -92,10 +92,10 @@ private func makeProjectedWatchChatRawMessage(
         "role": role,
         "content": [["type": "text", "text": text]],
         "timestamp": timestamp,
-        "__openclaw": ["id": serverId],
+        "__nodoassist": ["id": serverId],
     ]
     if isMessageToolMirror {
-        object["openclawMessageToolMirror"] = ["toolName": "message"]
+        object["nodoassistMessageToolMirror"] = ["toolName": "message"]
     }
     let data = try JSONSerialization.data(withJSONObject: object)
     return try JSONDecoder().decode(AnyCodable.self, from: data)
@@ -130,16 +130,16 @@ private final class MockWatchMessagingService: @preconcurrency WatchMessagingSer
         queuedForDelivery: false,
         transport: "sendMessage")
     var sendError: Error?
-    var lastSent: (id: String, params: OpenClawWatchNotifyParams, gatewayStableID: String?)?
-    var lastSentExecApprovalPrompt: OpenClawWatchExecApprovalPromptMessage?
-    var lastSentExecApprovalResolved: OpenClawWatchExecApprovalResolvedMessage?
-    var lastSentExecApprovalExpired: OpenClawWatchExecApprovalExpiredMessage?
-    var lastSentExecApprovalSnapshot: OpenClawWatchExecApprovalSnapshotMessage?
-    var sentExecApprovalSnapshots: [OpenClawWatchExecApprovalSnapshotMessage] = []
-    var lastSentAppSnapshot: OpenClawWatchAppSnapshotMessage?
-    var syncExecApprovalSnapshotHandler: ((OpenClawWatchExecApprovalSnapshotMessage) async throws
+    var lastSent: (id: String, params: NodoAssistWatchNotifyParams, gatewayStableID: String?)?
+    var lastSentExecApprovalPrompt: NodoAssistWatchExecApprovalPromptMessage?
+    var lastSentExecApprovalResolved: NodoAssistWatchExecApprovalResolvedMessage?
+    var lastSentExecApprovalExpired: NodoAssistWatchExecApprovalExpiredMessage?
+    var lastSentExecApprovalSnapshot: NodoAssistWatchExecApprovalSnapshotMessage?
+    var sentExecApprovalSnapshots: [NodoAssistWatchExecApprovalSnapshotMessage] = []
+    var lastSentAppSnapshot: NodoAssistWatchAppSnapshotMessage?
+    var syncExecApprovalSnapshotHandler: ((NodoAssistWatchExecApprovalSnapshotMessage) async throws
         -> WatchNotificationSendResult)?
-    var lastSentChatCompletion: OpenClawWatchChatCompletionMessage?
+    var lastSentChatCompletion: NodoAssistWatchChatCompletionMessage?
     private var statusHandler: (@Sendable (WatchMessagingStatus) -> Void)?
     private var replyHandler: (@Sendable (WatchQuickReplyEvent) -> Void)?
     private var execApprovalResolveHandler: (@Sendable (WatchExecApprovalResolveEvent) -> Void)?
@@ -179,7 +179,7 @@ private final class MockWatchMessagingService: @preconcurrency WatchMessagingSer
 
     func sendNotification(
         id: String,
-        params: OpenClawWatchNotifyParams,
+        params: NodoAssistWatchNotifyParams,
         gatewayStableID: String?) async throws -> WatchNotificationSendResult
     {
         self.lastSent = (id: id, params: params, gatewayStableID: gatewayStableID)
@@ -190,7 +190,7 @@ private final class MockWatchMessagingService: @preconcurrency WatchMessagingSer
     }
 
     func sendExecApprovalPrompt(
-        _ message: OpenClawWatchExecApprovalPromptMessage) async throws -> WatchNotificationSendResult
+        _ message: NodoAssistWatchExecApprovalPromptMessage) async throws -> WatchNotificationSendResult
     {
         self.lastSentExecApprovalPrompt = message
         if let sendError {
@@ -200,7 +200,7 @@ private final class MockWatchMessagingService: @preconcurrency WatchMessagingSer
     }
 
     func sendExecApprovalResolved(
-        _ message: OpenClawWatchExecApprovalResolvedMessage) async throws -> WatchNotificationSendResult
+        _ message: NodoAssistWatchExecApprovalResolvedMessage) async throws -> WatchNotificationSendResult
     {
         self.lastSentExecApprovalResolved = message
         if let sendError {
@@ -210,7 +210,7 @@ private final class MockWatchMessagingService: @preconcurrency WatchMessagingSer
     }
 
     func sendExecApprovalExpired(
-        _ message: OpenClawWatchExecApprovalExpiredMessage) async throws -> WatchNotificationSendResult
+        _ message: NodoAssistWatchExecApprovalExpiredMessage) async throws -> WatchNotificationSendResult
     {
         self.lastSentExecApprovalExpired = message
         if let sendError {
@@ -220,7 +220,7 @@ private final class MockWatchMessagingService: @preconcurrency WatchMessagingSer
     }
 
     func syncExecApprovalSnapshot(
-        _ message: OpenClawWatchExecApprovalSnapshotMessage) async throws -> WatchNotificationSendResult
+        _ message: NodoAssistWatchExecApprovalSnapshotMessage) async throws -> WatchNotificationSendResult
     {
         self.lastSentExecApprovalSnapshot = message
         self.sentExecApprovalSnapshots.append(message)
@@ -234,7 +234,7 @@ private final class MockWatchMessagingService: @preconcurrency WatchMessagingSer
     }
 
     func syncAppSnapshot(
-        _ message: OpenClawWatchAppSnapshotMessage) async throws -> WatchNotificationSendResult
+        _ message: NodoAssistWatchAppSnapshotMessage) async throws -> WatchNotificationSendResult
     {
         self.lastSentAppSnapshot = message
         if let sendError {
@@ -244,7 +244,7 @@ private final class MockWatchMessagingService: @preconcurrency WatchMessagingSer
     }
 
     func sendChatCompletion(
-        _ message: OpenClawWatchChatCompletionMessage) async throws -> WatchNotificationSendResult
+        _ message: NodoAssistWatchChatCompletionMessage) async throws -> WatchNotificationSendResult
     {
         self.lastSentChatCompletion = message
         if let sendError {
@@ -351,7 +351,7 @@ private actor WatchSnapshotSendGate {
 @Suite(.serialized) struct NodeAppModelInvokeTests {
     @Test @MainActor func `decode params fails without JSON`() {
         #expect(throws: Error.self) {
-            _ = try NodeAppModel._test_decodeParams(OpenClawCanvasNavigateParams.self, from: nil)
+            _ = try NodeAppModel._test_decodeParams(NodoAssistCanvasNavigateParams.self, from: nil)
         }
     }
 
@@ -562,7 +562,7 @@ private actor WatchSnapshotSendGate {
             NotificationSnapshot(
                 identifier: "old-requested-approval",
                 userInfo: [
-                    "openclaw": [
+                    "nodoassist": [
                         "kind": ExecApprovalNotificationBridge.requestedKind,
                         "approvalId": "recovery-a",
                         "gatewayDeviceId": "device-a",
@@ -571,7 +571,7 @@ private actor WatchSnapshotSendGate {
             NotificationSnapshot(
                 identifier: "new-requested-approval",
                 userInfo: [
-                    "openclaw": [
+                    "nodoassist": [
                         "kind": ExecApprovalNotificationBridge.requestedKind,
                         "approvalId": "recovery-b",
                         "gatewayDeviceId": "device-b",
@@ -681,7 +681,7 @@ private actor WatchSnapshotSendGate {
         notificationCenter.delivered = [NotificationSnapshot(
             identifier: "offline-request-alert",
             userInfo: [
-                "openclaw": [
+                "nodoassist": [
                     "kind": ExecApprovalNotificationBridge.requestedKind,
                     "approvalId": push.approvalId,
                     "gatewayDeviceId": "gateway-device-a",
@@ -737,7 +737,7 @@ private actor WatchSnapshotSendGate {
 
         let request = BridgeInvokeRequest(
             id: "ptt-start",
-            command: OpenClawTalkCommand.pttStart.rawValue)
+            command: NodoAssistTalkCommand.pttStart.rawValue)
         let response = await appModel._test_handleInvoke(request)
 
         #expect(response.ok == false)
@@ -748,7 +748,7 @@ private actor WatchSnapshotSendGate {
 
     @Test @MainActor func `PTT start preserves an active voice note`() async {
         let capture = MockVoiceNoteAudioCapture()
-        let recorder = OpenClawVoiceNoteRecorder(capture: capture)
+        let recorder = NodoAssistVoiceNoteRecorder(capture: capture)
         #expect(await recorder.start())
         let appModel = NodeAppModel(
             talkMode: TalkModeManager(allowSimulatorCapture: true),
@@ -756,7 +756,7 @@ private actor WatchSnapshotSendGate {
 
         let request = BridgeInvokeRequest(
             id: "ptt-start-with-voice-note",
-            command: OpenClawTalkCommand.pttStart.rawValue)
+            command: NodoAssistTalkCommand.pttStart.rawValue)
         let response = await appModel._test_handleInvoke(request)
 
         #expect(response.ok == false)
@@ -788,7 +788,7 @@ private actor WatchSnapshotSendGate {
 
     @Test @MainActor func `voice note start cannot race an acquired PTT lease`() async {
         let capture = MockVoiceNoteAudioCapture()
-        let recorder = OpenClawVoiceNoteRecorder(capture: capture)
+        let recorder = NodoAssistVoiceNoteRecorder(capture: capture)
         let appModel = NodeAppModel(
             talkMode: TalkModeManager(allowSimulatorCapture: true),
             voiceNoteRecorder: recorder)
@@ -1191,7 +1191,7 @@ private actor WatchSnapshotSendGate {
         appModel._test_setConnectedGatewayID("gateway-current")
         appModel.setTalkEnabled(false)
 
-        for command in [OpenClawWatchAppCommand.openChat, .startTalk] {
+        for command in [NodoAssistWatchAppCommand.openChat, .startTalk] {
             watchService.emitAppCommand(
                 WatchAppCommandEvent(
                     commandId: "watch-stale-\(command.rawValue)",
@@ -1382,7 +1382,7 @@ private actor WatchSnapshotSendGate {
     }
 
     @Test func `watch chat completion bounds reply text`() {
-        let message = OpenClawWatchChatCompletionMessage(
+        let message = NodoAssistWatchChatCompletionMessage(
             commandId: "watch-voice",
             replyText: String(repeating: "x", count: 5000))
 
@@ -1869,7 +1869,7 @@ private actor WatchSnapshotSendGate {
         notificationCenter.delivered = [NotificationSnapshot(
             identifier: "delivered-approval",
             userInfo: [
-                "openclaw": [
+                "nodoassist": [
                     "kind": ExecApprovalNotificationBridge.requestedKind,
                     "approvalId": "approval-delivered-recovery",
                     "gatewayDeviceId": "gateway-device-a",
@@ -1964,7 +1964,7 @@ private actor WatchSnapshotSendGate {
         notificationCenter.delivered = [NotificationSnapshot(
             identifier: "approval-event-notification",
             userInfo: [
-                "openclaw": [
+                "nodoassist": [
                     "kind": ExecApprovalNotificationBridge.requestedKind,
                     "approvalId": "approval-event-resolved",
                     "gatewayDeviceId": "gateway-device-a",
@@ -2181,7 +2181,7 @@ private actor WatchSnapshotSendGate {
         let appModel = NodeAppModel()
         appModel.setScenePhase(.background)
 
-        let req = BridgeInvokeRequest(id: "bg", command: OpenClawCanvasCommand.present.rawValue)
+        let req = BridgeInvokeRequest(id: "bg", command: NodoAssistCanvasCommand.present.rawValue)
         let res = await appModel._test_handleInvoke(req)
         #expect(res.ok == false)
         #expect(res.error?.code == .backgroundUnavailable)
@@ -2189,7 +2189,7 @@ private actor WatchSnapshotSendGate {
 
     @Test @MainActor func `handle invoke rejects camera when disabled`() async {
         let appModel = NodeAppModel()
-        let req = BridgeInvokeRequest(id: "cam", command: OpenClawCameraCommand.snap.rawValue)
+        let req = BridgeInvokeRequest(id: "cam", command: NodoAssistCameraCommand.snap.rawValue)
 
         let defaults = UserDefaults.standard
         let key = "camera.enabled"
@@ -2213,11 +2213,11 @@ private actor WatchSnapshotSendGate {
         let center = MockBootstrapNotificationCenter()
         center.status = .notDetermined
         let appModel = NodeAppModel(notificationCenter: center)
-        let params = OpenClawSystemNotifyParams(title: "Approval", body: "Review request")
+        let params = NodoAssistSystemNotifyParams(title: "Approval", body: "Review request")
         let paramsData = try JSONEncoder().encode(params)
         let req = BridgeInvokeRequest(
             id: "notify-off",
-            command: OpenClawSystemCommand.notify.rawValue,
+            command: NodoAssistSystemCommand.notify.rawValue,
             paramsJSON: String(decoding: paramsData, as: UTF8.self))
 
         let res = await appModel._test_handleInvoke(req)
@@ -2232,11 +2232,11 @@ private actor WatchSnapshotSendGate {
         let center = MockBootstrapNotificationCenter()
         center.status = .authorized
         let appModel = NodeAppModel(notificationCenter: center)
-        let params = OpenClawSystemNotifyParams(title: "Approval", body: "Review request")
+        let params = NodoAssistSystemNotifyParams(title: "Approval", body: "Review request")
         let paramsData = try JSONEncoder().encode(params)
         let req = BridgeInvokeRequest(
             id: "notify-on",
-            command: OpenClawSystemCommand.notify.rawValue,
+            command: NodoAssistSystemCommand.notify.rawValue,
             paramsJSON: String(decoding: paramsData, as: UTF8.self))
 
         let res = await appModel._test_handleInvoke(req)
@@ -2267,11 +2267,11 @@ private actor WatchSnapshotSendGate {
         let center = MockBootstrapNotificationCenter()
         center.status = .notDetermined
         let appModel = NodeAppModel(notificationCenter: center)
-        let params = OpenClawChatPushParams(text: "Build finished", speak: false)
+        let params = NodoAssistChatPushParams(text: "Build finished", speak: false)
         let paramsData = try JSONEncoder().encode(params)
         let req = BridgeInvokeRequest(
             id: "chat-push-off",
-            command: OpenClawChatCommand.push.rawValue,
+            command: NodoAssistChatCommand.push.rawValue,
             paramsJSON: String(decoding: paramsData, as: UTF8.self))
 
         let res = await appModel._test_handleInvoke(req)
@@ -2286,11 +2286,11 @@ private actor WatchSnapshotSendGate {
         let center = MockBootstrapNotificationCenter()
         center.status = .authorized
         let appModel = NodeAppModel(notificationCenter: center)
-        let params = OpenClawChatPushParams(text: "Build finished", speak: false)
+        let params = NodoAssistChatPushParams(text: "Build finished", speak: false)
         let paramsData = try JSONEncoder().encode(params)
         let req = BridgeInvokeRequest(
             id: "chat-push-on",
-            command: OpenClawChatCommand.push.rawValue,
+            command: NodoAssistChatCommand.push.rawValue,
             paramsJSON: String(decoding: paramsData, as: UTF8.self))
 
         let res = await appModel._test_handleInvoke(req)
@@ -2301,13 +2301,13 @@ private actor WatchSnapshotSendGate {
 
     @Test @MainActor func `handle invoke rejects invalid screen format`() async {
         let appModel = NodeAppModel()
-        let params = OpenClawScreenRecordParams(format: "gif")
+        let params = NodoAssistScreenRecordParams(format: "gif")
         let data = try? JSONEncoder().encode(params)
         let json = data.flatMap { String(data: $0, encoding: .utf8) }
 
         let req = BridgeInvokeRequest(
             id: "screen",
-            command: OpenClawScreenCommand.record.rawValue,
+            command: NodoAssistScreenCommand.record.rawValue,
             paramsJSON: json)
 
         let res = await appModel._test_handleInvoke(req)
@@ -2322,29 +2322,29 @@ private actor WatchSnapshotSendGate {
 
         appModel.screen.navigate(to: "http://example.com")
 
-        let present = BridgeInvokeRequest(id: "present", command: OpenClawCanvasCommand.present.rawValue)
+        let present = BridgeInvokeRequest(id: "present", command: NodoAssistCanvasCommand.present.rawValue)
         let presentRes = await appModel._test_handleInvoke(present)
         #expect(presentRes.ok == true)
         #expect(appModel.screen.urlString.isEmpty)
 
         // Loopback URLs are rejected (they are not meaningful for a remote gateway).
-        let navigateParams = OpenClawCanvasNavigateParams(url: "http://example.com/")
+        let navigateParams = NodoAssistCanvasNavigateParams(url: "http://example.com/")
         let navData = try JSONEncoder().encode(navigateParams)
         let navJSON = String(decoding: navData, as: UTF8.self)
         let navigate = BridgeInvokeRequest(
             id: "nav",
-            command: OpenClawCanvasCommand.navigate.rawValue,
+            command: NodoAssistCanvasCommand.navigate.rawValue,
             paramsJSON: navJSON)
         let navRes = await appModel._test_handleInvoke(navigate)
         #expect(navRes.ok == true)
         #expect(appModel.screen.urlString == "http://example.com/")
 
-        let evalParams = OpenClawCanvasEvalParams(javaScript: "1+1")
+        let evalParams = NodoAssistCanvasEvalParams(javaScript: "1+1")
         let evalData = try JSONEncoder().encode(evalParams)
         let evalJSON = String(decoding: evalData, as: UTF8.self)
         let eval = BridgeInvokeRequest(
             id: "eval",
-            command: OpenClawCanvasCommand.evalJS.rawValue,
+            command: NodoAssistCanvasCommand.evalJS.rawValue,
             paramsJSON: evalJSON)
         var evalRes = await appModel._test_handleInvoke(eval)
         let deadline = ContinuousClock().now.advanced(by: .seconds(3))
@@ -2360,14 +2360,14 @@ private actor WatchSnapshotSendGate {
 
     @Test @MainActor func `pending foreground actions replay canvas navigate`() async throws {
         let appModel = NodeAppModel()
-        let navigateParams = OpenClawCanvasNavigateParams(url: "http://example.com/")
+        let navigateParams = NodoAssistCanvasNavigateParams(url: "http://example.com/")
         let navData = try JSONEncoder().encode(navigateParams)
         let navJSON = String(decoding: navData, as: UTF8.self)
 
         await appModel._test_applyPendingForegroundNodeActions([
             (
                 id: "pending-nav-1",
-                command: OpenClawCanvasCommand.navigate.rawValue,
+                command: NodoAssistCanvasCommand.navigate.rawValue,
                 paramsJSON: navJSON),
         ])
 
@@ -2377,14 +2377,14 @@ private actor WatchSnapshotSendGate {
     @Test @MainActor func `pending foreground actions do not apply while backgrounded`() async throws {
         let appModel = NodeAppModel()
         appModel.setScenePhase(.background)
-        let navigateParams = OpenClawCanvasNavigateParams(url: "http://example.com/")
+        let navigateParams = NodoAssistCanvasNavigateParams(url: "http://example.com/")
         let navData = try JSONEncoder().encode(navigateParams)
         let navJSON = String(decoding: navData, as: UTF8.self)
 
         await appModel._test_applyPendingForegroundNodeActions([
             (
                 id: "pending-nav-bg",
-                command: OpenClawCanvasCommand.navigate.rawValue,
+                command: NodoAssistCanvasCommand.navigate.rawValue,
                 paramsJSON: navJSON),
         ])
 
@@ -2394,18 +2394,18 @@ private actor WatchSnapshotSendGate {
     @Test @MainActor func `handle invoke A 2 UI commands fail when local host unavailable`() async throws {
         let appModel = NodeAppModel()
 
-        let reset = BridgeInvokeRequest(id: "reset", command: OpenClawCanvasA2UICommand.reset.rawValue)
+        let reset = BridgeInvokeRequest(id: "reset", command: NodoAssistCanvasA2UICommand.reset.rawValue)
         let resetRes = await appModel._test_handleInvoke(reset)
         #expect(resetRes.ok == false)
         #expect(resetRes.error?.message.contains("A2UI_HOST_UNAVAILABLE") == true)
 
         let jsonl = "{\"beginRendering\":{}}"
-        let pushParams = OpenClawCanvasA2UIPushJSONLParams(jsonl: jsonl)
+        let pushParams = NodoAssistCanvasA2UIPushJSONLParams(jsonl: jsonl)
         let pushData = try JSONEncoder().encode(pushParams)
         let pushJSON = String(decoding: pushData, as: UTF8.self)
         let push = BridgeInvokeRequest(
             id: "push",
-            command: OpenClawCanvasA2UICommand.pushJSONL.rawValue,
+            command: NodoAssistCanvasA2UICommand.pushJSONL.rawValue,
             paramsJSON: pushJSON)
         let pushRes = await appModel._test_handleInvoke(push)
         #expect(pushRes.ok == false)
@@ -2429,13 +2429,13 @@ private actor WatchSnapshotSendGate {
             reachable: false,
             activationState: "inactive")
         let appModel = NodeAppModel(watchMessagingService: watchService)
-        let req = BridgeInvokeRequest(id: "watch-status", command: OpenClawWatchCommand.status.rawValue)
+        let req = BridgeInvokeRequest(id: "watch-status", command: NodoAssistWatchCommand.status.rawValue)
 
         let res = await appModel._test_handleInvoke(req)
         #expect(res.ok == true)
 
         let payloadData = try #require(res.payloadJSON?.data(using: .utf8))
-        let payload = try JSONDecoder().decode(OpenClawWatchStatusPayload.self, from: payloadData)
+        let payload = try JSONDecoder().decode(NodoAssistWatchStatusPayload.self, from: payloadData)
         #expect(payload.supported == true)
         #expect(payload.reachable == false)
         #expect(payload.activationState == "inactive")
@@ -2449,33 +2449,33 @@ private actor WatchSnapshotSendGate {
             transport: "transferUserInfo")
         let appModel = NodeAppModel(watchMessagingService: watchService)
         appModel._test_setConnectedGatewayID("gateway-watch-notify")
-        let params = OpenClawWatchNotifyParams(
-            title: "OpenClaw",
+        let params = NodoAssistWatchNotifyParams(
+            title: "NodoAssist",
             body: "Meeting with Peter is at 4pm",
             priority: .timeSensitive)
         let paramsData = try JSONEncoder().encode(params)
         let paramsJSON = String(decoding: paramsData, as: UTF8.self)
         let req = BridgeInvokeRequest(
             id: "watch-notify",
-            command: OpenClawWatchCommand.notify.rawValue,
+            command: NodoAssistWatchCommand.notify.rawValue,
             paramsJSON: paramsJSON)
 
         let res = await appModel._test_handleInvoke(req, gatewayStableID: "gateway-a")
         #expect(res.ok == true)
-        #expect(watchService.lastSent?.params.title == "OpenClaw")
+        #expect(watchService.lastSent?.params.title == "NodoAssist")
         #expect(watchService.lastSent?.params.body == "Meeting with Peter is at 4pm")
         #expect(watchService.lastSent?.params.priority == .timeSensitive)
         #expect(watchService.lastSent?.gatewayStableID == "gateway-watch-notify")
 
         let payloadData = try #require(res.payloadJSON?.data(using: .utf8))
-        let payload = try JSONDecoder().decode(OpenClawWatchNotifyPayload.self, from: payloadData)
+        let payload = try JSONDecoder().decode(NodoAssistWatchNotifyPayload.self, from: payloadData)
         #expect(payload.deliveredImmediately == false)
         #expect(payload.queuedForDelivery == true)
         #expect(payload.transport == "transferUserInfo")
     }
 
     @Test @MainActor func `watch reply codec preserves prompt gateway owner`() throws {
-        let params = OpenClawWatchNotifyParams(
+        let params = NodoAssistWatchNotifyParams(
             title: "Approval",
             body: "Allow?",
             promptId: "prompt-a",
@@ -2488,7 +2488,7 @@ private actor WatchSnapshotSendGate {
         #expect(notification["gatewayStableID"] as? String == "gateway-a")
 
         let reply = try #require(WatchMessagingPayloadCodec.parseQuickReplyPayload([
-            "type": OpenClawWatchPayloadType.reply.rawValue,
+            "type": NodoAssistWatchPayloadType.reply.rawValue,
             "replyId": "reply-a",
             "promptId": "prompt-a",
             "actionId": "approve",
@@ -2498,31 +2498,31 @@ private actor WatchSnapshotSendGate {
     }
 
     @Test @MainActor func `watch exec approval codec preserves gateway owner`() throws {
-        let approval = OpenClawWatchExecApprovalItem(
+        let approval = NodoAssistWatchExecApprovalItem(
             id: "approval-a",
             gatewayStableID: "gateway-a",
             commandText: "echo safe",
             allowedDecisions: [.allowOnce, .deny])
         let prompt = WatchMessagingPayloadCodec.encodeExecApprovalPromptPayload(
-            OpenClawWatchExecApprovalPromptMessage(approval: approval))
+            NodoAssistWatchExecApprovalPromptMessage(approval: approval))
         let encodedApproval = try #require(prompt["approval"] as? [String: Any])
         #expect(encodedApproval["gatewayStableID"] as? String == "gateway-a")
 
         let reply = try #require(WatchMessagingPayloadCodec.parseExecApprovalResolvePayload([
-            "type": OpenClawWatchPayloadType.execApprovalResolve.rawValue,
+            "type": NodoAssistWatchPayloadType.execApprovalResolve.rawValue,
             "replyId": "reply-a",
             "approvalId": "approval-a",
             "gatewayStableID": "gateway-a",
-            "decision": OpenClawWatchExecApprovalDecision.allowOnce.rawValue,
+            "decision": NodoAssistWatchExecApprovalDecision.allowOnce.rawValue,
         ], transport: "sendMessage"))
         #expect(reply.gatewayStableID == "gateway-a")
 
         let resolved = WatchMessagingPayloadCodec.encodeExecApprovalResolvedPayload(
-            OpenClawWatchExecApprovalResolvedMessage(
+            NodoAssistWatchExecApprovalResolvedMessage(
                 approvalId: "approval-a",
                 gatewayStableID: "gateway-a"))
         let expired = WatchMessagingPayloadCodec.encodeExecApprovalExpiredPayload(
-            OpenClawWatchExecApprovalExpiredMessage(
+            NodoAssistWatchExecApprovalExpiredMessage(
                 approvalId: "approval-a",
                 gatewayStableID: "gateway-a",
                 reason: .notFound))
@@ -2532,7 +2532,7 @@ private actor WatchSnapshotSendGate {
 
     @Test @MainActor func `watch application context retains app and approval snapshots`() throws {
         let appPayload = WatchMessagingPayloadCodec.encodeAppSnapshotPayload(
-            OpenClawWatchAppSnapshotMessage(
+            NodoAssistWatchAppSnapshotMessage(
                 gatewayStatusText: "Connected",
                 gatewayConnected: true,
                 agentName: "Main",
@@ -2545,9 +2545,9 @@ private actor WatchSnapshotSendGate {
                 pendingApprovalCount: 1,
                 snapshotId: "app-a"))
         let approvalPayload = WatchMessagingPayloadCodec.encodeExecApprovalSnapshotPayload(
-            OpenClawWatchExecApprovalSnapshotMessage(
+            NodoAssistWatchExecApprovalSnapshotMessage(
                 approvals: [
-                    OpenClawWatchExecApprovalItem(
+                    NodoAssistWatchExecApprovalItem(
                         id: "approval-a",
                         gatewayStableID: "gateway-a",
                         commandText: "echo safe",
@@ -2563,11 +2563,11 @@ private actor WatchSnapshotSendGate {
             approvalPayload,
             merging: appContext)
 
-        #expect(combined["type"] as? String == OpenClawWatchPayloadType.execApprovalSnapshot.rawValue)
+        #expect(combined["type"] as? String == NodoAssistWatchPayloadType.execApprovalSnapshot.rawValue)
         let nestedApp = try #require(
-            combined[OpenClawWatchPayloadType.appSnapshot.rawValue] as? [String: Any])
+            combined[NodoAssistWatchPayloadType.appSnapshot.rawValue] as? [String: Any])
         let nestedApprovals = try #require(
-            combined[OpenClawWatchPayloadType.execApprovalSnapshot.rawValue] as? [String: Any])
+            combined[NodoAssistWatchPayloadType.execApprovalSnapshot.rawValue] as? [String: Any])
         #expect(nestedApp["gatewayStableID"] as? String == "gateway-a")
         #expect(nestedApp["snapshotId"] as? String == "app-a")
         #expect(nestedApprovals["snapshotId"] as? String == "approval-a")
@@ -2578,12 +2578,12 @@ private actor WatchSnapshotSendGate {
     @Test @MainActor func `handle invoke watch notify rejects empty message`() async throws {
         let watchService = MockWatchMessagingService()
         let appModel = NodeAppModel(watchMessagingService: watchService)
-        let params = OpenClawWatchNotifyParams(title: "   ", body: "\n")
+        let params = NodoAssistWatchNotifyParams(title: "   ", body: "\n")
         let paramsData = try JSONEncoder().encode(params)
         let paramsJSON = String(decoding: paramsData, as: UTF8.self)
         let req = BridgeInvokeRequest(
             id: "watch-notify-empty",
-            command: OpenClawWatchCommand.notify.rawValue,
+            command: NodoAssistWatchCommand.notify.rawValue,
             paramsJSON: paramsJSON)
 
         let res = await appModel._test_handleInvoke(req)
@@ -2595,7 +2595,7 @@ private actor WatchSnapshotSendGate {
     @Test @MainActor func `handle invoke watch notify adds default actions for prompt`() async throws {
         let watchService = MockWatchMessagingService()
         let appModel = NodeAppModel(watchMessagingService: watchService)
-        let params = OpenClawWatchNotifyParams(
+        let params = NodoAssistWatchNotifyParams(
             title: "Task",
             body: "Action needed",
             priority: .passive,
@@ -2604,7 +2604,7 @@ private actor WatchSnapshotSendGate {
         let paramsJSON = String(decoding: paramsData, as: UTF8.self)
         let req = BridgeInvokeRequest(
             id: "watch-notify-default-actions",
-            command: OpenClawWatchCommand.notify.rawValue,
+            command: NodoAssistWatchCommand.notify.rawValue,
             paramsJSON: paramsJSON)
 
         let res = await appModel._test_handleInvoke(req)
@@ -2618,14 +2618,14 @@ private actor WatchSnapshotSendGate {
         let watchService = MockWatchMessagingService()
         let appModel = NodeAppModel(watchMessagingService: watchService)
         appModel._test_setConnectedGatewayID("gateway-a")
-        let params = OpenClawWatchNotifyParams(
+        let params = NodoAssistWatchNotifyParams(
             title: "Task",
             body: "Action needed",
             promptId: "prompt-legacy")
         let paramsJSON = try String(decoding: JSONEncoder().encode(params), as: UTF8.self)
         let request = BridgeInvokeRequest(
             id: "watch-notify-legacy-owner",
-            command: OpenClawWatchCommand.notify.rawValue,
+            command: NodoAssistWatchCommand.notify.rawValue,
             paramsJSON: paramsJSON)
         #expect(await appModel._test_handleInvoke(request, gatewayStableID: "gateway-a").ok)
 
@@ -2647,7 +2647,7 @@ private actor WatchSnapshotSendGate {
     @Test @MainActor func `handle invoke watch notify adds approval defaults`() async throws {
         let watchService = MockWatchMessagingService()
         let appModel = NodeAppModel(watchMessagingService: watchService)
-        let params = OpenClawWatchNotifyParams(
+        let params = NodoAssistWatchNotifyParams(
             title: "Approval",
             body: "Allow command?",
             promptId: "prompt-approval",
@@ -2656,7 +2656,7 @@ private actor WatchSnapshotSendGate {
         let paramsJSON = String(decoding: paramsData, as: UTF8.self)
         let req = BridgeInvokeRequest(
             id: "watch-notify-approval-defaults",
-            command: OpenClawWatchCommand.notify.rawValue,
+            command: NodoAssistWatchCommand.notify.rawValue,
             paramsJSON: paramsJSON)
 
         let res = await appModel._test_handleInvoke(req)
@@ -2669,22 +2669,22 @@ private actor WatchSnapshotSendGate {
     @Test @MainActor func `handle invoke watch notify derives priority from risk and caps actions`() async throws {
         let watchService = MockWatchMessagingService()
         let appModel = NodeAppModel(watchMessagingService: watchService)
-        let params = OpenClawWatchNotifyParams(
+        let params = NodoAssistWatchNotifyParams(
             title: "Urgent",
             body: "Check now",
             risk: .high,
             actions: [
-                OpenClawWatchAction(id: "a1", label: "A1"),
-                OpenClawWatchAction(id: "a2", label: "A2"),
-                OpenClawWatchAction(id: "a3", label: "A3"),
-                OpenClawWatchAction(id: "a4", label: "A4"),
-                OpenClawWatchAction(id: "a5", label: "A5"),
+                NodoAssistWatchAction(id: "a1", label: "A1"),
+                NodoAssistWatchAction(id: "a2", label: "A2"),
+                NodoAssistWatchAction(id: "a3", label: "A3"),
+                NodoAssistWatchAction(id: "a4", label: "A4"),
+                NodoAssistWatchAction(id: "a5", label: "A5"),
             ])
         let paramsData = try JSONEncoder().encode(params)
         let paramsJSON = String(decoding: paramsData, as: UTF8.self)
         let req = BridgeInvokeRequest(
             id: "watch-notify-derive-priority",
-            command: OpenClawWatchCommand.notify.rawValue,
+            command: NodoAssistWatchCommand.notify.rawValue,
             paramsJSON: paramsJSON)
 
         let res = await appModel._test_handleInvoke(req)
@@ -2702,12 +2702,12 @@ private actor WatchSnapshotSendGate {
             code: 1,
             userInfo: [NSLocalizedDescriptionKey: "WATCH_UNAVAILABLE: no paired Apple Watch"])
         let appModel = NodeAppModel(watchMessagingService: watchService)
-        let params = OpenClawWatchNotifyParams(title: "OpenClaw", body: "Delivery check")
+        let params = NodoAssistWatchNotifyParams(title: "NodoAssist", body: "Delivery check")
         let paramsData = try JSONEncoder().encode(params)
         let paramsJSON = String(decoding: paramsData, as: UTF8.self)
         let req = BridgeInvokeRequest(
             id: "watch-notify-fail",
-            command: OpenClawWatchCommand.notify.rawValue,
+            command: NodoAssistWatchCommand.notify.rawValue,
             paramsJSON: paramsJSON)
 
         let res = await appModel._test_handleInvoke(req)
@@ -2895,7 +2895,7 @@ private actor WatchSnapshotSendGate {
 
     @Test @MainActor func `handle deep link sets error when not connected`() async throws {
         let appModel = NodeAppModel()
-        let url = try #require(URL(string: "openclaw://agent?message=hello"))
+        let url = try #require(URL(string: "nodoassist://agent?message=hello"))
         await appModel.handleDeepLink(url: url)
         #expect(appModel.screen.errorText?.contains("Gateway not connected") == true)
     }
@@ -2903,7 +2903,7 @@ private actor WatchSnapshotSendGate {
     @Test @MainActor func `handle deep link rejects oversized message`() async throws {
         let appModel = NodeAppModel()
         let msg = String(repeating: "a", count: 20001)
-        let url = try #require(URL(string: "openclaw://agent?message=\(msg)"))
+        let url = try #require(URL(string: "nodoassist://agent?message=\(msg)"))
         await appModel.handleDeepLink(url: url)
         #expect(appModel.screen.errorText?.contains("Deep link too large") == true)
     }
@@ -2982,13 +2982,13 @@ private actor WatchSnapshotSendGate {
         let tempDir = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
-        let previousStateDir = ProcessInfo.processInfo.environment["OPENCLAW_STATE_DIR"]
-        setenv("OPENCLAW_STATE_DIR", tempDir.path, 1)
+        let previousStateDir = ProcessInfo.processInfo.environment["NODOASSIST_STATE_DIR"]
+        setenv("NODOASSIST_STATE_DIR", tempDir.path, 1)
         defer {
             if let previousStateDir {
-                setenv("OPENCLAW_STATE_DIR", previousStateDir, 1)
+                setenv("NODOASSIST_STATE_DIR", previousStateDir, 1)
             } else {
-                unsetenv("OPENCLAW_STATE_DIR")
+                unsetenv("NODOASSIST_STATE_DIR")
             }
             try? FileManager.default.removeItem(at: tempDir)
         }
@@ -3010,7 +3010,7 @@ private actor WatchSnapshotSendGate {
                 caps: [],
                 commands: [],
                 permissions: [:],
-                clientId: "openclaw-ios",
+                clientId: "nodoassist-ios",
                 clientMode: "node",
                 clientDisplayName: nil,
                 deviceAuthGatewayID: authenticationOwnerID))

@@ -139,11 +139,11 @@ export const fr: TranslationMap = {
     pairing: {
       button: "Associer un appareil mobile",
       adminRequired: "Un accès administrateur est requis pour créer des codes de configuration.",
-      title: "OpenClaw mobile",
+      title: "NodoAssist mobile",
       subtitle: "Scannez ce code QR dans l’application mobile pour connecter un nouveau téléphone.",
       generating: "Création d’un code de configuration sécurisé…",
       failed: "Impossible de créer un code de configuration.",
-      qrAlt: "Code QR d’association OpenClaw mobile",
+      qrAlt: "Code QR d’association NodoAssist mobile",
       qrUnavailable: "Code QR indisponible. Copiez plutôt le code de configuration.",
       copySetupCode: "Copier le code de configuration",
       newCode: "Nouveau code",
@@ -151,7 +151,7 @@ export const fr: TranslationMap = {
       pending: "Demandes d’appareils en attente d’examen : {count}",
       review: "Révision",
       waiting:
-        "Les applications mobiles officielles OpenClaw se connectent automatiquement après la numérisation.",
+        "Les applications mobiles officielles NodoAssist se connectent automatiquement après la numérisation.",
       help: "Aide à l’association",
       manageDevices: "Gérer les appareils",
     },
@@ -178,7 +178,7 @@ export const fr: TranslationMap = {
   },
   worktrees: {
     title: "Worktrees gérés",
-    subtitle: "Checkouts de dépôt isolés appartenant à OpenClaw.",
+    subtitle: "Checkouts de dépôt isolés appartenant à NodoAssist.",
     cleanNow: "Nettoyer maintenant",
     name: "Nom",
     repo: "Dépôt",
@@ -545,7 +545,7 @@ export const fr: TranslationMap = {
       "Examinez, affinez et appliquez les propositions avant qu’elles ne deviennent des skills actives.",
     nodes: "Appareils appairés et commandes.",
     chat: "Chat Gateway pour les interventions rapides.",
-    config: "Modifier openclaw.json.",
+    config: "Modifier nodoassist.json.",
     communications: "Canaux, messages et paramètres audio.",
     appearance: "Thème, UI et paramètres de l’assistant de configuration.",
     automation: "Commandes, hooks, cron et plugins.",
@@ -981,7 +981,7 @@ export const fr: TranslationMap = {
       metadataUpgradeSummary:
         "Cet appareil est déjà appairé, mais la modification des métadonnées est en attente d’approbation.",
       mobileHint:
-        "Sur mobile ? Copiez l’URL complète (y compris #token=...) depuis openclaw dashboard --no-open sur votre ordinateur.",
+        "Sur mobile ? Copiez l’URL complète (y compris #token=...) depuis nodoassist dashboard --no-open sur votre ordinateur.",
       docsTitle: "Documentation sur l’appairage des appareils (s’ouvre dans un nouvel onglet)",
       docsLink: "Documentation : Appairage des appareils",
     },
@@ -1021,7 +1021,8 @@ export const fr: TranslationMap = {
       modelAuthExpiresIn: "expire {when}",
       modelAuthAttentionExpiredTitle: "Authentification des modèles expirée",
       modelAuthAttentionExpiringTitle: "L'authentification des modèles expire bientôt",
-      modelAuthAttentionExpiredDesc: "{providers} — réauthentifiez-vous avec openclaw models auth",
+      modelAuthAttentionExpiredDesc:
+        "{providers} — réauthentifiez-vous avec nodoassist models auth",
       modelAuthAttentionExpiringEntry: "{provider} ({when})",
     },
     attention: {
@@ -1480,9 +1481,9 @@ export const fr: TranslationMap = {
         summary:
           "Le Gateway est joignable, mais il lui faut un jeton ou un mot de passe correspondant avant que ce navigateur puisse se connecter.",
         stepPaste:
-          "Collez le jeton de openclaw dashboard --no-open ou saisissez le mot de passe configuré.",
+          "Collez le jeton de nodoassist dashboard --no-open ou saisissez le mot de passe configuré.",
         stepGenerate:
-          "Si aucun jeton n’est configuré, exécutez openclaw doctor --generate-gateway-token sur l’hôte Gateway.",
+          "Si aucun jeton n’est configuré, exécutez nodoassist doctor --generate-gateway-token sur l’hôte Gateway.",
         stepConnect: "Cliquez de nouveau sur Connect après avoir mis à jour l’identifiant.",
       },
       authFailed: {
@@ -1490,7 +1491,7 @@ export const fr: TranslationMap = {
         summary:
           "L’identifiant fourni a été refusé. La cause la plus courante est un jeton obsolète ou copié depuis une autre URL Gateway.",
         stepDashboard:
-          "Exécutez openclaw dashboard --no-open et ouvrez la nouvelle URL ou collez son jeton.",
+          "Exécutez nodoassist dashboard --no-open et ouvrez la nouvelle URL ou collez son jeton.",
         stepReplace:
           "Remplacez les valeurs de jeton/mot de passe obsolètes ; ne réutilisez pas un jeton provenant d’une autre URL Gateway.",
         stepMode:
@@ -1515,8 +1516,8 @@ export const fr: TranslationMap = {
           "Ce navigateur nécessite une approbation unique de l’hôte Gateway avant de pouvoir utiliser Control UI.",
         upgradeSummary:
           "Ce navigateur est déjà connu, mais l’accès demandé a changé et nécessite une nouvelle approbation.",
-        stepList: "Exécutez openclaw devices list sur l’hôte Gateway.",
-        stepApproveId: "Approuvez cette demande : openclaw devices approve {requestId}.",
+        stepList: "Exécutez nodoassist devices list sur l’hôte Gateway.",
+        stepApproveId: "Approuvez cette demande : nodoassist devices approve {requestId}.",
         stepApprove: "Approuvez la demande navigateur/appareil en attente depuis cette liste.",
         stepReconnect: "Reconnectez-vous après la fin de l’approbation.",
       },
@@ -1547,22 +1548,22 @@ export const fr: TranslationMap = {
         summary:
           "La Control UI servie et le Gateway en cours d’exécution ne sont pas d’accord sur le protocole de connexion pris en charge.",
         stepDashboard:
-          "Rouvrez le dashboard servi avec openclaw dashboard afin que l’UI et le Gateway viennent de la même installation.",
+          "Rouvrez le dashboard servi avec nodoassist dashboard afin que l’UI et le Gateway viennent de la même installation.",
         stepDevUi:
           "Si vous utilisez pnpm ui:dev, reconstruisez ou redémarrez l’UI de développement avec le checkout actuel.",
         stepRestart:
-          "Redémarrez le Gateway après la mise à jour d’OpenClaw afin qu’il serve le protocole actuel.",
+          "Redémarrez le Gateway après la mise à jour d’NodoAssist afin qu’il serve le protocole actuel.",
       },
       network: {
         title: "Connexion impossible",
         summary:
           "Le navigateur n’a pas pu terminer la connexion au Gateway. Vérifiez la cible et le transport avant de réessayer les identifiants.",
         stepGateway:
-          "Confirmez que le Gateway fonctionne avec openclaw status ou openclaw gateway run.",
+          "Confirmez que le Gateway fonctionne avec nodoassist status ou nodoassist gateway run.",
         stepUrl:
           "Vérifiez l’URL WebSocket et utilisez wss:// lorsque le Gateway est derrière HTTPS/Tailscale Serve.",
         stepDashboard:
-          "Rouvrez le dashboard avec openclaw dashboard --no-open pour recopier l’URL actuelle et les détails d’authentification.",
+          "Rouvrez le dashboard avec nodoassist dashboard --no-open pour recopier l’URL actuelle et les détails d’authentification.",
       },
     },
   },

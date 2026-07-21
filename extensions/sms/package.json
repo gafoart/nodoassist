@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/sms",
+  "name": "@nodoassist/sms",
   "version": "2026.6.11",
-  "description": "OpenClaw SMS channel plugin for Twilio text messages.",
+  "description": "NodoAssist SMS channel plugin for Twilio text messages.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -11,9 +11,9 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
@@ -32,12 +32,12 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "bundledDist": false
     },
     "install": {
-      "clawhubSpec": "clawhub:@openclaw/sms",
-      "npmSpec": "@openclaw/sms",
+      "clawhubSpec": "clawhub:@nodoassist/sms",
+      "npmSpec": "@nodoassist/sms",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.9",
       "allowInvalidConfigRecovery": true

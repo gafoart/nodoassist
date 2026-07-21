@@ -20,7 +20,7 @@ function renderGatewayUrlConfirmation(props: GatewayUrlConfirmationProps) {
   const description = t("channels.gatewayUrlConfirmation.subtitle");
 
   return html`
-    <openclaw-modal-dialog
+    <nodoassist-modal-dialog
       label=${title}
       description=${description}
       @modal-cancel=${props.onCancel}
@@ -41,7 +41,7 @@ function renderGatewayUrlConfirmation(props: GatewayUrlConfirmationProps) {
           <button class="btn" @click=${props.onCancel}>${t("common.cancel")}</button>
         </div>
       </div>
-    </openclaw-modal-dialog>
+    </nodoassist-modal-dialog>
   `;
 }
 
@@ -62,6 +62,6 @@ class GatewayUrlConfirmation extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-gateway-url-confirmation")) {
-  customElements.define("openclaw-gateway-url-confirmation", GatewayUrlConfirmation);
+if (!customElements.get("nodoassist-gateway-url-confirmation")) {
+  customElements.define("nodoassist-gateway-url-confirmation", GatewayUrlConfirmation);
 }

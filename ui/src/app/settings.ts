@@ -1,10 +1,10 @@
 // Control UI module implements storage behavior.
-const SETTINGS_KEY_PREFIX = "openclaw.control.settings.v1:";
-const LEGACY_SETTINGS_KEY = "openclaw.control.settings.v1";
-const CURRENT_GATEWAY_SELECTION_KEY_PREFIX = "openclaw.control.currentGateway.v1:";
-const LOCAL_USER_IDENTITY_KEY = "openclaw.control.user.v1";
-const LEGACY_TOKEN_SESSION_KEY = "openclaw.control.token.v1";
-const TOKEN_SESSION_KEY_PREFIX = "openclaw.control.token.v1:";
+const SETTINGS_KEY_PREFIX = "nodoassist.control.settings.v1:";
+const LEGACY_SETTINGS_KEY = "nodoassist.control.settings.v1";
+const CURRENT_GATEWAY_SELECTION_KEY_PREFIX = "nodoassist.control.currentGateway.v1:";
+const LOCAL_USER_IDENTITY_KEY = "nodoassist.control.user.v1";
+const LEGACY_TOKEN_SESSION_KEY = "nodoassist.control.token.v1";
+const TOKEN_SESSION_KEY_PREFIX = "nodoassist.control.token.v1:";
 const MAX_SCOPED_SESSION_ENTRIES = 10;
 
 function settingsKeyForGateway(gatewayUrl: string): string {
@@ -157,7 +157,7 @@ type ApplicationStartupSettings = {
 
 declare global {
   interface Window {
-    __OPENCLAW_NATIVE_CONTROL_AUTH__?: NativeControlAuth;
+    __NODOASSIST_NATIVE_CONTROL_AUTH__?: NativeControlAuth;
   }
 }
 
@@ -184,12 +184,12 @@ export function resolveApplicationStartupSettings(
   };
 
   const nativeAuth =
-    typeof window === "undefined" ? undefined : window["__OPENCLAW_NATIVE_CONTROL_AUTH__"];
+    typeof window === "undefined" ? undefined : window["__NODOASSIST_NATIVE_CONTROL_AUTH__"];
   if (nativeAuth) {
     try {
-      delete window["__OPENCLAW_NATIVE_CONTROL_AUTH__"];
+      delete window["__NODOASSIST_NATIVE_CONTROL_AUTH__"];
     } catch {
-      window["__OPENCLAW_NATIVE_CONTROL_AUTH__"] = undefined;
+      window["__NODOASSIST_NATIVE_CONTROL_AUTH__"] = undefined;
     }
 
     const gatewayUrl = normalizeOptionalString(nativeAuth.gatewayUrl);
@@ -242,7 +242,7 @@ export function resolveApplicationStartupSettings(
     if (queryToken != null) {
       queryTokenUsed = true;
       console.warn(
-        "[openclaw] Auth token passed as query parameter (?token=). Use URL fragment instead: #token=<token>. Query parameters may appear in server logs.",
+        "[nodoassist] Auth token passed as query parameter (?token=). Use URL fragment instead: #token=<token>. Query parameters may appear in server logs.",
       );
     }
     if (token && gatewayUrlChanged) {

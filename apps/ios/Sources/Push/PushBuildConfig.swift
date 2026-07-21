@@ -45,10 +45,10 @@ struct PushBuildConfig {
     let proofPolicy: PushProofPolicy
 
     static let current = PushBuildConfig()
-    static let openClawHostedRelayHost = "ios-push-relay.openclaw.ai"
-    static let openClawSandboxRelayHost = "ios-push-relay-sandbox.openclaw.ai"
+    static let nodoAssistHostedRelayHost = "ios-push-relay.openclaw.ai"
+    static let nodoAssistSandboxRelayHost = "ios-push-relay-sandbox.openclaw.ai"
 
-    var usesOpenClawHostedRelay: Bool {
+    var usesNodoAssistHostedRelay: Bool {
         guard self.transport == .relay, self.distribution == .official else { return false }
         guard let relayBaseURL = self.relayBaseURL,
               let components = URLComponents(url: relayBaseURL, resolvingAgainstBaseURL: false)
@@ -56,7 +56,7 @@ struct PushBuildConfig {
             return false
         }
         return components.scheme?.lowercased() == "https"
-            && [Self.openClawHostedRelayHost, Self.openClawSandboxRelayHost]
+            && [Self.nodoAssistHostedRelayHost, Self.nodoAssistSandboxRelayHost]
             .contains(components.host?.lowercased() ?? "")
             && components.user == nil
             && components.password == nil
@@ -73,11 +73,11 @@ struct PushBuildConfig {
     private init(readValue: (String) -> Any?) {
         self.mode = Self.readEnum(
             readValue: readValue,
-            key: "OpenClawPushMode",
+            key: "NodoAssistPushMode",
             fallback: .localSandbox)
         let relayBaseURLOverride = Self.readURL(
             readValue: readValue,
-            key: "OpenClawPushRelayBaseURL")
+            key: "NodoAssistPushRelayBaseURL")
         switch self.mode {
         case .localSandbox:
             self.transport = .direct

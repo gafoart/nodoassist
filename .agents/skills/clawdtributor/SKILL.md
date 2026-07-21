@@ -1,18 +1,18 @@
 ---
 name: clawdtributor
-description: "Use for OpenClaw clawtributors PR/issue triage: Discrawl discovery, live-open rechecks, deep review, topic grouping, and compact @handle/LOC/type/blast/verification summaries."
+description: "Use for NodoAssist clawtributors PR/issue triage: Discrawl discovery, live-open rechecks, deep review, topic grouping, and compact @handle/LOC/type/blast/verification summaries."
 ---
 
 # Clawdtributor
 
-Use for the `#clawtributors` queue: Discord-discovered OpenClaw PRs/issues that need live GitHub status plus maintainer-quality review.
+Use for the `#clawtributors` queue: Discord-discovered NodoAssist PRs/issues that need live GitHub status plus maintainer-quality review.
 
 ## Compose with other skills
 
 - `$discrawl`: local Discord archive sync/search.
-- `$openclaw-pr-maintainer`: live GitHub PR/issue review, duplicate search, close/land rules.
+- `$nodoassist-pr-maintainer`: live GitHub PR/issue review, duplicate search, close/land rules.
 - `$gitcrawl`: related issue/PR and current-main/stale-proof search.
-- `$openclaw-testing` / `$crabbox`: proof choice when a candidate needs real validation.
+- `$nodoassist-testing` / `$crabbox`: proof choice when a candidate needs real validation.
 
 ## Archive flow
 
@@ -42,7 +42,7 @@ left join members mm on mm.guild_id=m.guild_id and mm.user_id=m.author_id
 where m.channel_id='1458141495701012561'
   and m.created_at >= '<ISO cutoff>'
 order by m.created_at desc;" |
-perl -nE 'while(m{github\.com/openclaw/openclaw/(pull|issues)/(\d+)}g){say "$1\t$2\t$_"}'
+perl -nE 'while(m{github\.com/nodoassist/nodoassist/(pull|issues)/(\d+)}g){say "$1\t$2\t$_"}'
 ```
 
 Map a PR/issue back to the Discord handle:
@@ -67,7 +67,7 @@ Always recheck live state before listing, closing, or saying "open".
 
 ```bash
 GITHUB_TOKEN= GITHUB_TOKEN_NODIFF= GH_TOKEN= \
-gh api repos/openclaw/openclaw/pulls/<number> \
+gh api repos/nodoassist/nodoassist/pulls/<number> \
   --jq '. | {number,title,state,merged,mergeable,draft,author:.user.login,url:.html_url,updatedAt:.updated_at,additions,deletions,changedFiles:.changed_files}'
 ```
 
@@ -75,7 +75,7 @@ For issues:
 
 ```bash
 GITHUB_TOKEN= GITHUB_TOKEN_NODIFF= GH_TOKEN= \
-gh api repos/openclaw/openclaw/issues/<number> \
+gh api repos/nodoassist/nodoassist/issues/<number> \
   --jq '. | {number,title,state,author:.user.login,url:.html_url,updatedAt:.updated_at,pull_request}'
 ```
 

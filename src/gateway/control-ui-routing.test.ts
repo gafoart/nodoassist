@@ -71,14 +71,14 @@ describe("classifyControlUiRequest", () => {
     it.each([
       {
         name: "redirects the basePath entrypoint",
-        pathname: "/openclaw",
+        pathname: "/nodoassist",
         search: "?foo=1",
         method: "GET",
-        expected: { kind: "redirect" as const, location: "/openclaw/?foo=1" },
+        expected: { kind: "redirect" as const, location: "/nodoassist/?foo=1" },
       },
       {
         name: "serves nested read-only routes",
-        pathname: "/openclaw/chat",
+        pathname: "/nodoassist/chat",
         search: "",
         method: "HEAD",
         expected: { kind: "serve" as const },
@@ -92,14 +92,14 @@ describe("classifyControlUiRequest", () => {
       },
       {
         name: "falls through write requests to the basePath entrypoint",
-        pathname: "/openclaw",
+        pathname: "/nodoassist",
         search: "",
         method: "POST",
         expected: { kind: "not-control-ui" as const },
       },
       ...["PUT", "DELETE", "PATCH", "OPTIONS"].map((method) => ({
         name: `falls through ${method} subroute requests`,
-        pathname: "/openclaw/webhook",
+        pathname: "/nodoassist/webhook",
         search: "",
         method,
         expected: { kind: "not-control-ui" as const },
@@ -107,7 +107,7 @@ describe("classifyControlUiRequest", () => {
     ])("$name", ({ pathname, search, method, expected }) => {
       expect(
         classifyControlUiRequest({
-          basePath: "/openclaw",
+          basePath: "/nodoassist",
           pathname,
           search,
           method,

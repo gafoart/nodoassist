@@ -1,13 +1,13 @@
-// ClawRouter provider catalog maps credential-scoped routes to OpenClaw transports.
-import type { ProviderRuntimeModel } from "openclaw/plugin-sdk/plugin-entry";
+// ClawRouter provider catalog maps credential-scoped routes to NodoAssist transports.
+import type { ProviderRuntimeModel } from "nodoassist/plugin-sdk/plugin-entry";
 import {
   getCachedLiveProviderModelRows,
   type LiveModelCatalogFetchGuard,
-} from "openclaw/plugin-sdk/provider-catalog-live-runtime";
+} from "nodoassist/plugin-sdk/provider-catalog-live-runtime";
 import type {
   ModelDefinitionConfig,
   ModelProviderConfig,
-} from "openclaw/plugin-sdk/provider-model-shared";
+} from "nodoassist/plugin-sdk/provider-model-shared";
 
 export const CLAWROUTER_DEFAULT_BASE_URL = "https://clawrouter.openclaw.ai";
 

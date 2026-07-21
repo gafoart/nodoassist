@@ -1,25 +1,25 @@
 {
-  "name": "@openclaw/workboard",
+  "name": "@nodoassist/workboard",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw dashboard workboard plugin",
+  "description": "NodoAssist dashboard workboard plugin",
   "type": "module",
   "dependencies": {
     "typebox": "1.3.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

@@ -9,16 +9,16 @@ describe("buildPlatformRuntimeLogHints", () => {
         platform: "darwin",
         env: {
           HOME: "/Users/test",
-          OPENCLAW_STATE_DIR: "/tmp/openclaw-state",
-          OPENCLAW_LOG_PREFIX: "gateway",
+          NODOASSIST_STATE_DIR: "/tmp/nodoassist-state",
+          NODOASSIST_LOG_PREFIX: "gateway",
         },
-        systemdServiceName: "openclaw-gateway",
-        windowsTaskName: "OpenClaw Gateway",
+        systemdServiceName: "nodoassist-gateway",
+        windowsTaskName: "NodoAssist Gateway",
       }),
     ).toEqual([
-      "Launchd stdout (if installed): /Users/test/Library/Logs/openclaw/gateway.log",
+      "Launchd stdout (if installed): /Users/test/Library/Logs/nodoassist/gateway.log",
       "Launchd stderr (if installed): suppressed",
-      "Restart attempts: /tmp/openclaw-state/logs/gateway-restart.log",
+      "Restart attempts: /tmp/nodoassist-state/logs/gateway-restart.log",
     ]);
   });
 
@@ -27,27 +27,27 @@ describe("buildPlatformRuntimeLogHints", () => {
       buildPlatformRuntimeLogHints({
         platform: "linux",
         env: {
-          OPENCLAW_STATE_DIR: "/tmp/openclaw-state",
+          NODOASSIST_STATE_DIR: "/tmp/nodoassist-state",
         },
-        systemdServiceName: "openclaw-gateway",
-        windowsTaskName: "OpenClaw Gateway",
+        systemdServiceName: "nodoassist-gateway",
+        windowsTaskName: "NodoAssist Gateway",
       }),
     ).toEqual([
-      "Logs: journalctl --user -u openclaw-gateway.service -n 200 --no-pager",
-      "Restart attempts: /tmp/openclaw-state/logs/gateway-restart.log",
+      "Logs: journalctl --user -u nodoassist-gateway.service -n 200 --no-pager",
+      "Restart attempts: /tmp/nodoassist-state/logs/gateway-restart.log",
     ]);
     expect(
       buildPlatformRuntimeLogHints({
         platform: "win32",
         env: {
-          OPENCLAW_STATE_DIR: "/tmp/openclaw-state",
+          NODOASSIST_STATE_DIR: "/tmp/nodoassist-state",
         },
-        systemdServiceName: "openclaw-gateway",
-        windowsTaskName: "OpenClaw Gateway",
+        systemdServiceName: "nodoassist-gateway",
+        windowsTaskName: "NodoAssist Gateway",
       }),
     ).toEqual([
-      'Logs: schtasks /Query /TN "OpenClaw Gateway" /V /FO LIST',
-      "Restart attempts: /tmp/openclaw-state/logs/gateway-restart.log",
+      'Logs: schtasks /Query /TN "NodoAssist Gateway" /V /FO LIST',
+      "Restart attempts: /tmp/nodoassist-state/logs/gateway-restart.log",
     ]);
   });
 });
@@ -57,30 +57,30 @@ describe("buildPlatformServiceStartHints", () => {
     expect(
       buildPlatformServiceStartHints({
         platform: "darwin",
-        installCommand: "openclaw gateway install",
-        startCommand: "openclaw gateway",
-        launchAgentPlistPath: "~/Library/LaunchAgents/com.openclaw.gateway.plist",
-        systemdServiceName: "openclaw-gateway",
-        windowsTaskName: "OpenClaw Gateway",
+        installCommand: "nodoassist gateway install",
+        startCommand: "nodoassist gateway",
+        launchAgentPlistPath: "~/Library/LaunchAgents/com.nodoassist.gateway.plist",
+        systemdServiceName: "nodoassist-gateway",
+        windowsTaskName: "NodoAssist Gateway",
       }),
     ).toEqual([
-      "openclaw gateway install",
-      "openclaw gateway",
-      "launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.openclaw.gateway.plist",
+      "nodoassist gateway install",
+      "nodoassist gateway",
+      "launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.nodoassist.gateway.plist",
     ]);
     expect(
       buildPlatformServiceStartHints({
         platform: "linux",
-        installCommand: "openclaw gateway install",
-        startCommand: "openclaw gateway",
-        launchAgentPlistPath: "~/Library/LaunchAgents/com.openclaw.gateway.plist",
-        systemdServiceName: "openclaw-gateway",
-        windowsTaskName: "OpenClaw Gateway",
+        installCommand: "nodoassist gateway install",
+        startCommand: "nodoassist gateway",
+        launchAgentPlistPath: "~/Library/LaunchAgents/com.nodoassist.gateway.plist",
+        systemdServiceName: "nodoassist-gateway",
+        windowsTaskName: "NodoAssist Gateway",
       }),
     ).toEqual([
-      "openclaw gateway install",
-      "openclaw gateway",
-      "systemctl --user start openclaw-gateway.service",
+      "nodoassist gateway install",
+      "nodoassist gateway",
+      "systemctl --user start nodoassist-gateway.service",
     ]);
   });
 });

@@ -5,8 +5,8 @@
 import {
   assertOkOrThrowProviderError,
   readProviderJsonResponse,
-} from "openclaw/plugin-sdk/provider-http";
-import type { SearchConfigRecord } from "openclaw/plugin-sdk/provider-web-search";
+} from "nodoassist/plugin-sdk/provider-http";
+import type { SearchConfigRecord } from "nodoassist/plugin-sdk/provider-web-search";
 import {
   buildSearchCacheKey,
   DEFAULT_SEARCH_COUNT,
@@ -26,14 +26,14 @@ import {
   withTrustedWebSearchEndpoint,
   wrapWebContent,
   writeCachedSearchPayload,
-} from "openclaw/plugin-sdk/provider-web-search";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
+} from "nodoassist/plugin-sdk/provider-web-search";
+import { createSubsystemLogger } from "nodoassist/plugin-sdk/runtime-env";
 import {
   assertHttpUrlTargetsPrivateNetwork,
   isBlockedHostnameOrIp,
   isPrivateIpAddress,
   resolvePinnedHostnameWithPolicy,
-} from "openclaw/plugin-sdk/ssrf-runtime";
+} from "nodoassist/plugin-sdk/ssrf-runtime";
 import {
   type BraveLlmContextResponse,
   mapBraveLlmContextResults,
@@ -157,7 +157,7 @@ async function validateBraveBaseUrl(baseUrl: string): Promise<BraveEndpointMode>
 function missingBraveKeyPayload() {
   return {
     error: "missing_brave_api_key",
-    message: `web_search (brave) needs a Brave Search API key. Run \`${formatCliCommand("openclaw configure --section web")}\` to store it, or set BRAVE_API_KEY in the Gateway environment. If you do not want to configure a search API key, use web_fetch for a specific URL or the browser tool for interactive pages.`,
+    message: `web_search (brave) needs a Brave Search API key. Run \`${formatCliCommand("nodoassist configure --section web")}\` to store it, or set BRAVE_API_KEY in the Gateway environment. If you do not want to configure a search API key, use web_fetch for a specific URL or the browser tool for interactive pages.`,
     docs: "https://docs.openclaw.ai/tools/web",
   };
 }

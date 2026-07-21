@@ -7,18 +7,18 @@ import { DatabaseSync } from "node:sqlite";
 
 const SCHEMAS = [
   {
-    name: "openclaw-state",
-    schema: "src/state/openclaw-state-schema.sql",
-    outFile: "src/state/openclaw-state-db.generated.d.ts",
-    schemaOutFile: "src/state/openclaw-state-schema.generated.ts",
-    schemaExport: "OPENCLAW_STATE_SCHEMA_SQL",
+    name: "nodoassist-state",
+    schema: "src/state/nodoassist-state-schema.sql",
+    outFile: "src/state/nodoassist-state-db.generated.d.ts",
+    schemaOutFile: "src/state/nodoassist-state-schema.generated.ts",
+    schemaExport: "NODOASSIST_STATE_SCHEMA_SQL",
   },
   {
-    name: "openclaw-agent",
-    schema: "src/state/openclaw-agent-schema.sql",
-    outFile: "src/state/openclaw-agent-db.generated.d.ts",
-    schemaOutFile: "src/state/openclaw-agent-schema.generated.ts",
-    schemaExport: "OPENCLAW_AGENT_SCHEMA_SQL",
+    name: "nodoassist-agent",
+    schema: "src/state/nodoassist-agent-schema.sql",
+    outFile: "src/state/nodoassist-agent-db.generated.d.ts",
+    schemaOutFile: "src/state/nodoassist-agent-schema.generated.ts",
+    schemaExport: "NODOASSIST_AGENT_SCHEMA_SQL",
   },
 ];
 

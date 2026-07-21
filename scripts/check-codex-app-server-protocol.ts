@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-// Check Codex App Server Protocol script supports OpenClaw repository automation.
+// Check Codex App Server Protocol script supports NodoAssist repository automation.
 import fs from "node:fs/promises";
 import path from "node:path";
 import {
@@ -127,14 +127,14 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `Codex app-server generated protocol matches OpenClaw bridge assumptions: ${source.codexRepo}`,
+    `Codex app-server generated protocol matches NodoAssist bridge assumptions: ${source.codexRepo}`,
   );
 }
 
 async function checkMaintainedProtocolTypes(sourceRoot: string): Promise<void> {
-  // Raw requests go to Codex; raw responses flow into OpenClaw. Keep the
+  // Raw requests go to Codex; raw responses flow into NodoAssist. Keep the
   // assignability direction explicit so the probe permits deliberate projections.
-  const probePath = path.join(sourceRoot, "openclaw-protocol-compatibility.ts");
+  const probePath = path.join(sourceRoot, "nodoassist-protocol-compatibility.ts");
   const protocolPath = path.resolve(process.cwd(), "extensions/codex/src/app-server/protocol.ts");
   const protocolImport = relativeTypeScriptImport(probePath, protocolPath);
   const generatedImport = (file: string) =>
@@ -169,39 +169,39 @@ import type { TurnEnvironmentParams } from ${JSON.stringify(generatedImport("v2/
 import type { TurnInterruptParams } from ${JSON.stringify(generatedImport("v2/TurnInterruptParams.ts"))};
 import type { TurnStartParams } from ${JSON.stringify(generatedImport("v2/TurnStartParams.ts"))};
 
-declare const openClawDynamicToolSpec: CodexDynamicToolSpec;
-const generatedDynamicToolSpec: DynamicToolSpec = openClawDynamicToolSpec;
-declare const openClawTurnEnvironmentParams: CodexTurnEnvironmentParams;
-const generatedTurnEnvironmentParams: TurnEnvironmentParams = openClawTurnEnvironmentParams;
-declare const openClawThreadStartParams: CodexThreadStartParams;
-const generatedThreadStartParams: ThreadStartParams = openClawThreadStartParams;
-declare const openClawThreadResumeParams: CodexThreadResumeParams;
-const generatedThreadResumeParams: ThreadResumeParams = openClawThreadResumeParams;
-declare const openClawThreadForkParams: CodexThreadForkParams;
-const generatedThreadForkParams: ThreadForkParams = openClawThreadForkParams;
-declare const openClawTurnInterruptParams: CodexTurnInterruptParams;
-const generatedTurnInterruptParams: TurnInterruptParams = openClawTurnInterruptParams;
-declare const openClawTurnStartParams: CodexTurnStartParams;
-const generatedTurnStartParams: TurnStartParams = openClawTurnStartParams;
+declare const nodoAssistDynamicToolSpec: CodexDynamicToolSpec;
+const generatedDynamicToolSpec: DynamicToolSpec = nodoAssistDynamicToolSpec;
+declare const nodoAssistTurnEnvironmentParams: CodexTurnEnvironmentParams;
+const generatedTurnEnvironmentParams: TurnEnvironmentParams = nodoAssistTurnEnvironmentParams;
+declare const nodoAssistThreadStartParams: CodexThreadStartParams;
+const generatedThreadStartParams: ThreadStartParams = nodoAssistThreadStartParams;
+declare const nodoAssistThreadResumeParams: CodexThreadResumeParams;
+const generatedThreadResumeParams: ThreadResumeParams = nodoAssistThreadResumeParams;
+declare const nodoAssistThreadForkParams: CodexThreadForkParams;
+const generatedThreadForkParams: ThreadForkParams = nodoAssistThreadForkParams;
+declare const nodoAssistTurnInterruptParams: CodexTurnInterruptParams;
+const generatedTurnInterruptParams: TurnInterruptParams = nodoAssistTurnInterruptParams;
+declare const nodoAssistTurnStartParams: CodexTurnStartParams;
+const generatedTurnStartParams: TurnStartParams = nodoAssistTurnStartParams;
 
 declare const generatedDynamicToolCallParams: Omit<DynamicToolCallParams, "arguments">;
-const openClawDynamicToolCallParams: Omit<CodexDynamicToolCallParams, "arguments"> =
+const nodoAssistDynamicToolCallParams: Omit<CodexDynamicToolCallParams, "arguments"> =
   generatedDynamicToolCallParams;
 declare const generatedErrorNotification: ErrorNotification;
-const openClawErrorNotification: CodexErrorNotification = generatedErrorNotification;
+const nodoAssistErrorNotification: CodexErrorNotification = generatedErrorNotification;
 declare const generatedModelListResponse: ModelListResponse;
-const openClawModelListResponse: CodexModelListResponse = generatedModelListResponse;
+const nodoAssistModelListResponse: CodexModelListResponse = generatedModelListResponse;
 
 // Thread and turn bodies are normalized behind checked-in JSON schemas. Their
 // raw generated shapes must not be confused with the projector-facing types.
 declare const generatedThreadForkResponse: Omit<ThreadForkResponse, "thread">;
-const openClawThreadForkResponse: Omit<CodexThreadForkResponse, "thread"> =
+const nodoAssistThreadForkResponse: Omit<CodexThreadForkResponse, "thread"> =
   generatedThreadForkResponse;
 declare const generatedThreadResumeResponse: Omit<ThreadResumeResponse, "thread">;
-const openClawThreadResumeResponse: Omit<CodexThreadResumeResponse, "thread"> =
+const nodoAssistThreadResumeResponse: Omit<CodexThreadResumeResponse, "thread"> =
   generatedThreadResumeResponse;
 declare const generatedThreadStartResponse: Omit<ThreadStartResponse, "thread">;
-const openClawThreadStartResponse: Omit<CodexThreadStartResponse, "thread"> =
+const nodoAssistThreadStartResponse: Omit<CodexThreadStartResponse, "thread"> =
   generatedThreadStartResponse;
 
 export {};

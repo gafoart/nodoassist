@@ -10,7 +10,7 @@ import type {
 } from "./channel-contract.js";
 import type { ChannelPlugin } from "./channel-core.js";
 import type { MessageReceipt } from "./channel-outbound.js";
-import type { OpenClawConfig } from "./config-types.js";
+import type { NodoAssistConfig } from "./config-types.js";
 import {
   createLazyFacadeObjectValue,
   loadBundledPluginPublicSurfaceModuleSync,
@@ -18,13 +18,13 @@ import {
 import { getRuntimeConfig, getRuntimeConfigSnapshot } from "./runtime-config-snapshot.js";
 
 /**
- * @deprecated Compatibility facade for the `openclaw/plugin-sdk/discord` subpath.
+ * @deprecated Compatibility facade for the `nodoassist/plugin-sdk/discord` subpath.
  * New channel plugins should use generic channel SDK subpaths.
  */
 export type { ChannelMessageActionAdapter, ChannelMessageActionName } from "./channel-contract.js";
 export type { ChannelPlugin } from "./channel-core.js";
-export type { OpenClawConfig } from "./config-types.js";
-export type { OpenClawPluginApi, PluginRuntime } from "./channel-plugin-common.js";
+export type { NodoAssistConfig } from "./config-types.js";
+export type { NodoAssistPluginApi, PluginRuntime } from "./channel-plugin-common.js";
 
 export {
   DEFAULT_ACCOUNT_ID,
@@ -44,8 +44,10 @@ export {
 } from "./channel-status.js";
 export { DiscordConfigSchema } from "./bundled-channel-config-schema.js";
 
-/** Discord channel config shape for one account in OpenClaw config. */
-export type DiscordAccountConfig = NonNullable<NonNullable<OpenClawConfig["channels"]>["discord"]>;
+/** Discord channel config shape for one account in NodoAssist config. */
+export type DiscordAccountConfig = NonNullable<
+  NonNullable<NodoAssistConfig["channels"]>["discord"]
+>;
 
 /** Component-message request accepted by the deprecated Discord SDK facade. */
 export type DiscordComponentMessageSpec = {
@@ -68,7 +70,7 @@ export type DiscordComponentBuildResult = {
 
 /** Send/edit options for Discord component messages. */
 export type DiscordComponentSendOpts = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string;
   replyTo?: string;
   files?: unknown;
@@ -117,7 +119,7 @@ export type ThreadBindingRecord = {
 };
 
 type DirectoryConfigParams = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
 };
 
@@ -145,8 +147,8 @@ type DiscordApiFacadeModule = {
   collectDiscordStatusIssues: (accounts: ChannelAccountSnapshot[]) => ChannelStatusIssue[];
   buildDiscordComponentMessage: BuildDiscordComponentMessage;
   discordOnboardingAdapter?: NonNullable<ChannelPlugin<ResolvedDiscordAccount>["setup"]>;
-  inspectDiscordAccount: (params: { cfg: OpenClawConfig; accountId?: string | null }) => unknown;
-  listDiscordAccountIds: (cfg: OpenClawConfig) => string[];
+  inspectDiscordAccount: (params: { cfg: NodoAssistConfig; accountId?: string | null }) => unknown;
+  listDiscordAccountIds: (cfg: NodoAssistConfig) => string[];
   listDiscordDirectoryGroupsFromConfig: (
     params: DirectoryConfigParams,
   ) => unknown[] | Promise<unknown[]>;
@@ -156,9 +158,9 @@ type DiscordApiFacadeModule = {
   looksLikeDiscordTargetId: (raw: string) => boolean;
   normalizeDiscordMessagingTarget: (raw: string) => string | undefined;
   normalizeDiscordOutboundTarget: (to?: string) => DiscordOutboundTargetResolution;
-  resolveDefaultDiscordAccountId: (cfg: OpenClawConfig) => string;
+  resolveDefaultDiscordAccountId: (cfg: NodoAssistConfig) => string;
   resolveDiscordAccount: (params: {
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     accountId?: string | null;
   }) => ResolvedDiscordAccount;
   resolveDiscordGroupRequireMention: (params: ChannelGroupContext) => boolean | undefined;
@@ -169,7 +171,7 @@ type DiscordRuntimeFacadeModule = {
   editDiscordComponentMessage: EditDiscordComponentMessage;
   registerBuiltDiscordComponentMessage: RegisterBuiltDiscordComponentMessage;
   autoBindSpawnedDiscordSubagent: (params: {
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     accountId?: string;
     channel?: string;
     to?: string;
@@ -180,7 +182,7 @@ type DiscordRuntimeFacadeModule = {
     boundBy?: string;
   }) => Promise<ThreadBindingRecord | null>;
   collectDiscordAuditChannelIds: (params: {
-    cfg: OpenClawConfig;
+    cfg: NodoAssistConfig;
     accountId?: string | null;
   }) => unknown;
   listThreadBindingsBySessionKey: (params: {
@@ -212,7 +214,7 @@ function loadDiscordRuntimeFacadeModule(): DiscordRuntimeFacadeModule {
   });
 }
 
-function resolveCompatRuntimeConfig(params: { cfg?: OpenClawConfig }): OpenClawConfig {
+function resolveCompatRuntimeConfig(params: { cfg?: NodoAssistConfig }): NodoAssistConfig {
   return params.cfg ?? getRuntimeConfigSnapshot() ?? getRuntimeConfig();
 }
 
@@ -237,14 +239,14 @@ export const buildDiscordComponentMessage: DiscordApiFacadeModule["buildDiscordC
 
 /** Inspect one configured Discord account for setup/status output. */
 export function inspectDiscordAccount(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
 }): unknown {
   return loadDiscordApiFacadeModule().inspectDiscordAccount(params);
 }
 
-/** List configured Discord account ids from OpenClaw config. */
-export function listDiscordAccountIds(cfg: OpenClawConfig): string[] {
+/** List configured Discord account ids from NodoAssist config. */
+export function listDiscordAccountIds(cfg: NodoAssistConfig): string[] {
   return loadDiscordApiFacadeModule().listDiscordAccountIds(cfg);
 }
 
@@ -278,13 +280,13 @@ export function normalizeDiscordOutboundTarget(to?: string): DiscordOutboundTarg
 }
 
 /** Resolve the default Discord account id from config. */
-export function resolveDefaultDiscordAccountId(cfg: OpenClawConfig): string {
+export function resolveDefaultDiscordAccountId(cfg: NodoAssistConfig): string {
   return loadDiscordApiFacadeModule().resolveDefaultDiscordAccountId(cfg);
 }
 
 /** Resolve a Discord account config plus token source for runtime use. */
 export function resolveDiscordAccount(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
 }): ResolvedDiscordAccount {
   return loadDiscordApiFacadeModule().resolveDiscordAccount(params);
@@ -304,7 +306,7 @@ export function resolveDiscordGroupToolPolicy(params: ChannelGroupContext): unkn
 
 /** Collect configured Discord audit channel ids for runtime status checks. */
 export function collectDiscordAuditChannelIds(params: {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
 }): unknown {
   return loadDiscordRuntimeFacadeModule().collectDiscordAuditChannelIds(params);
@@ -326,7 +328,7 @@ export const registerBuiltDiscordComponentMessage: DiscordRuntimeFacadeModule["r
 
 /** Bind a spawned subagent session to the current Discord thread when possible. */
 export async function autoBindSpawnedDiscordSubagent(params: {
-  cfg?: OpenClawConfig;
+  cfg?: NodoAssistConfig;
   accountId?: string;
   channel?: string;
   to?: string;

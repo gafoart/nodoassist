@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/azure-speech",
+  "name": "@nodoassist/azure-speech",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw Azure Speech plugin",
+  "description": "NodoAssist Azure Speech plugin",
   "type": "module",
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

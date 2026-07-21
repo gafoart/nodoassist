@@ -2,7 +2,7 @@
 import {
   createWebSearchProviderContractFields,
   type WebSearchProviderPlugin,
-} from "openclaw/plugin-sdk/provider-web-search-config-contract";
+} from "nodoassist/plugin-sdk/provider-web-search-config-contract";
 
 const MINIMAX_TOKEN_PLAN_ENV_VARS = [
   "MINIMAX_CODE_PLAN_KEY",

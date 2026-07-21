@@ -3,9 +3,9 @@
 export {
   configureSqliteConnectionPragmas,
   configureSqliteWalMaintenance,
-} from "./openclaw-runtime-io.js";
+} from "./nodoassist-runtime-io.js";
 export type {
   SqliteConnectionPragmaOptions,
   SqliteWalMaintenance,
   SqliteWalMaintenanceOptions,
-} from "./openclaw-runtime-io.js";
+} from "./nodoassist-runtime-io.js";

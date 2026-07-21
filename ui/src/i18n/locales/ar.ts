@@ -137,18 +137,18 @@ export const ar: TranslationMap = {
     pairing: {
       button: "إقران جهاز محمول",
       adminRequired: "يلزم الوصول كمسؤول لإنشاء رموز الإعداد.",
-      title: "OpenClaw للأجهزة المحمولة",
+      title: "NodoAssist للأجهزة المحمولة",
       subtitle: "امسح رمز QR هذا في تطبيق الهاتف المحمول لتوصيل هاتف جديد.",
       generating: "جارٍ إنشاء رمز إعداد آمن…",
       failed: "تعذر إنشاء رمز إعداد.",
-      qrAlt: "رمز QR لإقران OpenClaw للأجهزة المحمولة",
+      qrAlt: "رمز QR لإقران NodoAssist للأجهزة المحمولة",
       qrUnavailable: "رمز QR غير متاح. انسخ رمز الإعداد بدلًا من ذلك.",
       copySetupCode: "نسخ رمز الإعداد",
       newCode: "رمز جديد",
       showSetupCode: "إظهار رمز الإعداد",
       pending: "طلبات الأجهزة بانتظار المراجعة: {count}",
       review: "مراجعة",
-      waiting: "تتصل تطبيقات OpenClaw الرسمية للأجهزة المحمولة تلقائيًا بعد المسح.",
+      waiting: "تتصل تطبيقات NodoAssist الرسمية للأجهزة المحمولة تلقائيًا بعد المسح.",
       help: "مساعدة الإقران",
       manageDevices: "إدارة الأجهزة",
     },
@@ -174,7 +174,7 @@ export const ar: TranslationMap = {
   },
   worktrees: {
     title: "مساحات العمل المُدارة",
-    subtitle: "نسخ مستودعات معزولة مملوكة لـ OpenClaw.",
+    subtitle: "نسخ مستودعات معزولة مملوكة لـ NodoAssist.",
     cleanNow: "تنظيف الآن",
     name: "الاسم",
     repo: "المستودع",
@@ -538,7 +538,7 @@ export const ar: TranslationMap = {
     skillWorkshop: "راجع المقترحات وحسّنها وطبّقها قبل أن تصبح مهارات نشطة.",
     nodes: "الأجهزة المقترنة والأوامر.",
     chat: "دردشة Gateway للتدخلات السريعة.",
-    config: "تعديل openclaw.json.",
+    config: "تعديل nodoassist.json.",
     communications: "القنوات، والرسائل، وإعدادات الصوت.",
     appearance: "السمة، وواجهة المستخدم، وإعدادات معالج الإعداد.",
     automation: "الأوامر، والخطافات، وcron، والمكونات الإضافية.",
@@ -967,7 +967,7 @@ export const ar: TranslationMap = {
       metadataUpgradeTitle: "تغيير بيانات تعريف الجهاز بانتظار الموافقة.",
       metadataUpgradeSummary: "هذا الجهاز مقترن بالفعل، لكن تغيير بيانات التعريف بانتظار الموافقة.",
       mobileHint:
-        "على الهاتف؟ انسخ عنوان URL الكامل (بما في ذلك #token=...) من openclaw dashboard --no-open على سطح المكتب.",
+        "على الهاتف؟ انسخ عنوان URL الكامل (بما في ذلك #token=...) من nodoassist dashboard --no-open على سطح المكتب.",
       docsTitle: "مستندات اقتران الأجهزة (تُفتح في تبويب جديد)",
       docsLink: "المستندات: اقتران الأجهزة",
     },
@@ -1005,7 +1005,7 @@ export const ar: TranslationMap = {
       modelAuthExpiresIn: "ينتهي {when}",
       modelAuthAttentionExpiredTitle: "انتهت صلاحية مصادقة النموذج",
       modelAuthAttentionExpiringTitle: "ستنتهي صلاحية مصادقة النموذج قريبًا",
-      modelAuthAttentionExpiredDesc: "{providers} — أعد المصادقة باستخدام openclaw models auth",
+      modelAuthAttentionExpiredDesc: "{providers} — أعد المصادقة باستخدام nodoassist models auth",
       modelAuthAttentionExpiringEntry: "{provider} ({when})",
     },
     attention: {
@@ -1456,9 +1456,10 @@ export const ar: TranslationMap = {
         title: "المصادقة مطلوبة",
         summary:
           "يمكن الوصول إلى Gateway، لكنه يحتاج إلى رمز مميز أو كلمة مرور مطابقة قبل أن يتمكن هذا المتصفح من الاتصال.",
-        stepPaste: "الصق الرمز المميز من openclaw dashboard --no-open أو أدخل كلمة المرور المكونة.",
+        stepPaste:
+          "الصق الرمز المميز من nodoassist dashboard --no-open أو أدخل كلمة المرور المكونة.",
         stepGenerate:
-          "إذا لم يتم تكوين رمز مميز، فشغل openclaw doctor --generate-gateway-token على مضيف Gateway.",
+          "إذا لم يتم تكوين رمز مميز، فشغل nodoassist doctor --generate-gateway-token على مضيف Gateway.",
         stepConnect: "انقر على Connect مرة أخرى بعد تحديث بيانات الاعتماد.",
       },
       authFailed: {
@@ -1466,7 +1467,7 @@ export const ar: TranslationMap = {
         summary:
           "تم رفض بيانات الاعتماد المقدمة. السبب الأكثر شيوعا هو رمز مميز قديم أو رمز منسوخ من عنوان Gateway آخر.",
         stepDashboard:
-          "شغل openclaw dashboard --no-open وافتح عنوان URL الجديد أو الصق رمزه المميز.",
+          "شغل nodoassist dashboard --no-open وافتح عنوان URL الجديد أو الصق رمزه المميز.",
         stepReplace:
           "استبدل قيم الرمز المميز/كلمة المرور القديمة؛ لا تعد استخدام رمز من عنوان Gateway آخر.",
         stepMode:
@@ -1488,8 +1489,8 @@ export const ar: TranslationMap = {
         summary: "يحتاج هذا المتصفح إلى موافقة لمرة واحدة من مضيف Gateway قبل استخدام Control UI.",
         upgradeSummary:
           "هذا المتصفح معروف بالفعل، لكن الوصول المطلوب تغير ويحتاج إلى موافقة جديدة.",
-        stepList: "شغل openclaw devices list على مضيف Gateway.",
-        stepApproveId: "وافق على هذا الطلب: openclaw devices approve {requestId}.",
+        stepList: "شغل nodoassist devices list على مضيف Gateway.",
+        stepApproveId: "وافق على هذا الطلب: nodoassist devices approve {requestId}.",
         stepApprove: "وافق على طلب المتصفح/الجهاز المعلق من تلك القائمة.",
         stepReconnect: "أعد الاتصال بعد اكتمال الموافقة.",
       },
@@ -1513,20 +1514,21 @@ export const ar: TranslationMap = {
         title: "عدم تطابق البروتوكول",
         summary: "لا يتفق Control UI المقدم مع Gateway العامل على بروتوكول الاتصال المدعوم.",
         stepDashboard:
-          "أعد فتح لوحة المعلومات المقدمة باستخدام openclaw dashboard حتى يأتي UI وGateway من التثبيت نفسه.",
+          "أعد فتح لوحة المعلومات المقدمة باستخدام nodoassist dashboard حتى يأتي UI وGateway من التثبيت نفسه.",
         stepDevUi:
           "إذا كنت تستخدم pnpm ui:dev، فأعد بناء أو تشغيل واجهة التطوير مقابل checkout الحالي.",
-        stepRestart: "أعد تشغيل Gateway بعد تحديث OpenClaw حتى يقدم البروتوكول الحالي.",
+        stepRestart: "أعد تشغيل Gateway بعد تحديث NodoAssist حتى يقدم البروتوكول الحالي.",
       },
       network: {
         title: "تعذر الاتصال",
         summary:
           "لم يتمكن المتصفح من إكمال اتصال Gateway. تحقق من الهدف والنقل قبل إعادة تجربة بيانات الاعتماد.",
-        stepGateway: "تأكد من أن Gateway يعمل باستخدام openclaw status أو openclaw gateway run.",
+        stepGateway:
+          "تأكد من أن Gateway يعمل باستخدام nodoassist status أو nodoassist gateway run.",
         stepUrl:
           "تحقق من عنوان WebSocket واستخدم wss:// عندما يكون Gateway خلف HTTPS/Tailscale Serve.",
         stepDashboard:
-          "أعد فتح لوحة المعلومات باستخدام openclaw dashboard --no-open لنسخ عنوان URL وتفاصيل المصادقة الحالية.",
+          "أعد فتح لوحة المعلومات باستخدام nodoassist dashboard --no-open لنسخ عنوان URL وتفاصيل المصادقة الحالية.",
       },
     },
   },

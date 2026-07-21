@@ -3,8 +3,8 @@ set -euo pipefail
 
 cd /repo
 
-export OPENCLAW_STATE_DIR="/tmp/openclaw-test"
-export OPENCLAW_CONFIG_PATH="${OPENCLAW_STATE_DIR}/openclaw.json"
+export NODOASSIST_STATE_DIR="/tmp/nodoassist-test"
+export NODOASSIST_CONFIG_PATH="${NODOASSIST_STATE_DIR}/nodoassist.json"
 
 read_positive_int_env() {
   local name="${1:?missing environment variable name}"
@@ -23,7 +23,7 @@ read_positive_int_env() {
 print_log_tail() {
   local log_file="$1"
   local max_bytes
-  max_bytes="$(read_positive_int_env OPENCLAW_CLEANUP_SMOKE_LOG_PRINT_BYTES 65536)" || return $?
+  max_bytes="$(read_positive_int_env NODOASSIST_CLEANUP_SMOKE_LOG_PRINT_BYTES 65536)" || return $?
   if [ ! -f "$log_file" ]; then
     return 0
   fi
@@ -41,7 +41,7 @@ print_log_tail() {
   tail -c "$max_bytes" "$log_file"
 }
 
-read_positive_int_env OPENCLAW_CLEANUP_SMOKE_LOG_PRINT_BYTES 65536 >/dev/null
+read_positive_int_env NODOASSIST_CLEANUP_SMOKE_LOG_PRINT_BYTES 65536 >/dev/null
 
 ensure_cleanup_smoke_node_options() {
   local current="${NODE_OPTIONS:-}"
@@ -57,38 +57,38 @@ ensure_cleanup_smoke_node_options() {
 ensure_cleanup_smoke_node_options
 
 echo "==> Build"
-if ! pnpm build >/tmp/openclaw-cleanup-build.log 2>&1; then
-  print_log_tail /tmp/openclaw-cleanup-build.log
+if ! pnpm build >/tmp/nodoassist-cleanup-build.log 2>&1; then
+  print_log_tail /tmp/nodoassist-cleanup-build.log
   exit 1
 fi
 
 echo "==> Seed state"
-mkdir -p "${OPENCLAW_STATE_DIR}/credentials"
-mkdir -p "${OPENCLAW_STATE_DIR}/agents/main/sessions"
-echo '{}' >"${OPENCLAW_CONFIG_PATH}"
-echo 'creds' >"${OPENCLAW_STATE_DIR}/credentials/marker.txt"
-echo 'session' >"${OPENCLAW_STATE_DIR}/agents/main/sessions/sessions.json"
+mkdir -p "${NODOASSIST_STATE_DIR}/credentials"
+mkdir -p "${NODOASSIST_STATE_DIR}/agents/main/sessions"
+echo '{}' >"${NODOASSIST_CONFIG_PATH}"
+echo 'creds' >"${NODOASSIST_STATE_DIR}/credentials/marker.txt"
+echo 'session' >"${NODOASSIST_STATE_DIR}/agents/main/sessions/sessions.json"
 
 echo "==> Reset (config+creds+sessions)"
-if ! pnpm openclaw reset --scope config+creds+sessions --yes --non-interactive >/tmp/openclaw-cleanup-reset.log 2>&1; then
-  print_log_tail /tmp/openclaw-cleanup-reset.log
+if ! pnpm nodoassist reset --scope config+creds+sessions --yes --non-interactive >/tmp/nodoassist-cleanup-reset.log 2>&1; then
+  print_log_tail /tmp/nodoassist-cleanup-reset.log
   exit 1
 fi
 
-test ! -f "${OPENCLAW_CONFIG_PATH}"
-test ! -d "${OPENCLAW_STATE_DIR}/credentials"
-test ! -d "${OPENCLAW_STATE_DIR}/agents/main/sessions"
+test ! -f "${NODOASSIST_CONFIG_PATH}"
+test ! -d "${NODOASSIST_STATE_DIR}/credentials"
+test ! -d "${NODOASSIST_STATE_DIR}/agents/main/sessions"
 
 echo "==> Recreate minimal config"
-mkdir -p "${OPENCLAW_STATE_DIR}/credentials"
-echo '{}' >"${OPENCLAW_CONFIG_PATH}"
+mkdir -p "${NODOASSIST_STATE_DIR}/credentials"
+echo '{}' >"${NODOASSIST_CONFIG_PATH}"
 
 echo "==> Uninstall (state only)"
-if ! pnpm openclaw uninstall --state --yes --non-interactive >/tmp/openclaw-cleanup-uninstall.log 2>&1; then
-  print_log_tail /tmp/openclaw-cleanup-uninstall.log
+if ! pnpm nodoassist uninstall --state --yes --non-interactive >/tmp/nodoassist-cleanup-uninstall.log 2>&1; then
+  print_log_tail /tmp/nodoassist-cleanup-uninstall.log
   exit 1
 fi
 
-test ! -d "${OPENCLAW_STATE_DIR}"
+test ! -d "${NODOASSIST_STATE_DIR}"
 
 echo "OK"

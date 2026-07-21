@@ -1,7 +1,7 @@
 // Covers managed task-flow audit summaries and stale-flow classification.
 import { afterEach, describe, expect, it } from "vitest";
 import { captureEnv } from "../test-utils/env.js";
-import { withOpenClawTestState } from "../test-utils/openclaw-test-state.js";
+import { withNodoAssistTestState } from "../test-utils/nodoassist-test-state.js";
 import { SUBAGENT_KILL_TASK_ERROR } from "./detached-task-runtime-contract.js";
 import {
   createRunningTaskRun as createRunningTaskRunOrNull,
@@ -26,7 +26,7 @@ import {
 } from "./task-registry.js";
 import type { TaskRecord } from "./task-registry.types.js";
 
-const ORIGINAL_ENV = captureEnv(["OPENCLAW_STATE_DIR"]);
+const ORIGINAL_ENV = captureEnv(["NODOASSIST_STATE_DIR"]);
 
 function createManagedTaskFlow(
   params: Parameters<typeof createManagedTaskFlowOrNull>[0],
@@ -64,10 +64,10 @@ function requireFinding(
 }
 
 async function withTaskFlowAuditStateDir(run: (root: string) => Promise<void>): Promise<void> {
-  await withOpenClawTestState(
+  await withNodoAssistTestState(
     {
       layout: "state-only",
-      prefix: "openclaw-task-flow-audit-",
+      prefix: "nodoassist-task-flow-audit-",
     },
     async (state) => {
       resetTaskRegistryDeliveryRuntimeForTests();

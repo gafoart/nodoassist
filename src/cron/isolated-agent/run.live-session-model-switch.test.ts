@@ -89,7 +89,7 @@ function requireEmbeddedAgentCall(index: number): {
       }
     | undefined;
   if (!call) {
-    throw new Error(`Expected embedded OpenClaw agent call ${index}`);
+    throw new Error(`Expected embedded NodoAssist agent call ${index}`);
   }
   return call;
 }
@@ -124,9 +124,9 @@ describe("runCronIsolatedAgentTurn — LiveSessionModelSwitchError retry (#57206
 
   afterEach(() => {
     if (previousFastTestEnv !== undefined) {
-      process.env.OPENCLAW_TEST_FAST = previousFastTestEnv;
+      process.env.NODOASSIST_TEST_FAST = previousFastTestEnv;
     } else {
-      delete process.env.OPENCLAW_TEST_FAST;
+      delete process.env.NODOASSIST_TEST_FAST;
     }
   });
 

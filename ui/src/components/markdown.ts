@@ -93,7 +93,7 @@ const MARKDOWN_CACHE_MAX_CHARS = 50_000;
 const INLINE_DATA_IMAGE_RE = /^data:image\/[a-z0-9.+-]+;base64,/i;
 const BLOCK_ART_LINE_RE = /^[\t \u00a0▀▄█]+$/u;
 const BLOCK_ART_GLYPH_RE = /[▀▄█]/u;
-const blockArtCopyPayloadPrefix = "openclaw:block-art-code:";
+const blockArtCopyPayloadPrefix = "nodoassist:block-art-code:";
 export const blockArtCodeBlockCopyPayloadEncoding = "block-art-json";
 const HOST_LOCAL_FILE_HREF_RE =
   /^(?:~\/|\/(?:Users|home|tmp|private\/tmp|var\/folders|private\/var\/folders)\/|\/[A-Za-z]:\/|[A-Za-z]:[\\/])/;
@@ -192,7 +192,7 @@ const DOCS_ROOT_SEGMENTS = new Set([
   "maturity-scorecard",
   "network",
   "nodes",
-  "openclaw-agent-runtime",
+  "nodoassist-agent-runtime",
   "perplexity",
   "plan",
   "platforms",
@@ -370,8 +370,8 @@ const DOCS_SHORTLINK_PATHS = new Set([
   "/zai",
 ]);
 const APP_RESOURCE_ROOT_SEGMENTS = new Set([
-  "__openclaw",
-  "__openclaw__",
+  "__nodoassist",
+  "__nodoassist__",
   "_next",
   "api",
   "apple-touch-icon.png",
@@ -576,7 +576,7 @@ function segmentsStartWith(segments: string[], prefix: string[]): boolean {
 }
 
 function isControlUiResourcePath(segments: string[]): boolean {
-  if (segments.includes("__openclaw__") || segments.includes("__openclaw")) {
+  if (segments.includes("__nodoassist__") || segments.includes("__nodoassist")) {
     return true;
   }
   const segment = segments[0];
@@ -1090,7 +1090,7 @@ md.core.ruler.after("linkify", "linkify-cjk-trim", (state) => {
         continue;
       }
       // Only trim linkify-generated autolinks, not explicit markdown links
-      // like [OpenClaw中文](https://docs.openclaw.ai) where CJK in display
+      // like [NodoAssist中文](https://docs.openclaw.ai) where CJK in display
       // text is intentional and href must not be rewritten.
       if (token.markup !== "linkify") {
         continue;

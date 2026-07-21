@@ -1,9 +1,9 @@
 // Line plugin module implements group policy behavior.
-import { resolveChannelGroupRequireMention } from "openclaw/plugin-sdk/channel-policy";
-import { resolveExactLineGroupConfigKey, type OpenClawConfig } from "./channel-api.js";
+import { resolveChannelGroupRequireMention } from "nodoassist/plugin-sdk/channel-policy";
+import { resolveExactLineGroupConfigKey, type NodoAssistConfig } from "./channel-api.js";
 
 type LineGroupContext = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   accountId?: string | null;
   groupId?: string | null;
 };

@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/msteams",
+  "name": "@nodoassist/msteams",
   "version": "2026.6.11",
-  "description": "OpenClaw Microsoft Teams channel plugin for bot conversations.",
+  "description": "NodoAssist Microsoft Teams channel plugin for bot conversations.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -15,19 +15,19 @@
     "typebox": "1.3.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
+    "@nodoassist/plugin-sdk": "workspace:*",
     "jose": "6.2.3",
-    "openclaw": "workspace:*"
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
@@ -51,7 +51,7 @@
       }
     },
     "install": {
-      "npmSpec": "@openclaw/msteams",
+      "npmSpec": "@nodoassist/msteams",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.10"
     },
@@ -59,7 +59,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11"
+      "nodoassistVersion": "2026.6.11"
     },
     "release": {
       "publishToClawHub": true,

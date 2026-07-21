@@ -2,12 +2,12 @@
 import { Buffer } from "node:buffer";
 import { once } from "node:events";
 import http, { type IncomingMessage, type ServerResponse } from "node:http";
-import { MAX_TIMER_TIMEOUT_MS } from "openclaw/plugin-sdk/number-runtime";
+import { MAX_TIMER_TIMEOUT_MS } from "nodoassist/plugin-sdk/number-runtime";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-vi.mock("openclaw/plugin-sdk/core", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/core")>(
-    "openclaw/plugin-sdk/core",
+vi.mock("nodoassist/plugin-sdk/core", async () => {
+  const actual = await vi.importActual<typeof import("nodoassist/plugin-sdk/core")>(
+    "nodoassist/plugin-sdk/core",
   );
   return {
     ...actual,

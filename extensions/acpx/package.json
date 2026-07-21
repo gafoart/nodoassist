@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/acpx",
+  "name": "@nodoassist/acpx",
   "version": "2026.6.11",
-  "description": "OpenClaw ACP runtime backend with plugin-owned session and transport management.",
+  "description": "NodoAssist ACP runtime backend with plugin-owned session and transport management.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -14,14 +14,14 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
     "install": {
-      "npmSpec": "@openclaw/acpx",
+      "npmSpec": "@nodoassist/acpx",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.25"
     },
@@ -29,7 +29,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11",
+      "nodoassistVersion": "2026.6.11",
       "staticAssets": [
         {
           "source": "./src/runtime-internals/mcp-proxy.mjs",

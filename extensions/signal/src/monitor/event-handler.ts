@@ -1,5 +1,5 @@
 // Signal plugin module implements event handler behavior.
-import { resolveHumanDelayConfig } from "openclaw/plugin-sdk/agent-runtime";
+import { resolveHumanDelayConfig } from "nodoassist/plugin-sdk/agent-runtime";
 import {
   createStatusReactionController,
   DEFAULT_EMOJIS,
@@ -10,7 +10,7 @@ import {
   shouldAckReaction,
   type StatusReactionController,
   type StatusReactionEmojis,
-} from "openclaw/plugin-sdk/channel-feedback";
+} from "nodoassist/plugin-sdk/channel-feedback";
 import {
   buildMentionRegexes,
   buildChannelInboundEventContext,
@@ -24,39 +24,45 @@ import {
   hasVisibleInboundReplyDispatch,
   runChannelInboundEvent,
   shouldDebounceTextInbound,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { logInboundDrop } from "openclaw/plugin-sdk/channel-inbound";
-import { createChannelMessageReplyPipeline } from "openclaw/plugin-sdk/channel-outbound";
+} from "nodoassist/plugin-sdk/channel-inbound";
+import { logInboundDrop } from "nodoassist/plugin-sdk/channel-inbound";
+import { createChannelMessageReplyPipeline } from "nodoassist/plugin-sdk/channel-outbound";
 import {
   resolveChannelGroupPolicy,
   resolveChannelGroupRequireMention,
-} from "openclaw/plugin-sdk/channel-policy";
-import { hasControlCommand } from "openclaw/plugin-sdk/command-auth-native";
-import { recordInboundSession } from "openclaw/plugin-sdk/conversation-runtime";
+} from "nodoassist/plugin-sdk/channel-policy";
+import { hasControlCommand } from "nodoassist/plugin-sdk/command-auth-native";
+import { recordInboundSession } from "nodoassist/plugin-sdk/conversation-runtime";
 import {
   createInternalHookEvent,
   fireAndForgetHook,
   toInternalMessageReceivedContext,
   triggerInternalHook,
-} from "openclaw/plugin-sdk/hook-runtime";
-import { kindFromMime } from "openclaw/plugin-sdk/media-runtime";
-import { createChannelHistoryWindow } from "openclaw/plugin-sdk/reply-history";
-import { resolveBatchedReplyThreadingPolicy } from "openclaw/plugin-sdk/reply-reference";
-import { dispatchInboundMessage } from "openclaw/plugin-sdk/reply-runtime";
-import { createReplyDispatcherWithTyping } from "openclaw/plugin-sdk/reply-runtime";
-import { settleReplyDispatcher } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveAgentRoute, resolveInboundLastRouteSessionKey } from "openclaw/plugin-sdk/routing";
+} from "nodoassist/plugin-sdk/hook-runtime";
+import { kindFromMime } from "nodoassist/plugin-sdk/media-runtime";
+import { createChannelHistoryWindow } from "nodoassist/plugin-sdk/reply-history";
+import { resolveBatchedReplyThreadingPolicy } from "nodoassist/plugin-sdk/reply-reference";
+import { dispatchInboundMessage } from "nodoassist/plugin-sdk/reply-runtime";
+import { createReplyDispatcherWithTyping } from "nodoassist/plugin-sdk/reply-runtime";
+import { settleReplyDispatcher } from "nodoassist/plugin-sdk/reply-runtime";
+import {
+  resolveAgentRoute,
+  resolveInboundLastRouteSessionKey,
+} from "nodoassist/plugin-sdk/routing";
 import {
   danger,
   logVerbose,
   shouldLogVerbose,
   sleep as delay,
-} from "openclaw/plugin-sdk/runtime-env";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
-import { readSessionUpdatedAt, resolveStorePath } from "openclaw/plugin-sdk/session-store-runtime";
-import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
-import { enqueueSystemEvent } from "openclaw/plugin-sdk/system-event-runtime";
-import { normalizeE164, truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "nodoassist/plugin-sdk/runtime-env";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "nodoassist/plugin-sdk/security-runtime";
+import {
+  readSessionUpdatedAt,
+  resolveStorePath,
+} from "nodoassist/plugin-sdk/session-store-runtime";
+import { normalizeOptionalString } from "nodoassist/plugin-sdk/string-coerce-runtime";
+import { enqueueSystemEvent } from "nodoassist/plugin-sdk/system-event-runtime";
+import { normalizeE164, truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import { resolveSignalReplyToMode } from "../accounts.js";
 import {
   maybeResolveSignalApprovalReaction,

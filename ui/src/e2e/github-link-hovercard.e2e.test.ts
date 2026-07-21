@@ -11,7 +11,7 @@ import {
 
 const chromiumExecutablePath = resolvePlaywrightChromiumExecutablePath(chromium.executablePath());
 const chromiumAvailable = canRunPlaywrightChromium(chromiumExecutablePath);
-const allowMissingChromium = process.env.OPENCLAW_UI_E2E_ALLOW_MISSING_CHROMIUM === "1";
+const allowMissingChromium = process.env.NODOASSIST_UI_E2E_ALLOW_MISSING_CHROMIUM === "1";
 const describeControlUiE2e = chromiumAvailable || !allowMissingChromium ? describe : describe.skip;
 
 let server: ControlUiE2eServer;
@@ -81,8 +81,8 @@ describeControlUiE2e("GitHub link hover cards", () => {
                 login: "steipete",
                 mergedAt: "2026-07-04T09:53:52Z",
                 number: 99816,
-                owner: "openclaw",
-                repo: "openclaw",
+                owner: "nodoassist",
+                repo: "nodoassist",
                 state: "closed",
                 title: "fix(agents): derive conversation scope from trusted group facts",
                 updatedAt: "2026-07-04T09:53:55Z",
@@ -98,8 +98,8 @@ describeControlUiE2e("GitHub link hover cards", () => {
                 kind: "issue",
                 login: "octocat",
                 number: 99815,
-                owner: "openclaw",
-                repo: "openclaw",
+                owner: "nodoassist",
+                repo: "nodoassist",
                 state: "open",
                 title: "Keep hover previews compact",
                 updatedAt: new Date().toISOString(),
@@ -136,7 +136,7 @@ describeControlUiE2e("GitHub link hover cards", () => {
     await pullLink.hover();
     const card = page.locator(".github-link-hovercard");
     await expectText(card, "Merged");
-    await expectText(card, "openclaw/openclaw #99816");
+    await expectText(card, "nodoassist/nodoassist #99816");
     await expectText(card, "+101");
     await expectText(card, "−12");
     await expectText(card, "3 files");

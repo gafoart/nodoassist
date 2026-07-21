@@ -1,19 +1,19 @@
 // Telegram plugin module implements token behavior.
-import { resolveNormalizedAccountEntry } from "openclaw/plugin-sdk/account-core";
-import type { BaseTokenResolution } from "openclaw/plugin-sdk/channel-contract";
-import { tryReadSecretFileSync } from "openclaw/plugin-sdk/channel-core";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import type { TelegramAccountConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveDefaultSecretProviderAlias } from "openclaw/plugin-sdk/provider-auth";
+import { resolveNormalizedAccountEntry } from "nodoassist/plugin-sdk/account-core";
+import type { BaseTokenResolution } from "nodoassist/plugin-sdk/channel-contract";
+import { tryReadSecretFileSync } from "nodoassist/plugin-sdk/channel-core";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import type { TelegramAccountConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { resolveDefaultSecretProviderAlias } from "nodoassist/plugin-sdk/provider-auth";
 import {
   DEFAULT_ACCOUNT_ID,
   normalizeAccountId,
   normalizeOptionalAccountId,
-} from "openclaw/plugin-sdk/routing";
+} from "nodoassist/plugin-sdk/routing";
 import {
   normalizeSecretInputString,
   resolveSecretInputString,
-} from "openclaw/plugin-sdk/secret-input";
+} from "nodoassist/plugin-sdk/secret-input";
 import { resolveDefaultTelegramAccountId } from "./account-selection.js";
 
 type TelegramTokenSource = "env" | "tokenFile" | "config" | "none";
@@ -28,7 +28,7 @@ type RuntimeTokenValueResolution =
   | { status: "missing" };
 
 function resolveEnvSecretRefValue(params: {
-  cfg?: Pick<OpenClawConfig, "secrets">;
+  cfg?: Pick<NodoAssistConfig, "secrets">;
   provider: string;
   id: string;
   env?: NodeJS.ProcessEnv;
@@ -56,7 +56,7 @@ function resolveEnvSecretRefValue(params: {
 }
 
 function resolveRuntimeTokenValue(params: {
-  cfg?: Pick<OpenClawConfig, "secrets">;
+  cfg?: Pick<NodoAssistConfig, "secrets">;
   value: unknown;
   path: string;
 }): RuntimeTokenValueResolution {
@@ -106,7 +106,7 @@ type ResolveTelegramTokenOpts = {
 };
 
 export function resolveTelegramToken(
-  cfg?: OpenClawConfig,
+  cfg?: NodoAssistConfig,
   opts: ResolveTelegramTokenOpts = {},
 ): TelegramTokenResolution {
   const requestedAccountId = normalizeOptionalAccountId(opts.accountId);

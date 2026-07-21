@@ -1,10 +1,10 @@
 {
-  "name": "@openclaw/lmstudio-provider",
+  "name": "@nodoassist/lmstudio-provider",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw LM Studio provider plugin",
+  "description": "NodoAssist LM Studio provider plugin",
   "type": "module",
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

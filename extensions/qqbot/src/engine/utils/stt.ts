@@ -7,13 +7,13 @@
 
 import * as fs from "node:fs";
 import path from "node:path";
-import { mimeTypeFromFilePath } from "openclaw/plugin-sdk/media-mime";
+import { mimeTypeFromFilePath } from "nodoassist/plugin-sdk/media-mime";
 import {
   readProviderJsonResponse,
   readResponseTextLimited,
-} from "openclaw/plugin-sdk/provider-http";
-import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-utility-runtime";
+} from "nodoassist/plugin-sdk/provider-http";
+import { fetchWithSsrFGuard } from "nodoassist/plugin-sdk/ssrf-runtime";
+import { truncateUtf16Safe } from "nodoassist/plugin-sdk/text-utility-runtime";
 import {
   normalizeOptionalString,
   asOptionalObjectRecord as asRecord,

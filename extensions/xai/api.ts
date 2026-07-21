@@ -1,9 +1,9 @@
 // Xai API module exposes the plugin public contract.
-import { normalizeProviderId } from "openclaw/plugin-sdk/provider-model-shared";
+import { normalizeProviderId } from "nodoassist/plugin-sdk/provider-model-shared";
 import {
   normalizeOptionalLowercaseString,
   readStringValue,
-} from "openclaw/plugin-sdk/string-coerce-runtime";
+} from "nodoassist/plugin-sdk/string-coerce-runtime";
 import {
   applyXaiModelCompat,
   HTML_ENTITY_TOOL_CALL_ARGUMENTS_ENCODING,

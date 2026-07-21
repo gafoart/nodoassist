@@ -6,10 +6,10 @@ import type {
 } from "./user-turn-transcript.types.js";
 
 const RUNTIME_USER_TURN_TRANSCRIPT_CONTEXT = Symbol.for(
-  "openclaw.runtimeUserTurnTranscriptContext",
+  "nodoassist.runtimeUserTurnTranscriptContext",
 );
 const RUNTIME_USER_TURN_TRANSCRIPT_RECORDER = Symbol.for(
-  "openclaw.runtimeUserTurnTranscriptRecorder",
+  "nodoassist.runtimeUserTurnTranscriptRecorder",
 );
 
 export type RuntimeUserTurnTranscriptContext = {

@@ -756,7 +756,7 @@ class ChatPane extends LitElement {
         <div class="chat-pane__actions">
           ${this.onSplitDown
             ? html`
-                <openclaw-tooltip .content=${t("chat.splitView.splitDown")}>
+                <nodoassist-tooltip .content=${t("chat.splitView.splitDown")}>
                   <button
                     class="btn btn--ghost btn--icon"
                     type="button"
@@ -765,12 +765,12 @@ class ChatPane extends LitElement {
                   >
                     ${icons.panelBottomOpen}
                   </button>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
               `
             : null}
           ${this.onSplitRight
             ? html`
-                <openclaw-tooltip .content=${t("chat.splitView.splitRight")}>
+                <nodoassist-tooltip .content=${t("chat.splitView.splitRight")}>
                   <button
                     class="btn btn--ghost btn--icon"
                     type="button"
@@ -779,12 +779,12 @@ class ChatPane extends LitElement {
                   >
                     ${icons.panelRightOpen}
                   </button>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
               `
             : null}
           ${this.onClosePane
             ? html`
-                <openclaw-tooltip .content=${t("chat.splitView.closePane")}>
+                <nodoassist-tooltip .content=${t("chat.splitView.closePane")}>
                   <button
                     class="btn btn--ghost btn--icon"
                     type="button"
@@ -793,7 +793,7 @@ class ChatPane extends LitElement {
                   >
                     ${icons.x}
                   </button>
-                </openclaw-tooltip>
+                </nodoassist-tooltip>
               `
             : null}
         </div>
@@ -1033,12 +1033,12 @@ class ChatPane extends LitElement {
   }
 }
 
-if (!customElements.get("openclaw-chat-pane")) {
-  customElements.define("openclaw-chat-pane", ChatPane);
+if (!customElements.get("nodoassist-chat-pane")) {
+  customElements.define("nodoassist-chat-pane", ChatPane);
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "openclaw-chat-pane": ChatPane;
+    "nodoassist-chat-pane": ChatPane;
   }
 }

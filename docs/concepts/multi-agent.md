@@ -16,12 +16,12 @@ Each agent has its own:
 
 - **Workspace**: files, `AGENTS.md`/`SOUL.md`/`USER.md`, local notes, persona rules.
 - **State directory** (`agentDir`): auth profiles, model registry, per-agent config.
-- **Session store**: chat history and routing state under `~/.openclaw/agents/<agentId>/sessions`.
+- **Session store**: chat history and routing state under `~/.nodoassist/agents/<agentId>/sessions`.
 
 Auth profiles are per-agent, read from:
 
 ```text
-~/.openclaw/agents/<agentId>/agent/auth-profiles.json
+~/.nodoassist/agents/<agentId>/agent/auth-profiles.json
 ```
 
 <Note>
@@ -29,10 +29,10 @@ Auth profiles are per-agent, read from:
 </Note>
 
 <Warning>
-Never reuse `agentDir` across agents — it causes auth/session state collisions. When a secondary agent's local OAuth credential is expired or its refresh fails, OpenClaw reads through to the default/main agent's credential for the same profile id and adopts whichever token is freshest, without copying the refresh token into the secondary agent's store. If you want a fully independent OAuth account, sign in from that agent. If you copy credentials manually, copy only portable static `api_key` or `token` profiles — OAuth refresh material is not portable by default (`copyToAgents` can opt a profile in explicitly).
+Never reuse `agentDir` across agents — it causes auth/session state collisions. When a secondary agent's local OAuth credential is expired or its refresh fails, NodoAssist reads through to the default/main agent's credential for the same profile id and adopts whichever token is freshest, without copying the refresh token into the secondary agent's store. If you want a fully independent OAuth account, sign in from that agent. If you copy credentials manually, copy only portable static `api_key` or `token` profiles — OAuth refresh material is not portable by default (`copyToAgents` can opt a profile in explicitly).
 </Warning>
 
-Skills load from each agent workspace plus shared roots such as `~/.openclaw/skills`, then filter by the effective agent skill allowlist. Use `agents.defaults.skills` for a shared baseline and `agents.list[].skills` for a per-agent replacement (explicit entries replace the default, they do not merge). See [Skills: per-agent vs shared](/tools/skills#per-agent-vs-shared-skills) and [Skills: agent allowlists](/tools/skills#agent-allowlists).
+Skills load from each agent workspace plus shared roots such as `~/.nodoassist/skills`, then filter by the effective agent skill allowlist. Use `agents.defaults.skills` for a shared baseline and `agents.list[].skills` for a per-agent replacement (explicit entries replace the default, they do not merge). See [Skills: per-agent vs shared](/tools/skills#per-agent-vs-shared-skills) and [Skills: agent allowlists](/tools/skills#agent-allowlists).
 
 <Note>
 **Workspace note:** each agent's workspace is the **default cwd**, not a hard sandbox. Relative paths resolve inside the workspace, but absolute paths can reach other host locations unless sandboxing is enabled. See [Sandboxing](/gateway/sandboxing).
@@ -40,30 +40,30 @@ Skills load from each agent workspace plus shared roots such as `~/.openclaw/ski
 
 ## Paths
 
-| What                      | Default                                                                                | Override                                                                                 |
-| ------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Config                    | `~/.openclaw/openclaw.json`                                                            | `OPENCLAW_CONFIG_PATH`                                                                   |
-| State dir                 | `~/.openclaw`                                                                          | `OPENCLAW_STATE_DIR`                                                                     |
-| Default agent's workspace | `~/.openclaw/workspace` (or `workspace-<profile>` when `OPENCLAW_PROFILE` is set)      | `agents.list[].workspace`, then `agents.defaults.workspace`, or `OPENCLAW_WORKSPACE_DIR` |
-| Other agents' workspace   | `<stateDir>/workspace-<agentId>` (or `<agents.defaults.workspace>/<agentId>` when set) | `agents.list[].workspace`                                                                |
-| Agent dir                 | `~/.openclaw/agents/<agentId>/agent`                                                   | `agents.list[].agentDir`                                                                 |
-| Sessions                  | `~/.openclaw/agents/<agentId>/sessions`                                                | —                                                                                        |
+| What                      | Default                                                                                | Override                                                                                   |
+| ------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Config                    | `~/.nodoassist/nodoassist.json`                                                        | `NODOASSIST_CONFIG_PATH`                                                                   |
+| State dir                 | `~/.nodoassist`                                                                        | `NODOASSIST_STATE_DIR`                                                                     |
+| Default agent's workspace | `~/.nodoassist/workspace` (or `workspace-<profile>` when `NODOASSIST_PROFILE` is set)  | `agents.list[].workspace`, then `agents.defaults.workspace`, or `NODOASSIST_WORKSPACE_DIR` |
+| Other agents' workspace   | `<stateDir>/workspace-<agentId>` (or `<agents.defaults.workspace>/<agentId>` when set) | `agents.list[].workspace`                                                                  |
+| Agent dir                 | `~/.nodoassist/agents/<agentId>/agent`                                                 | `agents.list[].agentDir`                                                                   |
+| Sessions                  | `~/.nodoassist/agents/<agentId>/sessions`                                              | —                                                                                          |
 
 ### Single-agent mode (default)
 
-If you configure nothing, OpenClaw runs one agent:
+If you configure nothing, NodoAssist runs one agent:
 
 - `agentId` defaults to `main`.
 - Sessions key as `agent:main:<mainKey>` (default `mainKey` is `main`).
-- Workspace defaults to `~/.openclaw/workspace` (or `workspace-<profile>` when `OPENCLAW_PROFILE` is set to something other than `default`).
-- State defaults to `~/.openclaw/agents/main/agent`.
+- Workspace defaults to `~/.nodoassist/workspace` (or `workspace-<profile>` when `NODOASSIST_PROFILE` is set to something other than `default`).
+- State defaults to `~/.nodoassist/agents/main/agent`.
 
 ## Agent helper
 
 Add a new isolated agent:
 
 ```bash
-openclaw agents add work
+nodoassist agents add work
 ```
 
 Flags: `--workspace <dir>`, `--model <id>`, `--agent-dir <dir>`, `--bind <channel[:accountId]>` (repeatable), `--non-interactive` (requires `--workspace`).
@@ -71,7 +71,7 @@ Flags: `--workspace <dir>`, `--model <id>`, `--agent-dir <dir>`, `--bind <channe
 Add `bindings` to route inbound messages (the wizard offers to do this for you), then verify:
 
 ```bash
-openclaw agents list --bindings
+nodoassist agents list --bindings
 ```
 
 ## Quick start
@@ -79,11 +79,11 @@ openclaw agents list --bindings
 <Steps>
   <Step title="Create each agent workspace">
     ```bash
-    openclaw agents add coding
-    openclaw agents add social
+    nodoassist agents add coding
+    nodoassist agents add social
     ```
 
-    Each agent gets its own workspace with `SOUL.md`, `AGENTS.md`, and optional `USER.md`, plus a dedicated `agentDir` and session store under `~/.openclaw/agents/<agentId>`.
+    Each agent gets its own workspace with `SOUL.md`, `AGENTS.md`, and optional `USER.md`, plus a dedicated `agentDir` and session store under `~/.nodoassist/agents/<agentId>`.
 
   </Step>
   <Step title="Create channel accounts">
@@ -94,7 +94,7 @@ openclaw agents list --bindings
     - WhatsApp: link each phone number per account.
 
     ```bash
-    openclaw channels login --channel whatsapp --account work
+    nodoassist channels login --channel whatsapp --account work
     ```
 
     See channel guides: [Discord](/channels/discord), [Telegram](/channels/telegram), [WhatsApp](/channels/whatsapp).
@@ -105,9 +105,9 @@ openclaw agents list --bindings
   </Step>
   <Step title="Restart and verify">
     ```bash
-    openclaw gateway restart
-    openclaw agents list --bindings
-    openclaw channels status --probe
+    nodoassist gateway restart
+    nodoassist agents list --bindings
+    nodoassist channels status --probe
     ```
   </Step>
 </Steps>
@@ -171,8 +171,8 @@ Direct chats collapse to the agent's main session key by default, so true isolat
 {
   agents: {
     list: [
-      { id: "alex", workspace: "~/.openclaw/workspace-alex" },
-      { id: "mia", workspace: "~/.openclaw/workspace-mia" },
+      { id: "alex", workspace: "~/.nodoassist/workspace-alex" },
+      { id: "mia", workspace: "~/.nodoassist/workspace-mia" },
     ],
   },
   bindings: [
@@ -208,7 +208,7 @@ Bindings are deterministic and most-specific wins. See [Channel routing](/channe
 
 Channels that support multiple accounts (e.g. WhatsApp) use `accountId` to identify each login. Each `accountId` routes to its own agent, so one server can host multiple phone numbers without mixing sessions.
 
-Set `channels.<channel>.defaultAccount` to choose the account used when `accountId` is omitted. When unset, OpenClaw falls back to `default` if present, otherwise the first configured account id (sorted).
+Set `channels.<channel>.defaultAccount` to choose the account used when `accountId` is omitted. When unset, NodoAssist falls back to `default` if present, otherwise the first configured account id (sorted).
 
 Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imessage`, `irc`, `line`, `mattermost`, `matrix`, `nextcloud-talk`, `nostr`, `signal`, `slack`, `telegram`, `whatsapp`, `zalo`, `zalouser`.
 
@@ -229,8 +229,8 @@ Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imess
     {
       agents: {
         list: [
-          { id: "main", workspace: "~/.openclaw/workspace-main" },
-          { id: "coding", workspace: "~/.openclaw/workspace-coding" },
+          { id: "main", workspace: "~/.nodoassist/workspace-main" },
+          { id: "coding", workspace: "~/.nodoassist/workspace-coding" },
         ],
       },
       bindings: [
@@ -276,8 +276,8 @@ Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imess
     {
       agents: {
         list: [
-          { id: "main", workspace: "~/.openclaw/workspace-main" },
-          { id: "alerts", workspace: "~/.openclaw/workspace-alerts" },
+          { id: "main", workspace: "~/.nodoassist/workspace-main" },
+          { id: "alerts", workspace: "~/.nodoassist/workspace-alerts" },
         ],
       },
       bindings: [
@@ -315,11 +315,11 @@ Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imess
     Link each account before starting the gateway:
 
     ```bash
-    openclaw channels login --channel whatsapp --account personal
-    openclaw channels login --channel whatsapp --account biz
+    nodoassist channels login --channel whatsapp --account personal
+    nodoassist channels login --channel whatsapp --account biz
     ```
 
-    `~/.openclaw/openclaw.json` (JSON5):
+    `~/.nodoassist/nodoassist.json` (JSON5):
 
     ```js
     {
@@ -329,14 +329,14 @@ Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imess
             id: "home",
             default: true,
             name: "Home",
-            workspace: "~/.openclaw/workspace-home",
-            agentDir: "~/.openclaw/agents/home/agent",
+            workspace: "~/.nodoassist/workspace-home",
+            agentDir: "~/.nodoassist/agents/home/agent",
           },
           {
             id: "work",
             name: "Work",
-            workspace: "~/.openclaw/workspace-work",
-            agentDir: "~/.openclaw/agents/work/agent",
+            workspace: "~/.nodoassist/workspace-work",
+            agentDir: "~/.nodoassist/agents/work/agent",
           },
         ],
       },
@@ -369,12 +369,12 @@ Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imess
         whatsapp: {
           accounts: {
             personal: {
-              // Optional override. Default: ~/.openclaw/credentials/whatsapp/personal
-              // authDir: "~/.openclaw/credentials/whatsapp/personal",
+              // Optional override. Default: ~/.nodoassist/credentials/whatsapp/personal
+              // authDir: "~/.nodoassist/credentials/whatsapp/personal",
             },
             biz: {
-              // Optional override. Default: ~/.openclaw/credentials/whatsapp/biz
-              // authDir: "~/.openclaw/credentials/whatsapp/biz",
+              // Optional override. Default: ~/.nodoassist/credentials/whatsapp/biz
+              // authDir: "~/.nodoassist/credentials/whatsapp/biz",
             },
           },
         },
@@ -398,13 +398,13 @@ Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imess
           {
             id: "chat",
             name: "Everyday",
-            workspace: "~/.openclaw/workspace-chat",
+            workspace: "~/.nodoassist/workspace-chat",
             model: "anthropic/claude-sonnet-4-6",
           },
           {
             id: "opus",
             name: "Deep Work",
-            workspace: "~/.openclaw/workspace-opus",
+            workspace: "~/.nodoassist/workspace-opus",
             model: "anthropic/claude-opus-4-6",
           },
         ],
@@ -429,13 +429,13 @@ Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imess
           {
             id: "chat",
             name: "Everyday",
-            workspace: "~/.openclaw/workspace-chat",
+            workspace: "~/.nodoassist/workspace-chat",
             model: "anthropic/claude-sonnet-4-6",
           },
           {
             id: "opus",
             name: "Deep Work",
-            workspace: "~/.openclaw/workspace-opus",
+            workspace: "~/.nodoassist/workspace-opus",
             model: "anthropic/claude-opus-4-6",
           },
         ],
@@ -463,7 +463,7 @@ Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imess
           {
             id: "family",
             name: "Family",
-            workspace: "~/.openclaw/workspace-family",
+            workspace: "~/.nodoassist/workspace-family",
             identity: { name: "Family Bot" },
             groupChat: {
               mentionPatterns: ["@family", "@familybot", "@Family Bot"],
@@ -514,7 +514,7 @@ Each agent can have its own sandbox and tool restrictions:
     list: [
       {
         id: "personal",
-        workspace: "~/.openclaw/workspace-personal",
+        workspace: "~/.nodoassist/workspace-personal",
         sandbox: {
           mode: "off",  // No sandbox for personal agent
         },
@@ -522,7 +522,7 @@ Each agent can have its own sandbox and tool restrictions:
       },
       {
         id: "family",
-        workspace: "~/.openclaw/workspace-family",
+        workspace: "~/.nodoassist/workspace-family",
         sandbox: {
           mode: "all",     // Always sandboxed
           scope: "agent",  // One container per agent

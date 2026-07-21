@@ -100,10 +100,10 @@ async function renderTemplate(sessionData: SessionData) {
     (currentHtml, [name, value]) =>
       currentHtml.replace(
         new RegExp(
-          `(<(?:script|style)\\b(?=[^>]*\\bdata-openclaw-export-placeholder="${name}")[^>]*>)(</(?:script|style)>)`,
+          `(<(?:script|style)\\b(?=[^>]*\\bdata-nodoassist-export-placeholder="${name}")[^>]*>)(</(?:script|style)>)`,
         ),
         (_match: string, openTag: string, closeTag: string) =>
-          `${openTag.replace(/\sdata-openclaw-export-placeholder="[^"]*"/, "")}${value}${closeTag}`,
+          `${openTag.replace(/\sdata-nodoassist-export-placeholder="[^"]*"/, "")}${value}${closeTag}`,
       ),
     templateHtml,
   );

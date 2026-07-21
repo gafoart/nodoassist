@@ -2,11 +2,11 @@
 summary: "Cohere setup (auth + model selection)"
 title: "Cohere"
 read_when:
-  - You want to use Cohere with OpenClaw
+  - You want to use Cohere with NodoAssist
   - You need the Cohere API key env var or CLI auth choice
 ---
 
-[Cohere](https://cohere.com) provides OpenAI-compatible inference through its Compatibility API. OpenClaw bundles the Cohere provider during its externalization transition and also publishes it as an official external plugin.
+[Cohere](https://cohere.com) provides OpenAI-compatible inference through its Compatibility API. NodoAssist bundles the Cohere provider during its externalization transition and also publishes it as an official external plugin.
 
 | Property        | Value                                                |
 | --------------- | ---------------------------------------------------- |
@@ -22,18 +22,18 @@ read_when:
 
 ## Get started
 
-1. Cohere ships with current OpenClaw packages. If it is missing, install the external package and restart the Gateway:
+1. Cohere ships with current NodoAssist packages. If it is missing, install the external package and restart the Gateway:
 
 ```bash
-openclaw plugins install @openclaw/cohere-provider
-openclaw gateway restart
+nodoassist plugins install @nodoassist/cohere-provider
+nodoassist gateway restart
 ```
 
 2. Create a Cohere API key.
 3. Run onboarding:
 
 ```bash
-openclaw onboard --non-interactive \
+nodoassist onboard --non-interactive \
   --auth-choice cohere-api-key \
   --cohere-api-key "$COHERE_API_KEY"
 ```
@@ -41,7 +41,7 @@ openclaw onboard --non-interactive \
 4. Confirm the catalog is available:
 
 ```bash
-openclaw models list --provider cohere
+nodoassist models list --provider cohere
 ```
 
 Onboarding only sets Cohere as the primary model when no primary model is already configured.

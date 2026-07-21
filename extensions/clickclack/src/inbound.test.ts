@@ -1,7 +1,7 @@
 // Clickclack tests cover inbound plugin behavior.
-import { createPluginRuntimeMock } from "openclaw/plugin-sdk/channel-test-helpers";
-import type { PluginRuntime } from "openclaw/plugin-sdk/core";
-import { buildAgentSessionKey, resolveAgentRoute } from "openclaw/plugin-sdk/routing";
+import { createPluginRuntimeMock } from "nodoassist/plugin-sdk/channel-test-helpers";
+import type { PluginRuntime } from "nodoassist/plugin-sdk/core";
+import { buildAgentSessionKey, resolveAgentRoute } from "nodoassist/plugin-sdk/routing";
 import { describe, expect, it, vi } from "vitest";
 import { handleClickClackInbound } from "./inbound.js";
 import { setClickClackRuntime } from "./runtime.js";

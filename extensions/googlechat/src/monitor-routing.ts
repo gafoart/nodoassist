@@ -3,9 +3,9 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import {
   createFixedWindowRateLimiter,
   WEBHOOK_RATE_LIMIT_DEFAULTS,
-} from "openclaw/plugin-sdk/webhook-ingress";
-import { createWebhookInFlightLimiter } from "openclaw/plugin-sdk/webhook-request-guards";
-import { registerWebhookTargetWithPluginRoute } from "openclaw/plugin-sdk/webhook-targets";
+} from "nodoassist/plugin-sdk/webhook-ingress";
+import { createWebhookInFlightLimiter } from "nodoassist/plugin-sdk/webhook-request-guards";
+import { registerWebhookTargetWithPluginRoute } from "nodoassist/plugin-sdk/webhook-targets";
 import type { WebhookTarget } from "./monitor-types.js";
 import { createGoogleChatWebhookRequestHandler } from "./monitor-webhook.js";
 import type { GoogleChatEvent } from "./types.js";

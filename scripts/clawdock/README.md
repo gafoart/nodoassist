@@ -2,7 +2,7 @@
 
 Stop typing `docker-compose` commands. Just type `clawdock-start`.
 
-Inspired by Simon Willison's [Running OpenClaw in Docker](https://til.simonwillison.net/llms/openclaw-docker).
+Inspired by Simon Willison's [Running NodoAssist in Docker](https://til.simonwillison.net/llms/openclaw-docker).
 
 - [Quickstart](#quickstart)
 - [Available Commands](#available-commands)
@@ -49,9 +49,9 @@ If you previously installed ClawDock from `scripts/shell-helpers/clawdock-helper
 clawdock-help
 ```
 
-On first command, ClawDock auto-detects your OpenClaw directory:
+On first command, ClawDock auto-detects your NodoAssist directory:
 
-- Checks common paths (`~/openclaw`, `~/workspace/openclaw`, etc.)
+- Checks common paths (`~/nodoassist`, `~/workspace/nodoassist`, etc.)
 - If found, asks you to confirm
 - Saves to `~/.clawdock/config`
 
@@ -98,7 +98,7 @@ clawdock-approve <request-id>
 | Command                   | Description                                    |
 | ------------------------- | ---------------------------------------------- |
 | `clawdock-shell`          | Interactive shell inside the gateway container |
-| `clawdock-cli <command>`  | Run OpenClaw CLI commands                      |
+| `clawdock-cli <command>`  | Run NodoAssist CLI commands                    |
 | `clawdock-exec <command>` | Execute arbitrary commands in the container    |
 
 ### Web UI & Devices
@@ -129,8 +129,8 @@ clawdock-approve <request-id>
 | ---------------------- | ----------------------------------------- |
 | `clawdock-health`      | Run gateway health check                  |
 | `clawdock-token`       | Display the gateway authentication token  |
-| `clawdock-cd`          | Jump to the OpenClaw project directory    |
-| `clawdock-config`      | Open the OpenClaw config directory        |
+| `clawdock-cd`          | Jump to the NodoAssist project directory  |
+| `clawdock-config`      | Open the NodoAssist config directory      |
 | `clawdock-show-config` | Print config files with redacted values   |
 | `clawdock-workspace`   | Open the workspace directory              |
 | `clawdock-help`        | Show all available commands with examples |
@@ -143,8 +143,8 @@ The Docker setup uses three config files on the host. The container never stores
 
 | File                          | Purpose                                                                        |
 | ----------------------------- | ------------------------------------------------------------------------------ |
-| `Dockerfile`                  | Builds the `openclaw:local` image (Node 22, pnpm, non-root `node` user)        |
-| `docker-compose.yml`          | Defines `openclaw-gateway` and `openclaw-cli` services, bind-mounts, ports     |
+| `Dockerfile`                  | Builds the `nodoassist:local` image (Node 22, pnpm, non-root `node` user)      |
+| `docker-compose.yml`          | Defines `nodoassist-gateway` and `nodoassist-cli` services, bind-mounts, ports |
 | `docker-compose.override.yml` | Standard Docker Compose overrides — auto-loaded by ClawDock helpers if present |
 | `docker-compose.extra.yml`    | Additional overrides — loaded after the standard override if present           |
 | `scripts/docker/setup.sh`     | First-time setup — builds image, creates `.env` from `.env.example`            |
@@ -152,22 +152,22 @@ The Docker setup uses three config files on the host. The container never stores
 
 ### Config Files
 
-| File                        | Purpose                                          | Examples                                                                                                |
-| --------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `<project>/.env`            | **Docker infra** — image, ports, gateway token   | `OPENCLAW_GATEWAY_TOKEN`, `OPENCLAW_IMAGE`, `OPENCLAW_GATEWAY_PORT`, `OPENCLAW_AUTH_PROFILE_SECRET_DIR` |
-| `~/.openclaw/.env`          | **Secrets** — API keys and bot tokens            | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `TELEGRAM_BOT_TOKEN`                                             |
-| `~/.openclaw/openclaw.json` | **Behavior config** — models, channels, policies | Model selection, WhatsApp allowlists, agent settings                                                    |
+| File                            | Purpose                                          | Examples                                                                                                        |
+| ------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `<project>/.env`                | **Docker infra** — image, ports, gateway token   | `NODOASSIST_GATEWAY_TOKEN`, `NODOASSIST_IMAGE`, `NODOASSIST_GATEWAY_PORT`, `NODOASSIST_AUTH_PROFILE_SECRET_DIR` |
+| `~/.nodoassist/.env`            | **Secrets** — API keys and bot tokens            | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `TELEGRAM_BOT_TOKEN`                                                     |
+| `~/.nodoassist/nodoassist.json` | **Behavior config** — models, channels, policies | Model selection, WhatsApp allowlists, agent settings                                                            |
 
-**Do NOT** put API keys or bot tokens in `openclaw.json`. Use `~/.openclaw/.env` for all secrets.
+**Do NOT** put API keys or bot tokens in `nodoassist.json`. Use `~/.nodoassist/.env` for all secrets.
 
 ### Initial Setup
 
 `./scripts/docker/setup.sh` handles first-time Docker configuration:
 
-- Builds the `openclaw:local` image from `Dockerfile`
+- Builds the `nodoassist:local` image from `Dockerfile`
 - Creates `<project>/.env` from `.env.example` with a generated gateway token
 - Creates the auth-profile secret key directory
-- Sets up `~/.openclaw` directories if they don't exist
+- Sets up `~/.nodoassist` directories if they don't exist
 
 ```bash
 ./scripts/docker/setup.sh
@@ -176,16 +176,16 @@ The Docker setup uses three config files on the host. The container never stores
 After setup, add your API keys:
 
 ```bash
-vim ~/.openclaw/.env
+vim ~/.nodoassist/.env
 ```
 
 See `.env.example` for all supported keys.
 
 The `Dockerfile` supports optional build args:
 
-- `OPENCLAW_IMAGE_APT_PACKAGES` — extra apt packages to install (e.g. `ffmpeg`); also accepts legacy `OPENCLAW_DOCKER_APT_PACKAGES`
-- `OPENCLAW_IMAGE_PIP_PACKAGES` — extra Python packages to install (e.g. `requests==2.32.5`); pin versions and use only package indexes you trust
-- `OPENCLAW_INSTALL_BROWSER=1` — pre-install Chromium for browser automation (adds ~300MB, but skips the 60-90s Playwright install on each container start)
+- `NODOASSIST_IMAGE_APT_PACKAGES` — extra apt packages to install (e.g. `ffmpeg`); also accepts legacy `NODOASSIST_DOCKER_APT_PACKAGES`
+- `NODOASSIST_IMAGE_PIP_PACKAGES` — extra Python packages to install (e.g. `requests==2.32.5`); pin versions and use only package indexes you trust
+- `NODOASSIST_INSTALL_BROWSER=1` — pre-install Chromium for browser automation (adds ~300MB, but skips the 60-90s Playwright install on each container start)
 
 ### How It Works in Docker
 
@@ -193,27 +193,27 @@ The `Dockerfile` supports optional build args:
 
 ```yaml
 volumes:
-  - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
-  - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
-  - ${OPENCLAW_AUTH_PROFILE_SECRET_DIR}:/home/node/.config/openclaw
+  - ${NODOASSIST_CONFIG_DIR}:/home/node/.nodoassist
+  - ${NODOASSIST_WORKSPACE_DIR}:/home/node/.nodoassist/workspace
+  - ${NODOASSIST_AUTH_PROFILE_SECRET_DIR}:/home/node/.config/nodoassist
 ```
 
 This means:
 
-- `~/.openclaw/.env` is available inside the container at `/home/node/.openclaw/.env` — OpenClaw loads it automatically as the global env fallback
-- `~/.openclaw/openclaw.json` is available at `/home/node/.openclaw/openclaw.json` — the gateway watches it and hot-reloads most changes
-- `~/.openclaw-auth-profile-secrets` is available at `/home/node/.config/openclaw` — OpenClaw stores the auth-profile encryption key there
-- Downloadable external plugin packages and install records live under the mounted OpenClaw home
-- Bundled OpenClaw channel plugins, such as Discord when present in the image,
+- `~/.nodoassist/.env` is available inside the container at `/home/node/.nodoassist/.env` — NodoAssist loads it automatically as the global env fallback
+- `~/.nodoassist/nodoassist.json` is available at `/home/node/.nodoassist/nodoassist.json` — the gateway watches it and hot-reloads most changes
+- `~/.nodoassist-auth-profile-secrets` is available at `/home/node/.config/nodoassist` — NodoAssist stores the auth-profile encryption key there
+- Downloadable external plugin packages and install records live under the mounted NodoAssist home
+- Bundled NodoAssist channel plugins, such as Discord when present in the image,
   should normally load from the image-matched bundled copy. Avoid installing
-  pinned `@openclaw/*` channel packages into the mounted home unless you
+  pinned `@nodoassist/*` channel packages into the mounted home unless you
   deliberately want an external npm override.
 - No need to add API keys to `docker-compose.yml` or configure anything inside the container
 - Keys survive `clawdock-update`, `clawdock-rebuild`, and `clawdock-clean` because they live on the host
 
-The project `.env` feeds Docker Compose directly (gateway token, image name, ports). The `~/.openclaw/.env` feeds the OpenClaw process inside the container.
+The project `.env` feeds Docker Compose directly (gateway token, image name, ports). The `~/.nodoassist/.env` feeds the NodoAssist process inside the container.
 
-### Example `~/.openclaw/.env`
+### Example `~/.nodoassist/.env`
 
 ```bash
 OPENAI_API_KEY=sk-...
@@ -224,31 +224,31 @@ TELEGRAM_BOT_TOKEN=123456:ABCDEF...
 ### Example `<project>/.env`
 
 ```bash
-OPENCLAW_CONFIG_DIR=/Users/you/.openclaw
-OPENCLAW_WORKSPACE_DIR=/Users/you/.openclaw/workspace
-OPENCLAW_GATEWAY_PORT=18789
-OPENCLAW_BRIDGE_PORT=18790
-OPENCLAW_GATEWAY_BIND=lan
-OPENCLAW_GATEWAY_TOKEN=<generated-by-docker-setup>
-OPENCLAW_AUTH_PROFILE_SECRET_DIR=/Users/you/.openclaw-auth-profile-secrets
-OPENCLAW_IMAGE=openclaw:local
+NODOASSIST_CONFIG_DIR=/Users/you/.nodoassist
+NODOASSIST_WORKSPACE_DIR=/Users/you/.nodoassist/workspace
+NODOASSIST_GATEWAY_PORT=18789
+NODOASSIST_BRIDGE_PORT=18790
+NODOASSIST_GATEWAY_BIND=lan
+NODOASSIST_GATEWAY_TOKEN=<generated-by-docker-setup>
+NODOASSIST_AUTH_PROFILE_SECRET_DIR=/Users/you/.nodoassist-auth-profile-secrets
+NODOASSIST_IMAGE=nodoassist:local
 ```
 
 ### Env Precedence
 
-OpenClaw loads env vars in this order (highest wins, never overrides existing):
+NodoAssist loads env vars in this order (highest wins, never overrides existing):
 
 1. **Process environment** — `docker-compose.yml` `environment:` block (gateway token, session keys)
 2. **`.env` in CWD** — project root `.env` (Docker infra vars)
-3. **`~/.openclaw/.env`** — global secrets (API keys, bot tokens)
-4. **`openclaw.json` `env` block** — inline vars, applied only if still missing
-5. **Shell env import** — optional login-shell scrape (`OPENCLAW_LOAD_SHELL_ENV=1`)
+3. **`~/.nodoassist/.env`** — global secrets (API keys, bot tokens)
+4. **`nodoassist.json` `env` block** — inline vars, applied only if still missing
+5. **Shell env import** — optional login-shell scrape (`NODOASSIST_LOAD_SHELL_ENV=1`)
 
 ## Common Workflows
 
-### Update OpenClaw
+### Update NodoAssist
 
-> **Important:** `openclaw update` does not work inside Docker.
+> **Important:** `nodoassist update` does not work inside Docker.
 > The container runs as a non-root user with a source-built image, so `npm i -g` fails with EACCES.
 > Use `clawdock-update` instead — it pulls, rebuilds, and restarts from the host.
 
@@ -295,7 +295,7 @@ clawdock-shell
 **Inside the container, login to WhatsApp:**
 
 ```bash
-openclaw channels login --channel whatsapp --verbose
+nodoassist channels login --channel whatsapp --verbose
 ```
 
 Scan the QR code with WhatsApp on your phone.
@@ -303,7 +303,7 @@ Scan the QR code with WhatsApp on your phone.
 **Verify connection:**
 
 ```bash
-openclaw status
+nodoassist status
 ```
 
 ### Troubleshooting Device Pairing
@@ -333,7 +333,7 @@ clawdock-fix-token
 This will:
 
 1. Read the token from your `.env` file
-2. Configure it in the OpenClaw config
+2. Configure it in the NodoAssist config
 3. Restart the gateway
 4. Verify the configuration
 
@@ -349,7 +349,7 @@ docker ps
 
 - Docker and Docker Compose installed
 - Bash or Zsh shell
-- OpenClaw project (run `scripts/docker/setup.sh`)
+- NodoAssist project (run `scripts/docker/setup.sh`)
 
 ## Development
 

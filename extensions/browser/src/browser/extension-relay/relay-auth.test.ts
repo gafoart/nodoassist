@@ -11,17 +11,17 @@ import {
 } from "./relay-auth.js";
 
 let stateDir = "";
-const prevStateDir = process.env.OPENCLAW_STATE_DIR;
+const prevStateDir = process.env.NODOASSIST_STATE_DIR;
 
 beforeEach(() => {
-  stateDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-relay-auth-")));
-  process.env.OPENCLAW_STATE_DIR = stateDir;
+  stateDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "nodoassist-relay-auth-")));
+  process.env.NODOASSIST_STATE_DIR = stateDir;
 });
 afterEach(() => {
   if (prevStateDir === undefined) {
-    delete process.env.OPENCLAW_STATE_DIR;
+    delete process.env.NODOASSIST_STATE_DIR;
   } else {
-    process.env.OPENCLAW_STATE_DIR = prevStateDir;
+    process.env.NODOASSIST_STATE_DIR = prevStateDir;
   }
   fs.rmSync(stateDir, { recursive: true, force: true });
 });
@@ -51,10 +51,10 @@ describe("extension relay host-local secret", () => {
   it("gives different hosts (state dirs) different secrets", () => {
     const a = ensureExtensionRelayToken();
     const otherDir = fs.realpathSync(
-      fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-relay-auth-2-")),
+      fs.mkdtempSync(path.join(os.tmpdir(), "nodoassist-relay-auth-2-")),
     );
     try {
-      const b = ensureExtensionRelayToken({ ...process.env, OPENCLAW_STATE_DIR: otherDir });
+      const b = ensureExtensionRelayToken({ ...process.env, NODOASSIST_STATE_DIR: otherDir });
       expect(b).not.toBe(a);
     } finally {
       fs.rmSync(otherDir, { recursive: true, force: true });

@@ -1,11 +1,11 @@
-# OpenClaw LINE
+# NodoAssist LINE
 
-Official OpenClaw channel plugin for LINE Bot API chats.
+Official NodoAssist channel plugin for LINE Bot API chats.
 
-Install from OpenClaw:
+Install from NodoAssist:
 
 ```bash
-openclaw plugin add @openclaw/line
+nodoassist plugin add @nodoassist/line
 ```
 
-Configure LINE channel credentials in OpenClaw, then connect the bot to the chats where agents should receive and send messages.
+Configure LINE channel credentials in NodoAssist, then connect the bot to the chats where agents should receive and send messages.

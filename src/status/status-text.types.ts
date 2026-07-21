@@ -1,3 +1,4 @@
+import type { FastMode } from "@nodoassist/normalization-core/string-coerce";
 // Status text types describe runtime status records used by status rendering.
 import type {
   ElevatedLevel,
@@ -6,14 +7,13 @@ import type {
   VerboseLevel,
 } from "../auto-reply/thinking.js";
 import type { SessionEntry, SessionScope } from "../config/sessions.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import type { MediaUnderstandingDecision } from "../media-understanding/types.js";
-import type { FastMode } from "@openclaw/normalization-core/string-coerce";
 
 // Input contract for buildStatusText. Most fields are already resolved by the
 // caller so status rendering can stay presentation-focused and side-effect-light.
 export type BuildStatusTextParams = {
-  cfg: OpenClawConfig;
+  cfg: NodoAssistConfig;
   sessionEntry?: SessionEntry;
   sessionKey: string;
   parentSessionKey?: string;

@@ -1,9 +1,9 @@
-// Vllm plugin entrypoint registers its OpenClaw integration.
+// Vllm plugin entrypoint registers its NodoAssist integration.
 import {
   definePluginEntry,
-  type OpenClawPluginApi,
+  type NodoAssistPluginApi,
   type ProviderAuthMethodNonInteractiveContext,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "nodoassist/plugin-sdk/plugin-entry";
 import {
   buildVllmProvider,
   VLLM_DEFAULT_API_KEY_ENV_VAR,
@@ -17,14 +17,14 @@ import { resolveThinkingProfile } from "./thinking-policy.js";
 const PROVIDER_ID = "vllm";
 
 async function loadProviderSetup() {
-  return await import("openclaw/plugin-sdk/provider-setup");
+  return await import("nodoassist/plugin-sdk/provider-setup");
 }
 
 export default definePluginEntry({
   id: "vllm",
   name: "vLLM Provider",
   description: "Bundled vLLM provider plugin",
-  register(api: OpenClawPluginApi) {
+  register(api: NodoAssistPluginApi) {
     api.registerProvider({
       id: PROVIDER_ID,
       label: "vLLM",
@@ -90,7 +90,7 @@ export default definePluginEntry({
       },
       buildUnknownModelHint: () =>
         "vLLM requires authentication to be registered as a provider. " +
-        'Set VLLM_API_KEY (any value works) or run "openclaw configure". ' +
+        'Set VLLM_API_KEY (any value works) or run "nodoassist configure". ' +
         "See: https://docs.openclaw.ai/providers/vllm",
       resolveThinkingProfile,
       wrapStreamFn: wrapVllmProviderStream,

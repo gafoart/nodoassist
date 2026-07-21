@@ -1,8 +1,8 @@
 /**
  * Resolves provider stream functions and API keys for embedded agents.
  */
-import { getApiProvider } from "@openclaw/ai/internal/runtime";
-import { stripSystemPromptCacheBoundary } from "@openclaw/ai/internal/shared";
+import { getApiProvider } from "@nodoassist/ai/internal/runtime";
+import { stripSystemPromptCacheBoundary } from "@nodoassist/ai/internal/shared";
 import { streamSimple } from "../../llm/stream.js";
 import { createAnthropicVertexStreamFnForModel } from "../anthropic-vertex-stream.js";
 import { createBoundaryAwareStreamFnForModel } from "../provider-transport-stream.js";
@@ -10,7 +10,7 @@ import type { StreamFn } from "../runtime/index.js";
 import type { EmbeddedRunAttemptParams } from "./run/types.js";
 
 let embeddedAgentBaseStreamFnCache = new WeakMap<object, StreamFn | undefined>();
-let openClawNativeCodexResponsesStreamFnForTest: StreamFn | undefined;
+let nodoAssistNativeCodexResponsesStreamFnForTest: StreamFn | undefined;
 
 type EmbeddedStreamOptions = Parameters<StreamFn>[2] & {
   authProfileId?: string;
@@ -33,7 +33,7 @@ export function resetEmbeddedAgentBaseStreamFnCacheForTest(): void {
   embeddedAgentBaseStreamFnCache = new WeakMap<object, StreamFn | undefined>();
 }
 
-function isDefaultOpenClawStreamFnForModel(
+function isDefaultNodoAssistStreamFnForModel(
   model: EmbeddedRunAttemptParams["model"],
   streamFn: StreamFn | undefined,
 ): boolean {
@@ -56,17 +56,17 @@ function isOpenAICodexResponsesModel(model: EmbeddedRunAttemptParams["model"]): 
   return model.provider === "openai" && model.api === "openai-chatgpt-responses";
 }
 
-function resolveOpenClawNativeCodexResponsesStreamFn(params: {
+function resolveNodoAssistNativeCodexResponsesStreamFn(params: {
   model: EmbeddedRunAttemptParams["model"];
   currentStreamFn: StreamFn | undefined;
 }): StreamFn | undefined {
   if (!isOpenAICodexResponsesModel(params.model)) {
     return undefined;
   }
-  if (!isDefaultOpenClawStreamFnForModel(params.model, params.currentStreamFn)) {
+  if (!isDefaultNodoAssistStreamFnForModel(params.model, params.currentStreamFn)) {
     return undefined;
   }
-  return openClawNativeCodexResponsesStreamFnForTest ?? params.currentStreamFn ?? streamSimple;
+  return nodoAssistNativeCodexResponsesStreamFnForTest ?? params.currentStreamFn ?? streamSimple;
 }
 
 export function describeEmbeddedAgentStreamStrategy(params: {
@@ -82,14 +82,14 @@ export function describeEmbeddedAgentStreamStrategy(params: {
     return "anthropic-vertex";
   }
   if (
-    resolveOpenClawNativeCodexResponsesStreamFn({
+    resolveNodoAssistNativeCodexResponsesStreamFn({
       model: params.model,
       currentStreamFn: params.currentStreamFn,
     })
   ) {
-    return "openclaw-native-codex-responses";
+    return "nodoassist-native-codex-responses";
   }
-  if (isDefaultOpenClawStreamFnForModel(params.model, params.currentStreamFn)) {
+  if (isDefaultNodoAssistStreamFnForModel(params.model, params.currentStreamFn)) {
     return createBoundaryAwareStreamFnForModel(params.model)
       ? `boundary-aware:${params.model.api}`
       : "stream-simple";
@@ -149,12 +149,12 @@ export function resolveEmbeddedAgentStreamFn(params: {
     return createAnthropicVertexStreamFnForModel(params.model);
   }
 
-  const openClawNativeCodexResponsesStreamFn = resolveOpenClawNativeCodexResponsesStreamFn({
+  const nodoAssistNativeCodexResponsesStreamFn = resolveNodoAssistNativeCodexResponsesStreamFn({
     model: params.model,
     currentStreamFn: params.currentStreamFn,
   });
-  if (openClawNativeCodexResponsesStreamFn) {
-    return wrapEmbeddedAgentStreamFn(openClawNativeCodexResponsesStreamFn, {
+  if (nodoAssistNativeCodexResponsesStreamFn) {
+    return wrapEmbeddedAgentStreamFn(nodoAssistNativeCodexResponsesStreamFn, {
       runSignal: params.signal,
       resolvedApiKey: params.resolvedApiKey,
       authProfileId: params.authProfileId,
@@ -173,7 +173,7 @@ export function resolveEmbeddedAgentStreamFn(params: {
   }
 
   if (
-    isDefaultOpenClawStreamFnForModel(params.model, params.currentStreamFn) ||
+    isDefaultNodoAssistStreamFnForModel(params.model, params.currentStreamFn) ||
     hasResolvedRuntimeApiKey(params.resolvedApiKey) ||
     // Proxied anthropic-messages providers (provider !== "anthropic", e.g. pioneer)
     // must use the boundary-aware managed transport even without a resolved runtime
@@ -187,9 +187,9 @@ export function resolveEmbeddedAgentStreamFn(params: {
   ) {
     const boundaryAwareStreamFn = createBoundaryAwareStreamFnForModel(params.model);
     if (boundaryAwareStreamFn) {
-      // Some OpenClaw session factories return a provider-specific stream wrapper
+      // Some NodoAssist session factories return a provider-specific stream wrapper
       // once runtime auth is resolved. Keep transport-supported APIs on
-      // OpenClaw's HTTP transport so provider-specific auth/header semantics
+      // NodoAssist's HTTP transport so provider-specific auth/header semantics
       // are not lost behind that wrapper.
       // Boundary-aware transports read credentials from options.apiKey just
       // like provider-owned streams, but the embedded run layer never gets to
@@ -222,11 +222,11 @@ export function resolveEmbeddedAgentStreamFn(params: {
 }
 
 export const testing = {
-  setOpenClawNativeCodexResponsesStreamFnForTest(streamFn: StreamFn | undefined): void {
-    openClawNativeCodexResponsesStreamFnForTest = streamFn;
+  setNodoAssistNativeCodexResponsesStreamFnForTest(streamFn: StreamFn | undefined): void {
+    nodoAssistNativeCodexResponsesStreamFnForTest = streamFn;
   },
-  resetOpenClawNativeCodexResponsesStreamFnForTest(): void {
-    openClawNativeCodexResponsesStreamFnForTest = undefined;
+  resetNodoAssistNativeCodexResponsesStreamFnForTest(): void {
+    nodoAssistNativeCodexResponsesStreamFnForTest = undefined;
   },
 };
 

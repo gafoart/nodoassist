@@ -2,7 +2,7 @@
 import { createHash } from "node:crypto";
 import type { AnyChunk } from "@slack/types";
 import type { Block, KnownBlock } from "@slack/web-api";
-import type { ChannelProgressDraftLine } from "openclaw/plugin-sdk/channel-outbound";
+import type { ChannelProgressDraftLine } from "nodoassist/plugin-sdk/channel-outbound";
 import { SLACK_MAX_BLOCKS } from "./blocks-input.js";
 import { escapeSlackMrkdwn } from "./monitor/mrkdwn.js";
 import { truncateSlackText } from "./truncate.js";
@@ -12,7 +12,7 @@ const DEFAULT_SLACK_PROGRESS_DETAIL_MAX_CHARS = 120;
 const DEFAULT_SLACK_PROGRESS_TASK_DETAIL_MAX_CHARS = 48;
 const SLACK_PROGRESS_CHUNK_TEXT_MAX = 256;
 const SLACK_PROGRESS_TASK_TITLE_MAX = 120;
-const SLACK_PROGRESS_PLAN_FALLBACK_TITLE = "Thinking";
+const SLACK_PROGRESS_PLAN_FALLBACK_TITLE = ".nodoassist";
 
 type SlackPlanTaskStatus = "in_progress" | "complete" | "error";
 

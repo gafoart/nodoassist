@@ -1,5 +1,5 @@
 // Perplexity tests cover perplexity web search provider plugin behavior.
-import { withEnv, withEnvAsync } from "openclaw/plugin-sdk/test-env";
+import { withEnv, withEnvAsync } from "nodoassist/plugin-sdk/test-env";
 import { describe, expect, it, vi } from "vitest";
 import { createStreamingResponse } from "../../test-support/streaming-error-response.js";
 import { createPerplexityWebSearchProvider } from "./perplexity-web-search-provider.js";
@@ -22,7 +22,7 @@ describe("perplexity web search provider", () => {
           throw new Error("Expected tool definition");
         }
 
-        await expect(tool.execute({ query: "OpenClaw docs" })).resolves.toEqual({
+        await expect(tool.execute({ query: "NodoAssist docs" })).resolves.toEqual({
           error: "missing_perplexity_api_key",
           message:
             "web_search (perplexity) needs an API key. Set PERPLEXITY_API_KEY or OPENROUTER_API_KEY in the Gateway environment, or configure tools.web.search.perplexity.apiKey. If you do not want to configure a search API key, use web_fetch for a specific URL or the browser tool for interactive pages.",
@@ -154,7 +154,7 @@ describe("perplexity web search provider", () => {
           throw new Error("Expected tool definition");
         }
 
-        await expect(tool.execute({ query: "OpenClaw docs", [key]: value })).rejects.toThrow(
+        await expect(tool.execute({ query: "NodoAssist docs", [key]: value })).rejects.toThrow(
           message,
         );
       },

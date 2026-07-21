@@ -1,9 +1,9 @@
 // Reads HTTP request and response bodies with timeout and byte limits.
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { clearTimeout as clearNodeTimeout, setTimeout as setNodeTimeout } from "node:timers";
-import { toErrorObject } from "@openclaw/normalization-core/error-coercion";
-import { resolveTimerTimeoutMs } from "@openclaw/normalization-core/number-coercion";
-import { truncateUtf16Safe } from "@openclaw/normalization-core/utf16-slice";
+import { toErrorObject } from "@nodoassist/normalization-core/error-coercion";
+import { resolveTimerTimeoutMs } from "@nodoassist/normalization-core/number-coercion";
+import { truncateUtf16Safe } from "@nodoassist/normalization-core/utf16-slice";
 import { formatErrorMessage } from "./errors.js";
 import { parseStrictNonNegativeInteger } from "./parse-finite-number.js";
 

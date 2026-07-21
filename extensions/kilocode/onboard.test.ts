@@ -1,7 +1,7 @@
 // Kilocode tests cover onboard plugin behavior.
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolveEnvApiKey } from "openclaw/plugin-sdk/provider-auth-runtime";
-import { resolveAgentModelPrimaryValue } from "openclaw/plugin-sdk/provider-onboard";
+import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
+import { resolveEnvApiKey } from "nodoassist/plugin-sdk/provider-auth-runtime";
+import { resolveAgentModelPrimaryValue } from "nodoassist/plugin-sdk/provider-onboard";
 import { describe, expect, it, vi } from "vitest";
 import {
   buildKilocodeModelDefinition,
@@ -10,16 +10,12 @@ import {
   KILOCODE_DEFAULT_COST,
   KILOCODE_DEFAULT_MODEL_ID,
 } from "./api.js";
-import {
-  applyKilocodeConfig,
-  KILOCODE_BASE_URL,
-  KILOCODE_DEFAULT_MODEL_REF,
-} from "./onboard.js";
+import { applyKilocodeConfig, KILOCODE_BASE_URL, KILOCODE_DEFAULT_MODEL_REF } from "./onboard.js";
 
-const emptyCfg: OpenClawConfig = {};
+const emptyCfg: NodoAssistConfig = {};
 const KILOCODE_MODEL_IDS = ["kilo/auto"];
 
-function requireKilocodeProvider(cfg: OpenClawConfig) {
+function requireKilocodeProvider(cfg: NodoAssistConfig) {
   const provider = cfg.models?.providers?.kilocode;
   if (!provider) {
     throw new Error("expected Kilocode provider config");
@@ -106,7 +102,7 @@ describe("Kilo Gateway provider config", () => {
     });
 
     it("preserves existing alias if already set", () => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             models: {
@@ -121,7 +117,7 @@ describe("Kilo Gateway provider config", () => {
     });
 
     it("does not change the default model selection", () => {
-      const cfg: OpenClawConfig = {
+      const cfg: NodoAssistConfig = {
         agents: {
           defaults: {
             model: { primary: "openai/gpt-5" },

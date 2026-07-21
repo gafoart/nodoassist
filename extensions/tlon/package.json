@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/tlon",
+  "name": "@nodoassist/tlon",
   "version": "2026.6.11",
-  "description": "OpenClaw Tlon/Urbit channel plugin for chat workflows.",
+  "description": "NodoAssist Tlon/Urbit channel plugin for chat workflows.",
   "repository": {
     "type": "git",
     "url": "https://github.com/openclaw/openclaw"
@@ -15,18 +15,18 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*",
-    "openclaw": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*",
+    "nodoassist": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.6.11"
+    "nodoassist": ">=2026.6.11"
   },
   "peerDependenciesMeta": {
-    "openclaw": {
+    "nodoassist": {
       "optional": true
     }
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ],
@@ -68,7 +68,7 @@
       ]
     },
     "install": {
-      "npmSpec": "@openclaw/tlon",
+      "npmSpec": "@nodoassist/tlon",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.4.10"
     },
@@ -76,7 +76,7 @@
       "pluginApi": ">=2026.6.11"
     },
     "build": {
-      "openclawVersion": "2026.6.11"
+      "nodoassistVersion": "2026.6.11"
     },
     "release": {
       "bundleRuntimeDependencies": false,

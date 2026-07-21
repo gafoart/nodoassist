@@ -1,9 +1,9 @@
 // User turn transcript helpers extract user-turn text from session transcripts.
 import path from "node:path";
-import { mimeTypeFromFilePath } from "@openclaw/media-core/mime";
+import { mimeTypeFromFilePath } from "@nodoassist/media-core/mime";
 import type { AgentMessage } from "../../packages/agent-core/src/types.js";
 import { persistSessionTranscriptTurn } from "../config/sessions/session-accessor.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../config/types.nodoassist.js";
 import { applyInputProvenanceToUserMessage, normalizeInputProvenance } from "./input-provenance.js";
 import type {
   PersistedUserTurnMediaInput,
@@ -47,7 +47,7 @@ type AppendUserTurnTranscriptMessageParams = {
   agentId?: string;
   sessionKey?: string;
   cwd?: string;
-  config?: OpenClawConfig;
+  config?: NodoAssistConfig;
   updateMode?: UserTurnTranscriptUpdateMode;
   beforeMessageWrite?: UserTurnBeforeMessageWrite;
 };
@@ -251,8 +251,8 @@ function buildUserTurnSenderMeta(
   };
 }
 
-function readOpenClawMessageMeta(message: AgentMessage): Record<string, unknown> | undefined {
-  const meta = (message as unknown as Record<string, unknown>)["__openclaw"];
+function readNodoAssistMessageMeta(message: AgentMessage): Record<string, unknown> | undefined {
+  const meta = (message as unknown as Record<string, unknown>)["__nodoassist"];
   return meta && typeof meta === "object" && !Array.isArray(meta)
     ? (meta as Record<string, unknown>)
     : undefined;
@@ -270,7 +270,7 @@ export function buildPersistedUserTurnMessage(params: UserTurnInput): PersistedU
   // the live turn) — see https://github.com/openclaw/openclaw/issues/3658.
   const content = text || (hasMedia ? (params.mediaOnlyText ?? "") : "");
   const senderMeta = buildUserTurnSenderMeta(params.sender);
-  const openClawMeta = {
+  const nodoAssistMeta = {
     ...(params.senderIsOwner === undefined ? {} : { senderIsOwner: params.senderIsOwner }),
     ...senderMeta,
   };
@@ -280,7 +280,7 @@ export function buildPersistedUserTurnMessage(params: UserTurnInput): PersistedU
     timestamp: params.timestamp ?? Date.now(),
     ...(params.idempotencyKey ? { idempotencyKey: params.idempotencyKey } : {}),
     ...mediaFields,
-    ...(Object.keys(openClawMeta).length > 0 ? { __openclaw: openClawMeta } : {}),
+    ...(Object.keys(nodoAssistMeta).length > 0 ? { __nodoassist: nodoAssistMeta } : {}),
   } as PersistedUserTurnMessage;
   return applyInputProvenanceToUserMessage(message, params.provenance) as PersistedUserTurnMessage;
 }
@@ -302,7 +302,7 @@ function isUserMessage(message: AgentMessage): message is PersistedUserTurnMessa
 }
 
 function isBeforeAgentRunBlockedMessage(message: AgentMessage): boolean {
-  const marker = (message as { __openclaw?: { beforeAgentRunBlocked?: unknown } })["__openclaw"]
+  const marker = (message as { __nodoassist?: { beforeAgentRunBlocked?: unknown } })["__nodoassist"]
     ?.beforeAgentRunBlocked;
   return marker !== undefined;
 }
@@ -335,12 +335,12 @@ export function mergePreparedUserTurnMessageForRuntime(params: {
   }
   const runtimeMessage = params.runtimeMessage as unknown as Record<string, unknown>;
   const preparedMessage = params.preparedMessage as unknown as Record<string, unknown>;
-  const runtimeMeta = readOpenClawMessageMeta(params.runtimeMessage);
-  const preparedMeta = readOpenClawMessageMeta(params.preparedMessage);
+  const runtimeMeta = readNodoAssistMessageMeta(params.runtimeMessage);
+  const preparedMeta = readNodoAssistMessageMeta(params.preparedMessage);
   return {
     ...runtimeMessage,
     ...preparedMessage,
-    ...(preparedMeta ? { __openclaw: { ...runtimeMeta, ...preparedMeta } } : {}),
+    ...(preparedMeta ? { __nodoassist: { ...runtimeMeta, ...preparedMeta } } : {}),
     ...(userMessageHasImageContent(params.runtimeMessage)
       ? { content: params.runtimeMessage.content }
       : {}),
@@ -355,14 +355,14 @@ export function restorePreparedUserTurnOperationalMetaForRuntime(params: {
   if (!params.preparedMessage || !isUserMessage(params.runtimeMessage)) {
     return params.runtimeMessage;
   }
-  const preparedMeta = readOpenClawMessageMeta(params.preparedMessage);
+  const preparedMeta = readNodoAssistMessageMeta(params.preparedMessage);
   const senderIsOwner = preparedMeta?.senderIsOwner;
   if (typeof senderIsOwner !== "boolean") {
     return params.runtimeMessage;
   }
   return {
     ...(params.runtimeMessage as unknown as Record<string, unknown>),
-    __openclaw: { ...readOpenClawMessageMeta(params.runtimeMessage), senderIsOwner },
+    __nodoassist: { ...readNodoAssistMessageMeta(params.runtimeMessage), senderIsOwner },
   } as unknown as AgentMessage;
 }
 
@@ -383,7 +383,7 @@ export function preparePersistedUserTurnMessageForTranscriptWrite(
   const provenance = normalizeInputProvenance(
     (message as unknown as { provenance?: unknown }).provenance,
   );
-  const senderIsOwner = readOpenClawMessageMeta(message)?.senderIsOwner;
+  const senderIsOwner = readNodoAssistMessageMeta(message)?.senderIsOwner;
   const nextMessage = params.beforeMessageWrite({
     message,
     ...(params.agentId ? { agentId: params.agentId } : {}),
@@ -403,8 +403,8 @@ export function preparePersistedUserTurnMessageForTranscriptWrite(
     ...(idempotencyKey ? { idempotencyKey } : {}),
     ...(typeof senderIsOwner === "boolean"
       ? {
-          __openclaw: {
-            ...readOpenClawMessageMeta(nextUserMessage),
+          __nodoassist: {
+            ...readNodoAssistMessageMeta(nextUserMessage),
             senderIsOwner,
           },
         }
@@ -490,7 +490,7 @@ export async function persistUserTurnTranscript(
     },
     {
       ...(params.cwd ? { cwd: params.cwd } : {}),
-      ...(params.config ? { config: params.config as OpenClawConfig } : {}),
+      ...(params.config ? { config: params.config as NodoAssistConfig } : {}),
       updateMode: params.updateMode ?? "inline",
       messages: [
         {
@@ -533,7 +533,7 @@ async function appendFileTargetUserTurnTranscript(params: {
     ...target,
     message: params.message,
     updateMode: params.updateMode,
-    ...(config ? { config: config as OpenClawConfig } : {}),
+    ...(config ? { config: config as NodoAssistConfig } : {}),
     ...(params.beforeMessageWrite ? { beforeMessageWrite: params.beforeMessageWrite } : {}),
   });
   return appended

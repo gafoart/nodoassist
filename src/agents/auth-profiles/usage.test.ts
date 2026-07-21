@@ -4,7 +4,7 @@
  * persistence hooks without contacting real providers.
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/types.openclaw.js";
+import type { NodoAssistConfig } from "../../config/types.nodoassist.js";
 import { MAX_DATE_TIMESTAMP_MS } from "../../shared/number-coercion.js";
 import type { AuthProfileStore, ProfileUsageStats } from "./types.js";
 import {
@@ -714,7 +714,7 @@ describe("markAuthProfileFailure — active windows do not extend on retry", () 
     store: ReturnType<typeof makeStore>;
     now: number;
     reason: "rate_limit" | "billing" | "auth_permanent";
-    cfg?: OpenClawConfig;
+    cfg?: NodoAssistConfig;
   }): Promise<void> {
     const dateNowSpy = vi.spyOn(Date, "now").mockReturnValue(params.now);
     try {
@@ -889,7 +889,7 @@ describe("markAuthProfileFailure — active windows do not extend on retry", () 
             billingBackoffHours: 0.0166667,
           },
         },
-      } as OpenClawConfig,
+      } as NodoAssistConfig,
     });
 
     expect(store.usageStats?.["anthropic:default"]?.disabledUntil).toBe(now + 60_000);
@@ -1073,8 +1073,8 @@ describe("markAuthProfileFailure — WHAM-aware Codex cooldowns", () => {
     const headers = init.headers as Record<string, string>;
     expect(headers.Authorization).toBe("Bearer codex-access-token");
     expect(headers["ChatGPT-Account-Id"]).toBe("acct_test_123");
-    expect(headers.originator).toBe("openclaw");
-    expect(headers["User-Agent"]).toMatch(/^openclaw\//);
+    expect(headers.originator).toBe("nodoassist");
+    expect(headers["User-Agent"]).toMatch(/^nodoassist\//);
     const stats = store.usageStats?.["openai:default"];
     if (exactBlocked) {
       expect(stats?.blockedUntil).toBe(now + expectedMs);

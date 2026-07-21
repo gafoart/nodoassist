@@ -1,13 +1,13 @@
-import type { StreamFn } from "openclaw/plugin-sdk/agent-core";
-import { registerSingleProviderPlugin } from "openclaw/plugin-sdk/plugin-test-runtime";
-import { clearLiveCatalogCacheForTests } from "openclaw/plugin-sdk/provider-catalog-live-runtime";
+import type { StreamFn } from "nodoassist/plugin-sdk/agent-core";
+import { registerSingleProviderPlugin } from "nodoassist/plugin-sdk/plugin-test-runtime";
+import { clearLiveCatalogCacheForTests } from "nodoassist/plugin-sdk/provider-catalog-live-runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const providerAuthRuntimeMocks = vi.hoisted(() => ({
   resolveApiKeyForProvider: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/provider-auth-runtime", () => providerAuthRuntimeMocks);
+vi.mock("nodoassist/plugin-sdk/provider-auth-runtime", () => providerAuthRuntimeMocks);
 
 import plugin from "./index.js";
 

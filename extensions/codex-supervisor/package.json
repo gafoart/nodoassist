@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/codex-supervisor",
+  "name": "@nodoassist/codex-supervisor",
   "version": "2026.6.11",
   "private": true,
-  "description": "OpenClaw Codex app-server fleet supervision plugin.",
+  "description": "NodoAssist Codex app-server fleet supervision plugin.",
   "type": "module",
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",
@@ -11,9 +11,9 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@openclaw/plugin-sdk": "workspace:*"
+    "@nodoassist/plugin-sdk": "workspace:*"
   },
-  "openclaw": {
+  "nodoassist": {
     "extensions": [
       "./index.ts"
     ]

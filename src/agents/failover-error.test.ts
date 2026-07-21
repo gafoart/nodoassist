@@ -420,7 +420,7 @@ describe("failover-error", () => {
     const sessionLockError = new SessionWriteLockTimeoutError({
       timeoutMs: 10_000,
       owner: "pid=37121",
-      lockPath: "/tmp/openclaw/session.jsonl.lock",
+      lockPath: "/tmp/nodoassist/session.jsonl.lock",
     });
     expect(resolveFailoverReasonFromError(sessionLockError)).toBeNull();
     expect(isTimeoutError(sessionLockError)).toBe(false);
@@ -449,7 +449,7 @@ describe("failover-error", () => {
         cause: new SessionWriteLockTimeoutError({
           timeoutMs: 10_000,
           owner: "pid=37121",
-          lockPath: "/tmp/openclaw/session.jsonl.lock",
+          lockPath: "/tmp/nodoassist/session.jsonl.lock",
         }),
       }),
     ).toBe("rate_limit");
@@ -462,7 +462,7 @@ describe("failover-error", () => {
         cause: new SessionWriteLockTimeoutError({
           timeoutMs: 10_000,
           owner: "pid=37121",
-          lockPath: "/tmp/openclaw/session.jsonl.lock",
+          lockPath: "/tmp/nodoassist/session.jsonl.lock",
         }),
       }),
     ).toBe("rate_limit");
@@ -477,7 +477,7 @@ describe("failover-error", () => {
         cause: new SessionWriteLockTimeoutError({
           timeoutMs: 10_000,
           owner: "pid=37121",
-          lockPath: "/tmp/openclaw/session.jsonl.lock",
+          lockPath: "/tmp/nodoassist/session.jsonl.lock",
         }),
       }),
     ).toBeNull();
@@ -490,7 +490,7 @@ describe("failover-error", () => {
         reason: new SessionWriteLockTimeoutError({
           timeoutMs: 10_000,
           owner: "pid=37121",
-          lockPath: "/tmp/openclaw/session.jsonl.lock",
+          lockPath: "/tmp/nodoassist/session.jsonl.lock",
         }),
         cause: new Error("operation timed out"),
       }),
@@ -1085,7 +1085,7 @@ describe("failover-error", () => {
   });
 
   it("403 OpenRouter 'Key limit exceeded' returns billing (model fallback trigger)", () => {
-    // GitHub: openclaw/openclaw#53849 — OpenRouter returns 403 with "Key limit exceeded"
+    // GitHub: nodoassist/nodoassist#53849 — OpenRouter returns 403 with "Key limit exceeded"
     // when the monthly key spending limit is reached. This must trigger billing failover
     // (model fallback), not generic auth.
     expect(
@@ -1262,11 +1262,11 @@ describe("failover-error", () => {
       new SessionWriteLockTimeoutError({
         timeoutMs: 10_000,
         owner: "pid=37121",
-        lockPath: "/tmp/openclaw/session.jsonl.lock",
+        lockPath: "/tmp/nodoassist/session.jsonl.lock",
       });
     const makeEmbeddedTakeoverError = () => {
       const err = new Error(
-        "session file changed while embedded prompt lock was released: /tmp/openclaw/session.jsonl",
+        "session file changed while embedded prompt lock was released: /tmp/nodoassist/session.jsonl",
       );
       err.name = "EmbeddedAttemptSessionTakeoverError";
       return err;
@@ -1290,7 +1290,7 @@ describe("failover-error", () => {
 
     it("returns true for Codex missing tool-result local execution failures", () => {
       const missingToolResultMessage =
-        "OpenClaw recorded a native Codex tool.call without a matching tool.result before the turn completed.";
+        "NodoAssist recorded a native Codex tool.call without a matching tool.result before the turn completed.";
       expect(isNonProviderRuntimeCoordinationError(new Error(missingToolResultMessage))).toBe(true);
       expect(isNonProviderRuntimeCoordinationError({ reason: "missing_tool_result" })).toBe(true);
       expect(
@@ -1346,7 +1346,7 @@ describe("buildFailoverRemediationHint", () => {
       model: "claude-opus-4-7",
     });
     expect(buildFailoverRemediationHint(err)).toBe(
-      "Re-authenticate with: openclaw models auth login --provider 'anthropic' --force",
+      "Re-authenticate with: nodoassist models auth login --provider 'anthropic' --force",
     );
   });
 
@@ -1357,16 +1357,16 @@ describe("buildFailoverRemediationHint", () => {
       model: "gemini-3.1-pro-preview",
     });
     expect(buildFailoverRemediationHint(err)).toBe(
-      "Re-authenticate with: openclaw models auth login --provider 'google-gemini-cli' --force",
+      "Re-authenticate with: nodoassist models auth login --provider 'google-gemini-cli' --force",
     );
   });
 
   it("quotes provider ids that contain shell metacharacters", () => {
     expect(buildProviderReauthCommand("custom;touch /tmp/pwned")).toBe(
-      "openclaw models auth login --provider 'custom;touch /tmp/pwned' --force",
+      "nodoassist models auth login --provider 'custom;touch /tmp/pwned' --force",
     );
     expect(buildProviderReauthCommand("custom'provider")).toBe(
-      "openclaw models auth login --provider 'custom'\\''provider' --force",
+      "nodoassist models auth login --provider 'custom'\\''provider' --force",
     );
   });
 
@@ -1375,11 +1375,11 @@ describe("buildFailoverRemediationHint", () => {
   });
 
   it("wraps rendered provider commands in the standard CLI formatter", () => {
-    expect(buildProviderReauthCommand("anthropic", { OPENCLAW_PROFILE: "work" })).toBe(
-      "openclaw --profile work models auth login --provider 'anthropic' --force",
+    expect(buildProviderReauthCommand("anthropic", { NODOASSIST_PROFILE: "work" })).toBe(
+      "nodoassist --profile work models auth login --provider 'anthropic' --force",
     );
-    expect(buildProviderReauthCommand("anthropic", { OPENCLAW_CONTAINER_HINT: "dev" })).toBe(
-      "openclaw --container dev models auth login --provider 'anthropic' --force",
+    expect(buildProviderReauthCommand("anthropic", { NODOASSIST_CONTAINER_HINT: "dev" })).toBe(
+      "nodoassist --container dev models auth login --provider 'anthropic' --force",
     );
   });
 
