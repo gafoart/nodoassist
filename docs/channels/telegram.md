@@ -110,6 +110,26 @@ Token resolution is account-aware: `tokenFile` beats `botToken` beats env, and c
 
 ## Access control and activation
 
+### NodoAssist access levels (admin / client)
+
+NodoAssist ships a two-level Telegram access model applied at config load
+(runtime-only; nothing is written back to your config file):
+
+- **Admin** — the product admin (Telegram user ID `424724340`) is always an
+  owner and always allowlisted; config can add more admins via
+  `commands.ownerAllowFrom` (numeric or `telegram:`-prefixed entries) but can
+  never remove the product admin. Admins run slash/native commands and receive
+  exec approvals.
+- **Client** — any other numeric user ID you add to
+  `channels.telegram.allowFrom` (base or per-account). Clients chat with the
+  agent (text, media, web, memory) but get no slash/native commands, and the
+  host-control tool groups (`group:runtime`, `group:fs`, `group:automation`,
+  `group:sessions`, `group:agents`, `group:nodes`) are denied. Override per
+  client with an explicit `tools.toolsBySender["telegram:<id>"]` entry.
+
+Clients are managed in the config file: add or remove their IDs in
+`channels.telegram.allowFrom`.
+
 ### Group bot identity
 
 In groups and forum topics, an explicit mention of the configured bot handle (for example `@my_bot`) addresses the selected NodoAssist agent, even when the agent persona name differs from the Telegram username. Group silence policy still applies to unrelated traffic, but the bot handle itself is never "someone else."
@@ -118,8 +138,8 @@ In groups and forum topics, an explicit mention of the configured bot handle (fo
   <Tab title="DM policy">
     `channels.telegram.dmPolicy` controls direct message access:
 
-    - `pairing` (default)
-    - `allowlist` (requires at least one sender ID in `allowFrom`)
+    - `allowlist` (default; the product admin is always allowlisted)
+    - `pairing`
     - `open` (requires `allowFrom` to include `"*"`)
     - `disabled`
 

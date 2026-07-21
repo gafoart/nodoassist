@@ -16,7 +16,7 @@ export const telegramChannelConfigUiHints = {
   },
   dmPolicy: {
     label: "Telegram DM Policy",
-    help: 'Direct message access control ("pairing" recommended). "open" requires channels.telegram.allowFrom=["*"].',
+    help: 'Direct message access control ("allowlist" is the NodoAssist default; the product admin is always allowlisted). "open" requires channels.telegram.allowFrom=["*"].',
   },
   configWrites: {
     label: "Telegram Config Writes",

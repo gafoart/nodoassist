@@ -32,10 +32,13 @@ function createTelegramSchemaRegistry(): PluginManifestRegistry {
             schema: {
               type: "object",
               properties: {
-                dmPolicy: {
+                // Use a field the product access defaults never touch so this
+                // test keeps proving plugin-owned schema defaults on their own.
+                // dmPolicy is product-owned: applyProductAccessDefaults fills it
+                // with "allowlist" (see src/config/product-access.ts).
+                responsePrefix: {
                   type: "string",
-                  enum: ["pairing", "allowlist"],
-                  default: "pairing",
+                  default: "tg:",
                 },
               },
               // validateConfigObjectWithPlugins starts from the core validated
@@ -277,7 +280,9 @@ describe("validateConfigObjectWithPlugins channel metadata (applyDefaults: true)
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.config.channels?.telegram?.dmPolicy).toBe("pairing");
+      expect(result.config.channels?.telegram?.responsePrefix).toBe("tg:");
+      // Product access contract: telegram DMs default to allowlist policy.
+      expect(result.config.channels?.telegram?.dmPolicy).toBe("allowlist");
     }
   });
 
@@ -570,7 +575,10 @@ describe("validateConfigObjectRawWithPlugins channel metadata", () => {
     if (result.ok) {
       // AJV defaults ARE injected into validated.config even in raw mode.
       // This is intentional — see comment above.
-      expect(result.config.channels?.telegram?.dmPolicy).toBe("pairing");
+      expect(result.config.channels?.telegram?.responsePrefix).toBe("tg:");
+      // Product access defaults are materialize-only: raw mode must not pick
+      // them up, so they can never leak into config file writes.
+      expect(result.config.channels?.telegram?.dmPolicy).toBeUndefined();
     }
   });
 

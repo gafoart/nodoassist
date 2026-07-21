@@ -13,6 +13,7 @@ import {
 } from "./defaults.js";
 import { normalizeExecSafeBinProfilesInConfig } from "./normalize-exec-safe-bin.js";
 import { normalizeConfigPaths } from "./normalize-paths.js";
+import { applyProductAccessDefaults } from "./product-access.js";
 import type { NodoAssistConfig, ResolvedSourceConfig, RuntimeConfig } from "./types.js";
 
 type ConfigMaterializationMode = "load" | "missing" | "snapshot";
@@ -81,6 +82,7 @@ export function materializeRuntimeConfig(
     loadManifestRegistry: options.loadManifestRegistry,
   });
   next = applyTalkConfigNormalization(next);
+  next = applyProductAccessDefaults(next);
   if (profile.normalizePaths) {
     normalizeConfigPaths(next);
   }
