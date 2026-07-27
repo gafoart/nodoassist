@@ -1,0 +1,43 @@
+# NodoAssist droplet deployment. Telegram is outbound polling, so no inbound
+# ports are published; the gateway stays private to the host. CLI access:
+#   docker compose -f docker-compose.droplet.yml exec nodoassist-gateway node nodoassist.mjs <cmd>
+services:
+  nodoassist-gateway:
+    container_name: nodoassist-gateway
+    image: ${NODOASSIST_IMAGE:-ghcr.io/gafoart/nodoassist:latest}
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      HOME: /home/node
+      NODOASSIST_HOME: /home/node
+      TERM: xterm-256color
+      # Pin container-side paths so host paths from .env cannot leak into
+      # runtime code that resolves these env vars inside the container.
+      NODOASSIST_STATE_DIR: /home/node/.nodoassist
+      NODOASSIST_CONFIG_PATH: /home/node/.nodoassist/nodoassist.json
+      NODOASSIST_CONFIG_DIR: /home/node/.nodoassist
+      NODOASSIST_WORKSPACE_DIR: /home/node/.nodoassist/workspace
+      TZ: ${NODOASSIST_TZ:-America/Caracas}
+    volumes:
+      - "${NODOASSIST_STATE_DIR:-/opt/nodoassist/state}:/home/node/.nodoassist"
+    cap_drop:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    restart: unless-stopped
+    command: ["node", "nodoassist.mjs", "gateway", "--bind", "loopback", "--port", "18789"]
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s

@@ -1,0 +1,8 @@
+[Unit]
+Description=NodoAssist gateway watchdog (telegram polling wedge detector)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/nodoassist-watchdog.sh

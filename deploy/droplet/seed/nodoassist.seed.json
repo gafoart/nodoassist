@@ -1,0 +1,24 @@
+{
+  "channels": {
+    "telegram": {
+      "enabled": true
+    }
+  },
+  "agents": {
+    "defaults": {
+      "userTimezone": "America/Caracas",
+      "reasoningDefault": "off",
+      "model": {
+        "primary": "openrouter/deepseek/deepseek-v4-flash",
+        "fallbacks": ["openrouter/google/gemini-2.5-flash"]
+      },
+      "models": {
+        "openrouter/auto": { "alias": "OpenRouter" },
+        "openrouter/deepseek/deepseek-v4-flash": { "alias": "NodoNano" },
+        "openrouter/google/gemini-2.5-flash": { "alias": "NodoMini" },
+        "openrouter/deepseek/deepseek-v4-pro": { "alias": "NodoPro" },
+        "openrouter/openai/gpt-5.6-luna-pro": { "alias": "NodoUltra" }
+      }
+    }
+  }
+}
