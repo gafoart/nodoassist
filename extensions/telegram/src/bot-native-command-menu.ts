@@ -27,7 +27,8 @@ export type TelegramMenuCommand = {
 
 type TelegramCommandMenuScope =
   | { label: "default"; options?: undefined }
-  | { label: "all_group_chats"; options: { scope: { type: "all_group_chats" } } };
+  | { label: "all_group_chats"; options: { scope: { type: "all_group_chats" } } }
+  | { label: string; options: { scope: { type: "chat"; chat_id: number } } };
 
 type TelegramPluginCommandSpec = {
   name: unknown;
@@ -39,6 +40,20 @@ const TELEGRAM_COMMAND_MENU_SCOPES: readonly TelegramCommandMenuScope[] = [
   { label: "default" },
   { label: "all_group_chats", options: { scope: { type: "all_group_chats" } } },
 ];
+
+// Product access: commands are admin-gated, so the visible command menu is
+// registered only in the admins' DM chats (DM chat_id == user_id). Public
+// scopes stay cleared so clients never see admin commands in the Telegram UI.
+function toAdminChatMenuScopes(adminMenuChatIds: readonly string[]): TelegramCommandMenuScope[] {
+  const scopes: TelegramCommandMenuScope[] = [];
+  for (const raw of adminMenuChatIds) {
+    const id = Number(normalizeOptionalString(raw) ?? "");
+    if (Number.isSafeInteger(id) && id > 0) {
+      scopes.push({ label: `chat:${id}`, options: { scope: { type: "chat", chat_id: id } } });
+    }
+  }
+  return scopes;
+}
 
 const cappedTelegramMenuCache = new Map<
   string,
@@ -441,6 +456,7 @@ function formatTelegramCommandScopeOperation(
 async function deleteTelegramMenuCommandsForScopes(params: {
   bot: Bot;
   runtime: RuntimeEnv;
+  adminMenuChatIds?: readonly string[];
 }): Promise<boolean> {
   const { bot, runtime } = params;
   if (typeof bot.api.deleteMyCommands !== "function") {
@@ -448,7 +464,11 @@ async function deleteTelegramMenuCommandsForScopes(params: {
   }
 
   let allDeleted = true;
-  for (const scope of TELEGRAM_COMMAND_MENU_SCOPES) {
+  const scopes = [
+    ...TELEGRAM_COMMAND_MENU_SCOPES,
+    ...toAdminChatMenuScopes(params.adminMenuChatIds ?? []),
+  ];
+  for (const scope of scopes) {
     const deleted = await withTelegramApiErrorLogging({
       operation: formatTelegramCommandScopeOperation("deleteMyCommands", scope),
       runtime,
@@ -468,24 +488,43 @@ async function setTelegramMenuCommandsForScopes(params: {
   commands: TelegramMenuCommand[];
   languageCode?: string;
   shouldLog?: (err: unknown) => boolean;
+  adminMenuChatIds?: readonly string[];
 }): Promise<void> {
   const { bot, runtime, commands, languageCode, shouldLog } = params;
-  for (const scope of TELEGRAM_COMMAND_MENU_SCOPES) {
-    await withTelegramApiErrorLogging({
-      operation: formatTelegramCommandScopeOperation("setMyCommands", scope, languageCode),
-      runtime,
-      shouldLog,
-      fn: () => {
-        const botCommands = toTelegramBotCommands(commands);
-        const opts = {
-          ...scope.options,
-          ...(languageCode ? { language_code: languageCode as LanguageCode } : undefined),
-        };
-        return Object.keys(opts).length > 0
-          ? bot.api.setMyCommands(botCommands, opts)
-          : bot.api.setMyCommands(botCommands);
-      },
-    });
+  // Admin-scoped mode: register only in admin DM chats; public scopes were
+  // already cleared by the delete pass, so clients keep an empty menu.
+  const adminScopes = toAdminChatMenuScopes(params.adminMenuChatIds ?? []);
+  const scopes: readonly TelegramCommandMenuScope[] = adminScopes.length
+    ? adminScopes
+    : TELEGRAM_COMMAND_MENU_SCOPES;
+  for (const scope of scopes) {
+    try {
+      await withTelegramApiErrorLogging({
+        operation: formatTelegramCommandScopeOperation("setMyCommands", scope, languageCode),
+        runtime,
+        shouldLog,
+        fn: () => {
+          const botCommands = toTelegramBotCommands(commands);
+          const opts = {
+            ...scope.options,
+            ...(languageCode ? { language_code: languageCode as LanguageCode } : undefined),
+          };
+          return Object.keys(opts).length > 0
+            ? bot.api.setMyCommands(botCommands, opts)
+            : bot.api.setMyCommands(botCommands);
+        },
+      });
+    } catch (err) {
+      // A single unreachable admin chat (e.g. the admin never opened the bot,
+      // "chat not found") must not abort the other scopes. Payload-size errors
+      // still propagate so the caller's trim-and-retry loop keeps working.
+      if (!adminScopes.length || isBotCommandsTooMuchError(err)) {
+        throw err;
+      }
+      runtime.log?.(
+        `telegram: setMyCommands skipped for ${formatTelegramCommandScopeOperation("setMyCommands", scope, languageCode)}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
   }
 }
 
@@ -495,14 +534,17 @@ export function syncTelegramMenuCommands(params: {
   commandsToRegister: TelegramMenuCommand[];
   accountId?: string;
   botIdentity?: string;
+  /** Admin DM chat ids; when set, the menu registers only in those chats. */
+  adminMenuChatIds?: readonly string[];
 }): void {
-  const { bot, runtime, commandsToRegister, accountId, botIdentity } = params;
+  const { bot, runtime, commandsToRegister, accountId, botIdentity, adminMenuChatIds } = params;
   const sync = async () => {
     // Skip sync if the command list hasn't changed since the last successful
     // sync. This prevents hitting Telegram's 429 rate limit when the gateway
     // is restarted several times in quick succession.
     // See: nodoassist/nodoassist#32017
-    const currentHash = hashCommandList(commandsToRegister);
+    const audienceKey = (adminMenuChatIds ?? []).join(",");
+    const currentHash = `${hashCommandList(commandsToRegister)}${audienceKey ? `:admins=${audienceKey}` : ""}`;
     const cachedHash = readCachedCommandHash(accountId, botIdentity);
     if (cachedHash === currentHash) {
       logVerbose("telegram: command menu unchanged; skipping sync");
@@ -510,7 +552,11 @@ export function syncTelegramMenuCommands(params: {
     }
 
     // Keep delete -> set ordering to avoid stale deletions racing after fresh registrations.
-    const deleteSucceeded = await deleteTelegramMenuCommandsForScopes({ bot, runtime });
+    const deleteSucceeded = await deleteTelegramMenuCommandsForScopes({
+      bot,
+      runtime,
+      adminMenuChatIds,
+    });
 
     if (commandsToRegister.length === 0) {
       if (!deleteSucceeded) {
@@ -518,7 +564,7 @@ export function syncTelegramMenuCommands(params: {
         return;
       }
       if (typeof bot.api.deleteMyCommands !== "function") {
-        await setTelegramMenuCommandsForScopes({ bot, runtime, commands: [] });
+        await setTelegramMenuCommandsForScopes({ bot, runtime, commands: [], adminMenuChatIds });
       }
       writeCachedCommandHash(accountId, botIdentity, currentHash);
       return;
@@ -534,6 +580,7 @@ export function syncTelegramMenuCommands(params: {
           runtime,
           commands: retryCommands,
           shouldLog: (err) => !isBotCommandsTooMuchError(err),
+          adminMenuChatIds,
         });
         if (retryCommands.length < initialCommandCount) {
           runtime.log?.(
@@ -582,6 +629,7 @@ export function syncTelegramMenuCommands(params: {
         runtime,
         commands: variant.commands,
         languageCode: variant.languageCode,
+        adminMenuChatIds,
       });
     }
     writeCachedCommandHash(accountId, botIdentity, currentHash);

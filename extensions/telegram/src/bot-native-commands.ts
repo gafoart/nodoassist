@@ -1017,12 +1017,19 @@ export const registerTelegramNativeCommands = ({
     telegramDeps.syncTelegramMenuCommands ?? syncTelegramMenuCommandsRuntime;
   // Telegram only limits the setMyCommands payload (menu entries).
   // Keep hidden commands callable by registering handlers for the full catalog.
+  // Product access: commands.allowFrom.telegram is the admin command gate
+  // (materialized by product access defaults). Register the visible menu only
+  // in those DM chats so clients never see admin commands.
+  const adminMenuChatIds = (cfg.commands?.allowFrom?.telegram ?? [])
+    .map((entry) => String(entry).trim())
+    .filter((entry) => /^\d+$/.test(entry));
   syncTelegramMenuCommands({
     bot,
     runtime,
     commandsToRegister,
     accountId,
     botIdentity: opts.token,
+    adminMenuChatIds,
   });
 
   const resolveCommandRuntimeContext = async (params: {

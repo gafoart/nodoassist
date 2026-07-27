@@ -373,7 +373,7 @@ describe("resolveReplyDirectives", () => {
   it("marks terminal directive replies for delivery under source suppression", async () => {
     mocks.applyInlineDirectiveOverrides.mockResolvedValueOnce({
       kind: "reply",
-      reply: { text: "Model set to fable (anthropic/claude-fable-5) for this session." },
+      reply: { text: "Cambiado a fable." },
     });
 
     const { result } = await resolveHelloWithModelDefaults({

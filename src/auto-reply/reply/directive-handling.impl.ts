@@ -709,11 +709,14 @@ export async function handleDirectiveOnly(
   }
   if (modelSelection && modelSelectionApplied) {
     const label = `${modelSelection.provider}/${modelSelection.model}`;
-    const labelWithAlias = modelSelection.alias ? `${modelSelection.alias} (${label})` : label;
+    // Product contract: aliased models are client-facing "modos" — the ack
+    // must never reveal the underlying provider/model id, only the alias.
     parts.push(
-      modelSelection.isDefault
-        ? `Model reset to default (${labelWithAlias}).`
-        : `Model set to ${labelWithAlias} for this session.`,
+      modelSelection.alias
+        ? `Cambiado a ${modelSelection.alias}.`
+        : modelSelection.isDefault
+          ? `Model reset to default (${label}).`
+          : `Model set to ${label} for this session.`,
     );
     if (profileOverride) {
       parts.push(`Auth profile set to ${profileOverride}.`);

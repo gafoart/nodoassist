@@ -2,8 +2,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import {
-  NODOASSIST_CRABLINE_DEFAULT_CHANNEL,
-  resolveNodoAssistCrablineChannelDriverSelection,
+  OPENCLAW_CRABLINE_DEFAULT_CHANNEL,
+  resolveOpenClawCrablineChannelDriverSelection,
 } from "@openclaw/crabline";
 import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
 import { parseStrictPositiveInteger } from "nodoassist/plugin-sdk/number-runtime";
@@ -926,9 +926,9 @@ export async function runQaSuiteCommand(opts: QaSuiteCommandOptions) {
   }
   const channelDriverSelection =
     channelDriver === "crabline"
-      ? resolveNodoAssistCrablineChannelDriverSelection({
+      ? resolveOpenClawCrablineChannelDriverSelection({
           channel: resolveQaSuiteScenarioChannel({
-            defaultChannel: NODOASSIST_CRABLINE_DEFAULT_CHANNEL,
+            defaultChannel: OPENCLAW_CRABLINE_DEFAULT_CHANNEL,
             explicitChannel: opts.channel,
             scenarios: selectQaScenarioDefinitionsForChannelResolution({
               scenarioIds,

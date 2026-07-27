@@ -16,6 +16,7 @@ type SyncMenuOptions = {
   botIdentity: string;
   runtimeLog?: ReturnType<typeof vi.fn>;
   runtimeError?: ReturnType<typeof vi.fn>;
+  adminMenuChatIds?: readonly string[];
 };
 
 function syncMenuCommandsWithMocks(options: SyncMenuOptions): void {
@@ -31,6 +32,7 @@ function syncMenuCommandsWithMocks(options: SyncMenuOptions): void {
     commandsToRegister: options.commandsToRegister,
     accountId: options.accountId,
     botIdentity: options.botIdentity,
+    adminMenuChatIds: options.adminMenuChatIds,
   });
 }
 
@@ -320,6 +322,68 @@ describe("bot-native-command-menu", () => {
     expect(setMyCommands).toHaveBeenCalledWith(commands);
     expect(setMyCommands).toHaveBeenCalledWith(commands, {
       scope: { type: "all_group_chats" },
+    });
+  });
+
+  it("registers the menu only in admin DM chats when adminMenuChatIds is set", async () => {
+    const deleteMyCommands = vi.fn(async () => undefined);
+    const setMyCommands = vi.fn(async () => undefined);
+    const commands = [{ command: "cmd", description: "Command" }];
+
+    syncMenuCommandsWithMocks({
+      deleteMyCommands,
+      setMyCommands,
+      commandsToRegister: commands,
+      accountId: `test-admin-scopes-${Date.now()}`,
+      botIdentity: "bot-admin",
+      adminMenuChatIds: ["424724340", "not-numeric", "555"],
+    });
+
+    await vi.waitFor(() => {
+      expect(setMyCommands).toHaveBeenCalledTimes(2);
+    });
+
+    // Public scopes are cleared (delete pass) and never re-registered, so
+    // clients keep an empty command menu; only admin DM chats get the menu.
+    expect(deleteMyCommands).toHaveBeenCalledWith({ scope: { type: "chat", chat_id: 424724340 } });
+    expect(deleteMyCommands).toHaveBeenCalledWith({ scope: { type: "chat", chat_id: 555 } });
+    expect(setMyCommands).toHaveBeenCalledWith(commands, {
+      scope: { type: "chat", chat_id: 424724340 },
+    });
+    expect(setMyCommands).toHaveBeenCalledWith(commands, { scope: { type: "chat", chat_id: 555 } });
+    expect(setMyCommands).not.toHaveBeenCalledWith(commands);
+    expect(setMyCommands).not.toHaveBeenCalledWith(commands, {
+      scope: { type: "all_group_chats" },
+    });
+  });
+
+  it("keeps registering remaining admin chats when one admin chat is unreachable", async () => {
+    const deleteMyCommands = vi.fn(async () => undefined);
+    const setMyCommands = vi.fn(
+      async (_commands: unknown, opts?: { scope?: { chat_id?: number } }) => {
+        if (opts?.scope?.chat_id === 111) {
+          throw new Error("Bad Request: chat not found");
+        }
+        return undefined;
+      },
+    );
+    const runtimeLog = vi.fn();
+    const commands = [{ command: "cmd", description: "Command" }];
+
+    syncMenuCommandsWithMocks({
+      deleteMyCommands,
+      setMyCommands,
+      runtimeLog,
+      commandsToRegister: commands,
+      accountId: `test-admin-unreachable-${Date.now()}`,
+      botIdentity: "bot-admin-unreachable",
+      adminMenuChatIds: ["111", "222"],
+    });
+
+    await vi.waitFor(() => {
+      expect(setMyCommands).toHaveBeenCalledWith(commands, {
+        scope: { type: "chat", chat_id: 222 },
+      });
     });
   });
 

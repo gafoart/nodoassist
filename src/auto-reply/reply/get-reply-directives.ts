@@ -605,8 +605,10 @@ export async function resolveReplyDirectives(params: {
       });
 
   const initialModelLabel = `${provider}/${model}`;
+  // Product contract: aliased models are client-facing "modos" (NodoNano, …).
+  // The ack must never reveal the underlying provider/model id — alias only.
   const formatModelSwitchEvent = (label: string, alias?: string) =>
-    alias ? `Model switched to ${alias} (${label}).` : `Model switched to ${label}.`;
+    alias ? `Cambiado a ${alias}.` : `Model switched to ${label}.`;
   const isModelListAlias =
     directives.hasModelDirective &&
     ["status", "list"].includes(

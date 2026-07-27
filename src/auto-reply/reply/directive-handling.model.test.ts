@@ -1808,13 +1808,11 @@ describe("handleDirectiveOnly model persist behavior (fixes #1435)", () => {
         sessionEntry,
         sessionStore,
         formatModelSwitchEvent: (label, alias) =>
-          alias ? `Model switched to ${alias} (${label}).` : `Model switched to ${label}.`,
+          alias ? `Cambiado a ${alias}.` : `Model switched to ${label}.`,
       }),
     );
 
-    expect(result?.text).toContain(
-      "Model set to Opus (anthropic/claude-opus-4-6) for this session.",
-    );
+    expect(result?.text).toContain("Cambiado a Opus.");
     expect(result?.text).toContain("Auth profile set to anthropic:work.");
     expect(sessionEntry.providerOverride).toBe("anthropic");
     expect(sessionEntry.modelOverride).toBe("claude-opus-4-6");
@@ -1828,13 +1826,10 @@ describe("handleDirectiveOnly model persist behavior (fixes #1435)", () => {
       nextAuthProfileId: "anthropic:work",
       nextAuthProfileIdSource: "user",
     });
-    expect(enqueueSystemEvent).toHaveBeenCalledWith(
-      "Model switched to Opus (anthropic/claude-opus-4-6).",
-      {
-        sessionKey,
-        contextKey: "model:anthropic/claude-opus-4-6",
-      },
-    );
+    expect(enqueueSystemEvent).toHaveBeenCalledWith("Cambiado a Opus.", {
+      sessionKey,
+      contextKey: "model:anthropic/claude-opus-4-6",
+    });
   });
 
   it("shows no model message when no /model directive", async () => {

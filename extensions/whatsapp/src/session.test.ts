@@ -453,7 +453,7 @@ describe("web session", () => {
     vi.stubEnv(NODOASSIST_WHATSAPP_WEB_SOCKET_URL_ENV, "http://127.0.0.1:14567/ws");
 
     await expect(createWaSocket(false, false)).rejects.toThrow(
-      "NODOASSIST_WHATSAPP_WEB_SOCKET_URL must use ws:// or wss://.",
+      "OPENCLAW_WHATSAPP_WEB_SOCKET_URL must use ws:// or wss://.",
     );
     expect(baileys.makeWASocket).not.toHaveBeenCalled();
   });

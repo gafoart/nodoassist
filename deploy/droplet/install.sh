@@ -76,6 +76,39 @@ fi
 if [ ! -f "$STATE_DIR/workspace/IDENTITY.md" ]; then
   cp "$SCRIPT_DIR/seed/IDENTITY.md" "$STATE_DIR/workspace/IDENTITY.md"
 fi
+
+# Skills por defecto (archivos, dolar-venezuela, ...): cada skill del seed se
+# instala solo si el nodo no la tiene ya (los upgrades no pisan cambios locales).
+mkdir -p "$STATE_DIR/skills" "$STATE_DIR/workspace/scripts" "$STATE_DIR/workspace/archivos"
+for skill_dir in "$SCRIPT_DIR"/seed/skills/*/; do
+  skill_name="$(basename "$skill_dir")"
+  if [ ! -d "$STATE_DIR/skills/$skill_name" ]; then
+    cp -r "$skill_dir" "$STATE_DIR/skills/$skill_name"
+    find "$STATE_DIR/skills/$skill_name" -name "*.sh" -exec chmod +x {} +
+    echo "  Skill instalada: $skill_name"
+  fi
+done
+if [ ! -f "$STATE_DIR/workspace/scripts/archivos.py" ]; then
+  cp "$SCRIPT_DIR/seed/workspace/scripts/archivos.py" "$STATE_DIR/workspace/scripts/archivos.py"
+  chmod +x "$STATE_DIR/workspace/scripts/archivos.py"
+fi
+if [ -f "$STATE_DIR/workspace/MEMORY.md" ] && ! grep -q "skill \`archivos\`" "$STATE_DIR/workspace/MEMORY.md"; then
+  MEMORY_POINTER=1
+elif [ ! -f "$STATE_DIR/workspace/MEMORY.md" ]; then
+  MEMORY_POINTER=1
+else
+  MEMORY_POINTER=0
+fi
+if [ "$MEMORY_POINTER" = 1 ]; then
+  cat >> "$STATE_DIR/workspace/MEMORY.md" <<'EOF'
+
+## 🗂️ Archivos que manda el cliente
+
+Usar la skill `archivos` (scripts/archivos.py) para guardar con etiqueta
+natural y recuperar (buscar/leer/listar). Los entrantes ya persisten en
+media/inbound; el índice vive en archivos/INDICE.md.
+EOF
+fi
 # El estado lo escribe el usuario node (uid 1000) del contenedor.
 chown -R 1000:1000 "$STATE_DIR"
 

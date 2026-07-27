@@ -199,7 +199,8 @@ RUN --mount=type=cache,id=nodoassist-bookworm-apt-cache,target=/var/cache/apt,sh
     --mount=type=cache,id=nodoassist-bookworm-apt-lists,target=/var/lib/apt,sharing=locked \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      ca-certificates curl git hostname lsof openssl procps python3 tini && \
+      ca-certificates curl git hostname jq lsof openssl procps python3 tini \
+      poppler-utils python3-openpyxl python3-xlrd && \
     update-ca-certificates
 
 RUN chown node:node /app

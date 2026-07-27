@@ -3,11 +3,11 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import {
-  NODOASSIST_CRABLINE_MANIFEST_PATH,
-  startNodoAssistCrablineAdapter,
-  type NodoAssistCrablineChannelDriverSelection,
-  type NodoAssistCrablineInbound,
-  type StartedNodoAssistCrablineAdapter,
+  OPENCLAW_CRABLINE_MANIFEST_PATH,
+  startOpenClawCrablineAdapter,
+  type OpenClawCrablineChannelDriverSelection,
+  type OpenClawCrablineInbound,
+  type StartedOpenClawCrablineAdapter,
 } from "@openclaw/crabline";
 import type { NodoAssistConfig } from "nodoassist/plugin-sdk/config-contracts";
 import { formatErrorMessage } from "nodoassist/plugin-sdk/error-runtime";
@@ -187,8 +187,8 @@ async function waitForCrablineReady(params: {
 }
 
 async function postCrablineInbound(params: {
-  adapter: StartedNodoAssistCrablineAdapter;
-  providerInbound: NodoAssistCrablineInbound;
+  adapter: StartedOpenClawCrablineAdapter;
+  providerInbound: OpenClawCrablineInbound;
 }) {
   const { response, release } = await fetchWithSsrFGuard({
     url: params.adapter.manifest.endpoints.adminInboundUrl,
@@ -231,7 +231,7 @@ async function postCrablineInbound(params: {
 }
 
 function createCrablineState(params: {
-  adapter: StartedNodoAssistCrablineAdapter;
+  adapter: StartedOpenClawCrablineAdapter;
   state: QaBusState;
 }): QaCrablineTransportState {
   const baseState = params.state;
@@ -325,8 +325,8 @@ function createCrablineState(params: {
 }
 
 class QaCrablineTransport extends QaStateBackedTransportAdapter {
-  readonly #adapter: StartedNodoAssistCrablineAdapter;
-  readonly #selection: NodoAssistCrablineChannelDriverSelection;
+  readonly #adapter: StartedOpenClawCrablineAdapter;
+  readonly #selection: OpenClawCrablineChannelDriverSelection;
   readonly #transportPolicy?: QaTransportPolicy;
   readonly #state: QaCrablineTransportState;
   readonly sendNativeCommand?: (input: QaTransportNativeCommandInput) => Promise<void>;
@@ -336,9 +336,9 @@ class QaCrablineTransport extends QaStateBackedTransportAdapter {
   }>;
 
   constructor(params: {
-    adapter: StartedNodoAssistCrablineAdapter;
+    adapter: StartedOpenClawCrablineAdapter;
     transportPolicy?: QaTransportPolicy;
-    selection: NodoAssistCrablineChannelDriverSelection;
+    selection: OpenClawCrablineChannelDriverSelection;
     state: QaCrablineTransportState;
   }) {
     super({
@@ -444,7 +444,7 @@ class QaCrablineTransport extends QaStateBackedTransportAdapter {
 export async function createQaCrablineTransportAdapter(params: {
   outputDir: string;
   transportPolicy?: QaTransportPolicy;
-  selection: NodoAssistCrablineChannelDriverSelection;
+  selection: OpenClawCrablineChannelDriverSelection;
   state?: QaBusState;
 }) {
   const requiresTelegramPolicy =
@@ -463,14 +463,14 @@ export async function createQaCrablineTransportAdapter(params: {
   );
   await fs.mkdir(path.dirname(recorderPath), { recursive: true });
   let observeEvent = (_event: unknown) => {};
-  const adapter = await startNodoAssistCrablineAdapter({
+  const adapter = await startOpenClawCrablineAdapter({
     channel: params.selection.channel,
     onEvent: (event) => observeEvent(event),
-    nodoassistConfig: {},
+    openclawConfig: {},
     recorderPath,
   });
   await fs.writeFile(
-    path.join(params.outputDir, NODOASSIST_CRABLINE_MANIFEST_PATH),
+    path.join(params.outputDir, OPENCLAW_CRABLINE_MANIFEST_PATH),
     `${JSON.stringify(adapter.manifest, null, 2)}\n`,
     "utf8",
   );

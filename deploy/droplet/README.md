@@ -16,6 +16,8 @@ agente aplicadas por defecto.
 | Fecha/hora                    | `agents.defaults.userTimezone: America/Caracas` (+ `TZ` del contenedor)                                                                                                                                                          |
 | Watchdog                      | Timer systemd cada 2 min: detecta el polling de Telegram trabado (`restarting (reason:` sin `polling ingress started`) o contenedor unhealthy y reinicia con cooldown de 6 min                                                   |
 | CLI                           | Wrapper `nodoassist` en el host (exec dentro del contenedor)                                                                                                                                                                     |
+| Skill `archivos`              | Guardar archivos del cliente con etiqueta natural y recuperarlos (xlsx/xls/csv/PDF); índice en `workspace/archivos/`                                                                                                             |
+| Skill `dolar-venezuela`       | Tasa BCV/paralelo, histórico, brecha y conversión USD/Bs vía ve.dolarapi.com, con cache y fallback offline                                                                                                                       |
 | Mini App Dashboard (opcional) | Clona e instala `gafoart/nodo-assist-miniapp-dashboard` con su propio installer/systemd/auto-update, genera `ADMIN_SECRET`/`PAYMENTS_TOKEN`/`RESTART_TOKEN`, y escribe `<NODO>_OPENROUTER_KEY`/`<NODO>_BOT_TOKEN` + `nodes.json` |
 
 ## Uso
@@ -55,8 +57,13 @@ actualizan. Para actualizar el gateway: `docker compose -f /opt/nodoassist/docke
   upgrades o configs nuevas no pueden dejarlo fuera.
 - **systemd --user → Docker.** El servicio corre en Docker con restart y
   healthcheck; el watchdog corre en el host contra `docker logs`.
-- Las skills del kit viejo (`archivos`, matcher SAINT) no van aquí: cópialas del
-  tarball del nodo viejo a `/opt/nodoassist/state/skills/` si las necesitas.
+- La skill `archivos` del kit viejo está reimplementada aquí (sin pandas; usa
+  openpyxl/xlrd/csv/pdftotext ya incluidos en la imagen). El matcher SAINT es
+  específico de clientes SAINT y NO va por defecto: cópialo del tarball del
+  nodo viejo a `/opt/nodoassist/state/` solo en nodos que lo usen.
+- El ack de cambio de modo es solo-alias en el producto ("Cambiado a NodoX."),
+  y el menú de comandos de Telegram solo se registra en los chats de los
+  admins — sin parches, es comportamiento del código.
 
 ## Añadir un client
 
