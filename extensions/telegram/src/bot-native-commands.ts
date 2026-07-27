@@ -105,6 +105,7 @@ import { resolveTelegramGroupPromptSettings } from "./group-config-helpers.js";
 import { resolveTelegramCommandIngressAuthorization } from "./ingress.js";
 import { buildInlineKeyboard } from "./inline-keyboard.js";
 import { buildTelegramNativeCommandCallbackData } from "./native-command-callback-data.js";
+import { buildTelegramManualSystemPrompt, composeTelegramSystemPrompt } from "./product-manual.js";
 import { recordSentMessage } from "./sent-message-cache.js";
 import { getTopicName, resolveTopicNameCacheScope } from "./topic-name-cache.js";
 
@@ -1032,6 +1033,16 @@ export const registerTelegramNativeCommands = ({
     adminMenuChatIds,
   });
 
+  // grammY's bot.botInfo throws before init; native command handlers only run
+  // on a started bot, but keep the guard so test harnesses stay safe.
+  const resolveBotUsernameSafe = (): string | undefined => {
+    try {
+      return bot.botInfo.username;
+    } catch {
+      return undefined;
+    }
+  };
+
   const resolveCommandRuntimeContext = async (params: {
     msg: NonNullable<TelegramNativeCommandContext["message"]>;
     runtimeCfg: NodoAssistConfig;
@@ -1527,7 +1538,10 @@ export const registerTelegramNativeCommands = ({
           ChatType: isGroup ? "group" : "direct",
           ConversationLabel: conversationLabel,
           GroupSubject: isGroup ? (msg.chat.title ?? undefined) : undefined,
-          GroupSystemPrompt: isGroup || (!isGroup && groupConfig) ? groupSystemPrompt : undefined,
+          GroupSystemPrompt: composeTelegramSystemPrompt(
+            buildTelegramManualSystemPrompt(resolveBotUsernameSafe()),
+            isGroup || (!isGroup && groupConfig) ? groupSystemPrompt : undefined,
+          ),
           SenderName: buildSenderName(msg),
           SenderId: senderId || undefined,
           SenderUsername: senderUsername || undefined,

@@ -57,6 +57,7 @@ import {
   selectTelegramGroupHistoryAfterLastSelf,
 } from "./group-history-window.js";
 import type { TelegramReplyChainEntry } from "./message-cache.js";
+import { buildTelegramManualSystemPrompt, composeTelegramSystemPrompt } from "./product-manual.js";
 
 type TelegramInboundContextPayload = BuiltChannelInboundEventContext & {
   From: string;
@@ -570,7 +571,12 @@ export async function buildTelegramInboundContextPayload(params: {
             senderAllowed: true,
           }
         : undefined,
-      groupSystemPrompt: isGroup || (!isGroup && groupConfig) ? groupSystemPrompt : undefined,
+      // Manual block is always-on product behavior; the scoped prompt keeps
+      // its original group/configured-DM gating.
+      groupSystemPrompt: composeTelegramSystemPrompt(
+        buildTelegramManualSystemPrompt(primaryCtx.me?.username),
+        isGroup || (!isGroup && groupConfig) ? groupSystemPrompt : undefined,
+      ),
       untrustedContext: visiblePromptContext.length > 0 ? visiblePromptContext : undefined,
     },
     contextVisibility: contextVisibilityMode,

@@ -18,6 +18,7 @@ agente aplicadas por defecto.
 | CLI                           | Wrapper `nodoassist` en el host (exec dentro del contenedor)                                                                                                                                                                     |
 | Skill `archivos`              | Guardar archivos del cliente con etiqueta natural y recuperarlos (xlsx/xls/csv/PDF); índice en `workspace/archivos/`                                                                                                             |
 | Skill `dolar-venezuela`       | Tasa BCV/paralelo, histórico, brecha y conversión USD/Bs vía ve.dolarapi.com, con cache y fallback offline                                                                                                                       |
+| Manual de usuario             | Cada sesión de Telegram lleva la instrucción del manual oficial (`lab.thecreativecomputing.com/nodo-assist-manual` con `tenant=<bot>`): se ofrece a usuarios nuevos, con dudas o sin éxito                                       |
 | Mini App Dashboard (opcional) | Clona e instala `gafoart/nodo-assist-miniapp-dashboard` con su propio installer/systemd/auto-update, genera `ADMIN_SECRET`/`PAYMENTS_TOKEN`/`RESTART_TOKEN`, y escribe `<NODO>_OPENROUTER_KEY`/`<NODO>_BOT_TOKEN` + `nodes.json` |
 
 ## Uso
