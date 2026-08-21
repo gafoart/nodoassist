@@ -1,14 +1,14 @@
-# 🦞 NodoAssist — Personal AI Assistant
+# 👾 NodoAssist — Personal AI Assistant
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/openclaw-logo-text-dark.svg">
-        <img src="https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/openclaw-logo-text.svg" alt="NodoAssist" width="500">
+        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/nodoassist-logo-text-dark.svg">
+        <img src="https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/nodoassist-logo-text.svg" alt="NodoAssist" width="500">
     </picture>
 </p>
 
 <p align="center">
-  <strong>EXFOLIATE! EXFOLIATE!</strong>
+  <strong>One agent. Every chat you already use.</strong>
 </p>
 
 <p align="center">
@@ -293,7 +293,7 @@ Minimal `~/.nodoassist/nodoassist.json` (model + defaults):
 
 ## Molty
 
-NodoAssist was built for **Molty**, a space lobster AI assistant. 🦞
+NodoAssist was built for **Molty**, an agentic AI assistant. 👾
 by Peter Steinberger and the community.
 
 - [openclaw.ai](https://openclaw.ai)

@@ -341,10 +341,10 @@ Stable publication is not complete until `main` carries the actual shipped relea
 
 Use the NodoAssist account's existing release-post style:
 
-- Format: `NodoAssist YYYY.M.PATCH 🦞` or `🦞 NodoAssist YYYY.M.PATCH is live`, blank line,
+- Format: `NodoAssist YYYY.M.PATCH 👾` or `👾 NodoAssist YYYY.M.PATCH is live`, blank line,
   then 3-4 emoji-led bullets, blank line, one short punchline, then the release
   link.
-- For beta: say `NodoAssist YYYY.M.PATCH-beta.N 🦞` or `NodoAssist YYYY.M.PATCH beta N is
+- For beta: say `NodoAssist YYYY.M.PATCH-beta.N 👾` or `NodoAssist YYYY.M.PATCH beta N is
 live`; keep it clearly beta and avoid implying stable promotion.
 - Lead with user-visible capabilities, then important integrations, then
   reliability/security/install fixes. Compress "lots of fixes" into one
@@ -392,7 +392,7 @@ live`; keep it clearly beta and avoid implying stable promotion.
 Examples to adapt:
 
 ```text
-NodoAssist 2026.4.20-beta.1 🦞
+NodoAssist 2026.4.20-beta.1 👾
 
 🐳 Docker install/update smoke
 🖥️ Parallels upgrade checks
@@ -403,7 +403,7 @@ Beta first. Stable after the gauntlet.
 ```
 
 ```text
-NodoAssist 2026.4.20 🦞
+NodoAssist 2026.4.20 👾
 
 🚀 Faster install + update
 🐳 Docker + Parallels verified
@@ -500,7 +500,7 @@ node --import tsx scripts/nodoassist-npm-postpublish-verify.ts <published-versio
   because many users install with npm even when docs prefer pnpm.
 - Use `pnpm test:live:media video` for bounded video-provider smoke when video
   generation is in release scope. The default video smoke skips `fal`, runs one
-  text-to-video attempt per provider with a one-second lobster prompt, and caps
+  text-to-video attempt per provider with a one-second sample prompt, and caps
   each provider operation with `NODOASSIST_LIVE_VIDEO_GENERATION_TIMEOUT_MS`
   (`180000` by default).
 - Run `pnpm test:live:media video --video-providers fal` only when FAL-specific

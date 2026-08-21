@@ -167,7 +167,7 @@ nodoassist agents set-identity --workspace ~/.nodoassist/workspace --from-identi
 Override fields explicitly:
 
 ```bash
-nodoassist agents set-identity --agent main --name "NodoAssist" --emoji "🦞" --avatar avatars/nodoassist.png
+nodoassist agents set-identity --agent main --name "NodoAssist" --emoji "👾" --avatar avatars/nodoassist.png
 ```
 
 Config sample:
@@ -180,8 +180,8 @@ Config sample:
         id: "main",
         identity: {
           name: "NodoAssist",
-          theme: "space lobster",
-          emoji: "🦞",
+          theme: "agentic",
+          emoji: "👾",
           avatar: "avatars/nodoassist.png",
         },
       },

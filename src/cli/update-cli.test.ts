@@ -7369,7 +7369,7 @@ describe("update-cli", () => {
         const logLines = vi.mocked(defaultRuntime.log).mock.calls.map((call) => String(call[0]));
         expect(
           logLines.some((line) =>
-            line.includes("Leveled up! New skills unlocked. You're welcome."),
+            line.includes("¡Subí de nivel! Habilidades nuevas desbloqueadas. De nada."),
           ),
         ).toBe(true);
       });

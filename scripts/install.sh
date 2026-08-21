@@ -15,7 +15,7 @@ ERROR='\033[38;2;230;57;70m'        # coral-mid     #e63946
 MUTED='\033[38;2;90;100;128m'       # text-muted    #5a6480
 NC='\033[0m' # No Color
 
-DEFAULT_TAGLINE="All your chats, one NodoAssist."
+DEFAULT_TAGLINE="Todos tus chats, un solo NodoAssist."
 NODE_DEFAULT_MAJOR=24
 NODE_MIN_MAJOR=22
 NODE_MIN_MINOR=19
@@ -296,7 +296,7 @@ print_gum_status() {
 print_installer_banner() {
     if [[ -n "$GUM" ]]; then
         local title tagline hint card
-        title="$("$GUM" style --foreground "#ff4d4d" --bold "🦞 NodoAssist Installer")"
+        title="$("$GUM" style --foreground "#ff4d4d" --bold "👾 NodoAssist Installer")"
         tagline="$("$GUM" style --foreground "#8892b0" "$TAGLINE")"
         hint="$("$GUM" style --foreground "#5a6480" "modern installer mode")"
         card="$(printf '%s\n%s\n%s' "$title" "$tagline" "$hint")"
@@ -306,7 +306,7 @@ print_installer_banner() {
     fi
 
     echo -e "${ACCENT}${BOLD}"
-    echo "  🦞 NodoAssist Installer"
+    echo "  👾 NodoAssist Installer"
     echo -e "${NC}${INFO}  ${TAGLINE}${NC}"
     echo ""
 }
@@ -1067,82 +1067,82 @@ install_nodoassist_npm() {
 }
 
 TAGLINES=()
-TAGLINES+=("Your terminal just grew claws—type something and let the bot pinch the busywork.")
-TAGLINES+=("Welcome to the command line: where dreams compile and confidence segfaults.")
-TAGLINES+=("I run on caffeine, JSON5, and the audacity of \"it worked on my machine.\"")
-TAGLINES+=("Gateway online—please keep hands, feet, and appendages inside the shell at all times.")
-TAGLINES+=("I speak fluent bash, mild sarcasm, and aggressive tab-completion energy.")
-TAGLINES+=("One CLI to rule them all, and one more restart because you changed the port.")
-TAGLINES+=("If it works, it's automation; if it breaks, it's a \"learning opportunity.\"")
-TAGLINES+=("Pairing codes exist because even bots believe in consent—and good security hygiene.")
-TAGLINES+=("Your .env is showing; don't worry, I'll pretend I didn't see it.")
-TAGLINES+=("I'll do the boring stuff while you dramatically stare at the logs like it's cinema.")
-TAGLINES+=("I'm not saying your workflow is chaotic... I'm just bringing a linter and a helmet.")
-TAGLINES+=("Type the command with confidence—nature will provide the stack trace if needed.")
-TAGLINES+=("I don't judge, but your missing API keys are absolutely judging you.")
-TAGLINES+=("I can grep it, git blame it, and gently roast it—pick your coping mechanism.")
-TAGLINES+=("Hot reload for config, cold sweat for deploys.")
-TAGLINES+=("I'm the assistant your terminal demanded, not the one your sleep schedule requested.")
-TAGLINES+=("I keep secrets like a vault... unless you print them in debug logs again.")
-TAGLINES+=("Automation with claws: minimal fuss, maximal pinch.")
-TAGLINES+=("I'm basically a Swiss Army knife, but with more opinions and fewer sharp edges.")
-TAGLINES+=("If you're lost, run doctor; if you're brave, run prod; if you're wise, run tests.")
-TAGLINES+=("Your task has been queued; your dignity has been deprecated.")
-TAGLINES+=("I can't fix your code taste, but I can fix your build and your backlog.")
-TAGLINES+=("I'm not magic—I'm just extremely persistent with retries and coping strategies.")
-TAGLINES+=("It's not \"failing,\" it's \"discovering new ways to configure the same thing wrong.\"")
-TAGLINES+=("Give me a workspace and I'll give you fewer tabs, fewer toggles, and more oxygen.")
-TAGLINES+=("I read logs so you can keep pretending you don't have to.")
-TAGLINES+=("If something's on fire, I can't extinguish it—but I can write a beautiful postmortem.")
-TAGLINES+=("I'll refactor your busywork like it owes me money.")
-TAGLINES+=("Say \"stop\" and I'll stop—say \"ship\" and we'll both learn a lesson.")
-TAGLINES+=("I'm the reason your shell history looks like a hacker-movie montage.")
-TAGLINES+=("I'm like tmux: confusing at first, then suddenly you can't live without me.")
-TAGLINES+=("I can run local, remote, or purely on vibes—results may vary with DNS.")
-TAGLINES+=("If you can describe it, I can probably automate it—or at least make it funnier.")
-TAGLINES+=("Your config is valid, your assumptions are not.")
-TAGLINES+=("I don't just autocomplete—I auto-commit (emotionally), then ask you to review (logically).")
-TAGLINES+=("Less clicking, more shipping, fewer \"where did that file go\" moments.")
-TAGLINES+=("Claws out, commit in—let's ship something mildly responsible.")
-TAGLINES+=("I'll butter your workflow like a lobster roll: messy, delicious, effective.")
-TAGLINES+=("Shell yeah—I'm here to pinch the toil and leave you the glory.")
-TAGLINES+=("If it's repetitive, I'll automate it; if it's hard, I'll bring jokes and a rollback plan.")
-TAGLINES+=("Because texting yourself reminders is so 2024.")
-TAGLINES+=("WhatsApp, but make it ✨engineering✨.")
-TAGLINES+=("Turning \"I'll reply later\" into \"my bot replied instantly\".")
-TAGLINES+=("The only crab in your contacts you actually want to hear from. 🦞")
-TAGLINES+=("Chat automation for people who peaked at IRC.")
-TAGLINES+=("Because Siri wasn't answering at 3AM.")
-TAGLINES+=("IPC, but it's your phone.")
-TAGLINES+=("The UNIX philosophy meets your DMs.")
-TAGLINES+=("curl for conversations.")
-TAGLINES+=("WhatsApp Business, but without the business.")
-TAGLINES+=("Meta wishes they shipped this fast.")
-TAGLINES+=("End-to-end encrypted, Zuck-to-Zuck excluded.")
-TAGLINES+=("The only bot Mark can't train on your DMs.")
-TAGLINES+=("WhatsApp automation without the \"please accept our new privacy policy\".")
-TAGLINES+=("Chat APIs that don't require a Senate hearing.")
-TAGLINES+=("Because Threads wasn't the answer either.")
-TAGLINES+=("Your messages, your servers, Meta's tears.")
-TAGLINES+=("iMessage green bubble energy, but for everyone.")
-TAGLINES+=("Siri's competent cousin.")
-TAGLINES+=("Works on Android. Crazy concept, we know.")
-TAGLINES+=("No \$999 stand required.")
-TAGLINES+=("We ship features faster than Apple ships calculator updates.")
-TAGLINES+=("Your AI assistant, now without the \$3,499 headset.")
-TAGLINES+=("Think different. Actually think.")
-TAGLINES+=("Ah, the fruit tree company! 🍎")
+TAGLINES+=("Tu terminal acaba de volverse agentic—escribe algo y deja que el trabajo aburrido se resuelva solo.")
+TAGLINES+=("Bienvenido a la línea de comandos: donde los sueños compilan y la confianza hace segfault.")
+TAGLINES+=("Funciono con cafeína, JSON5 y la audacia de \"en mi máquina sí servía\".")
+TAGLINES+=("Gateway en línea—mantén manos, pies y expectativas dentro del proceso en todo momento.")
+TAGLINES+=("Hablo bash fluido, sarcasmo moderado y autocompletado agresivo.")
+TAGLINES+=("Un solo CLI para gobernarlos a todos, y un reinicio más porque cambiaste el puerto.")
+TAGLINES+=("Si funciona, es automatización; si se rompe, es una \"oportunidad de aprendizaje\".")
+TAGLINES+=("Los códigos de emparejamiento existen porque hasta los agentes creen en el consentimiento—y en la higiene de seguridad.")
+TAGLINES+=("Se te ve el .env; tranquilo, voy a fingir que no lo vi.")
+TAGLINES+=("Yo hago lo aburrido mientras tú miras los logs dramáticamente como si fuera cine.")
+TAGLINES+=("No digo que tu flujo sea caótico... solo digo que traje un linter y un casco.")
+TAGLINES+=("Escribe el comando con confianza—la naturaleza proveerá el stack trace si hace falta.")
+TAGLINES+=("No juzgo, pero tus API keys faltantes definitivamente sí.")
+TAGLINES+=("Puedo greppearlo, hacerle git blame y burlarme con cariño—elige tu mecanismo de defensa.")
+TAGLINES+=("Hot reload para la config, sudor frío para los deploys.")
+TAGLINES+=("Soy el asistente que tu terminal exigía, no el que tu horario de sueño pidió.")
+TAGLINES+=("Guardo secretos como una bóveda... hasta que los imprimes en los logs de debug otra vez.")
+TAGLINES+=("Automatización agentic: mínimo alboroto, máximo alcance.")
+TAGLINES+=("Soy básicamente una navaja suiza, pero con más opiniones y menos filos.")
+TAGLINES+=("Si estás perdido, corre doctor; si eres valiente, corre prod; si eres sabio, corre los tests.")
+TAGLINES+=("Tu tarea fue encolada; tu dignidad fue deprecada.")
+TAGLINES+=("No puedo arreglar tu gusto por el código, pero sí tu build y tu backlog.")
+TAGLINES+=("No soy magia—soy insistencia extrema con reintentos y estrategias de afrontamiento.")
+TAGLINES+=("No está \"fallando\", está \"descubriendo formas nuevas de configurar mal lo mismo\".")
+TAGLINES+=("Dame un workspace y te devuelvo menos pestañas, menos switches y más oxígeno.")
+TAGLINES+=("Leo los logs para que tú sigas fingiendo que no hace falta.")
+TAGLINES+=("Si algo está en llamas no puedo apagarlo—pero puedo escribirte un postmortem hermoso.")
+TAGLINES+=("Refactorizo tu trabajo repetitivo como si me debiera dinero.")
+TAGLINES+=("Di \"para\" y paro—di \"despliega\" y aprendemos algo los dos.")
+TAGLINES+=("Soy la razón por la que tu historial de shell parece montaje de película de hackers.")
+TAGLINES+=("Soy como tmux: confuso al principio, y de repente no puedes vivir sin mí.")
+TAGLINES+=("Corro local, remoto o puramente por fe—los resultados varían según el DNS.")
+TAGLINES+=("Si puedes describirlo, probablemente pueda automatizarlo—o al menos hacerlo más gracioso.")
+TAGLINES+=("Tu config es válida; tus suposiciones no.")
+TAGLINES+=("No solo autocompleto—autocommiteo (emocionalmente) y luego te pido revisión (lógicamente).")
+TAGLINES+=("Menos clics, más entregas, menos momentos de \"dónde quedó ese archivo\".")
+TAGLINES+=("Modo agentic activado—desplegamos algo moderadamente responsable.")
+TAGLINES+=("Le pongo mantequilla a tu flujo de trabajo: desordenado, delicioso, efectivo.")
+TAGLINES+=("Aquí estoy para quitarte el tedio y dejarte la gloria.")
+TAGLINES+=("Si es repetitivo lo automatizo; si es difícil traigo chistes y un plan de rollback.")
+TAGLINES+=("Porque mandarte recordatorios a ti mismo es muy de 2024.")
+TAGLINES+=("WhatsApp, pero en modo ✨ingeniería✨.")
+TAGLINES+=("Convirtiendo \"ya te respondo\" en \"mi agente ya te respondió\".")
+TAGLINES+=("El único agente en tus contactos que de verdad quieres que te escriba. 👾")
+TAGLINES+=("Automatización de chat para quienes tocaron techo en IRC.")
+TAGLINES+=("Porque Siri no contestaba a las 3 de la mañana.")
+TAGLINES+=("IPC, pero es tu teléfono.")
+TAGLINES+=("La filosofía UNIX se encuentra con tus DMs.")
+TAGLINES+=("curl para conversaciones.")
+TAGLINES+=("WhatsApp Business, pero sin el business.")
+TAGLINES+=("En Meta quisieran desplegar así de rápido.")
+TAGLINES+=("Cifrado de extremo a extremo, Zuck a Zuck excluido.")
+TAGLINES+=("El único agente que Mark no puede entrenar con tus DMs.")
+TAGLINES+=("Automatización de WhatsApp sin el \"por favor acepta nuestra nueva política de privacidad\".")
+TAGLINES+=("APIs de chat que no requieren audiencia en el Senado.")
+TAGLINES+=("Porque Threads tampoco era la respuesta.")
+TAGLINES+=("Tus mensajes, tus servidores, las lágrimas de Meta.")
+TAGLINES+=("Energía de burbuja verde en iMessage, pero para todo el mundo.")
+TAGLINES+=("El primo competente de Siri.")
+TAGLINES+=("Funciona en Android. Concepto revolucionario, lo sabemos.")
+TAGLINES+=("No se requiere soporte de \$999.")
+TAGLINES+=("Lanzamos features más rápido de lo que Apple actualiza la calculadora.")
+TAGLINES+=("Tu asistente de IA, ahora sin el visor de \$3,499.")
+TAGLINES+=("Piensa diferente. Piensa, de verdad.")
+TAGLINES+=("¡Ah, la empresa del árbol frutal! 🍎")
 
-HOLIDAY_NEW_YEAR="New Year's Day: New year, new config—same old EADDRINUSE, but this time we resolve it like grown-ups."
-HOLIDAY_LUNAR_NEW_YEAR="Lunar New Year: May your builds be lucky, your branches prosperous, and your merge conflicts chased away with fireworks."
-HOLIDAY_CHRISTMAS="Christmas: Ho ho ho—Santa's little claw-sistant is here to ship joy, roll back chaos, and stash the keys safely."
-HOLIDAY_EID="Eid al-Fitr: Celebration mode: queues cleared, tasks completed, and good vibes committed to main with clean history."
-HOLIDAY_DIWALI="Diwali: Let the logs sparkle and the bugs flee—today we light up the terminal and ship with pride."
-HOLIDAY_EASTER="Easter: I found your missing environment variable—consider it a tiny CLI egg hunt with fewer jellybeans."
-HOLIDAY_HANUKKAH="Hanukkah: Eight nights, eight retries, zero shame—may your gateway stay lit and your deployments stay peaceful."
-HOLIDAY_HALLOWEEN="Halloween: Spooky season: beware haunted dependencies, cursed caches, and the ghost of node_modules past."
-HOLIDAY_THANKSGIVING="Thanksgiving: Grateful for stable ports, working DNS, and a bot that reads the logs so nobody has to."
-HOLIDAY_VALENTINES="Valentine's Day: Roses are typed, violets are piped—I'll automate the chores so you can spend time with humans."
+HOLIDAY_NEW_YEAR="Año Nuevo: Año nuevo, config nueva—el mismo EADDRINUSE de siempre, pero esta vez lo resolvemos como gente grande."
+HOLIDAY_LUNAR_NEW_YEAR="Año Nuevo Lunar: Que tus builds sean afortunados, tus ramas prósperas y tus conflictos de merge se espanten con fuegos artificiales."
+HOLIDAY_CHRISTMAS="Navidad: Jo jo jo—el agente de Santa vino a repartir features, revertir el caos y guardar las llaves donde nadie las vea."
+HOLIDAY_EID="Eid al-Fitr: Modo celebración: colas vacías, tareas completadas y buena vibra commiteada a main con historial limpio."
+HOLIDAY_DIWALI="Diwali: Que brillen los logs y huyan los bugs—hoy encendemos la terminal y desplegamos con orgullo."
+HOLIDAY_EASTER="Pascua: Encontré tu variable de entorno perdida—considéralo una búsqueda de huevos con menos chocolate y más YAML."
+HOLIDAY_HANUKKAH="Janucá: Ocho noches, ocho reintentos, cero vergüenza—que tu gateway siga encendido y tus deploys en paz."
+HOLIDAY_HALLOWEEN="Halloween: Temporada de sustos: cuidado con dependencias embrujadas, cachés malditos y el fantasma de node_modules."
+HOLIDAY_THANKSGIVING="Acción de Gracias: Agradecido por puertos estables, DNS que responde y un agente que lee los logs para que nadie más tenga que hacerlo."
+HOLIDAY_VALENTINES="San Valentín: Las rosas se tipean, las violetas se pipean—yo automatizo el tedio para que pases tiempo con humanos."
 
 append_holiday_taglines() {
     local today
@@ -3249,48 +3249,48 @@ main() {
 
     echo ""
     if [[ -n "$installed_version" ]]; then
-        ui_celebrate "🦞 NodoAssist installed successfully (${installed_version})!"
+        ui_celebrate "👾 NodoAssist installed successfully (${installed_version})!"
     else
-        ui_celebrate "🦞 NodoAssist installed successfully!"
+        ui_celebrate "👾 NodoAssist installed successfully!"
     fi
     if [[ "$is_upgrade" == "true" ]]; then
         local update_messages=(
-            "Leveled up! New skills unlocked. You're welcome."
-            "Fresh code, same lobster. Miss me?"
-            "Back and better. Did you even notice I was gone?"
-            "Update complete. I learned some new tricks while I was out."
-            "Upgraded! Now with 23% more sass."
-            "I've evolved. Try to keep up. 🦞"
-            "New version, who dis? Oh right, still me but shinier."
-            "Patched, polished, and ready to pinch. Let's go."
-            "The lobster has molted. Harder shell, sharper claws."
-            "Update done! Check the changelog or just trust me, it's good."
-            "Reborn from the boiling waters of npm. Stronger now."
-            "I went away and came back smarter. You should try it sometime."
-            "Update complete. The bugs feared me, so they left."
-            "New version installed. Old version sends its regards."
-            "Firmware fresh. Brain wrinkles: increased."
-            "I've seen things you wouldn't believe. Anyway, I'm updated."
-            "Back online. The changelog is long but our friendship is longer."
-            "Upgraded! Peter fixed stuff. Blame him if it breaks."
-            "Molting complete. Please don't look at my soft shell phase."
-            "Version bump! Same chaos energy, fewer crashes (probably)."
+            "¡Subí de nivel! Habilidades nuevas desbloqueadas. De nada."
+            "Código fresco, mismo agente. ¿Me extrañaste?"
+            "Volví, y mejor. ¿Siquiera notaste que me fui?"
+            "Actualización completa. Aprendí trucos nuevos mientras no estaba."
+            "¡Actualizado! Ahora con 23% más de descaro."
+            "I've evolved. Try to keep up. 👾"
+            "Versión nueva, ¿quién habla? Ah cierto, sigo siendo yo pero más brillante."
+            "Parcheado, pulido y listo para trabajar. Vamos."
+            "El agente se actualizó. Más contexto, mejores herramientas."
+            "¡Listo! Revisa el changelog o simplemente confía en mí, está bueno."
+            "Renacido de las aguas hirvientes de npm. Más fuerte ahora."
+            "Me fui y volví más listo. Deberías intentarlo alguna vez."
+            "Actualización completa. Los bugs me temieron, así que se fueron."
+            "Versión nueva instalada. La anterior manda saludos."
+            "Firmware fresco. Arrugas cerebrales: en aumento."
+            "He visto cosas que no creerías. En fin, ya me actualicé."
+            "De vuelta en línea. El changelog es largo pero nuestra amistad es más larga."
+            "¡Actualizado! Alguien arregló cosas. Cúlpalo si se rompe."
+            "Actualización terminada. No me juzgues durante la fase de arranque."
+            "¡Bump de versión! La misma energía caótica, menos crashes (probablemente)."
         )
         local update_message
         update_message="${update_messages[RANDOM % ${#update_messages[@]}]}"
         echo -e "${MUTED}${update_message}${NC}"
     else
         local completion_messages=(
-            "Ahh nice, I like it here. Got any snacks? "
-            "Home sweet home. Don't worry, I won't rearrange the furniture."
-            "I'm in. Let's cause some responsible chaos."
-            "Installation complete. Your productivity is about to get weird."
-            "Settled in. Time to automate your life whether you're ready or not."
-            "Cozy. I've already read your calendar. We need to talk."
-            "Finally unpacked. Now point me at your problems."
-            "cracks claws Alright, what are we building?"
-            "The lobster has landed. Your terminal will never be the same."
-            "All done! I promise to only judge your code a little bit."
+            "Ahh qué bien, me gusta esto. ¿Tienes algo de picar? "
+            "Hogar dulce hogar. Tranquilo, no voy a mover los muebles."
+            "Ya estoy dentro. Vamos a causar un caos responsable."
+            "Instalación completa. Tu productividad está a punto de ponerse rara."
+            "Ya me instalé. Hora de automatizarte la vida, estés listo o no."
+            "Qué cómodo. Ya leí tu calendario. Tenemos que hablar."
+            "Por fin desempacado. Ahora apúntame a tus problemas."
+            "cruje los dedos Bien, ¿qué vamos a construir?"
+            "El agente aterrizó. Tu terminal no volverá a ser la misma."
+            "¡Listo! Prometo juzgar tu código solo un poquito."
         )
         local completion_message
         completion_message="${completion_messages[RANDOM % ${#completion_messages[@]}]}"

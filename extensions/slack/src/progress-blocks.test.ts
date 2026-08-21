@@ -74,24 +74,24 @@ describe("buildSlackProgressDraftBlocks", () => {
   it("keeps legacy rich draft rendering as section field blocks", () => {
     expect(
       buildSlackProgressDraftBlocks({
-        label: "Shelling...",
+        label: "Analizando...",
         lines: [toolLine("run tests")],
       }),
-    ).toEqual([legacyHeadingBlock("*Shelling...*"), legacyLineBlock("🛠️ *Exec*", "run tests")]);
+    ).toEqual([legacyHeadingBlock("*Analizando...*"), legacyLineBlock("🛠️ *Exec*", "run tests")]);
   });
 
   it("uses title as the legacy rich draft heading when label is absent", () => {
     expect(
       buildSlackProgressDraftBlocks({
-        title: "Shelling...",
+        title: "Analizando...",
         lines: [toolLine("run tests")],
       }),
-    ).toEqual([legacyHeadingBlock("*Shelling...*"), legacyLineBlock("🛠️ *Exec*", "run tests")]);
+    ).toEqual([legacyHeadingBlock("*Analizando...*"), legacyLineBlock("🛠️ *Exec*", "run tests")]);
   });
 
   it("uses configured max line chars for legacy rich draft details", () => {
     const blocks = buildSlackProgressDraftBlocks({
-      title: "Shelling...",
+      title: "Analizando...",
       maxLineChars: 64,
       lines: [
         {
@@ -113,7 +113,7 @@ describe("buildSlackProgressDraftBlocks", () => {
 
   it("keeps completed and failed statuses in legacy rich draft details", () => {
     const blocks = buildSlackProgressDraftBlocks({
-      title: "Shelling...",
+      title: "Analizando...",
       lines: [
         {
           kind: "command-output",
@@ -140,7 +140,7 @@ describe("buildSlackProgressDraftBlocks", () => {
 
   it("keeps newest rich progress lines when capping legacy draft blocks", () => {
     const blocksWithLabel = buildSlackProgressDraftBlocks({
-      title: "Shelling...",
+      title: "Analizando...",
       lines: Array.from({ length: 60 }, (_value, index) => progressLine(index)),
     });
     expect(blocksWithLabel).toHaveLength(50);
@@ -196,7 +196,7 @@ describe("native Slack progress stream chunks", () => {
   it("uses configured max line chars for native task details", () => {
     expect(
       buildSlackProgressStreamStartChunks({
-        title: "Shelling...",
+        title: "Analizando...",
         maxLineChars: 64,
         lines: [
           {
@@ -210,7 +210,7 @@ describe("native Slack progress stream chunks", () => {
         ],
       }),
     ).toEqual([
-      planUpdate("Shelling..."),
+      planUpdate("Analizando..."),
       taskUpdate(
         "tool_1",
         "Exec — run tests in /Users/example/P…st/packages/very/deep/path/example",
@@ -222,7 +222,7 @@ describe("native Slack progress stream chunks", () => {
   it("maps completed and failed progress statuses onto native task states", () => {
     expect(
       buildSlackProgressStreamStartChunks({
-        title: "Shelling...",
+        title: "Analizando...",
         lines: [
           {
             kind: "command-output",
@@ -243,7 +243,7 @@ describe("native Slack progress stream chunks", () => {
         ],
       }),
     ).toEqual([
-      planUpdate("Shelling..."),
+      planUpdate("Analizando..."),
       taskUpdate("exec_1", "Exec — command finished", "complete"),
       taskUpdate("exec_2", "Exec — command failed · exit 1", "error"),
     ]);
@@ -251,11 +251,11 @@ describe("native Slack progress stream chunks", () => {
 
   it("keeps newest native task chunks when capping progress lines", () => {
     const chunksWithTitle = buildSlackProgressStreamStartChunks({
-      title: "Shelling...",
+      title: "Analizando...",
       lines: Array.from({ length: 60 }, (_value, index) => progressLine(index)),
     });
     expect(chunksWithTitle).toHaveLength(51);
-    expect(chunksWithTitle?.[0]).toEqual(planUpdate("Shelling..."));
+    expect(chunksWithTitle?.[0]).toEqual(planUpdate("Analizando..."));
     expectTaskUpdate(chunksWithTitle?.[1], {
       id: "tool_1",
       title: "Exec 10 — run 10",
@@ -297,7 +297,7 @@ describe("native Slack progress stream chunks", () => {
 
   it("caps explicit native plan titles to Slack chunk limits", () => {
     const chunks = buildSlackProgressStreamStartChunks({
-      title: `Shelling ${"x".repeat(300)}`,
+      title: `Analizando ${"x".repeat(300)}`,
       lines: [toolLine("run tests")],
     });
     const title =
@@ -324,7 +324,7 @@ describe("native Slack progress stream chunks", () => {
   it("renders identical command progress lines as distinct native tasks when ids differ", () => {
     expect(
       buildSlackProgressStreamStartChunks({
-        title: "Shelling...",
+        title: "Analizando...",
         lines: [
           {
             id: "cmd-1",
@@ -345,7 +345,7 @@ describe("native Slack progress stream chunks", () => {
         ],
       }),
     ).toEqual([
-      planUpdate("Shelling..."),
+      planUpdate("Analizando..."),
       taskUpdate(expect.stringMatching(/^cmd_1_[a-f0-9]{8}$/u), "🛠️ Exec", "in_progress"),
       taskUpdate(expect.stringMatching(/^cmd_2_[a-f0-9]{8}$/u), "🛠️ Exec", "in_progress"),
     ]);
@@ -353,7 +353,7 @@ describe("native Slack progress stream chunks", () => {
 
   it("keeps id-derived native task ids stable when completion changes visible status text", () => {
     const running = buildSlackProgressStreamUpdateChunks({
-      title: "Shelling...",
+      title: "Analizando...",
       lines: [
         {
           id: "call-2",
@@ -366,7 +366,7 @@ describe("native Slack progress stream chunks", () => {
       ],
     });
     const completed = buildSlackProgressStreamUpdateChunks({
-      title: "Shelling...",
+      title: "Analizando...",
       lines: [
         {
           id: "call-2",
@@ -395,7 +395,7 @@ describe("native Slack progress stream chunks", () => {
   it("does not emit native stream chunks when there are no tasks", () => {
     expect(
       buildSlackProgressStreamStartChunks({
-        title: "Shelling...",
+        title: "Analizando...",
         lines: [],
       }),
     ).toBeUndefined();
@@ -404,11 +404,11 @@ describe("native Slack progress stream chunks", () => {
   it("updates native Slack progress without creating duplicate plan blocks", () => {
     expect(
       buildSlackProgressStreamUpdateChunks({
-        title: "Shelling",
+        title: "Analizando",
         lines: [itemLine("tool one", "Tool one"), itemLine("tool two", "Tool two")],
       }),
     ).toEqual([
-      planUpdate("Shelling"),
+      planUpdate("Analizando"),
       taskUpdate("item_1", "tool one", "in_progress"),
       taskUpdate("item_2", "tool two", "in_progress"),
     ]);

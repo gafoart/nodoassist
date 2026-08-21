@@ -1286,7 +1286,7 @@ rows. Query them with [`nodoassist audit`](/cli/audit) or the
 
 - `cli.banner.taglineMode` controls banner tagline style:
   - `"random"` (default): rotating funny/seasonal taglines.
-  - `"default"`: fixed neutral tagline (`All your chats, one NodoAssist.`).
+  - `"default"`: fixed neutral tagline (`Todos tus chats, un solo NodoAssist.`).
   - `"off"`: no tagline text (banner title/version still shown).
 - To hide the entire banner (not just taglines), set env `NODOASSIST_HIDE_BANNER=1`.
 

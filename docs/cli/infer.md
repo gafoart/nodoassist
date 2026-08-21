@@ -156,7 +156,7 @@ Notes:
 Generation, edit, and description.
 
 ```bash
-nodoassist infer image generate --prompt "friendly lobster illustration" --json
+nodoassist infer image generate --prompt "friendly robot illustration" --json
 nodoassist infer image generate --prompt "cinematic product photo of headphones" --json
 nodoassist infer image generate --model openai/gpt-image-1.5 --output-format png --background transparent --prompt "simple red circle sticker on a transparent background" --json
 nodoassist infer image generate --model openai/gpt-image-2 --quality low --openai-moderation low --prompt "low-cost draft poster" --json
@@ -258,7 +258,7 @@ nodoassist infer web providers --json
 Vector creation and embedding-provider inspection.
 
 ```bash
-nodoassist infer embedding create --text "friendly lobster" --json
+nodoassist infer embedding create --text "friendly robot" --json
 nodoassist infer embedding create --text "customer support ticket: delayed shipment" --model openai/text-embedding-3-large --json
 nodoassist infer embedding providers --json
 ```
@@ -298,10 +298,10 @@ For generated media commands, `outputs` contains files written by NodoAssist. Us
 
 ```bash
 # Bad
-nodoassist infer media image generate --prompt "friendly lobster"
+nodoassist infer media image generate --prompt "friendly robot"
 
 # Good
-nodoassist infer image generate --prompt "friendly lobster"
+nodoassist infer image generate --prompt "friendly robot"
 ```
 
 ```bash

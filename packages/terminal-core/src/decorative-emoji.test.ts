@@ -63,9 +63,9 @@ describe("decorative emoji terminal helpers", () => {
       isTty: true,
     };
 
-    expect(decorativeEmoji("🦞", badTerminal)).toBe("");
-    expect(decorativePrefix("🦞", "NodoAssist", badTerminal)).toBe("NodoAssist");
-    expect(decorativePrefix("🦞", "NodoAssist", goodTerminal)).toBe("🦞 NodoAssist");
+    expect(decorativeEmoji("👾", badTerminal)).toBe("");
+    expect(decorativePrefix("👾", "NodoAssist", badTerminal)).toBe("NodoAssist");
+    expect(decorativePrefix("👾", "NodoAssist", goodTerminal)).toBe("👾 NodoAssist");
   });
 
   it("strips decorative emoji from curated terminal text only when unsupported", () => {
@@ -79,11 +79,11 @@ describe("decorative emoji terminal helpers", () => {
       isTty: true,
     };
 
-    expect(stripDecorativeEmojiForTerminal("The lobster in your shell. 🦞", badTerminal)).toBe(
+    expect(stripDecorativeEmojiForTerminal("The lobster in your shell. 👾", badTerminal)).toBe(
       "The lobster in your shell.",
     );
-    expect(stripDecorativeEmojiForTerminal("The lobster in your shell. 🦞", goodTerminal)).toBe(
-      "The lobster in your shell. 🦞",
+    expect(stripDecorativeEmojiForTerminal("The lobster in your shell. 👾", goodTerminal)).toBe(
+      "The lobster in your shell. 👾",
     );
   });
 });

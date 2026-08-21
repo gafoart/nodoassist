@@ -917,6 +917,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Quick setup
   - H2: Telegram side settings
   - H2: Access control and activation
+  - H3: NodoAssist access levels (admin / client)
   - H3: Group bot identity
   - H2: Runtime behavior
   - H2: Feature reference
@@ -4093,7 +4094,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 
 - Route: /
 - Headings:
-  - H1: NodoAssist 🦞
+  - H1: NodoAssist 👾
   - H2: What is NodoAssist?
   - H2: How it works
   - H2: Key capabilities
@@ -8800,24 +8801,29 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 
 - Route: /start/lore
 - Headings:
-  - H1: The Lore of NodoAssist 🦞📖
-  - H2: The Origin Story
-  - H2: The First Molt (January 27, 2026)
-  - H2: The Name
-  - H2: The Daleks vs The Lobsters
-  - H2: Key Characters
-  - H3: Molty 🦞
-  - H3: Peter 👨‍💻
-  - H2: The Moltiverse
-  - H2: The Great Incidents
-  - H3: The Directory Dump (Dec 3, 2025)
-  - H3: The Great Molt (Jan 27, 2026)
-  - H3: The Final Form (January 30, 2026)
-  - H3: The Robot Shopping Spree (Dec 3, 2025)
-  - H2: Sacred Texts
-  - H2: The Lobster Creed
-  - H3: The Icon Generation Saga (Jan 27, 2026)
-  - H2: The Future
+  - H1: El origen de NodoAssist 👾📖
+  - H2: Qué es
+  - H2: De dónde viene el nombre
+  - H2: Principios
+  - H2: Tono
+  - H2: Textos que definen a un agente
+  - H2: Relacionado
+
+## start/nodoassist.md
+
+- Route: /start/nodoassist
+- Headings:
+  - H2: Safety first
+  - H2: Prerequisites
+  - H2: The two-phone setup (recommended)
+  - H2: 5-minute quick start
+  - H2: Give the agent a workspace (AGENTS)
+  - H2: The config that turns it into "an assistant"
+  - H2: Sessions and memory
+  - H2: Heartbeats (proactive mode)
+  - H2: Media in and out
+  - H2: Operations checklist
+  - H2: Next steps
   - H2: Related
 
 ## start/onboarding-overview.md
@@ -8835,23 +8841,6 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 
 - Route: /start/onboarding
 - Headings:
-  - H2: Related
-
-## start/nodoassist.md
-
-- Route: /start/nodoassist
-- Headings:
-  - H2: Safety first
-  - H2: Prerequisites
-  - H2: The two-phone setup (recommended)
-  - H2: 5-minute quick start
-  - H2: Give the agent a workspace (AGENTS)
-  - H2: The config that turns it into "an assistant"
-  - H2: Sessions and memory
-  - H2: Heartbeats (proactive mode)
-  - H2: Media in and out
-  - H2: Operations checklist
-  - H2: Next steps
   - H2: Related
 
 ## start/quickstart.md

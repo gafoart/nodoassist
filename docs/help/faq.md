@@ -606,7 +606,7 @@ First-run Q&A - install, onboard, auth routes, subscriptions, initial failures -
     ```
 
     - `off`: hides tagline text but keeps the banner title/version line.
-    - `default`: always uses `All your chats, one NodoAssist.`.
+    - `default`: always uses `Todos tus chats, un solo NodoAssist.`.
     - `random`: rotating funny/seasonal taglines (default behavior).
     - For no banner at all, set env `NODOASSIST_HIDE_BANNER=1`.
 

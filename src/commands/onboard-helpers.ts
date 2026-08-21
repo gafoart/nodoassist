@@ -167,7 +167,7 @@ export function validateGatewayPasswordInput(value: unknown): string | undefined
 /** Prints the onboarding banner. */
 export function printWizardHeader(runtime: RuntimeEnv) {
   const bannerWidth = 54;
-  const icon = decorativeEmoji("🦞");
+  const icon = decorativeEmoji("👾");
   const title = supportsDecorativeEmoji() && icon ? `${icon} NODOASSIST ${icon}` : "NODOASSIST";
   const pad = Math.max(0, bannerWidth - visibleWidth(title));
   const titleLine = `${" ".repeat(Math.floor(pad / 2))}${title}${" ".repeat(Math.ceil(pad / 2))}`;

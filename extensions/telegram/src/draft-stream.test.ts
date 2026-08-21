@@ -284,7 +284,7 @@ describe("createTelegramDraftStream", () => {
       // has no <br> tag, so sending it verbatim 400s every multi-line edit and
       // drops the preview to the unformatted plain fallback.
       renderText: (text) => ({
-        text: `<b>Shelling</b><br>🧠 <i>${text}</i>`,
+        text: `<b>Analizando</b><br>🧠 <i>${text}</i>`,
         parseMode: "HTML",
       }),
     });
@@ -292,7 +292,7 @@ describe("createTelegramDraftStream", () => {
     stream.update("Thinking");
     await stream.flush();
 
-    expect(api.sendMessage).toHaveBeenCalledWith(123, "<b>Shelling</b>\n🧠 <i>Thinking</i>", {
+    expect(api.sendMessage).toHaveBeenCalledWith(123, "<b>Analizando</b>\n🧠 <i>Thinking</i>", {
       parse_mode: "HTML",
     });
   });
@@ -783,23 +783,23 @@ describe("createTelegramDraftStream", () => {
     const stream = createDraftStream(api);
 
     stream.updatePreview({
-      text: "Shelling\n\n`🛠️ Exec`",
+      text: "Analizando\n\n`🛠️ Exec`",
       richMessage: {
-        html: "<b>Shelling</b>\n<b>🛠️ Exec</b>",
+        html: "<b>Analizando</b>\n<b>🛠️ Exec</b>",
         skip_entity_detection: true,
       },
     });
     await stream.flush();
 
-    expect(api.sendMessage).toHaveBeenCalledWith(123, "<b>Shelling</b>\n<b>🛠️ Exec</b>", {
+    expect(api.sendMessage).toHaveBeenCalledWith(123, "<b>Analizando</b>\n<b>🛠️ Exec</b>", {
       parse_mode: "HTML",
     });
     expect(api.raw.sendRichMessage).not.toHaveBeenCalled();
 
     stream.updatePreview({
-      text: "Shelling\n\n`🛠️ Exec`\n• _Checking files_",
+      text: "Analizando\n\n`🛠️ Exec`\n• _Checking files_",
       richMessage: {
-        html: "<b>Shelling</b>\n<b>🛠️ Exec</b>\n<i>Checking files</i>",
+        html: "<b>Analizando</b>\n<b>🛠️ Exec</b>\n<i>Checking files</i>",
         skip_entity_detection: true,
       },
     });
@@ -808,7 +808,7 @@ describe("createTelegramDraftStream", () => {
     expect(api.editMessageText).toHaveBeenCalledWith(
       123,
       17,
-      "<b>Shelling</b>\n<b>🛠️ Exec</b>\n<i>Checking files</i>",
+      "<b>Analizando</b>\n<b>🛠️ Exec</b>\n<i>Checking files</i>",
       { parse_mode: "HTML" },
     );
     expect(api.raw.editMessageText).not.toHaveBeenCalled();
@@ -819,23 +819,23 @@ describe("createTelegramDraftStream", () => {
     const stream = createDraftStream(api);
 
     stream.updatePreview({
-      text: "Shelling\n\n🛠️ Exec",
+      text: "Analizando\n\n🛠️ Exec",
       richMessage: {
-        html: "<b>Shelling</b><br><b>🛠️ Exec</b>",
+        html: "<b>Analizando</b><br><b>🛠️ Exec</b>",
         skip_entity_detection: true,
       },
     });
     await stream.flush();
 
-    expect(api.sendMessage).toHaveBeenCalledWith(123, "<b>Shelling</b>\n<b>🛠️ Exec</b>", {
+    expect(api.sendMessage).toHaveBeenCalledWith(123, "<b>Analizando</b>\n<b>🛠️ Exec</b>", {
       parse_mode: "HTML",
     });
     expect(api.raw.sendRichMessage).not.toHaveBeenCalled();
 
     stream.updatePreview({
-      text: "Shelling\n\n🛠️ Exec\n• Checking files",
+      text: "Analizando\n\n🛠️ Exec\n• Checking files",
       richMessage: {
-        html: "<b>Shelling</b><br><b>🛠️ Exec</b><br><b>Update</b> <code>Checking files</code>",
+        html: "<b>Analizando</b><br><b>🛠️ Exec</b><br><b>Update</b> <code>Checking files</code>",
         skip_entity_detection: true,
       },
     });
@@ -844,7 +844,7 @@ describe("createTelegramDraftStream", () => {
     expect(api.editMessageText).toHaveBeenCalledWith(
       123,
       17,
-      "<b>Shelling</b>\n<b>🛠️ Exec</b>\n<b>Update</b> <code>Checking files</code>",
+      "<b>Analizando</b>\n<b>🛠️ Exec</b>\n<b>Update</b> <code>Checking files</code>",
       { parse_mode: "HTML" },
     );
     expect(api.raw.editMessageText).not.toHaveBeenCalled();
@@ -858,18 +858,18 @@ describe("createTelegramDraftStream", () => {
     const stream = createDraftStream(api);
 
     stream.updatePreview({
-      text: "Shelling\n\n🛠️ Exec",
+      text: "Analizando\n\n🛠️ Exec",
       richMessage: {
-        html: "<b>Shelling</b>\n<b>🛠️ Exec</b>",
+        html: "<b>Analizando</b>\n<b>🛠️ Exec</b>",
         skip_entity_detection: true,
       },
     });
     await stream.flush();
 
-    expect(api.sendMessage).toHaveBeenNthCalledWith(1, 123, "<b>Shelling</b>\n<b>🛠️ Exec</b>", {
+    expect(api.sendMessage).toHaveBeenNthCalledWith(1, 123, "<b>Analizando</b>\n<b>🛠️ Exec</b>", {
       parse_mode: "HTML",
     });
-    expect(api.sendMessage).toHaveBeenNthCalledWith(2, 123, "Shelling\n\n🛠️ Exec", {});
+    expect(api.sendMessage).toHaveBeenNthCalledWith(2, 123, "Analizando\n\n🛠️ Exec", {});
   });
 
   it("uses rich send and edit for previews when explicitly enabled", async () => {

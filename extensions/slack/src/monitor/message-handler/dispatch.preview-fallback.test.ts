@@ -1838,12 +1838,12 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
-        accountConfig: { streaming: { progress: { label: "Shelling" } } },
+        accountConfig: { streaming: { progress: { label: "Analizando" } } },
       }),
     );
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Shelling\n• ran &lt;!here&gt; &lt;@U123&gt; \\*bold\\* \\`code\\` &amp; done",
+      "Analizando\n• ran &lt;!here&gt; &lt;@U123&gt; \\*bold\\* \\`code\\` &amp; done",
     );
   });
 
@@ -1860,12 +1860,12 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
-        accountConfig: { streaming: { progress: { label: "Shelling" } } },
+        accountConfig: { streaming: { progress: { label: "Analizando" } } },
       }),
     );
 
     expect(draftStream.update).toHaveBeenLastCalledWith(
-      ["Shelling", "• exec", "• Reading the Slack handler"].join("\n"),
+      ["Analizando", "• exec", "• Reading the Slack handler"].join("\n"),
     );
     const updates = draftStream.update.mock.calls.map((call) => String(call[0]));
     expect(updates.join("\n")).not.toContain("Reasoning");
@@ -1887,12 +1887,12 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
-        accountConfig: { streaming: { progress: { label: "Shelling" } } },
+        accountConfig: { streaming: { progress: { label: "Analizando" } } },
       }),
     );
 
     expect(draftStream.update).toHaveBeenLastCalledWith(
-      ["Shelling", "• exec", "• Reading Checking"].join("\n"),
+      ["Analizando", "• exec", "• Reading Checking"].join("\n"),
     );
     const updates = draftStream.update.mock.calls.map((call) => String(call[0]));
     expect(updates.join("\n")).not.toContain("Checking Reading");
@@ -1912,12 +1912,12 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
-        accountConfig: { streaming: { progress: { label: "Shelling" } } },
+        accountConfig: { streaming: { progress: { label: "Analizando" } } },
       }),
     );
 
     expect(draftStream.update).toHaveBeenLastCalledWith(
-      ["Shelling", "• Reading Checking"].join("\n"),
+      ["Analizando", "• Reading Checking"].join("\n"),
     );
     const updates = draftStream.update.mock.calls.map((call) => String(call[0]));
     expect(updates.join("\n")).toContain("Reading Checking");
@@ -1937,12 +1937,12 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
-        accountConfig: { streaming: { progress: { label: "Shelling" } } },
+        accountConfig: { streaming: { progress: { label: "Analizando" } } },
       }),
     );
 
     expect(draftStream.update).toHaveBeenLastCalledWith(
-      ["Shelling", "• Thinking about Slack preview state"].join("\n"),
+      ["Analizando", "• Thinking about Slack preview state"].join("\n"),
     );
   });
 
@@ -1954,7 +1954,7 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
-        accountConfig: { streaming: { progress: { label: "Shelling", maxLines: 10 } } },
+        accountConfig: { streaming: { progress: { label: "Analizando", maxLines: 10 } } },
       }),
     );
 
@@ -1988,12 +1988,12 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
-        accountConfig: { streaming: { progress: { label: "Shelling" } } },
+        accountConfig: { streaming: { progress: { label: "Analizando" } } },
       }),
     );
 
     expect(draftStream.update).toHaveBeenLastCalledWith(
-      ["Shelling", "• tool one", "• tool two"].join("\n"),
+      ["Analizando", "• tool one", "• tool two"].join("\n"),
     );
   });
 
@@ -2018,16 +2018,16 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
-        accountConfig: { streaming: { progress: { label: "Shelling", render: "rich" } } },
+        accountConfig: { streaming: { progress: { label: "Analizando", render: "rich" } } },
       }),
     );
 
     expect(draftStream.update).toHaveBeenLastCalledWith({
-      text: ["Shelling", "• tool one", "• tool two"].join("\n"),
+      text: ["Analizando", "• tool one", "• tool two"].join("\n"),
       blocks: [
         {
           type: "section",
-          text: { type: "mrkdwn", text: "*Shelling*" },
+          text: { type: "mrkdwn", text: "*Analizando*" },
         },
         {
           type: "section",
@@ -2768,7 +2768,7 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
   it("mandatory E2E: preserves an explicit configured native Slack progress plan title", async () => {
     await dispatchNativeProgressScenario({
       finalPayload: { text: FINAL_REPLY_TEXT },
-      progress: { label: "Shelling", nativeTaskCards: true, render: "rich" },
+      progress: { label: "Analizando", nativeTaskCards: true, render: "rich" },
       events: [
         { kind: "item", progressText: "tool one" },
         { kind: "item", progressText: "tool two" },
@@ -2778,11 +2778,11 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     expect(createSlackDraftStreamMock).not.toHaveBeenCalled();
     expectNativeProgressStart([
-      planUpdate("Shelling"),
+      planUpdate("Analizando"),
       taskUpdate("item_1", "tool one", "in_progress"),
     ]);
     expectNativeProgressAppend(2, [
-      planUpdate("Shelling"),
+      planUpdate("Analizando"),
       taskUpdate("item_1", "tool one", "complete"),
       taskUpdate("item_2", "tool two", "complete"),
       taskUpdate("item_3", "tool three", "complete"),
@@ -2796,7 +2796,7 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchNativeProgressScenario({
       finalPayload: { text: FINAL_REPLY_TEXT },
-      progress: { label: "Shelling", maxLineChars: 12, nativeTaskCards: true, render: "rich" },
+      progress: { label: "Analizando", maxLineChars: 12, nativeTaskCards: true, render: "rich" },
       events: [
         {
           kind: "tool_start",
@@ -2810,11 +2810,11 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
     });
 
     expectNativeProgressStart([
-      planUpdate("Shelling"),
+      planUpdate("Analizando"),
       taskUpdate(taskId, "bash — 12345…uvwxyz", "in_progress"),
     ]);
     expectNativeProgressAppend(0, [
-      planUpdate("Shelling"),
+      planUpdate("Analizando"),
       taskUpdate(taskId, "bash — 12345…uvwxyz", "complete"),
     ]);
   });
@@ -2868,17 +2868,17 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
 
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
-        accountConfig: { streaming: { progress: { label: "Shelling", render: "rich" } } },
+        accountConfig: { streaming: { progress: { label: "Analizando", render: "rich" } } },
       }),
     );
 
     expect(draftStream.forceNewMessage).not.toHaveBeenCalled();
     expect(draftStream.update).toHaveBeenLastCalledWith({
-      text: ["Shelling", "• tool one", "• tool two"].join("\n"),
+      text: ["Analizando", "• tool one", "• tool two"].join("\n"),
       blocks: [
         {
           type: "section",
-          text: { type: "mrkdwn", text: "*Shelling*" },
+          text: { type: "mrkdwn", text: "*Analizando*" },
         },
         {
           type: "section",
@@ -2961,12 +2961,12 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
     await dispatchPreparedSlackMessage(
       createPreparedSlackMessage({
         accountConfig: {
-          streaming: { mode: "progress", progress: { label: "Shelling", commandText: "status" } },
+          streaming: { mode: "progress", progress: { label: "Analizando", commandText: "status" } },
         },
       }),
     );
 
-    expect(draftStream.update).toHaveBeenCalledWith("Shelling\n🛠️ Exec\n• done");
+    expect(draftStream.update).toHaveBeenCalledWith("Analizando\n🛠️ Exec\n• done");
     expect(draftStream.update.mock.calls.flat().join("\n")).not.toContain("pnpm test");
   });
 

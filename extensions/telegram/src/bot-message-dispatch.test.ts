@@ -3715,7 +3715,7 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     const lastUpdate = answerDraftStream.updatePreview.mock.calls.at(-1)?.[0];
@@ -3723,8 +3723,8 @@ describe("dispatchTelegramMessage draft streaming", () => {
     expect(lastUpdate?.text).not.toContain("completed");
     expect(lastUpdate).toEqual(
       telegramProgressPreview(
-        "Shelling\n\n🛠️ install dependencies",
-        "<b>Shelling</b>\n<b>🛠️ Exec</b> <code>install dependencies</code>",
+        "Analizando\n\n🛠️ install dependencies",
+        "<b>Analizando</b>\n<b>🛠️ Exec</b> <code>install dependencies</code>",
       ),
     );
   });
@@ -3778,7 +3778,7 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(answerDraftStream.updatePreview).not.toHaveBeenCalledWith(
@@ -3786,8 +3786,8 @@ describe("dispatchTelegramMessage draft streaming", () => {
     );
     expect(answerDraftStream.updatePreview).toHaveBeenLastCalledWith(
       telegramProgressPreview(
-        "Shelling\n\n🛠️ Exec\n🔎 Web Search: docs lookup",
-        "<b>Shelling</b>\n<b>🛠️ Exec</b>\n<b>🔎 Web Search</b> <code>docs lookup</code>",
+        "Analizando\n\n🛠️ Exec\n🔎 Web Search: docs lookup",
+        "<b>Analizando</b>\n<b>🛠️ Exec</b>\n<b>🔎 Web Search</b> <code>docs lookup</code>",
       ),
     );
     expect(deliverReplies).not.toHaveBeenCalled();
@@ -3808,13 +3808,13 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(answerDraftStream.updatePreview).toHaveBeenLastCalledWith(
       telegramProgressPreview(
-        "Shelling\n\n🌐 API: GET /v1/users\n🌐 API: POST /v1/jobs",
-        "<b>Shelling</b>\n<b>🌐 API</b> <code>GET /v1/users</code>\n<b>🌐 API</b> <code>POST /v1/jobs</code>",
+        "Analizando\n\n🌐 API: GET /v1/users\n🌐 API: POST /v1/jobs",
+        "<b>Analizando</b>\n<b>🌐 API</b> <code>GET /v1/users</code>\n<b>🌐 API</b> <code>POST /v1/jobs</code>",
       ),
     );
     expect(deliverReplies).not.toHaveBeenCalled();
@@ -3834,12 +3834,12 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(answerDraftStream.updatePreview).toHaveBeenCalledTimes(1);
     expect(answerDraftStream.updatePreview).toHaveBeenCalledWith(
-      telegramProgressPreview("Shelling\n\n🛠️ Exec", "<b>Shelling</b>\n<b>🛠️ Exec</b>"),
+      telegramProgressPreview("Analizando\n\n🛠️ Exec", "<b>Analizando</b>\n<b>🛠️ Exec</b>"),
     );
     expectWindowCollapsedTo(answerDraftStream, "🛠️ 1 tool call · ⏱️ 1s");
     expectDeliveredReply(0, { text: "Branch is up to date" });
@@ -3865,12 +3865,12 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(answerDraftStream.updatePreview).toHaveBeenCalledTimes(1);
     expect(answerDraftStream.updatePreview).toHaveBeenCalledWith(
-      telegramProgressPreview("Shelling\n\n🛠️ Exec", "<b>Shelling</b>\n<b>🛠️ Exec</b>"),
+      telegramProgressPreview("Analizando\n\n🛠️ Exec", "<b>Analizando</b>\n<b>🛠️ Exec</b>"),
     );
     expectWindowCollapsedTo(answerDraftStream, "🛠️ 1 tool call · ⏱️ 1s");
     expectDeliveredReply(0, { text: "Branch is up to date" });
@@ -3900,12 +3900,12 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(answerDraftStream.updatePreview).toHaveBeenCalledTimes(1);
     expect(answerDraftStream.updatePreview).toHaveBeenCalledWith(
-      telegramProgressPreview("Shelling\n\n🛠️ Exec", "<b>Shelling</b>\n<b>🛠️ Exec</b>"),
+      telegramProgressPreview("Analizando\n\n🛠️ Exec", "<b>Analizando</b>\n<b>🛠️ Exec</b>"),
     );
     expectWindowCollapsedTo(answerDraftStream, "🛠️ 1 tool call · ⏱️ 1s");
     expectDeliveredReply(0, { text: "Branch is up to date" });
@@ -4051,11 +4051,11 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(draftStream.updatePreview).toHaveBeenCalledWith(
-      telegramProgressPreview("Shelling\n\n🛠️ Exec", "<b>Shelling</b>\n<b>🛠️ Exec</b>"),
+      telegramProgressPreview("Analizando\n\n🛠️ Exec", "<b>Analizando</b>\n<b>🛠️ Exec</b>"),
     );
     expect(draftStream.flush).toHaveBeenCalled();
   });
@@ -4089,15 +4089,15 @@ describe("dispatchTelegramMessage draft streaming", () => {
       telegramCfg: {
         streaming: {
           mode: "progress",
-          progress: { label: "Shelling", commandText: "raw" },
+          progress: { label: "Analizando", commandText: "raw" },
         },
       },
     });
 
     expect(draftStream.updatePreview).toHaveBeenLastCalledWith(
       telegramProgressPreview(
-        "Shelling\n\n🛠️ exit 2; command false",
-        "<b>Shelling</b>\n<b>🛠️ Exec</b> <code>command false</code> <i>exit 2</i>",
+        "Analizando\n\n🛠️ exit 2; command false",
+        "<b>Analizando</b>\n<b>🛠️ Exec</b> <code>command false</code> <i>exit 2</i>",
       ),
     );
   });
@@ -4131,15 +4131,15 @@ describe("dispatchTelegramMessage draft streaming", () => {
       telegramCfg: {
         streaming: {
           mode: "progress",
-          progress: { label: "Shelling", commandText: "status" },
+          progress: { label: "Analizando", commandText: "status" },
         },
       },
     });
 
     expect(draftStream.updatePreview).toHaveBeenLastCalledWith(
       telegramProgressPreview(
-        "Shelling\n\n🛠️ exit 2",
-        "<b>Shelling</b>\n<b>🛠️ Exec</b> <code>exit 2</code>",
+        "Analizando\n\n🛠️ exit 2",
+        "<b>Analizando</b>\n<b>🛠️ Exec</b> <code>exit 2</code>",
       ),
     );
   });
@@ -4158,14 +4158,14 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createReasoningStreamContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(createTelegramDraftStream).toHaveBeenCalledTimes(1);
     expect(draftStream.updatePreview).toHaveBeenCalledWith(
       telegramProgressPreview(
-        "Shelling\n\n🛠️ Exec\n🧠 Checking files",
-        "<b>Shelling</b>\n<b>🛠️ Exec</b>\n🧠 <i>Checking files</i>",
+        "Analizando\n\n🛠️ Exec\n🧠 Checking files",
+        "<b>Analizando</b>\n<b>🛠️ Exec</b>\n🧠 <i>Checking files</i>",
       ),
     );
   });
@@ -4187,14 +4187,14 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(createTelegramDraftStream).toHaveBeenCalledTimes(1);
     expect(draftStream.updatePreview).toHaveBeenLastCalledWith(
       telegramProgressPreview(
-        "Shelling\n\n🧠 Thinking… (~200 tokens)",
-        "<b>Shelling</b>\n<b>🧠 Thinking… (~200 tokens)</b>",
+        "Analizando\n\n🧠 Thinking… (~200 tokens)",
+        "<b>Analizando</b>\n<b>🧠 Thinking… (~200 tokens)</b>",
       ),
     );
     expectWindowCollapsedTo(draftStream, "🧠 1 thought · ⏱️ 1s");
@@ -4220,7 +4220,7 @@ describe("dispatchTelegramMessage draft streaming", () => {
       context: createReasoningStreamContext(),
       streamMode: "progress",
       telegramCfg: {
-        streaming: { mode: "progress", progress: { label: "Shelling", commentary: true } },
+        streaming: { mode: "progress", progress: { label: "Analizando", commentary: true } },
       },
     });
 
@@ -4253,7 +4253,7 @@ describe("dispatchTelegramMessage draft streaming", () => {
       context: createReasoningStreamContext(),
       streamMode: "progress",
       telegramCfg: {
-        streaming: { mode: "progress", progress: { label: "Shelling", maxLineChars: 300 } },
+        streaming: { mode: "progress", progress: { label: "Analizando", maxLineChars: 300 } },
       },
     });
 
@@ -4289,7 +4289,7 @@ describe("dispatchTelegramMessage draft streaming", () => {
       context: createReasoningStreamContext(),
       streamMode: "progress",
       telegramCfg: {
-        streaming: { mode: "progress", progress: { label: "Shelling", commentary: true } },
+        streaming: { mode: "progress", progress: { label: "Analizando", commentary: true } },
       },
     });
 
@@ -4325,15 +4325,15 @@ describe("dispatchTelegramMessage draft streaming", () => {
       telegramCfg: {
         streaming: {
           mode: "progress",
-          progress: { label: "Shelling", commentary: true },
+          progress: { label: "Analizando", commentary: true },
         },
       },
     });
 
     expect(draftStream.updatePreview).toHaveBeenCalledWith(
       telegramProgressPreview(
-        "Shelling\n\n💬 Checking recent context",
-        "<b>Shelling</b>\n💬 Checking recent context",
+        "Analizando\n\n💬 Checking recent context",
+        "<b>Analizando</b>\n💬 Checking recent context",
       ),
     );
   });
@@ -4357,7 +4357,7 @@ describe("dispatchTelegramMessage draft streaming", () => {
       telegramCfg: {
         streaming: {
           mode: "progress",
-          progress: { label: "Shelling" },
+          progress: { label: "Analizando" },
         },
       },
     });
@@ -4385,13 +4385,13 @@ describe("dispatchTelegramMessage draft streaming", () => {
       telegramCfg: {
         streaming: {
           mode: "progress",
-          progress: { label: "Shelling", toolProgress: false },
+          progress: { label: "Analizando", toolProgress: false },
         },
       },
     });
 
     expect(draftStream.updatePreview).toHaveBeenCalledWith(
-      telegramProgressPreview("Shelling", "<b>Shelling</b>"),
+      telegramProgressPreview("Analizando", "<b>Analizando</b>"),
     );
     expect(draftStream.flush).toHaveBeenCalled();
   });
@@ -4413,20 +4413,20 @@ describe("dispatchTelegramMessage draft streaming", () => {
       telegramCfg: {
         streaming: {
           mode: "progress",
-          progress: { label: "Shelling", toolProgress: false },
+          progress: { label: "Analizando", toolProgress: false },
         },
       },
     });
 
     expect(draftStream.updatePreview).toHaveBeenCalledWith(
       telegramProgressPreview(
-        "Shelling\n\n🧠 Checking files",
-        "<b>Shelling</b>\n🧠 <i>Checking files</i>",
+        "Analizando\n\n🧠 Checking files",
+        "<b>Analizando</b>\n🧠 <i>Checking files</i>",
       ),
     );
   });
 
-  it.each([{ label: false }, { label: "Shelling", maxLines: 1 }] as const)(
+  it.each([{ label: false }, { label: "Analizando", maxLines: 1 }] as const)(
     "does not duplicate Telegram progress HTML rows without a visible label",
     async (progress) => {
       const draftStream = createSequencedDraftStream(2001);
@@ -4510,7 +4510,7 @@ describe("dispatchTelegramMessage draft streaming", () => {
       const updateBeforeStatusReaction = draftStream.updatePreview.mock.calls.at(-1)?.[0]?.text;
       releaseSetTool?.();
       await pendingToolStart;
-      expect(updateBeforeStatusReaction).toBe("<b>Shelling</b><br><b>🛠️ Exec</b>");
+      expect(updateBeforeStatusReaction).toBe("<b>Analizando</b><br><b>🛠️ Exec</b>");
       return { queuedFinal: false };
     });
 
@@ -4519,7 +4519,7 @@ describe("dispatchTelegramMessage draft streaming", () => {
         statusReactionController: statusReactionController as never,
       }),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(statusReactionController.setTool).toHaveBeenCalledWith("exec");
@@ -4543,13 +4543,13 @@ describe("dispatchTelegramMessage draft streaming", () => {
     await dispatchWithContext({
       context: createContext(),
       streamMode: "progress",
-      telegramCfg: { streaming: { mode: "progress", progress: { label: "Shelling" } } },
+      telegramCfg: { streaming: { mode: "progress", progress: { label: "Analizando" } } },
     });
 
     expect(draftStream.updatePreview).toHaveBeenCalledWith(
       telegramProgressPreview(
-        "Shelling\n\n🔎 Web Search: docs lookup\n• tests passed",
-        "<b>Shelling</b>\n<b>🔎 Web Search</b> <code>docs lookup</code>\n<b>Update</b> <code>tests passed</code>",
+        "Analizando\n\n🔎 Web Search: docs lookup\n• tests passed",
+        "<b>Analizando</b>\n<b>🔎 Web Search</b> <code>docs lookup</code>\n<b>Update</b> <code>tests passed</code>",
       ),
     );
     expect(draftStream.materialize).not.toHaveBeenCalled();

@@ -234,7 +234,7 @@ describe("channel-streaming", () => {
   });
 
   it("uses auto progress labels when no explicit label is configured", () => {
-    expect(DEFAULT_PROGRESS_DRAFT_LABELS[0]).toBe("Working");
+    expect(DEFAULT_PROGRESS_DRAFT_LABELS[0]).toBe("Trabajando");
     expect(resolveChannelProgressDraftLabel({ random: () => 0 })).toBe(
       DEFAULT_PROGRESS_DRAFT_LABELS[0],
     );
@@ -250,14 +250,14 @@ describe("channel-streaming", () => {
   });
 
   it("separates progress labels from detail lines with a blank line", () => {
-    const entry = { streaming: { progress: { label: "Working" } } };
+    const entry = { streaming: { progress: { label: "Trabajando" } } };
 
     expect(
       formatChannelProgressDraftText({
         entry,
         lines: ["🛠️ pgrep -fl Discord || true (agent)", "Discord is installed."],
       }),
-    ).toBe("Working\n\n🛠️ pgrep -fl Discord || true (agent)\n• Discord is installed.");
+    ).toBe("Trabajando\n\n🛠️ pgrep -fl Discord || true (agent)\n• Discord is installed.");
   });
 
   it("supports explicit progress labels and custom label sets", () => {
@@ -281,7 +281,9 @@ describe("channel-streaming", () => {
 
   it("formats bounded progress draft text", () => {
     const entry = {
-      streaming: { progress: { label: "Shelling", maxLines: 2, maxLineChars: 80, render: "rich" } },
+      streaming: {
+        progress: { label: "Analizando", maxLines: 2, maxLineChars: 80, render: "rich" },
+      },
     };
     expect(resolveChannelProgressDraftMaxLines(entry)).toBe(2);
     expect(resolveChannelProgressDraftMaxLineChars(entry)).toBe(80);
@@ -315,7 +317,7 @@ describe("channel-streaming", () => {
   });
 
   it("renders progress labels as rolling lines", () => {
-    const entry = { streaming: { progress: { label: "Shelling", maxLines: 3 } } };
+    const entry = { streaming: { progress: { label: "Analizando", maxLines: 3 } } };
 
     expect(
       formatChannelProgressDraftText({
@@ -343,22 +345,22 @@ describe("channel-streaming", () => {
   it("bounds progress draft line length to reduce edit reflow", () => {
     expect(
       formatChannelProgressDraftText({
-        entry: { streaming: { progress: { label: "Shelling" } } },
+        entry: { streaming: { progress: { label: "Analizando" } } },
         lines: ["x".repeat(160)],
         formatLine: (line) => `\`${line}\``,
       }),
-    ).toBe(`Shelling\n\n• \`${"x".repeat(119)}…\``);
+    ).toBe(`Analizando\n\n• \`${"x".repeat(119)}…\``);
   });
 
   it("honors configured progress draft line length and cuts prose on word boundaries", () => {
     expect(
       formatChannelProgressDraftText({
-        entry: { streaming: { progress: { label: "Shelling", maxLineChars: 64 } } },
+        entry: { streaming: { progress: { label: "Analizando", maxLineChars: 64 } } },
         lines: [
           "I'm checking whether the generated video exists or if the generator bailed while writing output.",
         ],
       }),
-    ).toBe("Shelling\n\n• I'm checking whether the generated video exists or if the…");
+    ).toBe("Analizando\n\n• I'm checking whether the generated video exists or if the…");
   });
 
   it("falls back to plain commentary when compaction drops the closing italic marker", () => {
@@ -391,12 +393,12 @@ describe("channel-streaming", () => {
     );
 
     const text = formatChannelProgressDraftText({
-      entry: { streaming: { progress: { label: "Shelling" } } },
+      entry: { streaming: { progress: { label: "Analizando" } } },
       lines: line ? [line] : [],
     });
 
     expect(text).toBe(
-      "Shelling\n\n🛠️ run node script…e…y/deep/path/that/keeps/going/and/going/index.ts --flag value",
+      "Analizando\n\n🛠️ run node script…e…y/deep/path/that/keeps/going/and/going/index.ts --flag value",
     );
     expect(text.match(/`/g) ?? []).toHaveLength(0);
   });

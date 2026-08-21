@@ -79,7 +79,7 @@ describe("buildReflectionPrompt", () => {
   });
 
   it("does not split UTF-16 surrogate pairs when truncating a thumbed-down response", () => {
-    const thumbedDownResponse = `${"a".repeat(499)}🦞${"b".repeat(20)}`;
+    const thumbedDownResponse = `${"a".repeat(499)}👾${"b".repeat(20)}`;
 
     const prompt = buildReflectionPrompt({ thumbedDownResponse });
 
@@ -90,12 +90,12 @@ describe("buildReflectionPrompt", () => {
   });
 
   it("keeps a boundary emoji when it fully fits before the truncation cap", () => {
-    const thumbedDownResponse = `${"a".repeat(498)}🦞${"b".repeat(20)}`;
+    const thumbedDownResponse = `${"a".repeat(498)}👾${"b".repeat(20)}`;
 
     const prompt = buildReflectionPrompt({ thumbedDownResponse });
 
     expect(prompt).not.toMatch(UNPAIRED_SURROGATE_RE);
-    expect(prompt).toContain(`${"a".repeat(498)}🦞...`);
+    expect(prompt).toContain(`${"a".repeat(498)}👾...`);
   });
 
   it("includes user comment when provided", () => {

@@ -2393,13 +2393,6 @@
       "kind": "html-text",
       "name": "text",
       "path": "ui/src/pages/config/mcp.ts",
-      "text": "OAuth"
-    },
-    {
-      "count": 1,
-      "kind": "html-text",
-      "name": "text",
-      "path": "ui/src/pages/config/mcp.ts",
       "text": "nodoassist mcp doctor --probe"
     },
     {
@@ -2422,6 +2415,13 @@
       "name": "text",
       "path": "ui/src/pages/config/mcp.ts",
       "text": "nodoassist mcp status --verbose"
+    },
+    {
+      "count": 1,
+      "kind": "html-text",
+      "name": "text",
+      "path": "ui/src/pages/config/mcp.ts",
+      "text": "OAuth"
     },
     {
       "count": 1,
@@ -2540,7 +2540,7 @@
       "kind": "html-attribute",
       "name": "placeholder",
       "path": "ui/src/pages/config/quick.ts",
-      "text": "JD or 🦞"
+      "text": "JD or 👾"
     },
     {
       "count": 1,
@@ -2757,20 +2757,6 @@
       "kind": "object-property",
       "name": "label",
       "path": "ui/src/pages/config/quick.ts",
-      "text": "Claw"
-    },
-    {
-      "count": 1,
-      "kind": "object-property",
-      "name": "label",
-      "path": "ui/src/pages/config/quick.ts",
-      "text": "Dash"
-    },
-    {
-      "count": 1,
-      "kind": "object-property",
-      "name": "label",
-      "path": "ui/src/pages/config/quick.ts",
       "text": "Default"
     },
     {
@@ -2785,13 +2771,6 @@
       "kind": "object-property",
       "name": "label",
       "path": "ui/src/pages/config/quick.ts",
-      "text": "Knot"
-    },
-    {
-      "count": 1,
-      "kind": "object-property",
-      "name": "label",
-      "path": "ui/src/pages/config/quick.ts",
       "text": "L"
     },
     {
@@ -2800,6 +2779,13 @@
       "name": "label",
       "path": "ui/src/pages/config/quick.ts",
       "text": "M"
+    },
+    {
+      "count": 1,
+      "kind": "object-property",
+      "name": "label",
+      "path": "ui/src/pages/config/quick.ts",
+      "text": "Nodo"
     },
     {
       "count": 1,
@@ -3135,21 +3121,7 @@
       "kind": "object-property",
       "name": "description",
       "path": "ui/src/pages/config/view.ts",
-      "text": "Black & red"
-    },
-    {
-      "count": 1,
-      "kind": "object-property",
-      "name": "description",
-      "path": "ui/src/pages/config/view.ts",
-      "text": "Chocolate blueprint"
-    },
-    {
-      "count": 1,
-      "kind": "object-property",
-      "name": "description",
-      "path": "ui/src/pages/config/view.ts",
-      "text": "Chroma family"
+      "text": "Brand green"
     },
     {
       "count": 1,
@@ -3240,13 +3212,6 @@
       "kind": "object-property",
       "name": "label",
       "path": "ui/src/pages/config/view.ts",
-      "text": "Claw"
-    },
-    {
-      "count": 1,
-      "kind": "object-property",
-      "name": "label",
-      "path": "ui/src/pages/config/view.ts",
       "text": "Cli"
     },
     {
@@ -3276,13 +3241,6 @@
       "name": "label",
       "path": "ui/src/pages/config/view.ts",
       "text": "Cron"
-    },
-    {
-      "count": 1,
-      "kind": "object-property",
-      "name": "label",
-      "path": "ui/src/pages/config/view.ts",
-      "text": "Dash"
     },
     {
       "count": 1,
@@ -3325,13 +3283,6 @@
       "name": "label",
       "path": "ui/src/pages/config/view.ts",
       "text": "Infrastructure"
-    },
-    {
-      "count": 1,
-      "kind": "object-property",
-      "name": "label",
-      "path": "ui/src/pages/config/view.ts",
-      "text": "Knot"
     },
     {
       "count": 1,
@@ -3388,6 +3339,13 @@
       "name": "label",
       "path": "ui/src/pages/config/view.ts",
       "text": "NodeHost"
+    },
+    {
+      "count": 1,
+      "kind": "object-property",
+      "name": "label",
+      "path": "ui/src/pages/config/view.ts",
+      "text": "Nodo"
     },
     {
       "count": 1,

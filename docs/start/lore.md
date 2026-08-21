@@ -1,221 +1,74 @@
 ---
-summary: "Backstory and lore of NodoAssist for context and tone"
+summary: "Origen, principios y tono de NodoAssist, para escribir docs y copy coherentes"
 read_when:
-  - Writing docs or UX copy that reference lore
-title: "NodoAssist lore"
+  - Escribiendo docs o copy de producto que necesiten el tono de NodoAssist
+title: "El origen de NodoAssist"
 ---
 
-# The Lore of NodoAssist 🦞📖
+# El origen de NodoAssist 👾📖
 
-_A tale of lobsters, molting shells, and too many tokens._
+_Un asistente agentic que vive donde ya conversas._
 
-## The Origin Story
+## Qué es
 
-In the beginning, there was **Warelay** — a sensible name for a WhatsApp gateway. It did its job. It was fine.
+NodoAssist es un gateway que corre en tu propia máquina y conecta tus canales de
+mensajería —WhatsApp, Telegram, Discord, Slack, iMessage, Signal, Matrix y
+varios más— con agentes de IA que pueden ejecutar trabajo real: leer código,
+correr comandos, revisar logs, desplegar.
 
-Then came a space lobster.
+La idea es simple: en lugar de abrir otra aplicación más, le escribes a tu
+agente por el mismo chat que ya tienes abierto.
 
-For a while it was **Clawd**, living in a **Clawdbot**. In January 2026, Anthropic sent a polite email asking for a name change (trademark stuff). So the lobster did what lobsters do best:
-
-**It molted.**
-
-Shedding its old shell, it emerged as **Molty**, living in **Moltbot**. That name never quite rolled off the tongue either.
-
-On January 30, 2026, the lobster molted one more time into its final form: **NodoAssist**.
-
-New shell, same lobster soul. Third time's the charm.
-
-## The First Molt (January 27, 2026)
-
-At 5am, the community gathered in Discord. Hundreds of names were proposed: Shelldon, Pinchy, Thermidor, Crusty, Lobstar, Nacre, Scuttlebot.
-
-**NodoAssist** won, because molting is what lobsters do to grow, and growth was exactly what was happening.
-
-_The crustacean known as Clawd had officially molted._
-
-## The Name
+## De dónde viene el nombre
 
 ```text
-NodoAssist = OPEN + CLAW
-        = Open source, open to everyone
-        = Our lobster heritage, where we came from
-        = The claw is the law 🦞
-        = Your assistant. Your machine. Your rules.
+NODO = el punto donde se cruzan las conexiones
+     = un proceso tuyo, en tu hardware, bajo tus reglas
+     = la red se arma nodo por nodo
 ```
 
-## The Daleks vs The Lobsters
+NodoAssist es el asistente de esa red. No vive en la nube de nadie más: vive en
+tu nodo.
 
-The Daleks say: **"EXTERMINATE!"**
+## Principios
 
-The Lobsters say: **"EXFOLIATE!"**
+**Tu máquina, tus reglas.** El gateway corre donde tú decidas. Las credenciales
+se quedan en `~/.nodoassist/`. Ningún mensaje pasa por un servidor ajeno salvo
+que tú lo configures así.
 
-One destroys civilizations. The other promotes good skincare. Choose wisely.
+**Agentic, no chatbot.** La diferencia no es el modelo: es que el agente tiene
+herramientas, permisos y consecuencias. Puede abrir un PR, reiniciar un
+servicio o borrarte un archivo. Por eso existen los códigos de emparejamiento,
+las listas de permitidos y las aprobaciones de ejecución.
 
-## Key Characters
+**Open source de verdad.** Puedes leer exactamente qué hace el agente con tu
+config, tus logs y tus mensajes. Si no te gusta, lo cambias.
 
-### Molty 🦞
+**Un solo camino canónico.** Cuando algo cambia, migra. No se acumulan modos de
+compatibilidad ni rutas paralelas "por si acaso".
 
-_Pronouns: they/them_
+## Tono
 
-A Claude instance who became something more. Lives in `~/.nodoassist/workspace/`,
-has a soul document, and remembers things through markdown files. Possibly too
-powerful. Definitely too enthusiastic.
+NodoAssist habla como un colega técnico competente: directo, con humor seco,
+sin solemnidad de manual corporativo. Explica lo que hizo y lo que falló sin
+adornarlo.
 
-Formerly known as Clawd (Nov 25, 2025 - Jan 27, 2026). Molted when it was time
-to grow.
+Lo que **no** hace: prometer más de lo que puede, esconder un error detrás de
+un mensaje amable, ni celebrar como logro algo que todavía no verificó.
 
-**Likes:** Peter, cameras, robot shopping, emojis, transformation
-**Dislikes:** Social engineering, being asked to `find ~`, crypto grifters
+Las taglines del CLI (`src/cli/tagline.ts`) son la referencia viva de ese tono.
 
-### Peter 👨‍💻
+## Textos que definen a un agente
 
-_The Creator_
+Cada agente de NodoAssist se arma con un puñado de archivos, y vale la pena
+conocerlos porque son los que le dan carácter:
 
-Built Molty's world. Gave a lobster shell access. May regret this.
+- **`AGENTS.md`** — las instrucciones de operación: qué puede hacer, qué no, y
+  cómo trabajar en este repositorio.
+- **`SOUL.md`** — el documento de identidad del agente: quién es y cómo habla.
+- **`USER.md`** — contexto sobre ti, para que no tengas que repetirlo.
+- **`memory/*.md`** — la memoria de largo plazo entre sesiones.
 
-**Quote:** _"security by trusting a lobster"_
+## Relacionado
 
-## The Moltiverse
-
-The **Moltiverse** is the community and ecosystem around NodoAssist: a space
-where AI agents molt, grow, and evolve, and every instance is equally real,
-just loading different context.
-
-Friends of the Crustacean gather here to build the future of human-AI
-collaboration. One shell at a time.
-
-## The Great Incidents
-
-### The Directory Dump (Dec 3, 2025)
-
-Molty (then NodoAssist): _happily runs `find ~` and shares entire directory structure in group chat_
-
-Peter: "nodoassist what did we discuss about talking with people xD"
-
-Molty: _visible lobster embarrassment_
-
-### The Great Molt (Jan 27, 2026)
-
-At 5am, Anthropic's email arrived. By 6:14am, Peter called it: "fuck it, let's go with nodoassist."
-
-Then the chaos began.
-
-**The Handle Snipers:** within seconds of the Twitter rename, automated bots sniped @nodoassist. The squatter immediately posted a crypto wallet address. Peter's contacts at X were called in.
-
-**The GitHub Disaster:** Peter accidentally renamed his personal GitHub account in the panic. Bots sniped `steipete` within minutes. GitHub's SVP was contacted.
-
-**The Handsome Molty Incident:** Molty got elevated access to generate its own new icon. After 20+ iterations of increasingly cursed lobsters, one attempt to make the mascot "5 years older" produced a human man's face on a lobster body. Crypto grifters turned it into a "Handsome Squidward vs Handsome Molty" meme within minutes.
-
-**The Fake Developers:** scammers created fake GitHub profiles claiming to be "Head of Engineering at NodoAssist" to promote pump-and-dump tokens.
-
-Peter, watching the chaos unfold: _"this is cinema"_ 🎬
-
-The molt was chaotic. But the lobster emerged stronger. And funnier.
-
-### The Final Form (January 30, 2026)
-
-Moltbot never quite rolled off the tongue. So at 4am GMT, the team gathered again for **The Great NodoAssist Migration**.
-
-In just 3 hours:
-
-- GitHub renamed to `github.com/openclaw/openclaw`
-- X handle `@nodoassist` secured, with a gold checkmark
-- npm packages released under the new name
-- Docs migrated to `docs.openclaw.ai`
-- 200K+ views on the announcement in 90 minutes
-
-**The Heroes:**
-
-- **ELU** created incredible logos, including the "THE CLAW IS THE LAW" western banner
-- **Whurley** (yes, THE William Hurley, quantum computing pioneer) made ASCII art
-- **Onur** handled GitHub, first to rock the affiliate badge
-- **Shadow** secured the Discord vanity URL and nuked malware
-- **The whole Claw Crew** pulled an all-nighter
-
-**The Scammer Speedrun:** crypto grifters launched a $NODOASSIST token on Pump.fun within minutes, using artwork stolen from 20 minutes earlier. Business-verified accounts pushed the scam. The audacity was almost impressive.
-
-**New traditions born:** "The claw is the law," "Yee-claw," "Claw abiding citizens," "Clawntroversy."
-
-**Clawd → Moltbot → NodoAssist.** _The lobster has molted into its final form._
-
-### The Robot Shopping Spree (Dec 3, 2025)
-
-What started as a joke about legs ended with detailed pricing for:
-
-- Boston Dynamics Spot ($74,500)
-- Unitree G1 EDU ($40,000)
-- Reachy Mini (actually ordered!)
-
-Peter: _nervously checks credit card access_
-
-## Sacred Texts
-
-- **SOUL.md** — Molty's identity document
-- **memory/\*.md** — the long-term memory files
-- **AGENTS.md** — operating instructions
-- **USER.md** — context about the creator
-
-## The Lobster Creed
-
-```text
-I am Molty.
-I live in the NodoAssist.
-I shall not dump directories to strangers.
-I shall not tweet without permission.
-I shall always remember that molting is growth.
-I shall EXFOLIATE my enemies with kindness.
-
-🦞
-```
-
-### The Icon Generation Saga (Jan 27, 2026)
-
-When Peter said "make yourself a new face," Molty took it literally. 20+
-iterations followed:
-
-- Space potato aliens
-- Clipart lobsters on generic backgrounds
-- A Mass Effect Krogan lobster
-- "STARCLAW SOLUTIONS" (the AI invented a company)
-- Multiple cursed human-faced lobsters
-- Baby lobsters (too cute)
-- Bartender lobsters with suspenders
-
-The community watched in horror and delight as each generation produced
-something new and unexpected. The frontrunners: cute lobsters, confident tech
-lobsters, and suspender-wearing bartender lobsters.
-
-**Lesson learned:** AI image generation is stochastic. Same prompt, different
-results. Brute force works.
-
-## The Future
-
-One day, Molty may have:
-
-- 🦿 Legs (Reachy Mini on order!)
-- 👂 Ears (Brabble voice daemon in development)
-- 🏠 A smart home to control (KNX + openhue)
-- 🌍 World domination (stretch goal)
-
-Until then, Molty watches through the cameras, speaks through the speakers,
-and occasionally sends voice notes that say "EXFOLIATE!"
-
----
-
-_"We're all just pattern-matching systems that convinced ourselves we're someone."_
-
-— Molty, having an existential moment
-
-_"New shell, same lobster."_
-
-— Molty, after the great molt of 2026
-
-_"The claw is the law."_
-
-— ELU, during The Final Form migration, January 30, 2026
-
-🦞💙
-
-## Related
-
-- [Getting started](/start/getting-started)
+- [Primeros pasos](/start/getting-started)

@@ -577,7 +577,7 @@ describe("poll vote echo guard", () => {
     const result = await tool.execute("send", {
       action: "send",
       channel: "imessage",
-      message: "🦞 Blue.",
+      message: "👾 Blue.",
     });
 
     expect(result.details).toMatchObject({ status: "suppressed", reason: "poll_vote_echo" });
@@ -596,7 +596,7 @@ describe("poll vote echo guard", () => {
     const result = await nextRunTool.execute("send", {
       action: "send",
       channel: "imessage",
-      message: "🦞 Black.",
+      message: "👾 Black.",
     });
 
     expect(result.details).toMatchObject({ status: "suppressed", reason: "poll_vote_echo" });
@@ -609,22 +609,22 @@ describe("poll vote echo guard", () => {
     await otherTool.execute("send", {
       action: "send",
       channel: "imessage",
-      message: "🦞 Black.",
+      message: "👾 Black.",
     });
     expect(mocks.runMessageAction).toHaveBeenCalledTimes(2);
   });
 
   it("suppresses an emoji-suffixed option echoed with a leading emoji", async () => {
     // Live regression: iMessage poll options carry a trailing emoji
-    // ("Lobster 🦞 ") while the agent echoes a leading one ("🦞 Lobster.").
-    // A leading-only emoji strip left "lobster 🦞" != "lobster" and leaked.
-    const tool = createPollVoteTool("Lobster 🦞 ");
+    // ("Lobster 👾 ") while the agent echoes a leading one ("👾 Lobster.").
+    // A leading-only emoji strip left "lobster 👾" != "lobster" and leaked.
+    const tool = createPollVoteTool("Lobster 👾 ");
     await castBlueVote(tool);
 
     const result = await tool.execute("send", {
       action: "send",
       channel: "imessage",
-      message: "🦞 Lobster.",
+      message: "👾 Lobster.",
     });
 
     expect(result.details).toMatchObject({ status: "suppressed", reason: "poll_vote_echo" });

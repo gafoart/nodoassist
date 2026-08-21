@@ -50,7 +50,7 @@ describe("MattermostConfigSchema", () => {
       streaming: {
         mode: "progress",
         progress: {
-          label: "Shelling",
+          label: "Analizando",
           maxLines: 4,
           toolProgress: false,
         },

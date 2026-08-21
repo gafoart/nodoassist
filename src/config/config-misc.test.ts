@@ -996,7 +996,7 @@ describe("config identity/materialization regressions", () => {
             identity: {
               name: "Samantha Sloth",
               theme: "space lobster",
-              emoji: "🦞",
+              emoji: "👾",
             },
             groupChat: { mentionPatterns: ["@nodoassist"] },
           },

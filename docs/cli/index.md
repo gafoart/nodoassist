@@ -58,7 +58,7 @@ Setup commands by intent:
 
 ## Color palette
 
-NodoAssist uses a lobster palette for CLI output:
+NodoAssist uses this palette for CLI output:
 
 | Token          | Hex       | Used for                             |
 | -------------- | --------- | ------------------------------------ |

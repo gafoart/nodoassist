@@ -255,7 +255,7 @@ describe("resolveSlackAccount allowFrom precedence", () => {
               mode: "progress",
               nativeTransport: true,
               preview: { toolProgress: true, commandText: "raw" },
-              progress: { label: "Shelling", commandText: "status" },
+              progress: { label: "Analizando", commandText: "status" },
               block: { enabled: true, coalesce: { minChars: 40, maxChars: 80, idleMs: 250 } },
             },
             accounts: {
@@ -278,7 +278,7 @@ describe("resolveSlackAccount allowFrom precedence", () => {
       mode: "progress",
       nativeTransport: true,
       preview: { toolProgress: true, commandText: "raw" },
-      progress: { label: "Shelling", commandText: "status", nativeTaskCards: true },
+      progress: { label: "Analizando", commandText: "status", nativeTaskCards: true },
       block: { enabled: true, coalesce: { minChars: 40, maxChars: 80, idleMs: 500 } },
     });
   });
@@ -288,7 +288,7 @@ describe("resolveSlackAccount allowFrom precedence", () => {
       cfg: {
         channels: {
           slack: {
-            streaming: { mode: "progress", progress: { label: "Shelling" } },
+            streaming: { mode: "progress", progress: { label: "Analizando" } },
             accounts: {
               work: {
                 botToken: "xoxb-work",

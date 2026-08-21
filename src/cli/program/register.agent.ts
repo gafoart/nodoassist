@@ -214,7 +214,7 @@ export function registerAgentsCommands(program: Command): void {
 ${theme.heading("Examples:")}
 ${formatHelpExamples([
   [
-    'nodoassist agents set-identity --agent main --name "NodoAssist" --emoji "🦞"',
+    'nodoassist agents set-identity --agent main --name "NodoAssist" --emoji "👾"',
     "Set name + emoji.",
   ],
   [

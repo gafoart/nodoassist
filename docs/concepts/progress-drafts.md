@@ -95,9 +95,9 @@ default `label` is `"auto"`, which picks from NodoAssist's built-in single-word
 label pool:
 
 ```text
-Working, Shelling, Scuttling, Clawing, Pinching, Molting, Bubbling, Tiding,
-Reefing, Cracking, Sifting, Brining, Nautiling, Krilling, Barnacling,
-Lobstering, Tidepooling, Pearling, Snapping, Surfacing
+Trabajando, Analizando, Rastreando, Leyendo, Resolviendo, Iterando, Compilando,
+Verificando, Cruzando, Depurando, Filtrando, Midiendo, Enrutando, Encadenando,
+Ensamblando, Razonando, Ajustando, Puliendo, Cerrando, Entregando
 ```
 
 Use a fixed label:

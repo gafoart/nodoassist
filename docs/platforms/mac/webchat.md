@@ -20,7 +20,7 @@ The anchored quick-chat panel from the menu bar keeps the compact single-column 
 
 ## Launch and debugging
 
-- Manual: Lobster menu -> "Open Chat".
+- Manual: NodoAssist menu bar icon -> "Open Chat".
 - Auto-open for testing:
 
   ```bash

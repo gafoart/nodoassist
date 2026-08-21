@@ -1551,41 +1551,41 @@ function Main {
     Write-Host ""
     if ($isUpgrade) {
         $updateMessages = @(
-            "Leveled up! New skills unlocked. You're welcome.",
-            "Fresh code, same lobster. Miss me?",
-            "Back and better. Did you even notice I was gone?",
-            "Update complete. I learned some new tricks while I was out.",
-            "Upgraded! Now with 23% more sass.",
-            "I've evolved. Try to keep up.",
-            "New version, who dis? Oh right, still me but shinier.",
-            "Patched, polished, and ready to pinch. Let's go.",
-            "The lobster has molted. Harder shell, sharper claws.",
-            "Update done! Check the changelog or just trust me, it's good.",
-            "Reborn from the boiling waters of npm. Stronger now.",
-            "I went away and came back smarter. You should try it sometime.",
-            "Update complete. The bugs feared me, so they left.",
-            "New version installed. Old version sends its regards.",
-            "Firmware fresh. Brain wrinkles: increased.",
-            "I've seen things you wouldn't believe. Anyway, I'm updated.",
-            "Back online. The changelog is long but our friendship is longer.",
-            "Upgraded! Peter fixed stuff. Blame him if it breaks.",
-            "Molting complete. Please don't look at my soft shell phase.",
-            "Version bump! Same chaos energy, fewer crashes (probably)."
+            "¡Subí de nivel! Habilidades nuevas desbloqueadas. De nada.",
+            "Código fresco, mismo agente. ¿Me extrañaste?",
+            "Volví, y mejor. ¿Siquiera notaste que me fui?",
+            "Actualización completa. Aprendí trucos nuevos mientras no estaba.",
+            "¡Actualizado! Ahora con 23% más de descaro.",
+            "Evolucioné. Trata de seguirme el paso.",
+            "Versión nueva, ¿quién habla? Ah cierto, sigo siendo yo pero más brillante.",
+            "Parcheado, pulido y listo para trabajar. Vamos.",
+            "El agente se actualizó. Más contexto, mejores herramientas.",
+            "¡Listo! Revisa el changelog o simplemente confía en mí, está bueno.",
+            "Renacido de las aguas hirvientes de npm. Más fuerte ahora.",
+            "Me fui y volví más listo. Deberías intentarlo alguna vez.",
+            "Actualización completa. Los bugs me temieron, así que se fueron.",
+            "Versión nueva instalada. La anterior manda saludos.",
+            "Firmware fresco. Arrugas cerebrales: en aumento.",
+            "He visto cosas que no creerías. En fin, ya me actualicé.",
+            "De vuelta en línea. El changelog es largo pero nuestra amistad es más larga.",
+            "¡Actualizado! Alguien arregló cosas. Cúlpalo si se rompe.",
+            "Actualización terminada. No me juzgues durante la fase de arranque.",
+            "¡Bump de versión! La misma energía caótica, menos crashes (probablemente)."
         )
         Write-Host (Get-Random -InputObject $updateMessages) -ForegroundColor Gray
         Write-Host ""
     } else {
         $completionMessages = @(
-            "Ahh nice, I like it here. Got any snacks? ",
-            "Home sweet home. Don't worry, I won't rearrange the furniture.",
-            "I'm in. Let's cause some responsible chaos.",
-            "Installation complete. Your productivity is about to get weird.",
-            "Settled in. Time to automate your life whether you're ready or not.",
-            "Cozy. I've already read your calendar. We need to talk.",
-            "Finally unpacked. Now point me at your problems.",
-            "cracks claws Alright, what are we building?",
-            "The lobster has landed. Your terminal will never be the same.",
-            "All done! I promise to only judge your code a little bit."
+            "Ahh qué bien, me gusta esto. ¿Tienes algo de picar? ",
+            "Hogar dulce hogar. Tranquilo, no voy a mover los muebles.",
+            "Ya estoy dentro. Vamos a causar un caos responsable.",
+            "Instalación completa. Tu productividad está a punto de ponerse rara.",
+            "Ya me instalé. Hora de automatizarte la vida, estés listo o no.",
+            "Qué cómodo. Ya leí tu calendario. Tenemos que hablar.",
+            "Por fin desempacado. Ahora apúntame a tus problemas.",
+            "cruje los dedos Bien, ¿qué vamos a construir?",
+            "El agente aterrizó. Tu terminal no volverá a ser la misma.",
+            "¡Listo! Prometo juzgar tu código solo un poquito."
         )
         Write-Host (Get-Random -InputObject $completionMessages) -ForegroundColor Gray
         Write-Host ""

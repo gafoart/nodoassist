@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Android adaptive foreground: 108dp canvas, mark at 55% so it stays inside
+     the 66dp safe circle that round/squircle launcher masks crop to. -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1080 1080">
+  <g transform="translate(243 243) scale(2.4324)">
+    <path fill="#ffffff" d="M122.1,0C54.7,0,0,54.7,0,122.1s54.7,122.1,122.1,122.1,122.1-54.7,122.1-122.1S189.5,0,122.1,0ZM122.1,198.5c-42.2,0-76.4-34.2-76.4-76.4S79.9,45.7,122.1,45.7s76.4,34.2,76.4,76.4-34.2,76.4-76.4,76.4h0Z"/>
+    <path fill="#72b74d" d="M122.1,169.3c-26,0-47.2-21.2-47.2-47.2s21.2-47.2,47.2-47.2,47.2,21.2,47.2,47.2-21.2,47.2-47.2,47.2Z"/>
+  </g>
+</svg>

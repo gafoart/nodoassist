@@ -5,7 +5,7 @@ read_when:
 title: "NodoAssist"
 ---
 
-# NodoAssist 🦞
+# NodoAssist 👾
 
 <p align="center">
     <img
@@ -22,7 +22,7 @@ title: "NodoAssist"
     />
 </p>
 
-> _"EXFOLIATE! EXFOLIATE!"_ — A space lobster, probably
+> _"Todos tus chats, un solo NodoAssist."_
 
 <p align="center">
   <strong>Any OS gateway for AI agents across Discord, Google Chat, iMessage, Matrix, Microsoft Teams, Signal, Slack, Telegram, WhatsApp, Zalo, and more.</strong><br />

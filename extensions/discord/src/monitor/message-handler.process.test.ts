@@ -2197,7 +2197,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     const updates = draftStream.update.mock.calls.map((call) => call[0]);
-    expect(updates).toEqual(["Pinching\n\n🛠️ Exec\n• exec done"]);
+    expect(updates).toEqual(["Resolviendo\n\n🛠️ Exec\n• exec done"]);
     expectProgressSummaryEdit("🛠️ 1 tool call");
     expectFreshFinalText("done");
   });
@@ -2219,7 +2219,7 @@ describe("processDiscordMessage draft streaming", () => {
 
     const ctx = await createAutomaticSourceDeliveryContext({
       discordConfig: {
-        streaming: { mode: "progress", progress: { label: "Shelling", thinking: true } },
+        streaming: { mode: "progress", progress: { label: "Analizando", thinking: true } },
       },
     });
 
@@ -2247,7 +2247,7 @@ describe("processDiscordMessage draft streaming", () => {
 
     const ctx = await createAutomaticSourceDeliveryContext({
       discordConfig: {
-        streaming: { mode: "progress", progress: { label: "Shelling", thinking: true } },
+        streaming: { mode: "progress", progress: { label: "Analizando", thinking: true } },
       },
     });
 
@@ -2284,7 +2284,7 @@ describe("processDiscordMessage draft streaming", () => {
 
     const ctx = await createAutomaticSourceDeliveryContext({
       discordConfig: {
-        streaming: { mode: "progress", progress: { label: "Shelling", commentary: true } },
+        streaming: { mode: "progress", progress: { label: "Analizando", commentary: true } },
       },
     });
 
@@ -2314,14 +2314,14 @@ describe("processDiscordMessage draft streaming", () => {
     const ctx = await createAutomaticSourceDeliveryContext({
       discordConfig: {
         maxLinesPerMessage: 5,
-        streaming: { mode: "progress", progress: { label: "Shelling" } },
+        streaming: { mode: "progress", progress: { label: "Analizando" } },
       },
     });
 
     await runProcessDiscordMessage(ctx);
 
     const updates = draftStream.update.mock.calls.map((call) => call[0]);
-    expect(updates).toEqual(["Shelling\n\n🛠️ Exec\n• exec running"]);
+    expect(updates).toEqual(["Analizando\n\n🛠️ Exec\n• exec running"]);
     expectProgressSummaryEdit("🛠️ 1 tool call");
     expectFreshFinalText("done");
   });
@@ -2346,14 +2346,14 @@ describe("processDiscordMessage draft streaming", () => {
     const ctx = await createAutomaticSourceDeliveryContext({
       discordConfig: {
         maxLinesPerMessage: 5,
-        streaming: { mode: "progress", progress: { label: "Shelling" } },
+        streaming: { mode: "progress", progress: { label: "Analizando" } },
       },
     });
 
     await runProcessDiscordMessage(ctx);
 
     const updates = draftStream.update.mock.calls.map((call) => call[0]);
-    expect(updates).toEqual(["Shelling\n\n🛠️ Exec\n• exec running"]);
+    expect(updates).toEqual(["Analizando\n\n🛠️ Exec\n• exec running"]);
     expectProgressSummaryEdit("🛠️ 1 tool call");
     expectFreshFinalText("done");
   });
@@ -2383,7 +2383,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(getLastDispatchReplyOptions()?.sourceReplyDeliveryMode).toBe("message_tool_only");
-    expect(draftStream.update).toHaveBeenCalledWith("Pinching\n\n🛠️ Exec\n• exec done");
+    expect(draftStream.update).toHaveBeenCalledWith("Resolviendo\n\n🛠️ Exec\n• exec done");
     expect(deliverDiscordReply).not.toHaveBeenCalled();
   });
 
@@ -2866,7 +2866,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Shelling",
+            label: "Analizando",
             toolProgress: false,
           },
         },
@@ -2876,7 +2876,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledTimes(1);
-    expect(draftStream.update).toHaveBeenCalledWith("Shelling");
+    expect(draftStream.update).toHaveBeenCalledWith("Analizando");
     expect(draftStream.flush).toHaveBeenCalledTimes(1);
     expect(
       requireRecord(firstDispatchParams().replyOptions, "dispatch reply options")
@@ -3065,7 +3065,7 @@ describe("processDiscordMessage draft streaming", () => {
 
       const ctx = await createAutomaticSourceDeliveryContext({
         discordConfig: {
-          streaming: { mode: "progress", progress: { label: "Shelling" } },
+          streaming: { mode: "progress", progress: { label: "Analizando" } },
         },
       });
 
@@ -3168,7 +3168,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Shelling",
+            label: "Analizando",
           },
         },
       },
@@ -3196,7 +3196,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Shelling",
+            label: "Analizando",
           },
         },
       },
@@ -3204,7 +3204,7 @@ describe("processDiscordMessage draft streaming", () => {
 
     await runProcessDiscordMessage(ctx);
 
-    expect(draftStream.update).toHaveBeenCalledWith("Shelling\n\n🛠️ Exec\n• exec done");
+    expect(draftStream.update).toHaveBeenCalledWith("Analizando\n\n🛠️ Exec\n• exec done");
     expectProgressSummaryEdit("🛠️ 1 tool call");
     expectFreshFinalText("done");
   });
@@ -3226,7 +3226,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Shelling",
+            label: "Analizando",
           },
         },
       },
@@ -3234,7 +3234,7 @@ describe("processDiscordMessage draft streaming", () => {
 
     await runProcessDiscordMessage(ctx);
 
-    expect(draftStream.update).toHaveBeenCalledWith("Shelling\n\n🛠️ Exec\n• exec done");
+    expect(draftStream.update).toHaveBeenCalledWith("Analizando\n\n🛠️ Exec\n• exec done");
     expectProgressSummaryEdit("🛠️ 1 tool call");
     expect(draftStream.clear).not.toHaveBeenCalled();
     expect(draftStream.messageId()).toBe("preview-1");
@@ -3261,7 +3261,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Shelling",
+            label: "Analizando",
           },
         },
       },
@@ -3270,7 +3270,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Shelling\n\n🛠️ run tests, `pnpm test -- --watch=false`\n• done",
+      "Analizando\n\n🛠️ run tests, `pnpm test -- --watch=false`\n• done",
     );
   });
 
@@ -3293,7 +3293,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Shelling",
+            label: "Analizando",
             commandText: "status",
           },
         },
@@ -3302,7 +3302,7 @@ describe("processDiscordMessage draft streaming", () => {
 
     await runProcessDiscordMessage(ctx);
 
-    expect(draftStream.update).toHaveBeenCalledWith("Shelling\n\n🛠️ Exec\n• done");
+    expect(draftStream.update).toHaveBeenCalledWith("Analizando\n\n🛠️ Exec\n• done");
   });
 
   it("keeps Discord progress lines below the configured label", async () => {
@@ -3320,7 +3320,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             maxLines: 4,
           },
         },
@@ -3329,7 +3329,7 @@ describe("processDiscordMessage draft streaming", () => {
 
     await runProcessDiscordMessage(ctx);
 
-    expect(draftStream.update).toHaveBeenCalledWith("Clawing...\n\n🧩 First\n🧩 Second\n🧩 Third");
+    expect(draftStream.update).toHaveBeenCalledWith("Leyendo...\n\n🧩 First\n🧩 Second\n🧩 Third");
   });
 
   it("skips empty apply_patch starts and renders the patch summary", async () => {
@@ -3351,7 +3351,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
           },
         },
       },
@@ -3360,7 +3360,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🩹 1 modified; extensions/discord/src/monitor/message-handler.draft-preview.ts",
+      "Leyendo...\n\n🩹 1 modified; extensions/discord/src/monitor/message-handler.draft-preview.ts",
     );
     const updates = draftStream.update.mock.calls.map((call) => call[0]);
     expect(updates.join("\n")).not.toContain("Apply Patch");
@@ -3385,7 +3385,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
           },
         },
       },
@@ -3394,7 +3394,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _Reading the event projector_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _Reading the event projector_",
     );
     const updates = draftStream.update.mock.calls.map((call) => call[0]);
     expect(updates.join("\n")).not.toContain("Reasoning");
@@ -3419,7 +3419,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
           },
         },
       },
@@ -3427,7 +3427,7 @@ describe("processDiscordMessage draft streaming", () => {
 
     await runProcessDiscordMessage(ctx);
 
-    expect(draftStream.update).toHaveBeenCalledWith("Clawing...\n\n🛠️ Exec\n• done");
+    expect(draftStream.update).toHaveBeenCalledWith("Leyendo...\n\n🛠️ Exec\n• done");
     expect(draftStream.update.mock.calls.map((call) => call[0]).join("\n")).not.toContain(
       "Private planning",
     );
@@ -3449,7 +3449,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3459,7 +3459,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _Considering plugin installation!_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _Considering plugin installation!_",
     );
     const updates = draftStream.update.mock.calls.map((call) => call[0]);
     expect(updates.join("\n")).not.toContain("• _!_");
@@ -3480,7 +3480,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3490,7 +3490,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _Thinking through the install plan_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _Thinking through the install plan_",
     );
   });
 
@@ -3508,7 +3508,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3518,7 +3518,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _Thinking: compare install paths_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _Thinking: compare install paths_",
     );
   });
 
@@ -3536,7 +3536,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3546,7 +3546,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _Reasoning: compare install paths_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _Reasoning: compare install paths_",
     );
   });
 
@@ -3566,7 +3566,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3576,7 +3576,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _compare install paths_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _compare install paths_",
     );
   });
 
@@ -3596,7 +3596,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3606,7 +3606,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _compare install paths_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _compare install paths_",
     );
   });
 
@@ -3624,7 +3624,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3634,7 +3634,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _Thinking through the plan_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _Thinking through the plan_",
     );
   });
 
@@ -3653,7 +3653,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3663,7 +3663,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _I was Thinking about the plan_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _I was Thinking about the plan_",
     );
   });
 
@@ -3682,7 +3682,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3692,7 +3692,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _I was Thinking... through the plan_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _I was Thinking... through the plan_",
     );
   });
 
@@ -3711,7 +3711,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3721,7 +3721,7 @@ describe("processDiscordMessage draft streaming", () => {
     await runProcessDiscordMessage(ctx);
 
     expect(draftStream.update).toHaveBeenCalledWith(
-      "Clawing...\n\n🛠️ Exec\n🧠 _I was Reasoning: through edge cases_",
+      "Leyendo...\n\n🛠️ Exec\n🧠 _I was Reasoning: through edge cases_",
     );
   });
 
@@ -3741,7 +3741,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             maxLineChars: 36,
             thinking: true,
           },
@@ -3779,7 +3779,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Clawing...",
+            label: "Leyendo...",
             thinking: true,
           },
         },
@@ -3808,7 +3808,7 @@ describe("processDiscordMessage draft streaming", () => {
         streaming: {
           mode: "progress",
           progress: {
-            label: "Shelling",
+            label: "Analizando",
           },
         },
       },
@@ -3816,7 +3816,7 @@ describe("processDiscordMessage draft streaming", () => {
 
     await runProcessDiscordMessage(ctx);
 
-    expect(draftStream.update).toHaveBeenCalledWith("Shelling\n\n🧩 First\n🧩 Second");
+    expect(draftStream.update).toHaveBeenCalledWith("Analizando\n\n🧩 First\n🧩 Second");
     expect(draftStream.forceNewMessage).not.toHaveBeenCalled();
   });
 
