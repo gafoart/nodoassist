@@ -48,13 +48,13 @@ Light mode uses a white canvas: `#ffffff` backgrounds, cool gray borders (`#e0e2
 | `--accent-glow`   | `rgba(158,215,123,0.24)` | Focus rings, glow effects                      | Not as background                        |
 | `--primary`       | `#9ed77b`                | Component library `primary` alias              | —                                        |
 
-## Accent 2 (Teal)
+## Accent 2 (Deeper green)
 
-| Token               | Value                  | Use                                       |
-| ------------------- | ---------------------- | ----------------------------------------- |
-| `--accent-2`        | `#14b8a6`              | Success-adjacent status, secondary badges |
-| `--accent-2-muted`  | `rgba(20,184,166,0.7)` | Subtle teal fills                         |
-| `--accent-2-subtle` | `rgba(20,184,166,0.1)` | Tinted teal background                    |
+| Token               | Value                   | Use                                       |
+| ------------------- | ----------------------- | ----------------------------------------- |
+| `--accent-2`        | `#72b74e`               | Success-adjacent status, secondary badges |
+| `--accent-2-muted`  | `rgba(114,183,78,0.7)`  | Subtle green fills                        |
+| `--accent-2-subtle` | `rgba(114,183,78,0.12)` | Tinted green background                   |
 
 ## Semantic
 

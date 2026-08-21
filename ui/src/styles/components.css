@@ -4191,7 +4191,12 @@ td.data-table-key-col {
 
 .md-preview-dialog::backdrop {
   background:
-    radial-gradient(circle at top, rgba(255, 92, 92, 0.12), transparent 32%), rgba(5, 8, 15, 0.76);
+    radial-gradient(
+      circle at top,
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      transparent 32%
+    ),
+    rgba(5, 8, 15, 0.76);
   backdrop-filter: blur(14px);
 }
 
@@ -4343,8 +4348,16 @@ td.data-table-key-col {
   overscroll-behavior: contain;
   padding: clamp(18px, 3vw, 28px);
   background:
-    radial-gradient(circle at top right, rgba(255, 92, 92, 0.055), transparent 32%),
-    radial-gradient(circle at bottom left, rgba(20, 184, 166, 0.045), transparent 28%),
+    radial-gradient(
+      circle at top right,
+      color-mix(in srgb, var(--accent) 6%, transparent),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      color-mix(in srgb, var(--accent-2) 5%, transparent),
+      transparent 28%
+    ),
     linear-gradient(
       180deg,
       color-mix(in srgb, var(--panel) 84%, black 16%),
