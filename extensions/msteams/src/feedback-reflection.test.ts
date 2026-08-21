@@ -85,8 +85,8 @@ describe("buildReflectionPrompt", () => {
 
     expect(prompt).not.toMatch(UNPAIRED_SURROGATE_RE);
     expect(prompt).toContain(`${"a".repeat(499)}...`);
-    expect(prompt).not.toContain("\ud83e");
-    expect(prompt).not.toContain("\udd9e");
+    expect(prompt).not.toContain("\ud83d");
+    expect(prompt).not.toContain("\udc7e");
   });
 
   it("keeps a boundary emoji when it fully fits before the truncation cap", () => {

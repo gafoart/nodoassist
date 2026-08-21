@@ -98,7 +98,7 @@ describe("summarizeParentMessage", () => {
 
     expect(summary?.text).not.toMatch(UNPAIRED_SURROGATE_RE);
     expect(summary?.text).toBe(`${"a".repeat(398)}…`);
-    expect(summary?.text.endsWith("\ud83e…")).toBe(false);
+    expect(summary?.text.endsWith("\ud83d…")).toBe(false);
   });
 });
 

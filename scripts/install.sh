@@ -3260,7 +3260,7 @@ main() {
             "Volví, y mejor. ¿Siquiera notaste que me fui?"
             "Actualización completa. Aprendí trucos nuevos mientras no estaba."
             "¡Actualizado! Ahora con 23% más de descaro."
-            "I've evolved. Try to keep up. 👾"
+            "Evolucioné. Trata de seguirme el paso. 👾"
             "Versión nueva, ¿quién habla? Ah cierto, sigo siendo yo pero más brillante."
             "Parcheado, pulido y listo para trabajar. Vamos."
             "El agente se actualizó. Más contexto, mejores herramientas."
