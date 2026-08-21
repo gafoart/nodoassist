@@ -18,7 +18,7 @@ function createSettings(): UiSettings {
     token: "",
     sessionKey: "main",
     lastActiveSessionKey: "main",
-    theme: "claw",
+    theme: "nodo",
     themeMode: "dark",
     chatShowThinking: true,
     chatShowToolCalls: true,

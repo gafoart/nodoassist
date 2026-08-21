@@ -400,7 +400,7 @@ function createChatHeaderState(
       locale: "en",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "dark",
       splitRatio: 0.6,
       navCollapsed: false,

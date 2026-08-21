@@ -52,7 +52,7 @@ function makeSettings(gatewayUrl: string, overrides: Partial<UiSettings> = {}): 
     token: "",
     sessionKey: "main",
     lastActiveSessionKey: "main",
-    theme: "claw",
+    theme: "nodo",
     themeMode: "system",
     chatShowThinking: true,
     chatShowToolCalls: true,
@@ -159,7 +159,7 @@ describe("loadSettings default gateway URL derivation", () => {
     const scopedKey = "nodoassist.control.settings.v1:wss://gateway.example:8443/nodoassist";
     expect(JSON.parse(localStorage.getItem(scopedKey) ?? "{}")).toEqual({
       gatewayUrl: "wss://gateway.example:8443/nodoassist",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -195,7 +195,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "session-token",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -228,7 +228,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "gateway-a-token",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -246,7 +246,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -277,7 +277,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "memory-only-token",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -295,7 +295,7 @@ describe("loadSettings default gateway URL derivation", () => {
     const scopedKey = `nodoassist.control.settings.v1:${gwUrl}`;
     expect(JSON.parse(localStorage.getItem(scopedKey) ?? "{}")).toEqual({
       gatewayUrl: gwUrl,
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -331,7 +331,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -469,7 +469,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "stale-token",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -485,7 +485,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -514,7 +514,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "dash",
+      theme: "custom",
       themeMode: "light",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -531,7 +531,7 @@ describe("loadSettings default gateway URL derivation", () => {
       string,
       unknown
     >;
-    expect(persisted.theme).toBe("dash");
+    expect(persisted.theme).toBe("custom");
     expect(persisted.themeMode).toBe("light");
     expect(persisted.navWidth).toBe(320);
   });
@@ -645,7 +645,7 @@ describe("loadSettings default gateway URL derivation", () => {
     );
 
     const settings = loadSettings();
-    expect(settings.theme).toBe("claw");
+    expect(settings.theme).toBe("nodo");
     expect(settings.themeMode).toBe("dark");
   });
 
@@ -662,7 +662,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "",
       sessionKey: "agent:test_old:main",
       lastActiveSessionKey: "agent:test_old:main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -706,7 +706,7 @@ describe("loadSettings default gateway URL derivation", () => {
       token: "",
       sessionKey: "agent:current:main",
       lastActiveSessionKey: "agent:current:main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
@@ -846,16 +846,16 @@ describe("loadSettings default gateway URL derivation", () => {
     });
     localStorage.setItem(
       "nodoassist.control.user.v1",
-      JSON.stringify({ name: "Buns", avatar: "🦞" }),
+      JSON.stringify({ name: "Buns", avatar: "👾" }),
     );
 
     expect(loadLocalUserIdentity()).toEqual({
       name: "Buns",
-      avatar: "🦞",
+      avatar: "👾",
     });
     expect(JSON.parse(localStorage.getItem("nodoassist.control.user.v1") ?? "{}")).toEqual({
       name: "Buns",
-      avatar: "🦞",
+      avatar: "👾",
     });
   });
 

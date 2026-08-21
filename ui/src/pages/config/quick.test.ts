@@ -61,7 +61,7 @@ function createProps(overrides: Partial<QuickSettingsProps> = {}): QuickSettings
     onPairMobile: vi.fn(),
     onBrowserEnabledToggle: vi.fn(),
     onToolProfileChange: vi.fn(),
-    theme: "claw",
+    theme: "nodo",
     themeMode: "system",
     hasCustomTheme: false,
     customThemeLabel: null,
@@ -581,7 +581,7 @@ describe("renderQuickSettings", () => {
     render(
       renderQuickSettings(
         createProps({
-          theme: "claw",
+          theme: "nodo",
           hasCustomTheme: true,
           customThemeLabel: "Light Green",
           setTheme,

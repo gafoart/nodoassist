@@ -618,7 +618,7 @@ export class ConfigPage extends LitElement {
     this.customThemeImportSelectOnSuccess = false;
     this.applySettings({
       ...this.settings,
-      theme: this.settings.theme === "custom" ? "claw" : this.settings.theme,
+      theme: this.settings.theme === "custom" ? "nodo" : this.settings.theme,
       customTheme: undefined,
     });
     this.customThemeImportMessage = {

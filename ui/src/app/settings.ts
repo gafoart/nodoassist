@@ -523,8 +523,8 @@ export function loadSettings(): UiSettings {
     token: loadSessionToken(defaultUrl),
     sessionKey: "main",
     lastActiveSessionKey: "main",
-    theme: "claw",
-    themeMode: "system",
+    theme: "nodo",
+    themeMode: "dark",
     chatShowThinking: true,
     chatShowToolCalls: true,
     chatPersistCommentary: false,
@@ -572,7 +572,7 @@ export function loadSettings(): UiSettings {
       token: loadSessionToken(gatewayUrl),
       sessionKey: scopedSessionSelection.sessionKey,
       lastActiveSessionKey: scopedSessionSelection.lastActiveSessionKey,
-      theme: theme === "custom" && !customTheme ? "claw" : theme,
+      theme: theme === "custom" && !customTheme ? "nodo" : theme,
       themeMode: mode,
       chatShowThinking:
         typeof parsed.chatShowThinking === "boolean"

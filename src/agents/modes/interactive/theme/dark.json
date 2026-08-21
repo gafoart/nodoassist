@@ -2,28 +2,29 @@
 	"$schema": "https://raw.githubusercontent.com/openclaw/openclaw/main/src/agents/modes/interactive/theme/theme-schema.json",
 	"name": "dark",
 	"vars": {
-		"cyan": "#00d7ff",
-		"blue": "#5f87ff",
-		"green": "#b5bd68",
-		"red": "#cc6666",
-		"yellow": "#ffff00",
-		"text": "#d4d4d4",
-		"gray": "#808080",
-		"dimGray": "#666666",
-		"darkGray": "#505050",
-		"accent": "#8abeb7",
-		"selectedBg": "#3a3a4a",
-		"userMsgBg": "#343541",
-		"toolPendingBg": "#282832",
-		"toolSuccessBg": "#283228",
-		"toolErrorBg": "#3c2828",
-		"customMsgBg": "#2d2838"
+		"brand": "#9ed77b",
+		"brandDeep": "#72b74e",
+		"brandSoft": "#bde4a8",
+		"green": "#22c55e",
+		"red": "#ef4444",
+		"yellow": "#f59e0b",
+		"blue": "#3b82f6",
+		"text": "#e6e9f0",
+		"gray": "#999ca3",
+		"dimGray": "#6f747f",
+		"darkGray": "#3a4150",
+		"selectedBg": "#1a2030",
+		"userMsgBg": "#131823",
+		"toolPendingBg": "#161c28",
+		"toolSuccessBg": "#16241c",
+		"toolErrorBg": "#2a1719",
+		"customMsgBg": "#1c1830"
 	},
 	"colors": {
-		"accent": "accent",
-		"border": "blue",
-		"borderAccent": "cyan",
-		"borderMuted": "darkGray",
+		"accent": "brand",
+		"border": "darkGray",
+		"borderAccent": "brand",
+		"borderMuted": "#252c3a",
 		"success": "green",
 		"error": "red",
 		"warning": "yellow",
@@ -44,16 +45,16 @@
 		"toolTitle": "text",
 		"toolOutput": "gray",
 
-		"mdHeading": "#f0c674",
-		"mdLink": "#81a2be",
+		"mdHeading": "brandSoft",
+		"mdLink": "brand",
 		"mdLinkUrl": "dimGray",
-		"mdCode": "accent",
-		"mdCodeBlock": "green",
+		"mdCode": "brand",
+		"mdCodeBlock": "brandDeep",
 		"mdCodeBlockBorder": "gray",
 		"mdQuote": "gray",
 		"mdQuoteBorder": "gray",
 		"mdHr": "gray",
-		"mdListBullet": "accent",
+		"mdListBullet": "brand",
 
 		"toolDiffAdded": "green",
 		"toolDiffRemoved": "red",
@@ -76,11 +77,11 @@
 		"thinkingHigh": "#b294bb",
 		"thinkingXhigh": "#d183e8",
 
-		"bashMode": "green"
+		"bashMode": "brandDeep"
 	},
 	"export": {
-		"pageBg": "#18181e",
-		"cardBg": "#1e1e24",
-		"infoBg": "#3c3728"
+		"pageBg": "#0b0e14",
+		"cardBg": "#131823",
+		"infoBg": "#1e2a17"
 	}
 }

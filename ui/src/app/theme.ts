@@ -1,33 +1,31 @@
 // Control UI module implements theme behavior.
-export type ThemeName = "claw" | "knot" | "dash" | "custom";
+export type ThemeName = "nodo" | "custom";
 export type ThemeMode = "system" | "light" | "dark";
-export type ResolvedTheme =
-  | "dark"
-  | "light"
-  | "openknot"
-  | "openknot-light"
-  | "dash"
-  | "dash-light"
-  | "custom"
-  | "custom-light";
+export type ResolvedTheme = "dark" | "light" | "custom" | "custom-light";
 
-const VALID_THEME_NAMES = new Set<ThemeName>(["claw", "knot", "dash", "custom"]);
+const VALID_THEME_NAMES = new Set<ThemeName>(["nodo", "custom"]);
 const VALID_THEME_MODES = new Set<ThemeMode>(["system", "light", "dark"]);
 
 type ThemeSelection = { theme: ThemeName; mode: ThemeMode };
 
+// Browser-local settings survive upgrades, so every theme id we ever shipped
+// still lands in storage. Retired families collapse onto "nodo" and keep only
+// the light/dark intent they implied.
 const LEGACY_MAP: Record<string, ThemeSelection> = {
-  defaultTheme: { theme: "claw", mode: "dark" },
-  docsTheme: { theme: "claw", mode: "light" },
-  lightTheme: { theme: "knot", mode: "dark" },
-  landingTheme: { theme: "knot", mode: "dark" },
-  newTheme: { theme: "knot", mode: "dark" },
-  dark: { theme: "claw", mode: "dark" },
-  light: { theme: "claw", mode: "light" },
-  openknot: { theme: "knot", mode: "dark" },
-  fieldmanual: { theme: "dash", mode: "dark" },
-  clawdash: { theme: "dash", mode: "light" },
-  system: { theme: "claw", mode: "system" },
+  claw: { theme: "nodo", mode: "system" },
+  knot: { theme: "nodo", mode: "dark" },
+  dash: { theme: "nodo", mode: "dark" },
+  defaultTheme: { theme: "nodo", mode: "dark" },
+  docsTheme: { theme: "nodo", mode: "light" },
+  lightTheme: { theme: "nodo", mode: "dark" },
+  landingTheme: { theme: "nodo", mode: "dark" },
+  newTheme: { theme: "nodo", mode: "dark" },
+  dark: { theme: "nodo", mode: "dark" },
+  light: { theme: "nodo", mode: "light" },
+  openknot: { theme: "nodo", mode: "dark" },
+  fieldmanual: { theme: "nodo", mode: "dark" },
+  clawdash: { theme: "nodo", mode: "light" },
+  system: { theme: "nodo", mode: "system" },
 };
 
 function prefersLightScheme(): boolean {
@@ -46,7 +44,7 @@ export function parseThemeSelection(
 
   const normalizedTheme = VALID_THEME_NAMES.has(theme as ThemeName)
     ? (theme as ThemeName)
-    : (LEGACY_MAP[theme]?.theme ?? "claw");
+    : (LEGACY_MAP[theme]?.theme ?? "nodo");
   const normalizedMode = VALID_THEME_MODES.has(mode as ThemeMode)
     ? (mode as ThemeMode)
     : (LEGACY_MAP[theme]?.mode ?? "system");
@@ -63,14 +61,8 @@ function resolveMode(mode: ThemeMode): "light" | "dark" {
 
 export function resolveTheme(theme: ThemeName, mode: ThemeMode): ResolvedTheme {
   const resolvedMode = resolveMode(mode);
-  if (theme === "claw") {
-    return resolvedMode === "light" ? "light" : "dark";
+  if (theme === "custom") {
+    return resolvedMode === "light" ? "custom-light" : "custom";
   }
-  if (theme === "knot") {
-    return resolvedMode === "light" ? "openknot-light" : "openknot";
-  }
-  if (theme === "dash") {
-    return resolvedMode === "light" ? "dash-light" : "dash";
-  }
-  return resolvedMode === "light" ? "custom-light" : "custom";
+  return resolvedMode === "light" ? "light" : "dark";
 }

@@ -17,7 +17,7 @@ function createOverviewProps(overrides: Partial<OverviewProps> = {}): OverviewPr
       token: "",
       sessionKey: "main",
       lastActiveSessionKey: "main",
-      theme: "claw",
+      theme: "nodo",
       themeMode: "system",
       chatShowThinking: true,
       chatShowToolCalls: true,
