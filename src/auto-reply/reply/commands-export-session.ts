@@ -128,49 +128,51 @@ async function generateHtml(sessionData: SessionData): Promise<string> {
     loadTemplate(path.join("vendor", "highlight.min.js")),
   ]);
 
-  // Use the bundled dark session-export palette
+  // Mirrors the bundled dark TUI theme (src/agents/modes/interactive/theme/dark.json).
+  // Session exports are static HTML with no theme loader, so the palette is
+  // inlined here; keep both in sync when the brand palette moves.
   const themeVars = `
-    --cyan: #00d7ff;
-    --blue: #5f87ff;
-    --green: #b5bd68;
-    --red: #cc6666;
-    --yellow: #ffff00;
-    --gray: #808080;
-    --dimGray: #666666;
-    --darkGray: #505050;
-    --accent: #8abeb7;
-    --selectedBg: #3a3a4a;
-    --userMsgBg: #343541;
-    --toolPendingBg: #282832;
-    --toolSuccessBg: #283228;
-    --toolErrorBg: #3c2828;
-    --customMsgBg: #2d2838;
-    --text: #e0e0e0;
-    --dim: #666666;
-    --muted: #808080;
-    --border: #5f87ff;
-    --borderAccent: #00d7ff;
-    --borderMuted: #505050;
-    --success: #b5bd68;
-    --error: #cc6666;
-    --warning: #ffff00;
-    --thinkingText: #808080;
-    --userMessageBg: #343541;
-    --userMessageText: #e0e0e0;
-    --customMessageBg: #2d2838;
-    --customMessageText: #e0e0e0;
+    --cyan: #bde4a8;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --gray: #999ca3;
+    --dimGray: #6f747f;
+    --darkGray: #3a4150;
+    --accent: #9ed77b;
+    --selectedBg: #1a2030;
+    --userMsgBg: #131823;
+    --toolPendingBg: #161c28;
+    --toolSuccessBg: #16241c;
+    --toolErrorBg: #2a1719;
+    --customMsgBg: #1c1830;
+    --text: #e6e9f0;
+    --dim: #6f747f;
+    --muted: #999ca3;
+    --border: #3a4150;
+    --borderAccent: #9ed77b;
+    --borderMuted: #252c3a;
+    --success: #22c55e;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --thinkingText: #999ca3;
+    --userMessageBg: #131823;
+    --userMessageText: #e6e9f0;
+    --customMessageBg: #1c1830;
+    --customMessageText: #e6e9f0;
     --customMessageLabel: #9575cd;
-    --toolTitle: #e0e0e0;
-    --toolOutput: #808080;
-    --mdHeading: #f0c674;
-    --mdLink: #81a2be;
-    --mdLinkUrl: #666666;
-    --mdCode: #8abeb7;
-    --mdCodeBlock: #b5bd68;
+    --toolTitle: #e6e9f0;
+    --toolOutput: #999ca3;
+    --mdHeading: #bde4a8;
+    --mdLink: #9ed77b;
+    --mdLinkUrl: #6f747f;
+    --mdCode: #9ed77b;
+    --mdCodeBlock: #72b74e;
   `;
-  const bodyBg = "#1e1e28";
-  const containerBg = "#282832";
-  const infoBg = "#343541";
+  const bodyBg = "#0b0e14";
+  const containerBg = "#131823";
+  const infoBg = "#1e2a17";
 
   // Base64 encode session data
   const sessionDataBase64 = Buffer.from(JSON.stringify(sessionData)).toString("base64");

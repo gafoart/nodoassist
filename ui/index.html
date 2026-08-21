@@ -14,15 +14,21 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     <script>
       (function () {
-        var THEMES = { claw: 1, knot: 1, dash: 1 };
+        // Pre-paint anti-flash. Mirrors resolveTheme/parseThemeSelection in
+        // ui/src/app/theme.ts; keep both in sync or the first paint disagrees
+        // with the app and the theme visibly swaps after hydration.
+        var THEMES = { nodo: 1, custom: 1 };
         var MODES = { system: 1, light: 1, dark: 1 };
         var LEGACY = {
-          dark: "claw:dark",
-          light: "claw:light",
-          openknot: "knot:dark",
-          fieldmanual: "dash:dark",
-          clawdash: "dash:light",
-          system: "claw:system",
+          claw: "nodo:system",
+          knot: "nodo:dark",
+          dash: "nodo:dark",
+          dark: "nodo:dark",
+          light: "nodo:light",
+          openknot: "nodo:dark",
+          fieldmanual: "nodo:dark",
+          clawdash: "nodo:light",
+          system: "nodo:system",
         };
         try {
           var keys = Object.keys(localStorage);
@@ -40,27 +46,23 @@
           if (typeof t !== "string") t = "";
           if (typeof m !== "string") m = "";
           var legacy = LEGACY[t];
-          var theme = THEMES[t] ? t : legacy ? legacy.split(":")[0] : "claw";
+          var theme = THEMES[t] ? t : legacy ? legacy.split(":")[0] : "nodo";
           var mode = MODES[m] ? m : legacy ? legacy.split(":")[1] : "system";
           if (mode === "system") {
             mode = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
           }
           var resolved =
-            theme === "knot"
+            theme === "custom"
               ? mode === "light"
-                ? "openknot-light"
-                : "openknot"
-              : theme === "dash"
-                ? mode === "light"
-                  ? "dash-light"
-                  : "dash"
-                : mode === "light"
-                  ? "light"
-                  : "dark";
+                ? "custom-light"
+                : "custom"
+              : mode === "light"
+                ? "light"
+                : "dark";
           document.documentElement.setAttribute("data-theme", resolved);
           document.documentElement.setAttribute(
             "data-theme-mode",
-            resolved.includes("light") ? "light" : "dark",
+            resolved.indexOf("light") >= 0 ? "light" : "dark",
           );
         } catch (e) {}
       })();
