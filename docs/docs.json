@@ -7,8 +7,8 @@
     "library": "lucide"
   },
   "logo": {
-    "light": "/assets/pixel-lobster.svg",
-    "dark": "/assets/pixel-lobster.svg"
+    "light": "/assets/nodo-iso.svg",
+    "dark": "/assets/nodo-iso.svg"
   },
   "fonts": {
     "body": {
@@ -18,11 +18,11 @@
       "family": "DM Sans"
     }
   },
-  "favicon": "/assets/pixel-lobster.svg",
+  "favicon": "/assets/nodo-iso.svg",
   "colors": {
-    "primary": "#FF5A36",
-    "dark": "#FF5A36",
-    "light": "#FF8A6B"
+    "primary": "#3f6f2b",
+    "dark": "#9ed77b",
+    "light": "#72b74d"
   },
   "styling": {
     "codeblocks": {

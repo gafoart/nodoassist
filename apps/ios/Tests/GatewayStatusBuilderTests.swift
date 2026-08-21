@@ -43,7 +43,7 @@ struct GatewayStatusBuilderTests {
     }
 
     @Test func `chat agent badge rejects placeholder question mark`() {
-        #expect(ChatProTab.normalizedBadgeEmoji(" 🦞 ") == "🦞")
+        #expect(ChatProTab.normalizedBadgeEmoji(" 👾 ") == "👾")
         #expect(ChatProTab.normalizedBadgeEmoji("?") == nil)
         #expect(ChatProTab.normalizedBadgeEmoji("   ") == nil)
         #expect(ChatProTab.normalizedBadgeEmoji(nil) == nil)
