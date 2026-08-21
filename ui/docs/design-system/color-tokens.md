@@ -2,7 +2,7 @@
 
 All tokens are defined in `ui/src/styles/base.css` under `:root` (dark mode default) and `:root[data-theme-mode="light"]` (light override). Theme families may override accent tokens while keeping shared surface tokens.
 
-> Contrast ratios are measured against `--bg` (`#0e1015`) in dark mode using WCAG relative luminance formula. AA requires ≥4.5:1 for normal text, ≥3:1 for large text and UI components.
+> Contrast ratios are measured against `--bg` (`#0b0e14`) in dark mode using WCAG relative luminance formula. AA requires ≥4.5:1 for normal text, ≥3:1 for large text and UI components.
 
 ---
 
@@ -10,30 +10,30 @@ All tokens are defined in `ui/src/styles/base.css` under `:root` (dark mode defa
 
 | Token           | Dark Value | Light Value | Use                           | Don't                          |
 | --------------- | ---------- | ----------- | ----------------------------- | ------------------------------ |
-| `--bg`          | `#0e1015`  | `#faf9f7`   | Page root, deepest layer      | Never use on elevated surfaces |
+| `--bg`          | `#0b0e14`  | `#faf9f7`   | Page root, deepest layer      | Never use on elevated surfaces |
 | `--bg-accent`   | `#13151b`  | `#f4f1ec`   | Sidebar, secondary panels     | Not for interactive card hover |
-| `--bg-elevated` | `#191c24`  | `#ffffff`   | Raised panels, modals         | Not for inline elements        |
+| `--bg-elevated` | `#131823`  | `#ffffff`   | Raised panels, modals         | Not for inline elements        |
 | `--bg-hover`    | `#1f2330`  | `#efebe4`   | List item hover state         | Not for default state          |
 | `--bg-muted`    | `#1f2330`  | `#efebe4`   | Subtle fills, disabled states | Not for focus states           |
 
-Light mode uses a warm paper palette: ivory backgrounds, warm gray borders (`#e8e4dc`), and a terracotta accent (`#bd4531`, ≈4.9:1 on `--bg`). Dark mode keeps the signature coral red.
+Light mode uses a warm paper palette: ivory backgrounds, warm gray borders (`#e8e4dc`), and a terracotta accent (`#3f6f2b`, ≈4.9:1 on `--bg`). Dark mode keeps the signature coral red.
 
 ## Surface / Card
 
 | Token                  | Dark Value               | Light Value           | Use                           | Don't           |
 | ---------------------- | ------------------------ | --------------------- | ----------------------------- | --------------- |
-| `--card`               | `#161920`                | `#ffffff`             | Card backgrounds, composer    | Avoid as border |
+| `--card`               | `#131823`                | `#ffffff`             | Card backgrounds, composer    | Avoid as border |
 | `--card-foreground`    | `#f0f0f2`                | `#211e1a`             | Text on cards                 | —               |
 | `--card-highlight`     | `rgba(255,255,255,0.04)` | `rgba(60,42,24,0.03)` | Inner highlight on hover      | Not for text    |
-| `--popover`            | `#191c24`                | `#ffffff`             | Dropdown, tooltip backgrounds | —               |
+| `--popover`            | `#131823`                | `#ffffff`             | Dropdown, tooltip backgrounds | —               |
 | `--popover-foreground` | `#f0f0f2`                | `#211e1a`             | Text inside popovers          | —               |
 
 ## Text
 
 | Token            | Dark Value | Contrast on `--bg` | Use                                                  |
 | ---------------- | ---------- | ------------------ | ---------------------------------------------------- |
-| `--text`         | `#d4d4d8`  | ~12.9:1 ✅         | Body copy, labels                                    |
-| `--text-strong`  | `#f4f4f5`  | ~17.3:1 ✅         | Headings, emphasis                                   |
+| `--text`         | `#e6e9f0`  | ~12.9:1 ✅         | Body copy, labels                                    |
+| `--text-strong`  | `#f5f7fb`  | ~17.3:1 ✅         | Headings, emphasis                                   |
 | `--muted`        | `#838387`  | ~5.0:1 ✅          | Placeholder, metadata                                |
 | `--muted-strong` | `#75757d`  | ~4.2:1             | Secondary text, captions; avoid for normal body text |
 
@@ -41,12 +41,12 @@ Light mode uses a warm paper palette: ivory backgrounds, warm gray borders (`#e8
 
 | Token             | Value                 | Use                                            | Don't                                    |
 | ----------------- | --------------------- | ---------------------------------------------- | ---------------------------------------- |
-| `--accent`        | `#ff5c5c`             | Primary CTA, send button, active tab indicator | Don't use for large filled backgrounds   |
-| `--accent-hover`  | `#ff7070`             | Hover state of accent elements                 | —                                        |
-| `--accent-muted`  | `#ff5c5c`             | Same as accent (aliased)                       | —                                        |
+| `--accent`        | `#9ed77b`             | Primary CTA, send button, active tab indicator | Don't use for large filled backgrounds   |
+| `--accent-hover`  | `#bde4a8`             | Hover state of accent elements                 | —                                        |
+| `--accent-muted`  | `#9ed77b`             | Same as accent (aliased)                       | —                                        |
 | `--accent-subtle` | `rgba(255,92,92,0.1)` | Badge backgrounds, tinted fills                | Not for text on dark bg (fails contrast) |
 | `--accent-glow`   | `rgba(255,92,92,0.2)` | Focus rings, glow effects                      | Not as background                        |
-| `--primary`       | `#ff5c5c`             | Component library `primary` alias              | —                                        |
+| `--primary`       | `#9ed77b`             | Component library `primary` alias              | —                                        |
 
 ## Accent 2 (Teal)
 
@@ -68,17 +68,17 @@ Light mode uses a warm paper palette: ivory backgrounds, warm gray borders (`#e8
 
 ## Border
 
-| Token             | Value     | Use                              |
-| ----------------- | --------- | -------------------------------- |
-| `--border`        | `#1e2028` | Default subtle borders, dividers |
-| `--border-strong` | `#2e3040` | Active/focused borders           |
-| `--border-hover`  | `#3e4050` | Hover-state borders              |
+| Token             | Value                       | Use                              |
+| ----------------- | --------------------------- | -------------------------------- |
+| `--border`        | `rgba(255, 255, 255, 0.08)` | Default subtle borders, dividers |
+| `--border-strong` | `#2e3040`                   | Active/focused borders           |
+| `--border-hover`  | `#3e4050`                   | Hover-state borders              |
 
 ## Focus
 
 | Token          | Value                                                                             | Use                            |
 | -------------- | --------------------------------------------------------------------------------- | ------------------------------ |
-| `--ring`       | `#ff5c5c`                                                                         | Focus ring colour              |
+| `--ring`       | `#9ed77b`                                                                         | Focus ring colour              |
 | `--focus-ring` | `0 0 0 2px var(--bg), 0 0 0 3px color-mix(in srgb, var(--ring) 80%, transparent)` | Standard focus ring box-shadow |
 | `--focus-glow` | `0 0 0 2px var(--bg), 0 0 0 3px var(--ring), 0 0 16px var(--accent-glow)`         | Elevated interactive elements  |
 

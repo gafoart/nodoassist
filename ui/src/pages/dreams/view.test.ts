@@ -248,7 +248,7 @@ describe("dreaming view", () => {
   it("renders the active dream scene chrome and status", () => {
     const container = renderInto(buildProps({ dreamingOf: "reindexing old chats\u2026" }));
 
-    expectElement(container, ".dreams__lobster svg");
+    expectElement(container, ".dreams__mark svg");
 
     expect(textItems(container, ".dreams__z")).toEqual(["z", "z", "Z"]);
 

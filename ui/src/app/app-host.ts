@@ -100,8 +100,9 @@ function resolveTerminalThemeMode(): "dark" | "light" {
   return document.documentElement.dataset.themeMode === "light" ? "light" : "dark";
 }
 
-// The mascot SVG animates via SMIL, so it must load through <img src> —
-// inlining the markup would freeze it (see ui/public/favicon.svg).
+// The mark loads through <img src> rather than inlined markup: it carries its
+// own <style> block (see ui/public/favicon.svg), which stays scoped to the SVG
+// document here instead of leaking .ring/.core into the page.
 function renderConnectingSplash(basePath: string) {
   return html`
     <main class="connect-splash" role="status" aria-live="polite" aria-label=${t("common.loading")}>
