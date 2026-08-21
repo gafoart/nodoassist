@@ -16,7 +16,7 @@ All tokens are defined in `ui/src/styles/base.css` under `:root` (dark mode defa
 | `--bg-hover`    | `#1f2330`  | `#efebe4`   | List item hover state         | Not for default state          |
 | `--bg-muted`    | `#1f2330`  | `#efebe4`   | Subtle fills, disabled states | Not for focus states           |
 
-Light mode uses a warm paper palette: ivory backgrounds, warm gray borders (`#e8e4dc`), and a terracotta accent (`#3f6f2b`, ≈4.9:1 on `--bg`). Dark mode keeps the signature coral red.
+Light mode uses a white canvas: `#ffffff` backgrounds, cool gray borders (`#e0e2e6`), and the ramp-floor green accent (`#3f6f2b`, ≈6.0:1 on `--bg`). Dark mode uses the lighter brand green (`#9ed77b`, ≈11.5:1).
 
 ## Surface / Card
 
@@ -30,23 +30,23 @@ Light mode uses a warm paper palette: ivory backgrounds, warm gray borders (`#e8
 
 ## Text
 
-| Token            | Dark Value | Contrast on `--bg` | Use                                                  |
-| ---------------- | ---------- | ------------------ | ---------------------------------------------------- |
-| `--text`         | `#e6e9f0`  | ~12.9:1 ✅         | Body copy, labels                                    |
-| `--text-strong`  | `#f5f7fb`  | ~17.3:1 ✅         | Headings, emphasis                                   |
-| `--muted`        | `#838387`  | ~5.0:1 ✅          | Placeholder, metadata                                |
-| `--muted-strong` | `#75757d`  | ~4.2:1             | Secondary text, captions; avoid for normal body text |
+| Token            | Dark Value               | Contrast on `--bg` | Use                      |
+| ---------------- | ------------------------ | ------------------ | ------------------------ |
+| `--text`         | `#e6e9f0`                | ~15.9:1 ✅         | Body copy, labels        |
+| `--text-strong`  | `#f5f7fb`                | ~18.0:1 ✅         | Headings, emphasis       |
+| `--muted`        | `rgba(230,233,240,0.65)` | ~7.0:1 ✅          | Placeholder, metadata    |
+| `--muted-strong` | `rgba(230,233,240,0.78)` | ~9.8:1 ✅          | Secondary text, captions |
 
-## Accent (Primary — Red)
+## Accent (Primary — Brand green)
 
-| Token             | Value                 | Use                                            | Don't                                    |
-| ----------------- | --------------------- | ---------------------------------------------- | ---------------------------------------- |
-| `--accent`        | `#9ed77b`             | Primary CTA, send button, active tab indicator | Don't use for large filled backgrounds   |
-| `--accent-hover`  | `#bde4a8`             | Hover state of accent elements                 | —                                        |
-| `--accent-muted`  | `#9ed77b`             | Same as accent (aliased)                       | —                                        |
-| `--accent-subtle` | `rgba(255,92,92,0.1)` | Badge backgrounds, tinted fills                | Not for text on dark bg (fails contrast) |
-| `--accent-glow`   | `rgba(255,92,92,0.2)` | Focus rings, glow effects                      | Not as background                        |
-| `--primary`       | `#9ed77b`             | Component library `primary` alias              | —                                        |
+| Token             | Value                    | Use                                            | Don't                                    |
+| ----------------- | ------------------------ | ---------------------------------------------- | ---------------------------------------- |
+| `--accent`        | `#9ed77b`                | Primary CTA, send button, active tab indicator | Don't use for large filled backgrounds   |
+| `--accent-hover`  | `#bde4a8`                | Hover state of accent elements                 | —                                        |
+| `--accent-muted`  | `#9ed77b`                | Same as accent (aliased)                       | —                                        |
+| `--accent-subtle` | `rgba(158,215,123,0.12)` | Badge backgrounds, tinted fills                | Not for text on dark bg (fails contrast) |
+| `--accent-glow`   | `rgba(158,215,123,0.24)` | Focus rings, glow effects                      | Not as background                        |
+| `--primary`       | `#9ed77b`                | Component library `primary` alias              | —                                        |
 
 ## Accent 2 (Teal)
 
